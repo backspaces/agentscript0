@@ -2000,6 +2000,9 @@
         neighbors = true;
       }
       this.animate = __bind(this.animate, this);
+
+      this.run = __bind(this.run, this);
+
       ABM.model = this;
       layers = (function() {
         var _j, _results;
@@ -2034,6 +2037,7 @@
       this.ticks = 1;
       this.refreshLinks = this.refreshAgents = this.refreshPatches = true;
       this.fastPatches = false;
+      this.stepFrequency = 1000 / 60;
       this.setup();
       this.animStop = true;
       if (this.agents.useSprites) {
@@ -2160,11 +2164,20 @@
       this.startMS = Date.now();
       this.startTick = this.ticks;
       this.animStop = false;
+      this.run();
       return this.animate();
     };
 
     Model.prototype.stop = function() {
       return this.animStop = true;
+    };
+
+    Model.prototype.run = function() {
+      this.step();
+      this.tick();
+      if (!this.animStop) {
+        return setTimeout(this.run, this.stepFrequency);
+      }
     };
 
     Model.prototype.draw = function() {
@@ -2180,9 +2193,7 @@
     };
 
     Model.prototype.animate = function() {
-      this.step();
       this.draw();
-      this.tick();
       if (!this.animStop) {
         return requestAnimFrame(this.animate);
       }
