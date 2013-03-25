@@ -128,3 +128,13 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program, see LICENSE within the distribution.
 If not, see <http://www.gnu.org/licenses/>.
+
+#### Additonal Contributors
+
+- Stephen Bannasch <stephen.bannasch@gmail.com>, as part of the [Concord Consortium](http://concord.org/)
+
+  All contributions from [Concord Consortium](http://concord.org/) to AgentScript
+  are licensed under all of the following licenses:
+  [Simplified BSD](http://www.opensource.org/licenses/BSD-2-Clause),
+  [MIT](http://www.opensource.org/licenses/MIT), or
+  [Apache 2.0](http://www.opensource.org/licenses/Apache-2.0).
