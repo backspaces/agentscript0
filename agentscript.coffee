@@ -1476,9 +1476,9 @@ class ABM.Model
     torus=true, neighbors=true
   ) ->
     ABM.model = @
-    
-    # Create 4 2D canvas contexts layered on top of each other.
-    layers = for i in [0..3] # multi-line array comprehension
+
+    # Create 5 2D canvas contexts layered on top of each other.
+    layers = for i in [0..4] # multi-line array comprehension
       u.createLayer div, size*(maxX-minX+1), size*(maxY-minY+1), i, "2d"
     # One of the layers is used for drawing only, not an agentset:
     @drawing = ABM.drawing = layers[1]
@@ -1497,18 +1497,22 @@ class ABM.Model
       ctx.translate -(minX-.5), -(maxY+.5); 
     # Create instance variable object with names for each layer
     @contexts = ABM.contexts =
-      patches: layers[0]
-      drawing: layers[1]
-      links:   layers[2]
-      agents:  layers[3]
-    # Set a variable in each context with its name 
+      patches:   layers[0]
+      drawing:   layers[1]
+      links:     layers[2]
+      agents:    layers[3]
+      spotlight: layers[4]
+    # Set a variable in each context with its name
     v.agentSetName = k for k,v of @contexts
-    
+
     # Initialize agentsets.
     @patches = ABM.patches = \
       new ABM.Patches size,minX,maxX,minY,maxY,torus,neighbors
     @agents = ABM.agents = new ABM.Agents
     @links = ABM.links = new ABM.Links
+
+    # Setup spotlight layer
+    ABM.model.contexts.spotlight.globalCompositeOperation = "xor"
 
     # Initialize instance variables
     @showFPS = true # show fps in console. generally use chrome fps instead
@@ -1625,6 +1629,7 @@ class ABM.Model
     @patches.draw @contexts.patches  if @refreshPatches or @ticks is 1
     @links.draw   @contexts.links    if @refreshLinks   or @ticks is 1
     @agents.draw  @contexts.agents   if @refreshAgents  or @ticks is 1
+    @drawSpotlight() if @spotlightAgent?
 
 # Runs the three methods used to increment the model and queues the next call to itself.
   animate: => # note fat arrow, animate bound to "this"
@@ -1640,6 +1645,40 @@ class ABM.Model
       fps = Math.round (animTicks*1000/(Date.now()-@startMS))
       console.log "fps: #{fps} at #{animTicks} ticks"
     @ticks++
+
+# Creates a spotlight effect on an agent, so we can follow it throughout the model
+# We can pass in either an agent to be spotlighted or a breed. If we pass in a breed,
+# we will find a random agent of that breed
+  setSpotlight: (agent) ->
+    if typeof agent is "string"
+      agentSet = @[agent]()
+      @spotlightAgent = agentSet.oneOf() unless not agentSet.any()
+    else
+      @spotlightAgent = agent
+
+  removeSpotlight: ->
+    @spotlightAgent = null
+    u.clearCtx this.contexts.spotlight
+
+  drawSpotlight: ->
+    agent   = @spotlightAgent
+    ctx     = this.contexts.spotlight
+
+    return unless agent
+
+    u.clearCtx ctx
+
+    if !~this.agents.indexOf(agent)
+      @spotlightAgent = null
+      return
+
+    u.fillCtx ctx, [0,0,0,0.6]
+
+    ctx.beginPath()
+
+    ctx.arc agent.x, agent.y, 3, 0, 2*Math.PI, false
+    ctx.fill()
+
 
 #### Breeds
 # Two very primitive versions of NL's `breed` commands.

@@ -2004,7 +2004,7 @@
       layers = (function() {
         var _j, _results;
         _results = [];
-        for (i = _j = 0; _j <= 3; i = ++_j) {
+        for (i = _j = 0; _j <= 4; i = ++_j) {
           _results.push(u.createLayer(div, size * (maxX - minX + 1), size * (maxY - minY + 1), i, "2d"));
         }
         return _results;
@@ -2020,7 +2020,8 @@
         patches: layers[0],
         drawing: layers[1],
         links: layers[2],
-        agents: layers[3]
+        agents: layers[3],
+        spotlight: layers[4]
       };
       _ref1 = this.contexts;
       for (k in _ref1) {
@@ -2030,6 +2031,7 @@
       this.patches = ABM.patches = new ABM.Patches(size, minX, maxX, minY, maxY, torus, neighbors);
       this.agents = ABM.agents = new ABM.Agents;
       this.links = ABM.links = new ABM.Links;
+      ABM.model.contexts.spotlight.globalCompositeOperation = "xor";
       this.showFPS = true;
       this.ticks = 1;
       this.refreshLinks = this.refreshAgents = this.refreshPatches = true;
@@ -2171,7 +2173,10 @@
         this.links.draw(this.contexts.links);
       }
       if (this.refreshAgents || this.ticks === 1) {
-        return this.agents.draw(this.contexts.agents);
+        this.agents.draw(this.contexts.agents);
+      }
+      if (this.spotlightAgent != null) {
+        return this.drawSpotlight();
       }
     };
 
@@ -2192,6 +2197,41 @@
         console.log("fps: " + fps + " at " + animTicks + " ticks");
       }
       return this.ticks++;
+    };
+
+    Model.prototype.setSpotlight = function(agent) {
+      var agentSet;
+      if (typeof agent === "string") {
+        agentSet = this[agent]();
+        if (!!agentSet.any()) {
+          return this.spotlightAgent = agentSet.oneOf();
+        }
+      } else {
+        return this.spotlightAgent = agent;
+      }
+    };
+
+    Model.prototype.removeSpotlight = function() {
+      this.spotlightAgent = null;
+      return u.clearCtx(this.contexts.spotlight);
+    };
+
+    Model.prototype.drawSpotlight = function() {
+      var agent, ctx;
+      agent = this.spotlightAgent;
+      ctx = this.contexts.spotlight;
+      if (!agent) {
+        return;
+      }
+      u.clearCtx(ctx);
+      if (!~this.agents.indexOf(agent)) {
+        this.spotlightAgent = null;
+        return;
+      }
+      u.fillCtx(ctx, [0, 0, 0, 0.6]);
+      ctx.beginPath();
+      ctx.arc(agent.x, agent.y, 3, 0, 2 * Math.PI, false);
+      return ctx.fill();
     };
 
     Model.prototype.linkBreeds = function(s) {
