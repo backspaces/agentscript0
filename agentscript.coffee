@@ -1519,10 +1519,14 @@ class ABM.Model
     @ticks = 1 # initial tick/frame
     @refreshLinks = @refreshAgents = @refreshPatches = true # drawing flags
     @fastPatches = false
-    
+
+    @stepFrequency = 1000/60    # call step method 60 times/second
+
     # Call the models setup function.
     @setup()
-    
+
+    @animStop = true
+
     # Postprocesssing after setup
     if @agents.useSprites
       @agents.setDefaultSprite() if ABM.Agent::color?
@@ -1580,6 +1584,12 @@ class ABM.Model
   setAgentStaticColors: ->
     @agents.setStaticColors(true)
 
+  # Sets the rate at which we call Model.step, in steps/second.
+  # Calling setStepFrequency(60) will cause step to be called
+  # 60 times per second.
+  setStepFrequency: (f) ->
+    @stepFrequency = 1000/f
+
 #### Text Utilities:
   # Return string name for agentset.  Note this depends on our
   # using a singleton naming convension: foo = new Foo(...)
@@ -1610,17 +1620,26 @@ class ABM.Model
 # AgentScript needs to do something here.
   startup: -> # called on first tick.  Used for optimization late binding.
 
-# Initializes the animation and starts the animation by calling `animate`
+# Initializes the animation and starts the model by calling `run`, and starts
+# the animation by calling `animate`
   start: ->
+    if not @animStop then return     # prevent multiple calls to start()
     if @ticks is 1
       @startup()
     @startMS = Date.now()
     @startTick = @ticks
     @animStop = false
+    @run()
     @animate()
 
 # Stop the animation at the end of the next call to `animate`
   stop: -> @animStop = true
+
+# Runs the two methods used to increment the model and queues the next call to itself.
+  run: =>
+    @step()
+    @tick() # Note: NL difference, called here not in user's step()
+    setTimeout @run, @stepFrequency unless @animStop
 
 # Call the agentset draw methods if either the first draw call or
 # their "refresh" flags are set.  The latter are simple optimizations
@@ -1631,12 +1650,11 @@ class ABM.Model
     @agents.draw  @contexts.agents   if @refreshAgents  or @ticks is 1
     @drawSpotlight() if @spotlightAgent?
 
-# Runs the three methods used to increment the model and queues the next call to itself.
+# Runs draw() to repaint, and queues the next call to itself.
   animate: => # note fat arrow, animate bound to "this"
-    @step()
     @draw()
-    @tick() # Note: NL difference, called here not in user's step()
     requestAnimFrame @animate unless @animStop
+
 # Updates the `ticks` counter and prints out the fps every 100 steps
 # if the `showFPS` flag is set.
   tick: ->
