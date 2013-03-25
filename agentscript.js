@@ -2124,6 +2124,10 @@
       return this.agents.setStaticColors(true);
     };
 
+    Model.prototype.setStepFrequency = function(f) {
+      return this.stepFrequency = 1000 / f;
+    };
+
     Model.prototype.agentSetName = function(aset) {
       return aset.constructor.name.toLowerCase();
     };

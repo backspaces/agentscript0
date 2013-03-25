@@ -1580,6 +1580,12 @@ class ABM.Model
   setAgentStaticColors: ->
     @agents.setStaticColors(true)
 
+  # Sets the rate at which we call Model.step, in steps/second.
+  # Calling setStepFrequency(60) will cause step to be called
+  # 60 times per second.
+  setStepFrequency: (f) ->
+    @stepFrequency = 1000/f
+
 #### Text Utilities:
   # Return string name for agentset.  Note this depends on our
   # using a singleton naming convension: foo = new Foo(...)
