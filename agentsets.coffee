@@ -288,7 +288,7 @@ class ABM.Patches extends ABM.AgentSet
   # of each patch's value of `v` to its neighbors. If a color `c` is given,
   # scale the patch's color to be `p.v` of `c`. If the patch has
   # less than 8 neighbors, return the extra to the patch.
-  diffuse: (v, rate, c=null) -> # variable name, diffusion rate, max color (optional)
+  diffuse: (v, rate, c) -> # variable name, diffusion rate, max color (optional)
     # zero temp variable if not yet set
     if not @[0]._diffuseNext?
       p._diffuseNext = 0 for p in @
@@ -298,10 +298,15 @@ class ABM.Patches extends ABM.AgentSet
       p._diffuseNext += p[v] - dv + (8-nn)*dv8
       n._diffuseNext += dv8 for n in p.n
     # pass 2: set new value for all patches, zero temp, modify color if c given
-    for p in @
-      p[v] = p._diffuseNext
-      p._diffuseNext = 0
-      p.scaleColor c, p[v] if c
+    if c
+      for p in @
+        p[v] = p._diffuseNext
+        p._diffuseNext = 0
+        p.scaleColor c, p[v]
+    else
+      for p in @
+        p[v] = p._diffuseNext
+        p._diffuseNext = 0
     null # avoid returning copy of @
 
 # ### Agent & Agents
