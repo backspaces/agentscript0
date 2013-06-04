@@ -18,20 +18,17 @@ class ABM.Animator
   # Create initial animator for the model, specifying default rate (fps) and multiStep (async).
   # If multiStep, run the draw() and step() methods asynchronously by draw() using
   # requestAnimFrame and step() using setTimeout.
-  constructor: (@model, @rate=30, @multiStep=false) ->
-    @ticks = @draws = 0
-    @animHandle = @timerHandle = @intervalHandle = null
-    @animStop = true
+  constructor: (@model, @rate=30, @multiStep=false) -> @reset() # init all animation state
   # Adjust animator.  This is used by programmer as the default animator will already have
   # been created by the time her model runs.
-  setRate: (@rate, @multiStep=false) -> @reset()
+  setRate: (@rate, @multiStep=false) -> @resetAnim()
   # start/stop model, often used for debugging
   start: ->
     if not @animStop then return # avoid multiple animates
-    @reset()
+    @resetAnim()
     @animStop = false
     @animate()
-  reset: ->
+  resetAnim: ->
     @startMS = @now()
     @startTick = @ticks
     @startDraw = @draws
@@ -41,6 +38,7 @@ class ABM.Animator
     if @timeoutHandle? then clearTimeout @timeoutHandle
     if @intervalHandle? then clearInterval @intervalHandle
     @animHandle = @timerHandle = @intervalHandle = null
+  reset: -> @stop(); @ticks = @draws = 0
   # step/draw the model.  Note ticks/draws counters separate due to async.
   step: -> @ticks++; @model.step()
   draw: -> @draws++; @model.draw()
@@ -93,11 +91,11 @@ class ABM.Model
   # * intialize various instance variables
   # * call `setup` abstract method
   constructor: (
-    div, size, minX, maxX, minY, maxY,
+    @div, size, minX, maxX, minY, maxY,
     isTorus=true, hasNeighbors=true
   ) ->
-    ABM.model = @
-    ABM.world = @world = {div, size, minX, maxX, minY, maxY, isTorus, hasNeighbors}
+    ABM.model = @ #; numX = maxX-minX+1; numY = maxY-minY+1    
+    @setWorld size, minX, maxX, minY, maxY, isTorus, hasNeighbors
     @contexts = ABM.contexts = {}
     
     # * Create 2D canvas contexts layered on top of each other.
@@ -111,17 +109,9 @@ class ABM.Model
     #     ctx.restore() # restore patch coord system
     
     for own k,v of @contextsInit
-      @contexts[k] = ctx =
-        u.createLayer div, size*(maxX-minX+1), size*(maxY-minY+1), v.z, v.ctx
-      ctx.save()
-      ctx.scale size, -size
-      ctx.translate -(minX-.5), -(maxY+.5)
-      ctx.agentSetName = k # Set a variable in each context with its name
+      @contexts[k] = ctx = u.createLayer div, @world.width, @world.height, v.z, v.ctx
+      @setCtxTransform(ctx)
 
-    # Initialize agentsets.
-    @patches = ABM.patches = new ABM.Patches ABM.Patch, "patches"
-    @agents = ABM.agents = new ABM.Agents ABM.Agent, "agents"
-    @links = ABM.links = new ABM.Links ABM.Link, "links"
     # One of the layers is used for drawing only, not an agentset:
     @drawing = ABM.drawing = @contexts.drawing
     # Setup spotlight layer, also not an agentset:
@@ -133,16 +123,37 @@ class ABM.Model
     # Optimization: If any of these is set to false, the associated
     # agentset is drawn only once, remaining static after that.
     @refreshLinks = @refreshAgents = @refreshPatches = true
-    
+
+    # Initialize agentsets.
+    @patches = ABM.patches = new ABM.Patches ABM.Patch, "patches"
+    @agents = ABM.agents = new ABM.Agents ABM.Agent, "agents"
+    @links = ABM.links = new ABM.Links ABM.Link, "links"
+
     # Call the models setup function. Set the list of global variables to
     # the new variables created by setup(). Do not include agentsets, they
     # are available in the ABM global.
-    beginVars = (k for own k,v of @ when not (v.agentClass? or u.isFunction v))
     @setup()
-    endVars = (k for own k,v of @ when not (v.agentClass? or u.isFunction v))
-    ABM.globals = @globals = (v for v in endVars when not u.contains beginVars, v)
-    console.log "globals", @globals
-    
+  
+  # Stop and reset the model
+  reset: () -> 
+    @anim.reset() # stop & reset ticks/steps counters
+    @patches = ABM.patches = new ABM.Patches ABM.Patch, "patches"
+    @agents = ABM.agents = new ABM.Agents ABM.Agent, "agents"
+    @links = ABM.links = new ABM.Links ABM.Link, "links"
+    @setCtxTransform v for k,v of @contexts # clear/resize all contexts
+    u.s.spriteSheets.length = 0 # possibly null out entries?
+  # reset, then setup and start the model
+  restart: -> @reset(); @setup(); @start()
+  # Initialize/reset world parameters.
+  setWorld: (size, minX, maxX, minY, maxY, isTorus=true, hasNeighbors=true) ->
+    numX = maxX-minX+1; numY = maxY-minY+1; width = numX*size; height = numY*size
+    ABM.world = @world = {size,minX,maxX,minY,maxY,numX,numY,width,height,isTorus,hasNeighbors}
+  setCtxTransform: (ctx) ->
+    ctx.canvas.width = @world.width; ctx.canvas.height = @world.height
+    ctx.save()
+    ctx.scale @world.size, -@world.size
+    ctx.translate -(@world.minX-.5), -(@world.maxY+.5)
+  
 
 #### Optimizations:
   
@@ -168,26 +179,17 @@ class ABM.Model
 
 #### Text Utilities:
   
-  # Return context name for agentset via naming convention: Links->links etc.
-  agentSetCtxName: (aset) ->
-    aset = aset.mainSet if aset.mainSet? # breeds->mainSet
-    aset.constructor.name.toLowerCase()
-  # Set the text parameters for an agentset's context.  See ABM.util<br>
-  # `agentSetName` can be a key in @contexts or an agentset itself
-  setTextParams: (agentSetName, domFont, align="center", baseline="middle") ->
-    agentSetName = @agentSetCtxName(agentSetName) if typeof agentSetName isnt "string"
-    u.error "setTextParams: #{@agentSetName} not fount." if not @contexts[agentSetName]?
-    u.ctxTextParams @contexts[agentSetName], domFont, align, baseline
-  setLabelParams: (agentSetName, color, xy) ->
-    agentSetName = @agentSetCtxName(agentSetName) if typeof agentSetName isnt "string"
-    u.error "setLabelParams: #{@agentSetName} not fount." if not @contexts[agentSetName]?
-    u.ctxLabelParams @contexts[agentSetName], color, xy
+  # Set the text parameters for an agentset's context.  See ABM.util.
+  setTextParams: (agentset, domFont, align="center", baseline="middle") ->
+    u.ctxTextParams @contexts[agentset.name], domFont, align, baseline
+  setLabelParams: (agentset, color, xy) ->
+    u.ctxLabelParams @contexts[agentset.name], color, xy
   
 #### User Model Creation
 # A user's model is made by subclassing Model and over-riding these
 # two abstract methods. `super` need not be called.
   
-  # Initialize your model here
+  # Initialize your model here.
   setup: -> # called at the end of model creation
   # Update/step your model here
   step: -> # called each step of the animation
@@ -290,7 +292,7 @@ class ABM.Model
     root.ab  = ABM.agentBreeds
     root.lb  = ABM.linkBreeds
     root.an  = @anim
-    root.wd  = @world
+    root.wd  = ABM.world
     root.gl  = @globals
     root.root= root
     null

@@ -35,8 +35,10 @@
         @wiggleAngle = u.degToRad(30) # radians
 
         if @agents.useSprites
-          @nestSprite = ABM.shapes.shapeToSprite "bug", @nestColor, 3*@patches.size
-          @foodSprite = ABM.shapes.shapeToSprite "bug", @foodColor, 3*@patches.size
+          # @nestSprite = ABM.shapes.shapeToSprite "bug", @nestColor, 3*@patches.size
+          # @foodSprite = ABM.shapes.shapeToSprite "bug", @foodColor, 3*@patches.size
+          @nestSprite = ABM.shapes.shapeToSprite "bug", @nestColor, @patches.toBits 3
+          @foodSprite = ABM.shapes.shapeToSprite "bug", @foodColor, @patches.toBits 3
         
         @setupPatches()
         @setupAgents()

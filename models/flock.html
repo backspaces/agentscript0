@@ -33,7 +33,7 @@
         @agents.create @population, (a) => # fat arrow for @patches
           #a.size = 1.5
           a.setXY @patches.randomPt()...
-          a.color = u.randomMapColor() # u.randomBrightColor()
+          a.color = u.randomMapColor() # u.randomColor() # u.randomBrightColor()
 
       # draw: -> # headless test .. max fps
       step: ->

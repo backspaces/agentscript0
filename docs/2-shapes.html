@@ -118,7 +118,7 @@ discription of drawing context.  It is used in adding a new shape above.</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>  <span class="function"><span class="title">poly</span></span> = (c, a) -&gt;
-    <span class="keyword">for</span> p, i <span class="keyword">in</span> a 
+    <span class="keyword">for</span> p, i <span class="keyword">in</span> a
       <span class="keyword">if</span> i <span class="keyword">is</span> <span class="number">0</span> <span class="keyword">then</span> c.moveTo p[<span class="number">0</span>], p[<span class="number">1</span>] <span class="keyword">else</span> c.lineTo p[<span class="number">0</span>], p[<span class="number">1</span>]
     <span class="literal">null</span></pre></div></div>
             
@@ -265,7 +265,7 @@ Useful for shortcuts</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  add: (name, rotate, draw, shortcut = <span class="literal">null</span>) -&gt;
+            <div class="content"><div class='highlight'><pre>  add: (name, rotate, draw, shortcut) -&gt;
     s = @[name] =
       <span class="keyword">if</span> u.isFunction draw <span class="keyword">then</span> {rotate,draw} <span class="keyword">else</span> {rotate,img:draw,draw:(c)-&gt;cimg c,<span class="number">.5</span>,<span class="number">.5</span>,<span class="number">1</span>,<span class="property">@img</span>}
     (s.<span class="function"><span class="title">shortcut</span></span> = (c,x,y,s) -&gt; cimg c,x,y,s,<span class="property">@img</span>) <span class="keyword">if</span> s.img? <span class="keyword">and</span> <span class="keyword">not</span> s.rotate
@@ -343,7 +343,7 @@ the shape to fit it. Return existing sprite if duplicate.</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>  shapeToSprite: (name, color, size) -&gt;
-    bits = Math.ceil size*ABM.patches.size
+    bits = Math.ceil ABM.patches.toBits size
     shape = @[name]
     index = <span class="keyword">if</span> shape.img? <span class="keyword">then</span> name <span class="keyword">else</span> <span class="string">"<span class="subst">#{name}</span>-<span class="subst">#{u.colorStr(color)}</span>"</span>
     ctx = spriteSheets[bits]</pre></div></div>

@@ -1,16 +1,16 @@
 #!/bin/bash
 
-files="\
-  util.coffee \
-  shapes.coffee \
-  agentset.coffee \
-  agentsets.coffee \
-  model.coffee \
-"
+files="util.coffee shapes.coffee agentset.coffee agentsets.coffee model.coffee"
+coffee --watch --map --join agentscript.coffee --compile $files &
 
-# cat $files > agentscript.coffee
+exit
 
-# coffee --watch --map --join agentscript.js --compile $files &
-coffee --watch --join agentscript.js --compile $files &
+files="util.coffee shapes.coffee agentset.coffee agentsets.coffee model.coffee"
+coffee  -cwlj agentscript.coffee -c $files
+
+FILES="foo.coffee bar.coffee"
+coffee  -cwlj baz.coffee -c $FILES
+
+
 
 # coffee -mj agentscript.js -c $files

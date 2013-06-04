@@ -25,7 +25,7 @@ ABM.shapes = ABM.util.s = do ->
   # c.closePath() and c.fill() will be called by the calling agent, see initial 
   # discription of drawing context.  It is used in adding a new shape above.
   poly = (c, a) ->
-    for p, i in a 
+    for p, i in a
       if i is 0 then c.moveTo p[0], p[1] else c.lineTo p[0], p[1]
     null
 
@@ -99,7 +99,7 @@ ABM.shapes = ABM.util.s = do ->
   #       ABM.shapes.poly c, [[-.5,-.5],[.5,.5],[-.5,.5],[.5,-.5]]
   #
   # Note: an image that is not rotated automatically gets a shortcut. 
-  add: (name, rotate, draw, shortcut = null) ->
+  add: (name, rotate, draw, shortcut) ->
     s = @[name] =
       if u.isFunction draw then {rotate,draw} else {rotate,img:draw,draw:(c)->cimg c,.5,.5,1,@img}
     (s.shortcut = (c,x,y,s) -> cimg c,x,y,s,@img) if s.img? and not s.rotate
@@ -140,7 +140,7 @@ ABM.shapes = ABM.util.s = do ->
   # Convert a shape to a sprite by allocating a sprite sheet "slot" and drawing
   # the shape to fit it. Return existing sprite if duplicate.
   shapeToSprite: (name, color, size) ->
-    bits = Math.ceil size*ABM.patches.size
+    bits = Math.ceil ABM.patches.toBits size
     shape = @[name]
     index = if shape.img? then name else "#{name}-#{u.colorStr(color)}"
     ctx = spriteSheets[bits]

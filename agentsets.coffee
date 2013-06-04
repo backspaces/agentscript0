@@ -88,8 +88,6 @@ class ABM.Patches extends ABM.AgentSet
   constructor: -> # agentClass, name, mainSet
     super # call super with all the args I was called with
     @[k] = v for own k,v of ABM.world # add world items to patches
-    ABM.world.numX = @numX = @maxX-@minX+1 # add two more items to world
-    ABM.world.numY = @numY = @maxY-@minY+1
     for y in [@maxY..@minY] by -1
       for x in [@minX..@maxX] by 1
         @add new ABM.Patch x, y
@@ -179,14 +177,10 @@ class ABM.Patches extends ABM.AgentSet
 
 # #### Patch metrics
   
-  # Return pixel width/height of patch grid
-  bitWidth:  -> @numX*@size # methods, not constants in case resize
-  bitHeight: -> @numY*@size
-  
   # Convert patch measure to pixels
-  patches2Bits: (p) -> p*@size
+  toBits: (p) -> p*@size
   # Convert bit measure to patches
-  bits2Patches: (b) -> b/@size
+  fromBits: (b) -> b/@size
 
 # #### Patch utilities
   
@@ -217,7 +211,11 @@ class ABM.Patches extends ABM.AgentSet
   # [new Image()](http://javascript.mfields.org/2011/creating-an-image-in-javascript/)
   # tutorial.  We draw the image into the drawing layer as
   # soon as the onload callback executes.
-  importDrawing: (imageSrc, f=null) ->
+  installDrawing: (img, ctx=ABM.contexts.drawing) ->
+    u.setIdentity ctx
+    ctx.drawImage img, 0, 0, ctx.canvas.width, ctx.canvas.height
+    ctx.restore() # restore patch transform
+  importDrawing: (imageSrc, f) ->
     u.importImage imageSrc, (img) ->
       ctx = ABM.drawing
       u.setIdentity ctx
@@ -234,13 +232,15 @@ class ABM.Patches extends ABM.AgentSet
   # Draws, or "imports" an image URL into the patches as their color property.
   # The drawing is scaled to the number of x,y patches, thus one pixel
   # per patch.  The colors are then transferred to the patches.
-  importColors: (imageSrc, f=null) ->
+  installColors: (img) ->
+    @pixelsCtx.drawImage img, 0, 0, @numX, @numY # scale if needed
+    data = @pixelsCtx.getImageData(0, 0, @numX, @numY).data
+    for p in @
+      i = @pixelByteIndex p
+      p.color = [data[i++], data[i++], data[i]] # promote initial default
+  importColors: (imageSrc, f) ->
     u.importImage imageSrc, (img) => # fat arrow, this context
-      @pixelsCtx.drawImage img, 0, 0, @numX, @numY # scale if needed
-      data = @pixelsCtx.getImageData(0, 0, @numX, @numY).data
-      for p in @
-        i = @pixelByteIndex p
-        p.color = [data[i++], data[i++], data[i]] # promote initial default
+      @installColors(img)
       f() if f?
   
   # Draw the patches via pixel manipulation rather than 2D drawRect.
@@ -373,7 +373,7 @@ class ABM.Agent
     if @penDown
       drawing = ABM.drawing
       drawing.strokeStyle = u.colorStr @color
-      drawing.lineWidth = ABM.patches.bits2Patches @penSize
+      drawing.lineWidth = ABM.patches.fromBits @penSize
       drawing.beginPath()
       drawing.moveTo x0, y0; drawing.lineTo x, y # REMIND: euclidean
       drawing.stroke()
@@ -400,7 +400,7 @@ class ABM.Agent
       ABM.shapes.draw ctx, shape, @x, @y, @size, rad, @color
   
   # Set an individual agent's sprite, synching its color, shape, size
-  setSprite: (sprite = null)->
+  setSprite: (sprite)->
     if (s=sprite)?
       @sprite = s; @color = s.color; @shape = s.shape; @size = s.size
     else
@@ -584,7 +584,7 @@ class ABM.Link
   draw: (ctx) ->
     ctx.save()
     ctx.strokeStyle = u.colorStr @color
-    ctx.lineWidth = ABM.patches.bits2Patches @thickness
+    ctx.lineWidth = ABM.patches.fromBits @thickness
     ctx.beginPath()
     if !ABM.patches.isTorus
       ctx.moveTo @end1.x, @end1.y

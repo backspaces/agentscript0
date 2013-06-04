@@ -292,8 +292,6 @@ Patches are created from top-left to bottom-right to match data sets.</p>
             <div class="content"><div class='highlight'><pre>  constructor: -&gt; <span class="comment"># agentClass, name, mainSet</span>
     <span class="keyword">super</span> <span class="comment"># call super with all the args I was called with</span>
     @[k] = v <span class="keyword">for</span> own k,v <span class="keyword">of</span> ABM.world <span class="comment"># add world items to patches</span>
-    ABM.world.numX = <span class="property">@numX</span> = <span class="property">@maxX</span>-<span class="property">@minX</span>+<span class="number">1</span> <span class="comment"># add two more items to world</span>
-    ABM.world.numY = <span class="property">@numY</span> = <span class="property">@maxY</span>-<span class="property">@minY</span>+<span class="number">1</span>
     <span class="keyword">for</span> y <span class="keyword">in</span> [<span class="property">@maxY</span>..<span class="property">@minY</span>] <span class="keyword">by</span> -<span class="number">1</span>
       <span class="keyword">for</span> x <span class="keyword">in</span> [<span class="property">@minX</span>..<span class="property">@maxX</span>] <span class="keyword">by</span> <span class="number">1</span>
         <span class="property">@add</span> <span class="keyword">new</span> ABM.Patch x, y
@@ -583,12 +581,11 @@ using either clamp/wrap above according to isTorus topology.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-29">&#182;</a>
               </div>
-              <p>Return pixel width/height of patch grid</p>
+              <p>Convert patch measure to pixels</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  bitWidth:  -&gt; <span class="property">@numX</span>*<span class="property">@size</span> <span class="comment"># methods, not constants in case resize</span>
-  bitHeight: -&gt; <span class="property">@numY</span>*<span class="property">@size</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  toBits: (p) -&gt; p*<span class="property">@size</span></pre></div></div>
             
         </li>
         
@@ -599,11 +596,11 @@ using either clamp/wrap above according to isTorus topology.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-30">&#182;</a>
               </div>
-              <p>Convert patch measure to pixels</p>
+              <p>Convert bit measure to patches</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  patches2Bits: (p) -&gt; p*<span class="property">@size</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  fromBits: (b) -&gt; b/<span class="property">@size</span></pre></div></div>
             
         </li>
         
@@ -611,23 +608,8 @@ using either clamp/wrap above according to isTorus topology.</p>
         <li id="section-31">
             <div class="annotation">
               
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-31">&#182;</a>
-              </div>
-              <p>Convert bit measure to patches</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>  bits2Patches: (b) -&gt; b/<span class="property">@size</span></pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-32">
-            <div class="annotation">
-              
               <div class="pilwrap for-h4">
-                <a class="pilcrow" href="#section-32">&#182;</a>
+                <a class="pilcrow" href="#section-31">&#182;</a>
               </div>
               <h4>Patch utilities</h4>
 
@@ -636,11 +618,11 @@ using either clamp/wrap above according to isTorus topology.</p>
         </li>
         
         
-        <li id="section-33">
+        <li id="section-32">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-33">&#182;</a>
+                <a class="pilcrow" href="#section-32">&#182;</a>
               </div>
               <p>Return an array of patches in a rectangle centered on the given 
 patch <code>p</code>, dx, dy units to the right/left and up/down. 
@@ -668,11 +650,11 @@ Exclude <code>p</code> unless meToo is true, default false.</p>
         </li>
         
         
-        <li id="section-34">
+        <li id="section-33">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-34">&#182;</a>
+                <a class="pilcrow" href="#section-33">&#182;</a>
               </div>
               <p>Draws, or &quot;imports&quot; an image URL into the drawing layer.
 The image is scaled to fit the drawing layer.</p>
@@ -683,7 +665,11 @@ soon as the onload callback executes.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  importDrawing: (imageSrc, f=<span class="literal">null</span>) -&gt;
+            <div class="content"><div class='highlight'><pre>  installDrawing: (img, ctx=ABM.contexts.drawing) -&gt;
+    u.setIdentity ctx
+    ctx.drawImage img, <span class="number">0</span>, <span class="number">0</span>, ctx.canvas.width, ctx.canvas.height
+    ctx.restore() <span class="comment"># restore patch transform</span>
+  importDrawing: (imageSrc, f) -&gt;
     u.importImage imageSrc, (img) -&gt;
       ctx = ABM.drawing
       u.setIdentity ctx
@@ -694,11 +680,11 @@ soon as the onload callback executes.</p>
         </li>
         
         
-        <li id="section-35">
+        <li id="section-34">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-35">&#182;</a>
+                <a class="pilcrow" href="#section-34">&#182;</a>
               </div>
               <p>Utility function for pixel manipulation.  Given a patch, returns the 
 native canvas index i into the pixel data.
@@ -712,11 +698,11 @@ The top-left order simplifies finding pixels in data sets</p>
         </li>
         
         
-        <li id="section-36">
+        <li id="section-35">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-36">&#182;</a>
+                <a class="pilcrow" href="#section-35">&#182;</a>
               </div>
               <p>Draws, or &quot;imports&quot; an image URL into the patches as their color property.
 The drawing is scaled to the number of x,y patches, thus one pixel
@@ -724,23 +710,25 @@ per patch.  The colors are then transferred to the patches.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  importColors: (imageSrc, f=<span class="literal">null</span>) -&gt;
+            <div class="content"><div class='highlight'><pre>  installColors: (img) -&gt;
+    <span class="property">@pixelsCtx</span>.drawImage img, <span class="number">0</span>, <span class="number">0</span>, <span class="property">@numX</span>, <span class="property">@numY</span> <span class="comment"># scale if needed</span>
+    data = <span class="property">@pixelsCtx</span>.getImageData(<span class="number">0</span>, <span class="number">0</span>, <span class="property">@numX</span>, <span class="property">@numY</span>).data
+    <span class="keyword">for</span> p <span class="keyword">in</span> @
+      i = <span class="property">@pixelByteIndex</span> p
+      p.color = [data[i++], data[i++], data[i]] <span class="comment"># promote initial default</span>
+  importColors: (imageSrc, f) -&gt;
     u.importImage imageSrc, (img) =&gt; <span class="comment"># fat arrow, this context</span>
-      <span class="property">@pixelsCtx</span>.drawImage img, <span class="number">0</span>, <span class="number">0</span>, <span class="property">@numX</span>, <span class="property">@numY</span> <span class="comment"># scale if needed</span>
-      data = <span class="property">@pixelsCtx</span>.getImageData(<span class="number">0</span>, <span class="number">0</span>, <span class="property">@numX</span>, <span class="property">@numY</span>).data
-      <span class="keyword">for</span> p <span class="keyword">in</span> @
-        i = <span class="property">@pixelByteIndex</span> p
-        p.color = [data[i++], data[i++], data[i]] <span class="comment"># promote initial default</span>
+      <span class="property">@installColors</span>(img)
       f() <span class="keyword">if</span> f?</pre></div></div>
             
         </li>
         
         
-        <li id="section-37">
+        <li id="section-36">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-37">&#182;</a>
+                <a class="pilcrow" href="#section-36">&#182;</a>
               </div>
               <p>Draw the patches via pixel manipulation rather than 2D drawRect.
 See Mozilla pixel <a href="http://goo.gl/Lxliq">manipulation article</a></p>
@@ -756,11 +744,11 @@ See Mozilla pixel <a href="http://goo.gl/Lxliq">manipulation article</a></p>
         </li>
         
         
-        <li id="section-38">
+        <li id="section-37">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-38">&#182;</a>
+                <a class="pilcrow" href="#section-37">&#182;</a>
               </div>
               <p>The 8-bit version for drawScaledPixels.  Used for systems w/o typed arrays</p>
 
@@ -780,11 +768,11 @@ See Mozilla pixel <a href="http://goo.gl/Lxliq">manipulation article</a></p>
         </li>
         
         
-        <li id="section-39">
+        <li id="section-38">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-39">&#182;</a>
+                <a class="pilcrow" href="#section-38">&#182;</a>
               </div>
               <p>The 32-bit version of drawScaledPixels, with both little and big endian hardware.</p>
 
@@ -815,11 +803,11 @@ See Mozilla pixel <a href="http://goo.gl/Lxliq">manipulation article</a></p>
         </li>
         
         
-        <li id="section-40">
+        <li id="section-39">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-40">&#182;</a>
+                <a class="pilcrow" href="#section-39">&#182;</a>
               </div>
               <p>Diffuse the value of patch variable <code>p.v</code> by distributing <code>rate</code> percent
 of each patch&#39;s value of <code>v</code> to its neighbors. If a color <code>c</code> is given,
@@ -828,16 +816,16 @@ less than 8 neighbors, return the extra to the patch.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  diffuse: (v, rate, c=<span class="literal">null</span>) -&gt; <span class="comment"># variable name, diffusion rate, max color (optional)</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  diffuse: (v, rate, c) -&gt; <span class="comment"># variable name, diffusion rate, max color (optional)</span></pre></div></div>
             
         </li>
         
         
-        <li id="section-41">
+        <li id="section-40">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-41">&#182;</a>
+                <a class="pilcrow" href="#section-40">&#182;</a>
               </div>
               <p>zero temp variable if not yet set</p>
 
@@ -849,11 +837,11 @@ less than 8 neighbors, return the extra to the patch.</p>
         </li>
         
         
-        <li id="section-42">
+        <li id="section-41">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-42">&#182;</a>
+                <a class="pilcrow" href="#section-41">&#182;</a>
               </div>
               <p>pass 1: calculate contribution of all patches to themselves and neighbors</p>
 
@@ -867,11 +855,11 @@ less than 8 neighbors, return the extra to the patch.</p>
         </li>
         
         
-        <li id="section-43">
+        <li id="section-42">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-43">&#182;</a>
+                <a class="pilcrow" href="#section-42">&#182;</a>
               </div>
               <p>pass 2: set new value for all patches, zero temp, modify color if c given</p>
 
@@ -886,11 +874,11 @@ less than 8 neighbors, return the extra to the patch.</p>
         </li>
         
         
-        <li id="section-44">
+        <li id="section-43">
             <div class="annotation">
               
               <div class="pilwrap for-h3">
-                <a class="pilcrow" href="#section-44">&#182;</a>
+                <a class="pilcrow" href="#section-43">&#182;</a>
               </div>
               <h3>Agent &amp; Agents</h3>
 
@@ -899,11 +887,11 @@ less than 8 neighbors, return the extra to the patch.</p>
         </li>
         
         
-        <li id="section-45">
+        <li id="section-44">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-45">&#182;</a>
+                <a class="pilcrow" href="#section-44">&#182;</a>
               </div>
               <p>Class Agent instances represent the dynamic, behavioral element of ABM.</p>
 
@@ -914,11 +902,11 @@ less than 8 neighbors, return the extra to the patch.</p>
         </li>
         
         
-        <li id="section-46">
+        <li id="section-45">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-46">&#182;</a>
+                <a class="pilcrow" href="#section-45">&#182;</a>
               </div>
               <p>Constructor &amp; Class Variables:</p>
 <ul>
@@ -958,11 +946,11 @@ less than 8 neighbors, return the extra to the patch.</p>
         </li>
         
         
-        <li id="section-47">
+        <li id="section-46">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-47">&#182;</a>
+                <a class="pilcrow" href="#section-46">&#182;</a>
               </div>
               <p>Move agent to different breed agentSet.</p>
 
@@ -977,11 +965,11 @@ less than 8 neighbors, return the extra to the patch.</p>
         </li>
         
         
-        <li id="section-48">
+        <li id="section-47">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-48">&#182;</a>
+                <a class="pilcrow" href="#section-47">&#182;</a>
               </div>
               <p>Set agent color to <code>c</code> scaled by <code>s</code>. Usage: see patch.scaleColor</p>
 
@@ -994,11 +982,11 @@ less than 8 neighbors, return the extra to the patch.</p>
         </li>
         
         
-        <li id="section-49">
+        <li id="section-48">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-49">&#182;</a>
+                <a class="pilcrow" href="#section-48">&#182;</a>
               </div>
               <p>Return a string representation of the agent.</p>
 
@@ -1010,11 +998,11 @@ less than 8 neighbors, return the extra to the patch.</p>
         </li>
         
         
-        <li id="section-50">
+        <li id="section-49">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-50">&#182;</a>
+                <a class="pilcrow" href="#section-49">&#182;</a>
               </div>
               <p>Place the agent at the given x,y (floats) in patch coords
 using patch topology (isTorus)</p>
@@ -1032,7 +1020,7 @@ using patch topology (isTorus)</p>
     <span class="keyword">if</span> <span class="property">@penDown</span>
       drawing = ABM.drawing
       drawing.strokeStyle = u.colorStr <span class="property">@color</span>
-      drawing.lineWidth = ABM.patches.bits2Patches <span class="property">@penSize</span>
+      drawing.lineWidth = ABM.patches.fromBits <span class="property">@penSize</span>
       drawing.beginPath()
       drawing.moveTo x0, y0; drawing.lineTo x, y <span class="comment"># REMIND: euclidean</span>
       drawing.stroke()</pre></div></div>
@@ -1040,11 +1028,11 @@ using patch topology (isTorus)</p>
         </li>
         
         
-        <li id="section-51">
+        <li id="section-50">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-51">&#182;</a>
+                <a class="pilcrow" href="#section-50">&#182;</a>
               </div>
               <p>Place the agent at the given patch/agent location</p>
 
@@ -1055,11 +1043,11 @@ using patch topology (isTorus)</p>
         </li>
         
         
-        <li id="section-52">
+        <li id="section-51">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-52">&#182;</a>
+                <a class="pilcrow" href="#section-51">&#182;</a>
               </div>
               <p>Move forward (along heading) d units (patch coords),
 using patch topology (isTorus)</p>
@@ -1072,11 +1060,11 @@ using patch topology (isTorus)</p>
         </li>
         
         
-        <li id="section-53">
+        <li id="section-52">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-53">&#182;</a>
+                <a class="pilcrow" href="#section-52">&#182;</a>
               </div>
               <p>Change current heading by rad radians which can be + (left) or - (right)</p>
 
@@ -1087,11 +1075,11 @@ using patch topology (isTorus)</p>
         </li>
         
         
-        <li id="section-54">
+        <li id="section-53">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-54">&#182;</a>
+                <a class="pilcrow" href="#section-53">&#182;</a>
               </div>
               <p>Draw the agent, instanciating a sprite if required</p>
 
@@ -1109,17 +1097,17 @@ using patch topology (isTorus)</p>
         </li>
         
         
-        <li id="section-55">
+        <li id="section-54">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-55">&#182;</a>
+                <a class="pilcrow" href="#section-54">&#182;</a>
               </div>
               <p>Set an individual agent&#39;s sprite, synching its color, shape, size</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  setSprite: (sprite = <span class="literal">null</span>)-&gt;
+            <div class="content"><div class='highlight'><pre>  setSprite: (sprite)-&gt;
     <span class="keyword">if</span> (s=sprite)?
       <span class="property">@sprite</span> = s; <span class="property">@color</span> = s.color; <span class="property">@shape</span> = s.shape; <span class="property">@size</span> = s.size
     <span class="keyword">else</span>
@@ -1129,11 +1117,11 @@ using patch topology (isTorus)</p>
         </li>
         
         
-        <li id="section-56">
+        <li id="section-55">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-56">&#182;</a>
+                <a class="pilcrow" href="#section-55">&#182;</a>
               </div>
               <p>Draw the agent on the drawing layer, leaving permanent image.</p>
 
@@ -1144,11 +1132,11 @@ using patch topology (isTorus)</p>
         </li>
         
         
-        <li id="section-57">
+        <li id="section-56">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-57">&#182;</a>
+                <a class="pilcrow" href="#section-56">&#182;</a>
               </div>
               <p>Return distance in patch coords from me to x,y 
 using patch topology (isTorus)</p>
@@ -1163,11 +1151,11 @@ using patch topology (isTorus)</p>
         </li>
         
         
-        <li id="section-58">
+        <li id="section-57">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-58">&#182;</a>
+                <a class="pilcrow" href="#section-57">&#182;</a>
               </div>
               <p>Return distance in patch coords from me to given agent/patch using patch topology.</p>
 
@@ -1179,11 +1167,11 @@ using patch topology (isTorus)</p>
         </li>
         
         
-        <li id="section-59">
+        <li id="section-58">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-59">&#182;</a>
+                <a class="pilcrow" href="#section-58">&#182;</a>
               </div>
               <p>Return the closest torus topology point of given x,y relative to myself.
 See util.torusPt.</p>
@@ -1196,11 +1184,11 @@ See util.torusPt.</p>
         </li>
         
         
-        <li id="section-60">
+        <li id="section-59">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-60">&#182;</a>
+                <a class="pilcrow" href="#section-59">&#182;</a>
               </div>
               <p>Return the closest torus topology point of given agent/patch 
 relative to myself. See util.torusPt.</p>
@@ -1213,11 +1201,11 @@ relative to myself. See util.torusPt.</p>
         </li>
         
         
-        <li id="section-61">
+        <li id="section-60">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-61">&#182;</a>
+                <a class="pilcrow" href="#section-60">&#182;</a>
               </div>
               <p>Set my heading towards given agent/patch using patch topology.</p>
 
@@ -1228,11 +1216,11 @@ relative to myself. See util.torusPt.</p>
         </li>
         
         
-        <li id="section-62">
+        <li id="section-61">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-62">&#182;</a>
+                <a class="pilcrow" href="#section-61">&#182;</a>
               </div>
               <p>Return heading towards x,y using patch topology.</p>
 
@@ -1246,11 +1234,11 @@ relative to myself. See util.torusPt.</p>
         </li>
         
         
-        <li id="section-63">
+        <li id="section-62">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-63">&#182;</a>
+                <a class="pilcrow" href="#section-62">&#182;</a>
               </div>
               <p>Return heading towards given agent/patch using patch topology.</p>
 
@@ -1261,11 +1249,11 @@ relative to myself. See util.torusPt.</p>
         </li>
         
         
-        <li id="section-64">
+        <li id="section-63">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-64">&#182;</a>
+                <a class="pilcrow" href="#section-63">&#182;</a>
               </div>
               <p>Remove myself from the model.  Includes removing myself from the agents
 agentset and removing any links I may have.</p>
@@ -1281,11 +1269,11 @@ agentset and removing any links I may have.</p>
         </li>
         
         
-        <li id="section-65">
+        <li id="section-64">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-65">&#182;</a>
+                <a class="pilcrow" href="#section-64">&#182;</a>
               </div>
               <p>Factory: create num new agents at this agents location. The optional init
 proc is called on the new agent after inserting in its agentSet.</p>
@@ -1301,11 +1289,11 @@ proc is called on the new agent after inserting in its agentSet.</p>
         </li>
         
         
-        <li id="section-66">
+        <li id="section-65">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-66">&#182;</a>
+                <a class="pilcrow" href="#section-65">&#182;</a>
               </div>
               <p>Return the members of the given agentset that are within radius distance 
 from me, and within cone radians of my heading using patch topology</p>
@@ -1318,11 +1306,11 @@ from me, and within cone radians of my heading using patch topology</p>
         </li>
         
         
-        <li id="section-67">
+        <li id="section-66">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-67">&#182;</a>
+                <a class="pilcrow" href="#section-66">&#182;</a>
               </div>
               <p>Return other end of link from me</p>
 
@@ -1333,11 +1321,11 @@ from me, and within cone radians of my heading using patch topology</p>
         </li>
         
         
-        <li id="section-68">
+        <li id="section-67">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-68">&#182;</a>
+                <a class="pilcrow" href="#section-67">&#182;</a>
               </div>
               <p>Return all links linked to me</p>
 
@@ -1349,11 +1337,11 @@ from me, and within cone radians of my heading using patch topology</p>
         </li>
         
         
-        <li id="section-69">
+        <li id="section-68">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-69">&#182;</a>
+                <a class="pilcrow" href="#section-68">&#182;</a>
               </div>
               <p>Return all agents linked to me.</p>
 
@@ -1365,11 +1353,11 @@ from me, and within cone radians of my heading using patch topology</p>
         </li>
         
         
-        <li id="section-70">
+        <li id="section-69">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-70">&#182;</a>
+                <a class="pilcrow" href="#section-69">&#182;</a>
               </div>
               <p>Return links where I am the &quot;to&quot; agent in links.create</p>
 
@@ -1381,11 +1369,11 @@ from me, and within cone radians of my heading using patch topology</p>
         </li>
         
         
-        <li id="section-71">
+        <li id="section-70">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-71">&#182;</a>
+                <a class="pilcrow" href="#section-70">&#182;</a>
               </div>
               <p>Return other end of myInLinks</p>
 
@@ -1397,11 +1385,11 @@ from me, and within cone radians of my heading using patch topology</p>
         </li>
         
         
-        <li id="section-72">
+        <li id="section-71">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-72">&#182;</a>
+                <a class="pilcrow" href="#section-71">&#182;</a>
               </div>
               <p>Return links where I am the &quot;from&quot; agent in links.create</p>
 
@@ -1413,11 +1401,11 @@ from me, and within cone radians of my heading using patch topology</p>
         </li>
         
         
-        <li id="section-73">
+        <li id="section-72">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-73">&#182;</a>
+                <a class="pilcrow" href="#section-72">&#182;</a>
               </div>
               <p>Return other end of myOutinks</p>
 
@@ -1429,11 +1417,11 @@ from me, and within cone radians of my heading using patch topology</p>
         </li>
         
         
-        <li id="section-74">
+        <li id="section-73">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-74">&#182;</a>
+                <a class="pilcrow" href="#section-73">&#182;</a>
               </div>
               <p>Class Agents is a subclass of AgentSet which stores instances of Agent or 
 Breeds, which are subclasses of Agent</p>
@@ -1445,11 +1433,11 @@ Breeds, which are subclasses of Agent</p>
         </li>
         
         
-        <li id="section-75">
+        <li id="section-74">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-75">&#182;</a>
+                <a class="pilcrow" href="#section-74">&#182;</a>
               </div>
               <p>Constructor creates the empty AgentSet instance and installs
 the agentClass (breed) variable shared by all the Agents in this set.</p>
@@ -1463,11 +1451,11 @@ the agentClass (breed) variable shared by all the Agents in this set.</p>
         </li>
         
         
-        <li id="section-76">
+        <li id="section-75">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-76">&#182;</a>
+                <a class="pilcrow" href="#section-75">&#182;</a>
               </div>
               <p>Have agents cache the links with them as a node.
 Optimizes Agent a.myLinks method. Call before any agents created.</p>
@@ -1479,11 +1467,11 @@ Optimizes Agent a.myLinks method. Call before any agents created.</p>
         </li>
         
         
-        <li id="section-77">
+        <li id="section-76">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-77">&#182;</a>
+                <a class="pilcrow" href="#section-76">&#182;</a>
               </div>
               <p>Methods to change the default Agent class variables.</p>
 
@@ -1504,11 +1492,11 @@ Optimizes Agent a.myLinks method. Call before any agents created.</p>
         </li>
         
         
-        <li id="section-78">
+        <li id="section-77">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-78">&#182;</a>
+                <a class="pilcrow" href="#section-77">&#182;</a>
               </div>
               <p>Use sprites rather than drawing</p>
 
@@ -1519,11 +1507,11 @@ Optimizes Agent a.myLinks method. Call before any agents created.</p>
         </li>
         
         
-        <li id="section-79">
+        <li id="section-78">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-79">&#182;</a>
+                <a class="pilcrow" href="#section-78">&#182;</a>
               </div>
               <p>Filter to return all instances of this breed.  Note: if used by
 the mainSet, returns just the agents that are not subclassed breeds.</p>
@@ -1535,11 +1523,11 @@ the mainSet, returns just the agents that are not subclassed breeds.</p>
         </li>
         
         
-        <li id="section-80">
+        <li id="section-79">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-80">&#182;</a>
+                <a class="pilcrow" href="#section-79">&#182;</a>
               </div>
               <p>Factory: create num new agents stored in this agentset.The optional init
 proc is called on the new agent after inserting in its agentSet.</p>
@@ -1552,11 +1540,11 @@ proc is called on the new agent after inserting in its agentSet.</p>
         </li>
         
         
-        <li id="section-81">
+        <li id="section-80">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-81">&#182;</a>
+                <a class="pilcrow" href="#section-80">&#182;</a>
               </div>
               <p>Remove all agents from set via agent.die()
 Note call in reverse order to optimize list restructuring.</p>
@@ -1568,11 +1556,11 @@ Note call in reverse order to optimize list restructuring.</p>
         </li>
         
         
-        <li id="section-82">
+        <li id="section-81">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-82">&#182;</a>
+                <a class="pilcrow" href="#section-81">&#182;</a>
               </div>
               <p>Return an agentset of agents within the patch array</p>
 
@@ -1586,11 +1574,11 @@ Note call in reverse order to optimize list restructuring.</p>
         </li>
         
         
-        <li id="section-83">
+        <li id="section-82">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-83">&#182;</a>
+                <a class="pilcrow" href="#section-82">&#182;</a>
               </div>
               <p>Return an agentset of agents within the patchRect</p>
 
@@ -1605,11 +1593,11 @@ Note call in reverse order to optimize list restructuring.</p>
         </li>
         
         
-        <li id="section-84">
+        <li id="section-83">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-84">&#182;</a>
+                <a class="pilcrow" href="#section-83">&#182;</a>
               </div>
               <p>Return the members of this agentset that are within radius distance
 from me, and within cone radians of my heading using patch topology</p>
@@ -1623,11 +1611,11 @@ from me, and within cone radians of my heading using patch topology</p>
         </li>
         
         
-        <li id="section-85">
+        <li id="section-84">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-85">&#182;</a>
+                <a class="pilcrow" href="#section-84">&#182;</a>
               </div>
               <p>Return the members of this agentset that are within radius distance
 from me, using patch topology</p>
@@ -1641,11 +1629,11 @@ from me, using patch topology</p>
         </li>
         
         
-        <li id="section-86">
+        <li id="section-85">
             <div class="annotation">
               
               <div class="pilwrap for-h3">
-                <a class="pilcrow" href="#section-86">&#182;</a>
+                <a class="pilcrow" href="#section-85">&#182;</a>
               </div>
               <h3>Link and Links</h3>
 
@@ -1654,11 +1642,11 @@ from me, using patch topology</p>
         </li>
         
         
-        <li id="section-87">
+        <li id="section-86">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-87">&#182;</a>
+                <a class="pilcrow" href="#section-86">&#182;</a>
               </div>
               <p>Class Link connects two agent endpoints for graph modeling.</p>
 
@@ -1669,11 +1657,11 @@ from me, using patch topology</p>
         </li>
         
         
-        <li id="section-88">
+        <li id="section-87">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-88">&#182;</a>
+                <a class="pilcrow" href="#section-87">&#182;</a>
               </div>
               <p>Constructor initializes instance variables:</p>
 <ul>
@@ -1698,11 +1686,11 @@ from me, using patch topology</p>
         </li>
         
         
-        <li id="section-89">
+        <li id="section-88">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-89">&#182;</a>
+                <a class="pilcrow" href="#section-88">&#182;</a>
               </div>
               <p>Draw a line between the two endpoints.  Draws &quot;around&quot; the
 torus if appropriate using two lines. As with Agent.draw,
@@ -1713,7 +1701,7 @@ is called with patch coordinate transform installed.</p>
             <div class="content"><div class='highlight'><pre>  draw: (ctx) -&gt;
     ctx.save()
     ctx.strokeStyle = u.colorStr <span class="property">@color</span>
-    ctx.lineWidth = ABM.patches.bits2Patches <span class="property">@thickness</span>
+    ctx.lineWidth = ABM.patches.fromBits <span class="property">@thickness</span>
     ctx.beginPath()
     <span class="keyword">if</span> !ABM.patches.isTorus
       ctx.moveTo <span class="property">@end1</span>.x, <span class="property">@end1</span>.y
@@ -1733,11 +1721,11 @@ is called with patch coordinate transform installed.</p>
         </li>
         
         
-        <li id="section-90">
+        <li id="section-89">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-90">&#182;</a>
+                <a class="pilcrow" href="#section-89">&#182;</a>
               </div>
               <p>Remove this link from the agent set</p>
 
@@ -1752,11 +1740,11 @@ is called with patch coordinate transform installed.</p>
         </li>
         
         
-        <li id="section-91">
+        <li id="section-90">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-91">&#182;</a>
+                <a class="pilcrow" href="#section-90">&#182;</a>
               </div>
               <p>Return the two endpoints of this link</p>
 
@@ -1767,11 +1755,11 @@ is called with patch coordinate transform installed.</p>
         </li>
         
         
-        <li id="section-92">
+        <li id="section-91">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-92">&#182;</a>
+                <a class="pilcrow" href="#section-91">&#182;</a>
               </div>
               <p>Return the distance between the endpoints with the current topology.</p>
 
@@ -1782,11 +1770,11 @@ is called with patch coordinate transform installed.</p>
         </li>
         
         
-        <li id="section-93">
+        <li id="section-92">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-93">&#182;</a>
+                <a class="pilcrow" href="#section-92">&#182;</a>
               </div>
               <p>Return the other end of the link, given an endpoint agent.
 Assumes the given input <em>is</em> one of the link endpoint pairs!</p>
@@ -1798,11 +1786,11 @@ Assumes the given input <em>is</em> one of the link endpoint pairs!</p>
         </li>
         
         
-        <li id="section-94">
+        <li id="section-93">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-94">&#182;</a>
+                <a class="pilcrow" href="#section-93">&#182;</a>
               </div>
               <p>Class Links is a subclass of AgentSet which stores instances of Link
 or subclasses of Link</p>
@@ -1814,11 +1802,11 @@ or subclasses of Link</p>
         </li>
         
         
-        <li id="section-95">
+        <li id="section-94">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-95">&#182;</a>
+                <a class="pilcrow" href="#section-94">&#182;</a>
               </div>
               <p>Constructor: super creates the empty AgentSet instance and installs
 the agentClass (breed) variable shared by all the Links in this set.</p>
@@ -1831,11 +1819,11 @@ the agentClass (breed) variable shared by all the Links in this set.</p>
         </li>
         
         
-        <li id="section-96">
+        <li id="section-95">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-96">&#182;</a>
+                <a class="pilcrow" href="#section-95">&#182;</a>
               </div>
               <p>Methods to change the default Link class variables.</p>
 
@@ -1848,11 +1836,11 @@ the agentClass (breed) variable shared by all the Links in this set.</p>
         </li>
         
         
-        <li id="section-97">
+        <li id="section-96">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-97">&#182;</a>
+                <a class="pilcrow" href="#section-96">&#182;</a>
               </div>
               <p>Factory: Add 1 or more links from the from agent to the to agent(s) which
 can be a single agent or an array of agents. The optional init
@@ -1867,11 +1855,11 @@ proc is called on the new link after inserting in the agentSet.</p>
         </li>
         
         
-        <li id="section-98">
+        <li id="section-97">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-98">&#182;</a>
+                <a class="pilcrow" href="#section-97">&#182;</a>
               </div>
               <p>Remove all links from set via link.die()
 Note call in reverse order to optimize list restructuring.</p>
@@ -1883,11 +1871,11 @@ Note call in reverse order to optimize list restructuring.</p>
         </li>
         
         
-        <li id="section-99">
+        <li id="section-98">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-99">&#182;</a>
+                <a class="pilcrow" href="#section-98">&#182;</a>
               </div>
               <p>Return the subset of this set with the given breed value.
 breed: (breed) -&gt; @getPropWith &quot;breed&quot;, breed</p>
@@ -1905,11 +1893,11 @@ appear 4 times.</p>
         </li>
         
         
-        <li id="section-100">
+        <li id="section-99">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-100">&#182;</a>
+                <a class="pilcrow" href="#section-99">&#182;</a>
               </div>
               <p>Returns all the nodes in this agentset sorted by ID and with
 duplicates removed.</p>
@@ -1922,11 +1910,11 @@ duplicates removed.</p>
         </li>
         
         
-        <li id="section-101">
+        <li id="section-100">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-101">&#182;</a>
+                <a class="pilcrow" href="#section-100">&#182;</a>
               </div>
               <p>Circle Layout: position the agents in the list in an equally
 spaced circle of the given radius, with the initial agent

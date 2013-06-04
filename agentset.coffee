@@ -54,7 +54,7 @@ class ABM.AgentSet extends Array
   # Create an empty `AgentSet` and initialize the `ID` counter for add().
   # If mainSet is supplied, the new agentset is a sub-array of mainSet.
   # This sub-array feature is how breeds are managed, see class `Model`
-  constructor: (@agentClass, @name, @mainSet = null) ->
+  constructor: (@agentClass, @name, @mainSet) ->
     super()
     @agentClass::breed = @ # let the breed know I'm it's agentSet
     @ownVariables = []

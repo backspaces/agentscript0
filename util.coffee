@@ -97,7 +97,7 @@ ABM.util = u =
     @setColor c, u.oneOf(set), u.oneOf(set), u.oneOf(set)
   randomBrightColor: (c=[]) -> @randomMapColor c, [0,127,255]
   # Modify an existing color. Modifying an existing array minimizes GC overhead
-  setColor: (c, r, g, b, a=null) ->
+  setColor: (c, r, g, b, a) ->
     c.str = null if c.str?
     c[0] = r; c[1] = g; c[2] = b; c[3] = a if a?
     c
@@ -237,6 +237,27 @@ ABM.util = u =
   #
   #     [[1,2,3],[4,5,6]] to [1,2,3,4,5,6]
   flatten: (matrix) -> matrix.reduce( (a,b) -> a.concat b )
+  
+  # Return max/min/sum/avg of numeric array
+  aMax: (array) -> array.reduce (a,b) -> Math.max a,b
+  aMin: (array) -> array.reduce (a,b) -> Math.min a,b
+  aSum: (array) -> array.reduce (a,b) -> a+b
+  aMul: (array) -> array.reduce (a,b) -> a*b
+  aAvg: (array) -> @aSum(array)/array.length
+  # Return array composed of f pairwise on both arrays
+  aPairwise: (a1, a2, f) -> v=0; f(v,a2[i]) for v,i in a1 
+  aPairSum: (a1, a2) -> @aPairwise a1, a2, (a,b)->a+b
+  aPairDif: (a1, a2) -> @aPairwise a1, a2, (a,b)->a-b
+  aPairMul: (a1, a2) -> @aPairwise a1, a2, (a,b)->a*b
+
+  # Return a JS array given a TypedArray
+  typedToJS: (typedArray) -> (i for i in typedArray)
+  
+  # Return an array with values in [0,norm], defaults to [0,1).
+  # Note: to have a half-open interval, [0,norm), use something like norm-.00009
+  normalize: (array, norm=.999999999) ->
+    min = @aMin array; scale = (norm)/(@aMax(array) - min)
+    (num-min)*scale for num in array    
 
   # Binary search of a sorted array, adapted from [jaskenas](http://goo.gl/ozAZH).
   # Search for index of value with items array, using fcn for item value.
@@ -251,10 +272,6 @@ ABM.util = u =
       pivot = Math.floor (stop + start) / 2  # Recalculate the pivot.
     if fcn(items[pivot]) is value then pivot else -1
 
-  # Useful for JS/debugging users: max/min of array, via pushing array.
-  aMax: (array) -> Math.max array...
-  aMin: (array) -> Math.min array...
-  aPush: (array, a) -> array.push a...
 
 # ### Topology Operations
   
@@ -333,25 +350,33 @@ ABM.util = u =
     false
 
 # ### File I/O
-# function loadFileAJAX(name) {
-#     var xhr = new XMLHttpRequest(),
-#         okStatus = document.location.protocol === "file:" ? 0 : 200;
-#     xhr.open('GET', name, false);
-#     xhr.send(null);
-#     return xhr.status == okStatus ? xhr.responseText : null;
-# };
 
+  # Cache of file names used by file imports below
+  fileIndex: {}
+  # Import an image, executing (async) optional function f(img) on completion
+  importImage: (name, f) ->
+    if (img=@fileIndex[name])? or ((img=name).width and img.height)
+      f(img) if f?
+    else
+      img = new Image()
+      img.onload = -> f(img) if f?
+      img.src = name
+      @fileIndex[name] = img
+    img
+    
   # Use XMLHttpRequest to fetch data of several types.
-  # Data Types: text, arraybuffer, blob, json, document, ... see: http://goo.gl/y3r3h
-  xhrLoadFile: (name, type="text", f=null) -> # AJAX request, sync if f is null
-    xhr = new XMLHttpRequest()
-    xhr.open "GET", name, f?
-    xhr.responseType = type
-    xhr.onload = -> f(xhr.response) if f?
-    xhr.send()
-    return xhr if f?
-    okStatus = if document.location.protocol is "file:" then 0 else 200
-    if xhr.status is okStatus then xhr.response else null
+  # Data Types: text, arraybuffer, blob, json, document, [Specification:](http://goo.gl/y3r3h)
+  xhrLoadFile: (name, type="text", f) -> # AJAX request, sync if f is null
+    if (xhr=@fileIndex[name])?
+      f(xhr.response) if f?
+    else
+      xhr = new XMLHttpRequest()
+      xhr.open "GET", name, f?
+      xhr.responseType = type
+      xhr.onload = -> f(xhr.response) if f?
+      xhr.send()
+      @fileIndex[name] = xhr
+    xhr
 
 # ### Canvas/Context Operations
   
@@ -360,11 +385,13 @@ ABM.util = u =
     can = document.createElement 'canvas'
     can.width = width; can.height = height
     can
-  # As above, but returing the context object.  Note ctx.canvas is the canvas for the ctx.
-  createCtx: (width, height, ctx="2d") ->
-    can = @createCanvas width, height
-    if ctx is "2d" then can.getContext "2d" 
-    else can.getContext("webgl") or can.getContext("experimental-webgl")
+  # As above, but returing the context object.
+  # Note ctx.canvas is the canvas for the ctx, and can be use as an image.
+  createCtx: (width, height, ctxType="2d") ->
+    can = @createCanvas width, height; can.ctxType = ctxType
+    can.ctx = if ctxType is "2d" 
+    then can.getContext "2d" 
+    else can.getContext("webgl") ? can.getContext("experimental-webgl")
 
   # Return a "layer" 2D/3D rendering context within the specified HTML `<div>`,
   # with the given width/height positioned absolutely at top/left within the div,
@@ -419,13 +446,6 @@ ABM.util = u =
   ctxLabelParams: (ctx, color, xy) -> # patches/agents defaults
     ctx.labelColor = color; ctx.labelXY = xy
 
-  # Import an image, executing (async) optional function f(img) on completion
-  importImage: (imageSrc, f=null) ->
-    img = new Image()
-    img.onload = -> f(img) if f?
-    img.src = imageSrc
-    img
-    
   # Convert an image to a context. ctx.canvas gives the created canvas.
   imageToCtx: (image) ->
     ctx = @createCtx image.width, image.height
@@ -436,7 +456,7 @@ ABM.util = u =
   # Generally can skip callback but see [stackoverflow](http://goo.gl/kIk2U)
   # Note: uses toDataURL thus possible cross origin problems.
   # Fix: use ctx.canvas for programatic imaging.
-  ctxToImage: (ctx, f=null) ->
+  ctxToImage: (ctx, f) ->
     img = new Image()
     img.onload = -> f(img) if f?
     img.src = ctx.canvas.toDataURL "image/png"

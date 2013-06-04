@@ -97,7 +97,7 @@ ABM.util = u =
     @setColor c, u.oneOf(set), u.oneOf(set), u.oneOf(set)
   randomBrightColor: (c=[]) -> @randomMapColor c, [0,127,255]
   # Modify an existing color. Modifying an existing array minimizes GC overhead
-  setColor: (c, r, g, b, a=null) ->
+  setColor: (c, r, g, b, a) ->
     c.str = null if c.str?
     c[0] = r; c[1] = g; c[2] = b; c[3] = a if a?
     c
@@ -237,6 +237,27 @@ ABM.util = u =
   #
   #     [[1,2,3],[4,5,6]] to [1,2,3,4,5,6]
   flatten: (matrix) -> matrix.reduce( (a,b) -> a.concat b )
+  
+  # Return max/min/sum/avg of numeric array
+  aMax: (array) -> array.reduce (a,b) -> Math.max a,b
+  aMin: (array) -> array.reduce (a,b) -> Math.min a,b
+  aSum: (array) -> array.reduce (a,b) -> a+b
+  aMul: (array) -> array.reduce (a,b) -> a*b
+  aAvg: (array) -> @aSum(array)/array.length
+  # Return array composed of f pairwise on both arrays
+  aPairwise: (a1, a2, f) -> v=0; f(v,a2[i]) for v,i in a1 
+  aPairSum: (a1, a2) -> @aPairwise a1, a2, (a,b)->a+b
+  aPairDif: (a1, a2) -> @aPairwise a1, a2, (a,b)->a-b
+  aPairMul: (a1, a2) -> @aPairwise a1, a2, (a,b)->a*b
+
+  # Return a JS array given a TypedArray
+  typedToJS: (typedArray) -> (i for i in typedArray)
+  
+  # Return an array with values in [0,norm], defaults to [0,1).
+  # Note: to have a half-open interval, [0,norm), use something like norm-.00009
+  normalize: (array, norm=.999999999) ->
+    min = @aMin array; scale = (norm)/(@aMax(array) - min)
+    (num-min)*scale for num in array    
 
   # Binary search of a sorted array, adapted from [jaskenas](http://goo.gl/ozAZH).
   # Search for index of value with items array, using fcn for item value.
@@ -251,10 +272,6 @@ ABM.util = u =
       pivot = Math.floor (stop + start) / 2  # Recalculate the pivot.
     if fcn(items[pivot]) is value then pivot else -1
 
-  # Useful for JS/debugging users: max/min of array, via pushing array.
-  aMax: (array) -> Math.max array...
-  aMin: (array) -> Math.min array...
-  aPush: (array, a) -> array.push a...
 
 # ### Topology Operations
   
@@ -333,25 +350,33 @@ ABM.util = u =
     false
 
 # ### File I/O
-# function loadFileAJAX(name) {
-#     var xhr = new XMLHttpRequest(),
-#         okStatus = document.location.protocol === "file:" ? 0 : 200;
-#     xhr.open('GET', name, false);
-#     xhr.send(null);
-#     return xhr.status == okStatus ? xhr.responseText : null;
-# };
 
+  # Cache of file names used by file imports below
+  fileIndex: {}
+  # Import an image, executing (async) optional function f(img) on completion
+  importImage: (name, f) ->
+    if (img=@fileIndex[name])? or ((img=name).width and img.height)
+      f(img) if f?
+    else
+      img = new Image()
+      img.onload = -> f(img) if f?
+      img.src = name
+      @fileIndex[name] = img
+    img
+    
   # Use XMLHttpRequest to fetch data of several types.
-  # Data Types: text, arraybuffer, blob, json, document, ... see: http://goo.gl/y3r3h
-  xhrLoadFile: (name, type="text", f=null) -> # AJAX request, sync if f is null
-    xhr = new XMLHttpRequest()
-    xhr.open "GET", name, f?
-    xhr.responseType = type
-    xhr.onload = -> f(xhr.response) if f?
-    xhr.send()
-    return xhr if f?
-    okStatus = if document.location.protocol is "file:" then 0 else 200
-    if xhr.status is okStatus then xhr.response else null
+  # Data Types: text, arraybuffer, blob, json, document, [Specification:](http://goo.gl/y3r3h)
+  xhrLoadFile: (name, type="text", f) -> # AJAX request, sync if f is null
+    if (xhr=@fileIndex[name])?
+      f(xhr.response) if f?
+    else
+      xhr = new XMLHttpRequest()
+      xhr.open "GET", name, f?
+      xhr.responseType = type
+      xhr.onload = -> f(xhr.response) if f?
+      xhr.send()
+      @fileIndex[name] = xhr
+    xhr
 
 # ### Canvas/Context Operations
   
@@ -360,11 +385,13 @@ ABM.util = u =
     can = document.createElement 'canvas'
     can.width = width; can.height = height
     can
-  # As above, but returing the context object.  Note ctx.canvas is the canvas for the ctx.
-  createCtx: (width, height, ctx="2d") ->
-    can = @createCanvas width, height
-    if ctx is "2d" then can.getContext "2d" 
-    else can.getContext("webgl") or can.getContext("experimental-webgl")
+  # As above, but returing the context object.
+  # Note ctx.canvas is the canvas for the ctx, and can be use as an image.
+  createCtx: (width, height, ctxType="2d") ->
+    can = @createCanvas width, height; can.ctxType = ctxType
+    can.ctx = if ctxType is "2d" 
+    then can.getContext "2d" 
+    else can.getContext("webgl") ? can.getContext("experimental-webgl")
 
   # Return a "layer" 2D/3D rendering context within the specified HTML `<div>`,
   # with the given width/height positioned absolutely at top/left within the div,
@@ -419,13 +446,6 @@ ABM.util = u =
   ctxLabelParams: (ctx, color, xy) -> # patches/agents defaults
     ctx.labelColor = color; ctx.labelXY = xy
 
-  # Import an image, executing (async) optional function f(img) on completion
-  importImage: (imageSrc, f=null) ->
-    img = new Image()
-    img.onload = -> f(img) if f?
-    img.src = imageSrc
-    img
-    
   # Convert an image to a context. ctx.canvas gives the created canvas.
   imageToCtx: (image) ->
     ctx = @createCtx image.width, image.height
@@ -436,7 +456,7 @@ ABM.util = u =
   # Generally can skip callback but see [stackoverflow](http://goo.gl/kIk2U)
   # Note: uses toDataURL thus possible cross origin problems.
   # Fix: use ctx.canvas for programatic imaging.
-  ctxToImage: (ctx, f=null) ->
+  ctxToImage: (ctx, f) ->
     img = new Image()
     img.onload = -> f(img) if f?
     img.src = ctx.canvas.toDataURL "image/png"
@@ -498,7 +518,7 @@ ABM.shapes = ABM.util.s = do ->
   # c.closePath() and c.fill() will be called by the calling agent, see initial 
   # discription of drawing context.  It is used in adding a new shape above.
   poly = (c, a) ->
-    for p, i in a 
+    for p, i in a
       if i is 0 then c.moveTo p[0], p[1] else c.lineTo p[0], p[1]
     null
 
@@ -572,7 +592,7 @@ ABM.shapes = ABM.util.s = do ->
   #       ABM.shapes.poly c, [[-.5,-.5],[.5,.5],[-.5,.5],[.5,-.5]]
   #
   # Note: an image that is not rotated automatically gets a shortcut. 
-  add: (name, rotate, draw, shortcut = null) ->
+  add: (name, rotate, draw, shortcut) ->
     s = @[name] =
       if u.isFunction draw then {rotate,draw} else {rotate,img:draw,draw:(c)->cimg c,.5,.5,1,@img}
     (s.shortcut = (c,x,y,s) -> cimg c,x,y,s,@img) if s.img? and not s.rotate
@@ -613,7 +633,7 @@ ABM.shapes = ABM.util.s = do ->
   # Convert a shape to a sprite by allocating a sprite sheet "slot" and drawing
   # the shape to fit it. Return existing sprite if duplicate.
   shapeToSprite: (name, color, size) ->
-    bits = Math.ceil size*ABM.patches.size
+    bits = Math.ceil ABM.patches.toBits size
     shape = @[name]
     index = if shape.img? then name else "#{name}-#{u.colorStr(color)}"
     ctx = spriteSheets[bits]
@@ -705,7 +725,7 @@ class ABM.AgentSet extends Array
   # Create an empty `AgentSet` and initialize the `ID` counter for add().
   # If mainSet is supplied, the new agentset is a sub-array of mainSet.
   # This sub-array feature is how breeds are managed, see class `Model`
-  constructor: (@agentClass, @name, @mainSet = null) ->
+  constructor: (@agentClass, @name, @mainSet) ->
     super()
     @agentClass::breed = @ # let the breed know I'm it's agentSet
     @ownVariables = []
@@ -1055,8 +1075,6 @@ class ABM.Patches extends ABM.AgentSet
   constructor: -> # agentClass, name, mainSet
     super # call super with all the args I was called with
     @[k] = v for own k,v of ABM.world # add world items to patches
-    ABM.world.numX = @numX = @maxX-@minX+1 # add two more items to world
-    ABM.world.numY = @numY = @maxY-@minY+1
     for y in [@maxY..@minY] by -1
       for x in [@minX..@maxX] by 1
         @add new ABM.Patch x, y
@@ -1146,14 +1164,10 @@ class ABM.Patches extends ABM.AgentSet
 
 # #### Patch metrics
   
-  # Return pixel width/height of patch grid
-  bitWidth:  -> @numX*@size # methods, not constants in case resize
-  bitHeight: -> @numY*@size
-  
   # Convert patch measure to pixels
-  patches2Bits: (p) -> p*@size
+  toBits: (p) -> p*@size
   # Convert bit measure to patches
-  bits2Patches: (b) -> b/@size
+  fromBits: (b) -> b/@size
 
 # #### Patch utilities
   
@@ -1184,7 +1198,11 @@ class ABM.Patches extends ABM.AgentSet
   # [new Image()](http://javascript.mfields.org/2011/creating-an-image-in-javascript/)
   # tutorial.  We draw the image into the drawing layer as
   # soon as the onload callback executes.
-  importDrawing: (imageSrc, f=null) ->
+  installDrawing: (img, ctx=ABM.contexts.drawing) ->
+    u.setIdentity ctx
+    ctx.drawImage img, 0, 0, ctx.canvas.width, ctx.canvas.height
+    ctx.restore() # restore patch transform
+  importDrawing: (imageSrc, f) ->
     u.importImage imageSrc, (img) ->
       ctx = ABM.drawing
       u.setIdentity ctx
@@ -1201,13 +1219,15 @@ class ABM.Patches extends ABM.AgentSet
   # Draws, or "imports" an image URL into the patches as their color property.
   # The drawing is scaled to the number of x,y patches, thus one pixel
   # per patch.  The colors are then transferred to the patches.
-  importColors: (imageSrc, f=null) ->
+  installColors: (img) ->
+    @pixelsCtx.drawImage img, 0, 0, @numX, @numY # scale if needed
+    data = @pixelsCtx.getImageData(0, 0, @numX, @numY).data
+    for p in @
+      i = @pixelByteIndex p
+      p.color = [data[i++], data[i++], data[i]] # promote initial default
+  importColors: (imageSrc, f) ->
     u.importImage imageSrc, (img) => # fat arrow, this context
-      @pixelsCtx.drawImage img, 0, 0, @numX, @numY # scale if needed
-      data = @pixelsCtx.getImageData(0, 0, @numX, @numY).data
-      for p in @
-        i = @pixelByteIndex p
-        p.color = [data[i++], data[i++], data[i]] # promote initial default
+      @installColors(img)
       f() if f?
   
   # Draw the patches via pixel manipulation rather than 2D drawRect.
@@ -1340,7 +1360,7 @@ class ABM.Agent
     if @penDown
       drawing = ABM.drawing
       drawing.strokeStyle = u.colorStr @color
-      drawing.lineWidth = ABM.patches.bits2Patches @penSize
+      drawing.lineWidth = ABM.patches.fromBits @penSize
       drawing.beginPath()
       drawing.moveTo x0, y0; drawing.lineTo x, y # REMIND: euclidean
       drawing.stroke()
@@ -1367,7 +1387,7 @@ class ABM.Agent
       ABM.shapes.draw ctx, shape, @x, @y, @size, rad, @color
   
   # Set an individual agent's sprite, synching its color, shape, size
-  setSprite: (sprite = null)->
+  setSprite: (sprite)->
     if (s=sprite)?
       @sprite = s; @color = s.color; @shape = s.shape; @size = s.size
     else
@@ -1551,7 +1571,7 @@ class ABM.Link
   draw: (ctx) ->
     ctx.save()
     ctx.strokeStyle = u.colorStr @color
-    ctx.lineWidth = ABM.patches.bits2Patches @thickness
+    ctx.lineWidth = ABM.patches.fromBits @thickness
     ctx.beginPath()
     if !ABM.patches.isTorus
       ctx.moveTo @end1.x, @end1.y
@@ -1661,20 +1681,17 @@ class ABM.Animator
   # Create initial animator for the model, specifying default rate (fps) and multiStep (async).
   # If multiStep, run the draw() and step() methods asynchronously by draw() using
   # requestAnimFrame and step() using setTimeout.
-  constructor: (@model, @rate=30, @multiStep=false) ->
-    @ticks = @draws = 0
-    @animHandle = @timerHandle = @intervalHandle = null
-    @animStop = true
+  constructor: (@model, @rate=30, @multiStep=false) -> @reset() # init all animation state
   # Adjust animator.  This is used by programmer as the default animator will already have
   # been created by the time her model runs.
-  setRate: (@rate, @multiStep=false) -> @reset()
+  setRate: (@rate, @multiStep=false) -> @resetAnim()
   # start/stop model, often used for debugging
   start: ->
     if not @animStop then return # avoid multiple animates
-    @reset()
+    @resetAnim()
     @animStop = false
     @animate()
-  reset: ->
+  resetAnim: ->
     @startMS = @now()
     @startTick = @ticks
     @startDraw = @draws
@@ -1684,6 +1701,7 @@ class ABM.Animator
     if @timeoutHandle? then clearTimeout @timeoutHandle
     if @intervalHandle? then clearInterval @intervalHandle
     @animHandle = @timerHandle = @intervalHandle = null
+  reset: -> @stop(); @ticks = @draws = 0
   # step/draw the model.  Note ticks/draws counters separate due to async.
   step: -> @ticks++; @model.step()
   draw: -> @draws++; @model.draw()
@@ -1736,11 +1754,11 @@ class ABM.Model
   # * intialize various instance variables
   # * call `setup` abstract method
   constructor: (
-    div, size, minX, maxX, minY, maxY,
+    @div, size, minX, maxX, minY, maxY,
     isTorus=true, hasNeighbors=true
   ) ->
-    ABM.model = @
-    ABM.world = @world = {div, size, minX, maxX, minY, maxY, isTorus, hasNeighbors}
+    ABM.model = @ #; numX = maxX-minX+1; numY = maxY-minY+1    
+    @setWorld size, minX, maxX, minY, maxY, isTorus, hasNeighbors
     @contexts = ABM.contexts = {}
     
     # * Create 2D canvas contexts layered on top of each other.
@@ -1754,17 +1772,9 @@ class ABM.Model
     #     ctx.restore() # restore patch coord system
     
     for own k,v of @contextsInit
-      @contexts[k] = ctx =
-        u.createLayer div, size*(maxX-minX+1), size*(maxY-minY+1), v.z, v.ctx
-      ctx.save()
-      ctx.scale size, -size
-      ctx.translate -(minX-.5), -(maxY+.5)
-      ctx.agentSetName = k # Set a variable in each context with its name
+      @contexts[k] = ctx = u.createLayer div, @world.width, @world.height, v.z, v.ctx
+      @setCtxTransform(ctx)
 
-    # Initialize agentsets.
-    @patches = ABM.patches = new ABM.Patches ABM.Patch, "patches"
-    @agents = ABM.agents = new ABM.Agents ABM.Agent, "agents"
-    @links = ABM.links = new ABM.Links ABM.Link, "links"
     # One of the layers is used for drawing only, not an agentset:
     @drawing = ABM.drawing = @contexts.drawing
     # Setup spotlight layer, also not an agentset:
@@ -1776,16 +1786,37 @@ class ABM.Model
     # Optimization: If any of these is set to false, the associated
     # agentset is drawn only once, remaining static after that.
     @refreshLinks = @refreshAgents = @refreshPatches = true
-    
+
+    # Initialize agentsets.
+    @patches = ABM.patches = new ABM.Patches ABM.Patch, "patches"
+    @agents = ABM.agents = new ABM.Agents ABM.Agent, "agents"
+    @links = ABM.links = new ABM.Links ABM.Link, "links"
+
     # Call the models setup function. Set the list of global variables to
     # the new variables created by setup(). Do not include agentsets, they
     # are available in the ABM global.
-    beginVars = (k for own k,v of @ when not (v.agentClass? or u.isFunction v))
     @setup()
-    endVars = (k for own k,v of @ when not (v.agentClass? or u.isFunction v))
-    ABM.globals = @globals = (v for v in endVars when not u.contains beginVars, v)
-    console.log "globals", @globals
-    
+  
+  # Stop and reset the model
+  reset: () -> 
+    @anim.reset() # stop & reset ticks/steps counters
+    @patches = ABM.patches = new ABM.Patches ABM.Patch, "patches"
+    @agents = ABM.agents = new ABM.Agents ABM.Agent, "agents"
+    @links = ABM.links = new ABM.Links ABM.Link, "links"
+    @setCtxTransform v for k,v of @contexts # clear/resize all contexts
+    u.s.spriteSheets.length = 0 # possibly null out entries?
+  # reset, then setup and start the model
+  restart: -> @reset(); @setup(); @start()
+  # Initialize/reset world parameters.
+  setWorld: (size, minX, maxX, minY, maxY, isTorus=true, hasNeighbors=true) ->
+    numX = maxX-minX+1; numY = maxY-minY+1; width = numX*size; height = numY*size
+    ABM.world = @world = {size,minX,maxX,minY,maxY,numX,numY,width,height,isTorus,hasNeighbors}
+  setCtxTransform: (ctx) ->
+    ctx.canvas.width = @world.width; ctx.canvas.height = @world.height
+    ctx.save()
+    ctx.scale @world.size, -@world.size
+    ctx.translate -(@world.minX-.5), -(@world.maxY+.5)
+  
 
 #### Optimizations:
   
@@ -1811,26 +1842,17 @@ class ABM.Model
 
 #### Text Utilities:
   
-  # Return context name for agentset via naming convention: Links->links etc.
-  agentSetCtxName: (aset) ->
-    aset = aset.mainSet if aset.mainSet? # breeds->mainSet
-    aset.constructor.name.toLowerCase()
-  # Set the text parameters for an agentset's context.  See ABM.util<br>
-  # `agentSetName` can be a key in @contexts or an agentset itself
-  setTextParams: (agentSetName, domFont, align="center", baseline="middle") ->
-    agentSetName = @agentSetCtxName(agentSetName) if typeof agentSetName isnt "string"
-    u.error "setTextParams: #{@agentSetName} not fount." if not @contexts[agentSetName]?
-    u.ctxTextParams @contexts[agentSetName], domFont, align, baseline
-  setLabelParams: (agentSetName, color, xy) ->
-    agentSetName = @agentSetCtxName(agentSetName) if typeof agentSetName isnt "string"
-    u.error "setLabelParams: #{@agentSetName} not fount." if not @contexts[agentSetName]?
-    u.ctxLabelParams @contexts[agentSetName], color, xy
+  # Set the text parameters for an agentset's context.  See ABM.util.
+  setTextParams: (agentset, domFont, align="center", baseline="middle") ->
+    u.ctxTextParams @contexts[agentset.name], domFont, align, baseline
+  setLabelParams: (agentset, color, xy) ->
+    u.ctxLabelParams @contexts[agentset.name], color, xy
   
 #### User Model Creation
 # A user's model is made by subclassing Model and over-riding these
 # two abstract methods. `super` need not be called.
   
-  # Initialize your model here
+  # Initialize your model here.
   setup: -> # called at the end of model creation
   # Update/step your model here
   step: -> # called each step of the animation
@@ -1933,7 +1955,7 @@ class ABM.Model
     root.ab  = ABM.agentBreeds
     root.lb  = ABM.linkBreeds
     root.an  = @anim
-    root.wd  = @world
+    root.wd  = ABM.world
     root.gl  = @globals
     root.root= root
     null
