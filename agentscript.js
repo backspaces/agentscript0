@@ -1844,7 +1844,7 @@
     };
 
     Patches.prototype.diffuse = function(v, rate, c) {
-      var dv, dv8, n, nn, p, _i, _j, _k, _l, _len, _len1, _len2, _len3, _ref;
+      var dv, dv8, n, nn, p, _i, _j, _k, _l, _len, _len1, _len2, _len3, _len4, _m, _ref;
 
       if (this[0]._diffuseNext == null) {
         for (_i = 0, _len = this.length; _i < _len; _i++) {
@@ -1864,12 +1864,18 @@
           n._diffuseNext += dv8;
         }
       }
-      for (_l = 0, _len3 = this.length; _l < _len3; _l++) {
-        p = this[_l];
-        p[v] = p._diffuseNext;
-        p._diffuseNext = 0;
-        if (c) {
+      if (c) {
+        for (_l = 0, _len3 = this.length; _l < _len3; _l++) {
+          p = this[_l];
+          p[v] = p._diffuseNext;
+          p._diffuseNext = 0;
           p.scaleColor(c, p[v]);
+        }
+      } else {
+        for (_m = 0, _len4 = this.length; _m < _len4; _m++) {
+          p = this[_m];
+          p[v] = p._diffuseNext;
+          p._diffuseNext = 0;
         }
       }
       return null;

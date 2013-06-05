@@ -298,10 +298,15 @@ class ABM.Patches extends ABM.AgentSet
       p._diffuseNext += p[v] - dv + (8-nn)*dv8
       n._diffuseNext += dv8 for n in p.n
     # pass 2: set new value for all patches, zero temp, modify color if c given
-    for p in @
-      p[v] = p._diffuseNext
-      p._diffuseNext = 0
-      p.scaleColor c, p[v] if c
+    if c
+      for p in @
+        p[v] = p._diffuseNext
+        p._diffuseNext = 0
+        p.scaleColor c, p[v]
+    else
+      for p in @
+        p[v] = p._diffuseNext
+        p._diffuseNext = 0
     null # avoid returning copy of @
 
 # ### Agent & Agents

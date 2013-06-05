@@ -489,6 +489,8 @@ ABM.util = u =
 
     
   
+
+
 # A *very* simple shapes module for drawing
 # [NetLogo-like](http://ccl.northwestern.edu/netlogo/docs/) agents.
 
@@ -664,6 +666,8 @@ ABM.shapes = ABM.util.s = do ->
     ctx.nextX++; slot
 
     
+
+
 
 # An **AgentSet** is an array, along with a class, agentClass, whose instances
 # are the items of the array.  Instances of the class are created
@@ -979,6 +983,8 @@ class ABM.AgentSet extends Array
 # random run, captured so we can reuse.
 #
 #     AS.add new XY(pt...) for pt in [[0,1],[8,0],[6,4],[1,3],[1,1]]
+
+
 # There are three agentsets and their corresponding 
 # agents: Patches/Patch, Agents/Agent, and Links/Link.
 
@@ -1279,10 +1285,15 @@ class ABM.Patches extends ABM.AgentSet
       p._diffuseNext += p[v] - dv + (8-nn)*dv8
       n._diffuseNext += dv8 for n in p.n
     # pass 2: set new value for all patches, zero temp, modify color if c given
-    for p in @
-      p[v] = p._diffuseNext
-      p._diffuseNext = 0
-      p.scaleColor c, p[v] if c
+    if c
+      for p in @
+        p[v] = p._diffuseNext
+        p._diffuseNext = 0
+        p.scaleColor c, p[v]
+    else
+      for p in @
+        p[v] = p._diffuseNext
+        p._diffuseNext = 0
     null # avoid returning copy of @
 
 # ### Agent & Agents
@@ -1648,6 +1659,8 @@ class ABM.Links extends ABM.AgentSet
       a.forward radius
     null
       
+
+
 # Class Model is the control center for our AgentSets: Patches, Agents and Links.
 # Creating new models is done by subclassing class Model and overriding two 
 # virtual/abstract methods: `setup()` and `step()`
