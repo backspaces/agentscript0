@@ -18,10 +18,10 @@ class ABM.Animator
   # Create initial animator for the model, specifying default rate (fps) and multiStep.
   # If multiStep, run the draw() and step() methods separately by draw() using
   # requestAnimFrame and step() using setTimeout.
-  constructor: (@model, @rate=30, @multiStep=false) -> @reset()
+  constructor: (@model, @rate=30, @multiStep=false, @isHeadless=false) -> @reset()
   # Adjust animator.  Call before model.start()
   # in setup() to change default settings
-  setRate: (@rate, @multiStep=false) -> @resetTimes() # Change rate while running?
+  setRate: (@rate, @multiStep=@multiStep ? false) -> @resetTimes() # Change rate while running?
   # start/stop model, often used for debugging and resetting model
   start: ->
     return unless @stopped # avoid multiple animates
@@ -67,7 +67,7 @@ class ABM.Animator
     @animHandle = requestAnimFrame @animateDraws unless @stopped
   animate: ->
     @animateSteps() if @multiStep
-    @animateDraws()
+    @animateDraws() unless @isHeadless
 
 # ### Class Model
 
@@ -95,36 +95,39 @@ class ABM.Model
   # * call `setup` abstract method
   constructor: (
     div, size=13, minX=-16, maxX=16, minY=-16, maxY=16,
-    isTorus=false, hasNeighbors=true
+    isTorus=false, hasNeighbors=true, isHeadless=false
   ) ->
     ABM.model = @
-    @setWorld size, minX, maxX, minY, maxY, isTorus, hasNeighbors
+    @setWorld size, minX, maxX, minY, maxY, isTorus, hasNeighbors, isHeadless
     @contexts = ABM.contexts = {}
-    (@div=document.getElementById(div)).setAttribute 'style', "position:relative"
-        
-    # * Create 2D canvas contexts layered on top of each other.
-    # * Initialize a patch coord transform for each layer.
-    # 
-    # Note: this is permanent .. there isn't the usual ctx.restore().
-    # To use the original canvas 2D transform temporarily:
-    #
-    #     u.setIdentity ctx
-    #       <draw in native coord system>
-    #     ctx.restore() # restore patch coord system
-    
-    for own k,v of @contextsInit
-      @contexts[k] = ctx = u.createLayer @div, @world.pxWidth, @world.pxHeight, v.z, v.ctx
-      @setCtxTransform ctx if ctx.canvas?
-      u.elementTextParams ctx, "10px sans-serif", "center", "middle"
+    unless isHeadless
+      (@div=document.getElementById(div)).setAttribute 'style', "position:relative"
+          
+      # * Create 2D canvas contexts layered on top of each other.
+      # * Initialize a patch coord transform for each layer.
+      # 
+      # Note: this is permanent .. there isn't the usual ctx.restore().
+      # To use the original canvas 2D transform temporarily:
+      #
+      #     u.setIdentity ctx
+      #       <draw in native coord system>
+      #     ctx.restore() # restore patch coord system
+      for own k,v of @contextsInit
+        @contexts[k] = ctx = u.createLayer @div, @world.pxWidth, @world.pxHeight, v.z, v.ctx
+        @setCtxTransform ctx if ctx.canvas?
+        u.elementTextParams ctx, "10px sans-serif", "center", "middle"
 
-    # One of the layers is used for drawing only, not an agentset:
-    @drawing = ABM.drawing = @contexts.drawing
-    @drawing.clear = => u.clearCtx @drawing
-    # Setup spotlight layer, also not an agentset:
-    @contexts.spotlight.globalCompositeOperation = "xor"
+      # One of the layers is used for drawing only, not an agentset:
+      @drawing = ABM.drawing = @contexts.drawing
+      @drawing.clear = => u.clearCtx @drawing
+      # Setup spotlight layer, also not an agentset:
+      @contexts.spotlight.globalCompositeOperation = "xor"
 
+    if isHeadless
+    # Initialize animator to headless default: 30fps, async  
+    then @anim = new ABM.Animator @, null, true, isHeadless
     # Initialize animator to default: 30fps, not async
-    @anim = new ABM.Animator @
+    else @anim = new ABM.Animator @
     # Set drawing controls.  Default to drawing each agentset.
     # Optimization: If any of these is set to false, the associated
     # agentset is drawn only once, remaining static after that.
