@@ -1,14 +1,13 @@
-# Our build process uses shelljs, which is npm installed globally.
-# https://github.com/arturadib/shelljs
-# To avoid having the module in our project, as described by
-# https://npmjs.org/doc/folders.html#DESCRIPTION .. we use:
-# export NODE_PATH="/usr/local/lib/node_modules"
+# Our build process uses shelljs, docco, uglifyjs, and coffeescript,
+# all of which can be installed locally by running `npm install`.
 
 fs     = require 'fs'
 {exec} = require 'child_process'
 shell  = require 'shelljs'
 readline= require 'readline'
 # Note: try https://github.com/mgutz/execSync
+
+shell.env['PATH'] = "./node_modules/.bin:"+shell.env['PATH']
 
 editor= shell.exec("git config --get core.editor",{silent:true}).output
 prompt = (qstring,f) -> # prompt w/ question, respond with f(ans)

@@ -7,7 +7,10 @@
     "doc": "docs"
   },
   "devDependencies": {
-    "shelljs": "~0.2.6"
+    "shelljs": "~0.2.6",
+    "docco": "~0.6.3",
+    "uglify-js": "~2.4.12",
+    "coffee-script": "~1.7.1"
   },
   "repository": {
     "type": "git",
