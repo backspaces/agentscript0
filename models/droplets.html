@@ -13,7 +13,7 @@
         console.log "startup: elevation"
         @elevation = DataSet.importAscDataSet "data/nldroplets.asc", (ds)=>
           console.log "startup: creating slope/aspect data sets"
-          [@slope, @aspect] = @elevation.slopeAndAspect()
+          { slope: @slope, aspect: @aspect } = @elevation.slopeAndAspect()
         
       setup: ->
         console.log "setup"
