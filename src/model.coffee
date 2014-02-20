@@ -97,11 +97,17 @@ class ABM.Model
   # * intialize various instance variables
   # * call `setup` abstract method
   constructor: (
-    div, size=13, minX=-16, maxX=16, minY=-16, maxY=16,
+    divOrOpts, size=13, minX=-16, maxX=16, minY=-16, maxY=16,
     isTorus=false, hasNeighbors=true, isHeadless=false
   ) ->
     ABM.model = @
-    @setWorld size, minX, maxX, minY, maxY, isTorus, hasNeighbors, isHeadless
+    if typeof divOrOpts is 'string'
+      div = divOrOpts
+      @setWorldDeprecated size, minX, maxX, minY, maxY, isTorus, hasNeighbors, isHeadless
+    else
+      div = divOrOpts.div
+      isHeadless = divOrOpts.isHeadless = divOrOpts.isHeadless? or not div?
+      @setWorld divOrOpts
     @contexts = ABM.contexts = {}
     unless isHeadless
       (@div=document.getElementById(div)).setAttribute 'style',
@@ -152,7 +158,16 @@ class ABM.Model
     u.waitOnFiles => @modelReady=true; @setup(); @globals() unless @globalNames.set
 
   # Initialize/reset world parameters.
-  setWorld: (size, minX, maxX, minY, maxY, isTorus, hasNeighbors, isHeadless) ->
+  setWorld: (opts) ->
+    w = defaults = { size: 13, minX: -16, maxX: 16, minY: -16, maxY: 16, isTorus: false, hasNeighbors: true, isHeadless: false }
+    for own k,v of opts
+      w[k] = v
+    {size, minX, maxX, minY, maxY, isTorus, hasNeighbors, isHeadless} = w
+    numX = maxX-minX+1; numY = maxY-minY+1; pxWidth = numX*size; pxHeight = numY*size
+    minXcor=minX-.5; maxXcor=maxX+.5; minYcor=minY-.5; maxYcor=maxY+.5
+    ABM.world = @world = {size,minX,maxX,minY,maxY,minXcor,maxXcor,minYcor,maxYcor,
+      numX,numY,pxWidth,pxHeight,isTorus,hasNeighbors,isHeadless}
+  setWorldDeprecated: (size, minX, maxX, minY, maxY, isTorus, hasNeighbors, isHeadless) ->
     numX = maxX-minX+1; numY = maxY-minY+1; pxWidth = numX*size; pxHeight = numY*size
     minXcor=minX-.5; maxXcor=maxX+.5; minYcor=minY-.5; maxYcor=maxY+.5
     ABM.world = @world = {size,minX,maxX,minY,maxY,minXcor,maxXcor,minYcor,maxYcor,

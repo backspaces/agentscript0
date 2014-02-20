@@ -44,7 +44,15 @@
 
     # div, patchSize, minX, maxX, minY, maxY, isTorus, hasNeighbors
     #   Defaults: 13, -16, 16, -16, 16, false, true
-    model = new MyModel "layers", 10, -25, 25, -20, 20, true
+    model = new MyModel {
+      div: "layers",
+      size: 10,
+      minX: -25,
+      maxX: 25,
+      minY: -20,
+      maxY: 20,
+      isTorus: true
+    }
     model.debug() # Debug: Put Model vars in global name space
     model.start() # Run model immediately after startup initialization
 

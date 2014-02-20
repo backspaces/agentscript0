@@ -507,9 +507,18 @@ for patchSize, minX, maxX, minY, maxY</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    model = <span class="hljs-keyword">new</span> MyModel(<span class="hljs-string">"layers"</span>, <span class="hljs-number">13</span>, -<span class="hljs-number">16</span>, <span class="hljs-number">16</span>, -<span class="hljs-number">16</span>, <span class="hljs-number">16</span>, <span class="hljs-literal">true</span>, <span class="hljs-literal">false</span>)
-      .debug() <span class="hljs-comment"># Debug: Put Model vars in global name space</span>
-      .start() <span class="hljs-comment"># Run model immediately after startup initialization</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>    model = <span class="hljs-keyword">new</span> MyModel({
+      <span class="hljs-attribute">div</span>: <span class="hljs-string">"layers"</span>,
+      <span class="hljs-attribute">size</span>: <span class="hljs-number">13</span>,
+      <span class="hljs-attribute">minX</span>: -<span class="hljs-number">16</span>,
+      <span class="hljs-attribute">maxX</span>: <span class="hljs-number">16</span>,
+      <span class="hljs-attribute">minY</span>: -<span class="hljs-number">16</span>,
+      <span class="hljs-attribute">maxY</span>: <span class="hljs-number">16</span>,
+      <span class="hljs-attribute">isTorus</span>: <span class="hljs-literal">true</span>,
+      <span class="hljs-attribute">hasNeighbors</span>: <span class="hljs-literal">false</span>
+    })
+    .debug() <span class="hljs-comment"># Debug: Put Model vars in global name space</span>
+    .start() <span class="hljs-comment"># Run model immediately after startup initialization</span></pre></div></div>
             
         </li>
         

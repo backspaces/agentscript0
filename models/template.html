@@ -141,9 +141,18 @@ average heading of agents:
     #
     # Note: Netlogo defaults 13, -16, 16, -16, 16 <br>
     # for patchSize, minX, maxX, minY, maxY
-    model = new MyModel("layers", 13, -16, 16, -16, 16, true, false)
-      .debug() # Debug: Put Model vars in global name space
-      .start() # Run model immediately after startup initialization
+    model = new MyModel({
+      div: "layers",
+      size: 13,
+      minX: -16,
+      maxX: 16,
+      minY: -16,
+      maxY: 16,
+      isTorus: true,
+      hasNeighbors: false
+    })
+    .debug() # Debug: Put Model vars in global name space
+    .start() # Run model immediately after startup initialization
     
     </script>
   </head>
