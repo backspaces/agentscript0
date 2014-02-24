@@ -23,9 +23,10 @@ ASNames = "util shapes agentset agentsets model".split(" ")
 ASPaths = ("#{srcDir}#{f}.coffee" for f in ASNames)
 ASPath = "#{srcDir}agentscript.coffee"
 XNames = "data mouse fbui".split(" ")
+XJSNames = "as.dat.gui".split(" ")
 XPaths = ("#{extrasDir}#{f}.coffee" for f in XNames)
-JSNames = XNames.concat ["agentscript"]
-JSPaths = ["extras/as.dat.gui.js"]
+  .concat("#{extrasDir}#{f}.js" for f in XJSNames)
+JSNames = XNames.concat(XJSNames, ["agentscript"])
 
 task 'all', 'Compile coffee, minify js, create docs', ->
   invoke 'build'
@@ -35,12 +36,20 @@ task 'all', 'Compile coffee, minify js, create docs', ->
 
 compileFile = (path) ->
   console.log "Compiling #{path}"
+  if (/.coffee$/.test(path))
+  then compileCoffee(path)
+  else compileJS(path)
+compileCoffee = (path) ->
   coffeeName = path.replace /^.*\//, ''
   coffeeDir = path.replace /\/[^/]*$/, ''
   shell.exec """
     cd #{coffeeDir}
     coffee --map --compile --output ../#{libDir} #{coffeeName}
   """ , ->
+compileJS = (path) ->
+  shell.exec """
+    cp #{path} #{libDir}
+  """, ->
 task 'build', 'Compile agentscript and libraries from source files', ->
   invoke 'build:agentscript'
   invoke 'build:extras'
@@ -65,7 +74,6 @@ task 'doc', 'Create documentation from source files', ->
     #{cpfiles}
     docco #{tmpfiles.join(" ")} -o docs  &&
     docco #{XPaths.join(" ")} -o docs
-    docco #{JSPaths.join(" ")} -o docs
   """, -> #{silent:true}, (code,output) -> console.log output
 # task 'xdoc', 'Create documentation for addons', ->
 #   shell.exec """
