@@ -13,7 +13,7 @@
         console.log "startup: elevation"
         @elevation = DataSet.importAscDataSet "data/nldroplets.asc", (ds)=>
           console.log "startup: creating slope/aspect data sets"
-          [@slope, @aspect] = @elevation.slopeAndAspect()
+          { slope: @slope, aspect: @aspect } = @elevation.slopeAndAspect()
         
       setup: ->
         console.log "setup"
@@ -68,9 +68,16 @@
     
     # div, patchSize, minX, maxX, minY, maxY, isTorus, hasNeighbors
     #   Defaults: 13, -16, 16, -16, 16, false, true
-    model = new MyModel("layers", 6, 0,80, 0,80)
-     .debug() # Debug: Put Model vars in global name space
-     .start() # Run model immediately after startup initialization
+    model = new MyModel({
+      div: "layers",
+      size: 6,
+      minX: 0,
+      maxX: 80,
+      minY: 0,
+      maxY: 80
+    })
+    .debug() # Debug: Put Model vars in global name space
+    .start() # Run model immediately after startup initialization
     
     </script>
   </head>

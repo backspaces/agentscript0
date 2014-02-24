@@ -109,7 +109,7 @@ class ABM.Patches extends ABM.AgentSet
       for x in [@minX..@maxX] by 1
         @add new @agentClass x, y
     @setNeighbors() if @hasNeighbors
-    @setPixels() # setup off-page canvas for pixel ops
+    @setPixels() unless @isHeadless # setup off-page canvas for pixel ops
     
   # Have patches cache the agents currently on them.
   # Optimizes p.agentsHere method.
@@ -148,7 +148,7 @@ class ABM.Patches extends ABM.AgentSet
       @pixelsData32 = new Uint32Array @pixelsData.buffer
       @pixelsAreLittleEndian = u.isLittleEndian()
   
-  # Draw patces.  Three cases:
+  # Draw patches.  Three cases:
   #
   # * Pixels: use pixel manipulation rather than canvas draws
   # * Monochrome: just fill canvas w/ patch default

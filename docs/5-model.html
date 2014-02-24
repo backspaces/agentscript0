@@ -386,11 +386,17 @@ Example:</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">constructor</span>: (
-    div, size=<span class="hljs-number">13</span>, minX=-<span class="hljs-number">16</span>, maxX=<span class="hljs-number">16</span>, minY=-<span class="hljs-number">16</span>, maxY=<span class="hljs-number">16</span>,
+    divOrOpts, size=<span class="hljs-number">13</span>, minX=-<span class="hljs-number">16</span>, maxX=<span class="hljs-number">16</span>, minY=-<span class="hljs-number">16</span>, maxY=<span class="hljs-number">16</span>,
     isTorus=<span class="hljs-literal">false</span>, hasNeighbors=<span class="hljs-literal">true</span>, isHeadless=<span class="hljs-literal">false</span>
   )<span class="hljs-function"> -&gt;</span>
     ABM.model = @
-    <span class="hljs-property">@setWorld</span> size, minX, maxX, minY, maxY, isTorus, hasNeighbors, isHeadless
+    <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span> divOrOpts <span class="hljs-keyword">is</span> <span class="hljs-string">'string'</span>
+      div = divOrOpts
+      <span class="hljs-property">@setWorldDeprecated</span> size, minX, maxX, minY, maxY, isTorus, hasNeighbors, isHeadless
+    <span class="hljs-keyword">else</span>
+      div = divOrOpts.div
+      isHeadless = divOrOpts.isHeadless = divOrOpts.isHeadless? <span class="hljs-keyword">or</span> <span class="hljs-keyword">not</span> div?
+      <span class="hljs-property">@setWorld</span> divOrOpts
     <span class="hljs-property">@contexts</span> = ABM.contexts = {}
     <span class="hljs-keyword">unless</span> isHeadless
       (<span class="hljs-property">@div</span>=<span class="hljs-built_in">document</span>.getElementById(div)).setAttribute <span class="hljs-string">'style'</span>,
@@ -539,7 +545,16 @@ agentset is drawn only once, remaining static after that.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">setWorld</span>: <span class="hljs-function"><span class="hljs-params">(size, minX, maxX, minY, maxY, isTorus, hasNeighbors, isHeadless)</span> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">setWorld</span>: <span class="hljs-function"><span class="hljs-params">(opts)</span> -&gt;</span>
+    w = defaults = { <span class="hljs-attribute">size</span>: <span class="hljs-number">13</span>, <span class="hljs-attribute">minX</span>: -<span class="hljs-number">16</span>, <span class="hljs-attribute">maxX</span>: <span class="hljs-number">16</span>, <span class="hljs-attribute">minY</span>: -<span class="hljs-number">16</span>, <span class="hljs-attribute">maxY</span>: <span class="hljs-number">16</span>, <span class="hljs-attribute">isTorus</span>: <span class="hljs-literal">false</span>, <span class="hljs-attribute">hasNeighbors</span>: <span class="hljs-literal">true</span>, <span class="hljs-attribute">isHeadless</span>: <span class="hljs-literal">false</span> }
+    <span class="hljs-keyword">for</span> own k,v <span class="hljs-keyword">of</span> opts
+      w[k] = v
+    {size, minX, maxX, minY, maxY, isTorus, hasNeighbors, isHeadless} = w
+    numX = maxX-minX+<span class="hljs-number">1</span>; numY = maxY-minY+<span class="hljs-number">1</span>; pxWidth = numX*size; pxHeight = numY*size
+    minXcor=minX-<span class="hljs-number">.5</span>; maxXcor=maxX+<span class="hljs-number">.5</span>; minYcor=minY-<span class="hljs-number">.5</span>; maxYcor=maxY+<span class="hljs-number">.5</span>
+    ABM.world = <span class="hljs-property">@world</span> = {size,minX,maxX,minY,maxY,minXcor,maxXcor,minYcor,maxYcor,
+      numX,numY,pxWidth,pxHeight,isTorus,hasNeighbors,isHeadless}
+  <span class="hljs-attribute">setWorldDeprecated</span>: <span class="hljs-function"><span class="hljs-params">(size, minX, maxX, minY, maxY, isTorus, hasNeighbors, isHeadless)</span> -&gt;</span>
     numX = maxX-minX+<span class="hljs-number">1</span>; numY = maxY-minY+<span class="hljs-number">1</span>; pxWidth = numX*size; pxHeight = numY*size
     minXcor=minX-<span class="hljs-number">.5</span>; maxXcor=maxX+<span class="hljs-number">.5</span>; minYcor=minY-<span class="hljs-number">.5</span>; maxYcor=maxY+<span class="hljs-number">.5</span>
     ABM.world = <span class="hljs-property">@world</span> = {size,minX,maxX,minY,maxY,minXcor,maxXcor,minYcor,maxYcor,

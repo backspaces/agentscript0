@@ -203,7 +203,7 @@ ABM.DataSet = class DataSet
         aspect.push rad
     slope = new DataSet w, h, slope
     aspect = new DataSet w, h, aspect
-    [slope, aspect, dzdx, dzdy]
+    { slope: slope, aspect: aspect, dzdx: dzdx, dzdy: dzdy }
   # Return a subset of the dataset. x,y,width,height integers
   subset: (x, y, width, height) ->
     u.error "subSet: params out of range" if x+width>@width or y+height>@height
