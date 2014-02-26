@@ -1231,9 +1231,6 @@ class ABM.AgentSet extends Array
 #
 #     AS.add new XY(pt...) for pt in [[0,1],[8,0],[6,4],[1,3],[1,1]]
 
-# There are three agentsets and their corresponding 
-# agents: Patches/Patch, Agents/Agent, and Links/Link.
-
 # ### Patch and Patches
   
 # Class Patch instances represent a rectangle on a grid.  It holds variables\
@@ -1932,7 +1929,6 @@ class ABM.Links extends ABM.AgentSet
       a.heading = startAngle + direction*dTheta*i
       a.forward radius
     null
-      
 
 # Class Model is the control center for our AgentSets: Patches, Agents and Links.
 # Creating new models is done by subclassing class Model and overriding two 

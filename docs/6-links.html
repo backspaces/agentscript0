@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>6-links.coffee</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page">
+            
+              
+              <a class="source" href="1-util.html">
+                1-util.coffee
+              </a>
+            
+              
+              <a class="source" href="2-shapes.html">
+                2-shapes.coffee
+              </a>
+            
+              
+              <a class="source" href="3-agentset.html">
+                3-agentset.coffee
+              </a>
+            
+              
+              <a class="source" href="4-patches.html">
+                4-patches.coffee
+              </a>
+            
+              
+              <a class="source" href="5-agents.html">
+                5-agents.coffee
+              </a>
+            
+              
+              <a class="source" href="6-links.html">
+                6-links.coffee
+              </a>
+            
+              
+              <a class="source" href="7-model.html">
+                7-model.coffee
+              </a>
+            
+              
+              <a class="source" href="8-template.html">
+                8-template.coffee
+              </a>
+            
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>6-links.coffee</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              <h3 id="link-and-links">Link and Links</h3>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>Class Link connects two agent endpoints for graph modeling.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ABM</span>.<span class="hljs-title">Link</span></span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p>Constructor initializes instance variables:</p>
+<ul>
+<li>id:         unique identifier, promoted by agentset create() factory method</li>
+<li>breed:      the agentset this agent belongs to</li>
+<li>end1, end2: two agents being connected</li>
+<li>color:      defaults to light gray</li>
+<li>thickness:  thickness in pixels of the link, default 2</li>
+<li>label:      a text label drawn on my instances</li>
+<li>labelColor: the color of my label text</li>
+<li>labelOffset:the x,y offset of my label from my x,y location</li>
+<li>hidden:     whether or not to draw this link</li>
+</ul>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>
+  <span class="hljs-attribute">id</span>: <span class="hljs-literal">null</span>            <span class="hljs-comment"># unique id, promoted by agentset create factory method</span>
+  <span class="hljs-attribute">breed</span>: <span class="hljs-literal">null</span>         <span class="hljs-comment"># my agentSet, set by the agentSet owning me</span>
+  <span class="hljs-attribute">end1</span>:<span class="hljs-literal">null</span>; <span class="hljs-attribute">end2</span>:<span class="hljs-literal">null</span><span class="hljs-comment"># My two endpoints, using agents. Promoted by ctor</span>
+  <span class="hljs-attribute">color</span>: [<span class="hljs-number">130</span>,<span class="hljs-number">130</span>,<span class="hljs-number">130</span>]<span class="hljs-comment"># my color</span>
+  <span class="hljs-attribute">thickness</span>: <span class="hljs-number">2</span>        <span class="hljs-comment"># my thickness in pixels, default to 2</span>
+  <span class="hljs-attribute">hidden</span>: <span class="hljs-literal">false</span>       <span class="hljs-comment"># draw me?</span>
+  <span class="hljs-attribute">label</span>: <span class="hljs-literal">null</span>         <span class="hljs-comment"># my text</span>
+  <span class="hljs-attribute">labelColor</span>: [<span class="hljs-number">0</span>,<span class="hljs-number">0</span>,<span class="hljs-number">0</span>] <span class="hljs-comment"># its color</span>
+  <span class="hljs-attribute">labelOffset</span>: [<span class="hljs-number">0</span>,<span class="hljs-number">0</span>]  <span class="hljs-comment"># its offset from my midpoint</span>
+  <span class="hljs-attribute">constructor</span>: <span class="hljs-function"><span class="hljs-params">(<span class="hljs-property">@end1</span>, <span class="hljs-property">@end2</span>)</span> -&gt;</span>
+    <span class="hljs-keyword">if</span> <span class="hljs-property">@end1</span>.links?
+      <span class="hljs-property">@end1</span>.links.push @
+      <span class="hljs-property">@end2</span>.links.push @</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p>Draw a line between the two endpoints.  Draws “around” the
+torus if appropriate using two lines. As with Agent.draw,
+is called with patch coordinate transform installed.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">draw</span>: <span class="hljs-function"><span class="hljs-params">(ctx)</span> -&gt;</span>
+    ctx.save()
+    ctx.strokeStyle = u.colorStr <span class="hljs-property">@color</span>
+    ctx.lineWidth = ABM.patches.fromBits <span class="hljs-property">@thickness</span>
+    ctx.beginPath()
+    <span class="hljs-keyword">if</span> !ABM.patches.isTorus
+      ctx.moveTo <span class="hljs-property">@end1</span>.x, <span class="hljs-property">@end1</span>.y
+      ctx.lineTo <span class="hljs-property">@end2</span>.x, <span class="hljs-property">@end2</span>.y
+    <span class="hljs-keyword">else</span>
+      pt = <span class="hljs-property">@end1</span>.torusPt <span class="hljs-property">@end2</span>
+      ctx.moveTo <span class="hljs-property">@end1</span>.x, <span class="hljs-property">@end1</span>.y
+      ctx.lineTo pt...
+      <span class="hljs-keyword">if</span> pt[<span class="hljs-number">0</span>] <span class="hljs-keyword">isnt</span> <span class="hljs-property">@end2</span>.x <span class="hljs-keyword">or</span> pt[<span class="hljs-number">1</span>] <span class="hljs-keyword">isnt</span> <span class="hljs-property">@end2</span>.y
+        pt = <span class="hljs-property">@end2</span>.torusPt <span class="hljs-property">@end1</span>
+        ctx.moveTo <span class="hljs-property">@end2</span>.x, <span class="hljs-property">@end2</span>.y
+        ctx.lineTo pt...
+    ctx.closePath()
+    ctx.stroke()
+    ctx.restore()
+    <span class="hljs-keyword">if</span> <span class="hljs-property">@label</span>?
+      [x0, y0]  = u.lerp2 <span class="hljs-property">@end1</span>.x, <span class="hljs-property">@end1</span>.y, <span class="hljs-property">@end2</span>.x, <span class="hljs-property">@end2</span>.y, <span class="hljs-number">.5</span>
+      [x,y] = ABM.patches.patchXYtoPixelXY x0, y0
+      u.ctxDrawText ctx, <span class="hljs-property">@label</span>, x+<span class="hljs-property">@labelOffset</span>[<span class="hljs-number">0</span>], y+<span class="hljs-property">@labelOffset</span>[<span class="hljs-number">1</span>], <span class="hljs-property">@labelColor</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>Remove this link from the agent set</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">die</span>:<span class="hljs-function"> -&gt;</span>
+    <span class="hljs-property">@breed</span>.remove @
+    u.removeItem <span class="hljs-property">@end1</span>.links, @ <span class="hljs-keyword">if</span> <span class="hljs-property">@end1</span>.links?
+    u.removeItem <span class="hljs-property">@end2</span>.links, @ <span class="hljs-keyword">if</span> <span class="hljs-property">@end2</span>.links?
+    <span class="hljs-literal">null</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p>Return the two endpoints of this link</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">bothEnds</span>:<span class="hljs-function"> -&gt;</span> [<span class="hljs-property">@end1</span>, <span class="hljs-property">@end2</span>]</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <p>Return the distance between the endpoints with the current topology.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">length</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-property">@end1</span>.distance <span class="hljs-property">@end2</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              <p>Return the other end of the link, given an endpoint agent.
+Assumes the given input <em>is</em> one of the link endpoint pairs!</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">otherEnd</span>: <span class="hljs-function"><span class="hljs-params">(a)</span> -&gt;</span> <span class="hljs-keyword">if</span> <span class="hljs-property">@end1</span> <span class="hljs-keyword">is</span> a <span class="hljs-keyword">then</span> <span class="hljs-property">@end2</span> <span class="hljs-keyword">else</span> <span class="hljs-property">@end1</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-9">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-9">&#182;</a>
+              </div>
+              <p>Class Links is a subclass of AgentSet which stores instances of Link
+or subclasses of Link</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ABM</span>.<span class="hljs-title">Links</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">ABM</span>.<span class="hljs-title">AgentSet</span></span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-10">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-10">&#182;</a>
+              </div>
+              <p>Constructor: super creates the empty AgentSet instance and installs
+the agentClass (breed) variable shared by all the Links in this set.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">constructor</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-comment"># agentClass, name, mainSet</span>
+    <span class="hljs-keyword">super</span> <span class="hljs-comment"># call super with all the args I was called with</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-11">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-11">&#182;</a>
+              </div>
+              <p>Factory: Add 1 or more links from the from agent to the to agent(s) which
+can be a single agent or an array of agents. The optional init
+proc is called on the new link after inserting in the agentSet.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">create</span>: <span class="hljs-function"><span class="hljs-params">(from, to, init = -&gt;)</span> -&gt;</span> <span class="hljs-comment"># returns array of new links too</span>
+    to = [to] <span class="hljs-keyword">unless</span> to.length?
+    <span class="hljs-function"><span class="hljs-params">((o) -&gt; init(o); o)</span> @<span class="hljs-title">add</span> <span class="hljs-title">new</span> @<span class="hljs-title">agentClass</span> <span class="hljs-title">from</span>, <span class="hljs-title">a</span> <span class="hljs-title">for</span> <span class="hljs-title">a</span> <span class="hljs-title">in</span> <span class="hljs-title">to</span> # <span class="hljs-title">too</span> <span class="hljs-title">tricky</span>?
+  
+</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-12">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-12">&#182;</a>
+              </div>
+              <p>Remove all links from set via link.die()
+Note call in reverse order to optimize list restructuring.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">clear</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-property">@last</span>().die() <span class="hljs-keyword">while</span> <span class="hljs-property">@any</span>(); <span class="hljs-literal">null</span> <span class="hljs-comment"># tricky, each die modifies list</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-13">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-13">&#182;</a>
+              </div>
+              <p>Return all the nodes in this agentset, with duplicates
+included.  If 4 links have the same endpoint, it will
+appear 4 times.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">allEnds</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-comment"># all link ends, w/ dups</span>
+    n = <span class="hljs-property">@asSet</span> []
+    n.push l.end1, l.end2 <span class="hljs-keyword">for</span> l <span class="hljs-keyword">in</span> @
+    n</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-14">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-14">&#182;</a>
+              </div>
+              <p>Returns all the nodes in this agentset sorted by ID and with
+duplicates removed.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">nodes</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-comment"># allEnds without dups</span>
+    <span class="hljs-property">@allEnds</span>().sortById().uniq()</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-15">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-15">&#182;</a>
+              </div>
+              <p>Circle Layout: position the agents in the list in an equally
+spaced circle of the given radius, with the initial agent
+at the given start angle (default to pi/2 or “up”) and in the
++1 or -1 direction (counder clockwise or clockwise) 
+defaulting to -1 (clockwise).</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">layoutCircle</span>: <span class="hljs-function"><span class="hljs-params">(list, radius, startAngle = Math.PI/<span class="hljs-number">2</span>, direction = -<span class="hljs-number">1</span>)</span> -&gt;</span>
+    dTheta = <span class="hljs-number">2</span>*Math.PI/list.length
+    <span class="hljs-keyword">for</span> a, i <span class="hljs-keyword">in</span> list
+      a.setXY <span class="hljs-number">0</span>, <span class="hljs-number">0</span>
+      a.heading = startAngle + direction*dTheta*i
+      a.forward radius
+    <span class="hljs-literal">null</span></pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>
