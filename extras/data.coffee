@@ -21,8 +21,8 @@ ABM.DataSet = class DataSet
   # Note that datasets can be built in two steps:
   # An empty constructor which then can be completed by an
   # async array, Image or XHR response.
-  @importImageDataSet: (name, f=u.pixelByte(0), arrayType=Uint8ClampedArray, rowsPerSlice) ->
-    ds = new ImageDataSet(null, f, arrayType, rowsPerSlice) # empty dataset
+  @importImageDataSet: (name, f, format=u.pixelByte(0), arrayType=Uint8ClampedArray, rowsPerSlice) ->
+    ds = new ImageDataSet(null, format, arrayType, rowsPerSlice) # empty dataset
     u.importImage name, (img) -> # => not needed
       ds.parse img
       f(ds) if f?

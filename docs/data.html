@@ -130,8 +130,8 @@ async array, Image or XHR response.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-property">@importImageDataSet</span>: <span class="hljs-function"><span class="hljs-params">(name, f=u.pixelByte(<span class="hljs-number">0</span>), arrayType=Uint8ClampedArray, rowsPerSlice)</span> -&gt;</span>
-    ds = <span class="hljs-keyword">new</span> ImageDataSet(<span class="hljs-literal">null</span>, f, arrayType, rowsPerSlice) <span class="hljs-comment"># empty dataset</span>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-property">@importImageDataSet</span>: <span class="hljs-function"><span class="hljs-params">(name, f, format=u.pixelByte(<span class="hljs-number">0</span>), arrayType=Uint8ClampedArray, rowsPerSlice)</span> -&gt;</span>
+    ds = <span class="hljs-keyword">new</span> ImageDataSet(<span class="hljs-literal">null</span>, format, arrayType, rowsPerSlice) <span class="hljs-comment"># empty dataset</span>
     u.importImage name, <span class="hljs-function"><span class="hljs-params">(img)</span> -&gt;</span> <span class="hljs-comment"># =&gt; not needed</span>
       ds.parse img
       f(ds) <span class="hljs-keyword">if</span> f?
