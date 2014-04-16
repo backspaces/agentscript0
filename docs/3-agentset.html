@@ -361,19 +361,21 @@ Arguments:</p>
 <li>fJoin(a, lastSet) -&gt; adds a to the agentset, usually by setting a variable</li>
 <li>fNeighbors(a) -&gt; returns the neighbors of this agent</li>
 <li>asetLast: the array of the last set of agents to join the set.</li>
+<li>fCallback: optional function to be called each iteration of floodfill</li>
 </ul>
 <p>asetLast generally [] but can used if the join function uses the prior
 agents for a distance calculation, for example.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">floodFill</span>: <span class="hljs-function"><span class="hljs-params">(aset, fCandidate, fJoin, fNeighbors, asetLast=[])</span> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">floodFill</span>: <span class="hljs-function"><span class="hljs-params">(aset, fCandidate, fJoin, fCallback, fNeighbors, asetLast=[])</span> -&gt;</span>
     fJoin p, asetLast <span class="hljs-keyword">for</span> p <span class="hljs-keyword">in</span> aset
     asetNext = []
     <span class="hljs-keyword">for</span> p <span class="hljs-keyword">in</span> aset
       <span class="hljs-keyword">for</span> n <span class="hljs-keyword">in</span> fNeighbors(p) <span class="hljs-keyword">when</span> fCandidate n
         asetNext.push n <span class="hljs-keyword">if</span> asetNext.indexOf(n) &lt; <span class="hljs-number">0</span>
-    <span class="hljs-property">@floodFill</span> asetNext, fCandidate, fJoin, fNeighbors, aset <span class="hljs-keyword">if</span> asetNext.length &gt; <span class="hljs-number">0</span></pre></div></div>
+    <span class="hljs-keyword">if</span> fCallback? <span class="hljs-keyword">then</span> fCallback(aset, asetNext)
+    <span class="hljs-property">@floodFill</span> asetNext, fCandidate, fJoin, fCallback, fNeighbors, aset <span class="hljs-keyword">if</span> asetNext.length &gt; <span class="hljs-number">0</span></pre></div></div>
             
         </li>
         

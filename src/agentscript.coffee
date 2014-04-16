@@ -1038,17 +1038,19 @@ class ABM.AgentSet extends Array
   # * fJoin(a, lastSet) -> adds a to the agentset, usually by setting a variable
   # * fNeighbors(a) -> returns the neighbors of this agent
   # * asetLast: the array of the last set of agents to join the set.
+  # * fCallback: optional function to be called each iteration of floodfill
   #
   # asetLast generally [] but can used if the join function uses the prior
   # agents for a distance calculation, for example.
   #
-  floodFill: (aset, fCandidate, fJoin, fNeighbors, asetLast=[]) ->
+  floodFill: (aset, fCandidate, fJoin, fCallback, fNeighbors, asetLast=[]) ->
     fJoin p, asetLast for p in aset
     asetNext = []
     for p in aset
       for n in fNeighbors(p) when fCandidate n
         asetNext.push n if asetNext.indexOf(n) < 0
-    @floodFill asetNext, fCandidate, fJoin, fNeighbors, aset if asetNext.length > 0
+    if fCallback? then fCallback(aset, asetNext)
+    @floodFill asetNext, fCandidate, fJoin, fCallback, fNeighbors, aset if asetNext.length > 0
 
     
   
@@ -1542,8 +1544,8 @@ class ABM.Patches extends ABM.AgentSet
     return if @size is 1
     ctx.drawImage @pixelsCtx.canvas, 0, 0, ctx.canvas.width, ctx.canvas.height
 
-  floodFill: (aset, fCandidate, fJoin, fNeighbors=((p)->p.n), asetLast=[]) ->
-    super aset, fCandidate, fJoin, fNeighbors, asetLast
+  floodFill: (aset, fCandidate, fJoin, fCallback, fNeighbors=((p)->p.n), asetLast=[]) ->
+    super aset, fCandidate, fJoin, fCallback, fNeighbors, asetLast
 
   # Diffuse the value of patch variable `p.v` by distributing `rate` percent
   # of each patch's value of `v` to its neighbors. If a color `c` is given,
