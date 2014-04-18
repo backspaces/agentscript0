@@ -436,6 +436,7 @@ ctx.restore() <span class="hljs-comment"># restore patch coord system</span>
             <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">for</span> own k,v <span class="hljs-keyword">of</span> <span class="hljs-property">@contextsInit</span>
         <span class="hljs-property">@contexts</span>[k] = ctx = u.createLayer <span class="hljs-property">@div</span>, <span class="hljs-property">@world</span>.pxWidth, <span class="hljs-property">@world</span>.pxHeight, v.z, v.ctx
         <span class="hljs-property">@setCtxTransform</span> ctx <span class="hljs-keyword">if</span> ctx.canvas?
+        <span class="hljs-keyword">if</span> ctx.canvas? <span class="hljs-keyword">then</span> ctx.canvas.style.pointerEvents = <span class="hljs-string">'none'</span>
         u.elementTextParams ctx, <span class="hljs-string">"10px sans-serif"</span>, <span class="hljs-string">"center"</span>, <span class="hljs-string">"middle"</span></pre></div></div>
             
         </li>

@@ -25,7 +25,7 @@ ASNames = "util shapes agentset patches agents links model".split(" ")
 ASPaths = ("#{srcDir}#{f}.coffee" for f in ASNames)
 ASPath = "#{srcDir}agentscript.coffee"
 XNames = "data mouse fbui".split(" ")
-XJSNames = "as.dat.gui".split(" ")
+XJSNames = "as.dat.gui data.tile".split(" ")
 XPaths = ("#{extrasDir}#{f}.coffee" for f in XNames)
   .concat("#{extrasDir}#{f}.js" for f in XJSNames)
 JSNames = XNames.concat(XJSNames, ["agentscript"])

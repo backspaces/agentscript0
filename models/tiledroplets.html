@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Raindrops on a tile dataset</title>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.css" />
+
+	<script src="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.js"></script>
+	<script src="../lib/agentscript.js"></script>
+	<script src="../lib/data.js"></script>
+	<script src="../lib/data.tile.js"></script>
+
+	<script>
+		var map, elevationLayer, model, tileSet;
+
+		function init() {
+			// map
+		    map = L.map('map', {
+		        maxZoom: 14,
+		        minZoom: 10
+		    }).setView([31.5,-110], 13);
+
+		    var mapUrl = 'http://{s}.tiles.mapbox.com/v3/bennlich.hmi0c6k3/{z}/{x}/{y}.png';
+			L.tileLayer(mapUrl, {
+				attribution: '<a href="http://www.mapbox.com/about/maps/" target="_blank">Terms &amp; Feedback</a>'
+			}).addTo(map);
+
+			var elevUrl = 'http://node.redfish.com/Documents/elevationServer/tiles/{z}/{x}/{y}.png';
+			elevationLayer = L.crossOriginTileLayer(elevUrl, {
+		        opacity: 0.0,
+				attribution: 'Elevation Tiles'
+			}).addTo(map);
+
+
+		    // tile dataset
+		    ABM.TileDataSet.prototype.parseTileData = function(data) {
+		        var r = data[0],
+		        g = data[1],
+		        b = data[2],
+		        elevation = (r * 255 * 255 + g * 255 + b) / 10;
+		        return elevation;
+		    }
+
+			tileSet = new ABM.TileDataSet();
+
+		    // model
+			ABM.Model.prototype.setup = function() {
+		        this.refreshPatches = this.refreshLinks = false;
+		        
+		        this.patches.own("elevation slope aspect");
+		        
+		        this.vision = 1; // try range in 1-5 or so
+		        this.speed = .25;
+		        
+		        this.agents.setDefault("shape", "square");
+		        this.agents.setDefault("size", .5);
+		        this.agents.setDefault("color", [255,0,0]);
+		        this.patches.cacheRect(this.vision, false);
+		    }
+
+		    ABM.Model.prototype.rain = function() {
+		        var density = 0.3;
+		        this.agents.clear();
+		        this.patches.forEach(function(p) {
+		            if (Math.random() < density) {
+		                p.sprout(1);
+		            }
+		        });
+		    }
+
+		    ABM.Model.prototype.step = function() {
+		    	var moved = 0;
+
+		        this.agents.forEach(function(a) {
+		        	var n = a.p.pRect;
+					n = n.minOneOf("elevation");
+					if (a.p.elevation > n.elevation) {
+						a.face(n);
+						a.forward(this.speed);
+						moved += 1;
+		            }
+		        }.bind(this));
+
+		        if (moved == 0) {
+		            console.log("done, ticks:", this.anim.ticks);
+		            this.stop()
+		        }
+
+		        if (this.anim.ticks % 100 == 0) {
+		            console.log(this.anim.toString(), "moved:", moved);  
+		        }
+		    }
+
+			model = new ABM.Model({
+				div: "model",
+				size: 2,
+				minX: 1,
+				maxX: 250,
+				minY: 1,
+				maxY: 250
+			});
+
+		    // bind tile dataset to leaflet
+		    tileSet.bindToLeaflet(map, elevationLayer);
+
+		    // when new tiles load, import data to patches,
+		    // and restart the model
+		    tileSet.on('tilesready', function() {
+		        model.stop();
+		        
+		        console.log('importing elevation data');
+		        tileSet.toPatchVar('elevation');
+		        console.log('done');
+
+		        console.log('calculating slope and aspect');
+		        model.refreshPatches = true;
+		        new ABM.PatchDataSet('elevation').slopeAndAspect().slope.toPatchColors();
+		        model.draw();
+		        model.refreshPatches = false;
+		        console.log('done');
+
+		        model.rain();
+		        model.start();
+		    });
+		}
+	</script>
+</head>
+<body onload="init();">
+	<div id="model"></div>
+	<div id="map"></div>
+</body>
+</html>
