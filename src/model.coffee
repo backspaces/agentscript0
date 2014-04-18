@@ -111,7 +111,7 @@ class ABM.Model
     @contexts = ABM.contexts = {}
     unless isHeadless
       (@div=document.getElementById(div)).setAttribute 'style',
-        "position:relative; width=#{@world.pxWidth}; height={@world.pxHeight}"
+        "position:relative; width=#{@world.pxWidth}; height=#{@world.pxHeight}"
 
       # * Create 2D canvas contexts layered on top of each other.
       # * Initialize a patch coord transform for each layer.
