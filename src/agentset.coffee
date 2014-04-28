@@ -114,29 +114,33 @@ class ABM.AgentSet extends Array
     breeds = breeds.split(" ")
     @asSet (o for o in @ when o.breed.name not in breeds)
 
-  # Recursive floodfill:
-  # Arguments:
+  # Floodfill arguments:
   #
-  # * aset: Initial array of agents, often a single agent: [a]
-  # * fCandidate(a) -> true if a is elegible to be added to the set.
-  # * fJoin(a, lastSet) -> adds a to the agentset, usually by setting a variable
+  # * aset: initial array of agents, often a single agent: [a]
+  # * fCandidate(a) -> true if a is elegible to be added to the set
+  # * fJoin(a, asetLast) -> adds a to the agentset, usually by setting a variable
+  # * fCallback(aset, asetNext) -> optional function to be called each iteration of floodfill;
+  # if fCallback returns true, the flood is aborted
   # * fNeighbors(a) -> returns the neighbors of this agent
-  # * asetLast: the array of the last set of agents to join the set.
-  # * fCallback: optional function to be called each iteration of floodfill
-  #
-  # asetLast generally [] but can used if the join function uses the prior
-  # agents for a distance calculation, for example.
-  #
+  # * asetLast: the array of the last set of agents to join the set
+  # * asetLast: defaults to []; can be used if the join function uses the prior
+  # agents for a distance calculation, for example
   floodFill: (aset, fCandidate, fJoin, fCallback, fNeighbors, asetLast=[]) ->
+    floodFunc = @floodFillOnce(aset, fCandidate, fJoin, fCallback, fNeighbors, asetLast)
+    floodFunc = floodFunc() while floodFunc
+
+  # Move one step forward in a floodfill. floodFillOnce() returns a function that performs the next step of the flood.
+  # This is useful if you want to watch your flood progress as an animation.
+  floodFillOnce: (aset, fCandidate, fJoin, fCallback, fNeighbors, asetLast=[]) ->
     fJoin p, asetLast for p in aset
     asetNext = []
     for p in aset
       for n in fNeighbors(p) when fCandidate n
         asetNext.push n if asetNext.indexOf(n) < 0
-    if fCallback? then fCallback(aset, asetNext)
-    @floodFill asetNext, fCandidate, fJoin, fCallback, fNeighbors, aset if asetNext.length > 0
-
-    
+    stopEarly = fCallback and fCallback(aset, asetNext)
+    if stopEarly or asetNext.length is 0 then return null
+    else return () =>
+      @floodFillOnce asetNext, fCandidate, fJoin, fCallback, fNeighbors, aset
   
   # Remove adjacent duplicates, by reference, in a sorted agentset.
   # Use `sortById` first if agentset not sorted.

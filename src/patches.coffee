@@ -293,7 +293,7 @@ class ABM.Patches extends ABM.AgentSet
     return if @size is 1
     ctx.drawImage @pixelsCtx.canvas, 0, 0, ctx.canvas.width, ctx.canvas.height
 
-  floodFill: (aset, fCandidate, fJoin, fCallback, fNeighbors=((p)->p.n), asetLast=[]) ->
+  floodFillOnce: (aset, fCandidate, fJoin, fCallback, fNeighbors=((p)->p.n), asetLast=[]) ->
     super aset, fCandidate, fJoin, fCallback, fNeighbors, asetLast
 
   # Diffuse the value of patch variable `p.v` by distributing `rate` percent
