@@ -410,7 +410,7 @@ Returns null if non-torus and off patch world</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">patchAtHeadingAndDistance</span>: <span class="hljs-function"><span class="hljs-params">(h,d)</span> -&gt;</span>
-    [x,y] = u.polarToXY d, h, <span class="hljs-property">@x</span>, <span class="hljs-property">@y</span>; patchAt x,y
+    [x,y] = u.polarToXY d, h; <span class="hljs-property">@patchAt</span> x,y
   <span class="hljs-attribute">patchLeftAndAhead</span>: <span class="hljs-function"><span class="hljs-params">(dh, d)</span> -&gt;</span> <span class="hljs-property">@patchAtHeadingAndDistance</span> <span class="hljs-property">@heading</span>+dh, d
   <span class="hljs-attribute">patchRightAndAhead</span>: <span class="hljs-function"><span class="hljs-params">(dh, d)</span> -&gt;</span> <span class="hljs-property">@patchAtHeadingAndDistance</span> <span class="hljs-property">@heading</span>-dh, d
   <span class="hljs-attribute">patchAhead</span>: <span class="hljs-function"><span class="hljs-params">(d)</span> -&gt;</span> <span class="hljs-property">@patchAtHeadingAndDistance</span> <span class="hljs-property">@heading</span>, d
