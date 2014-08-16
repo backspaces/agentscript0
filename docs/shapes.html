@@ -116,7 +116,7 @@ Useful for shortcuts</p>
             
             <div class="content"><div class='highlight'><pre>  <span class="hljs-function"><span class="hljs-title">fillSlot</span> = <span class="hljs-params">(slot, img)</span> -&gt;</span>
     slot.ctx.save(); slot.ctx.scale <span class="hljs-number">1</span>, -<span class="hljs-number">1</span>
-    slot.ctx.drawImage img, slot.x, -(slot.y+slot.slotSize), slot.slotSize, slot.slotSize    
+    slot.ctx.drawImage img, slot.x, -(slot.y+slot.spriteSize), slot.spriteSize, slot.spriteSize    
     slot.ctx.restore()</pre></div></div>
             
         </li>
@@ -294,12 +294,12 @@ Useful for shortcuts</p>
     shape
   <span class="hljs-attribute">drawSprite</span>: <span class="hljs-function"><span class="hljs-params">(ctx, s, x, y, size, rad)</span> -&gt;</span>
     <span class="hljs-keyword">if</span> rad <span class="hljs-keyword">is</span> <span class="hljs-number">0</span>
-      ctx.drawImage s.ctx.canvas, s.x, s.y, s.slotSize, s.slotSize, x-size/<span class="hljs-number">2</span>, y-size/<span class="hljs-number">2</span>, size, size
+      ctx.drawImage s.ctx.canvas, s.x, s.y, s.spriteSize, s.spriteSize, x-size/<span class="hljs-number">2</span>, y-size/<span class="hljs-number">2</span>, size, size
     <span class="hljs-keyword">else</span>
       ctx.save()
       ctx.translate x, y <span class="hljs-comment"># see http://goo.gl/VUlhY for drawing centered rotated images</span>
       ctx.rotate rad
-      ctx.drawImage s.ctx.canvas, s.x, s.y, s.slotSize, s.slotSize, -size/<span class="hljs-number">2</span>,-size/<span class="hljs-number">2</span>, size, size
+      ctx.drawImage s.ctx.canvas, s.x, s.y, s.spriteSize, s.spriteSize, -size/<span class="hljs-number">2</span>,-size/<span class="hljs-number">2</span>, size, size
       ctx.restore()
     s</pre></div></div>
             
@@ -388,7 +388,7 @@ the shape to fit it. Return existing sprite if duplicate.</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>    x = (slotSize)*ctx.nextX+strokePadding/<span class="hljs-number">2</span>; y = (slotSize)*ctx.nextY+strokePadding/<span class="hljs-number">2</span>
-    slot = {ctx, x, y, size, <span class="hljs-attribute">slotSize</span>: spriteSize, name, color, strokeColor, index}
+    slot = {ctx, x, y, size, spriteSize, name, color, strokeColor, index}
     ctx.index[index] = slot</pre></div></div>
             
         </li>

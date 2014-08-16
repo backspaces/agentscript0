@@ -150,7 +150,7 @@ class ABM.Agent
   # Return patch ahead of me by given distance and heading.
   # Returns null if non-torus and off patch world
   patchAtHeadingAndDistance: (h,d) ->
-    [x,y] = u.polarToXY d, h, @x, @y; patchAt x,y
+    [x,y] = u.polarToXY d, h; @patchAt x,y
   patchLeftAndAhead: (dh, d) -> @patchAtHeadingAndDistance @heading+dh, d
   patchRightAndAhead: (dh, d) -> @patchAtHeadingAndDistance @heading-dh, d
   patchAhead: (d) -> @patchAtHeadingAndDistance @heading, d
