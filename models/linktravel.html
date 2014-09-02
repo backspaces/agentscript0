@@ -5,25 +5,24 @@
     <script src="../tools/coffee-script.js"></script>
     <script type="text/coffeescript">
     
-    u = ABM.util # ABM.util alias, u.s is also ABM.shape accessor.
+    u = ABM.util
+
     class MyModel extends ABM.Model
       setup: ->
-        @agentBreeds "nodes drivers"
+        @agentBreeds ["nodes", "drivers"]
         @nodes.setDefault "shape", "circle"
         @nodes.setDefault "size", .3
         @drivers.setDefault "size", 1.5
         
-        # 40-44fps->58+fps
+        # 40-44fps -> 58+fps
         @refreshPatches = false # 56fps
         @refreshLinks = false # 40-49fps
         # @patches.usePixels() # 58+fps same as refresh off
-        # @patches.cacheAgentsHere() # 40fps; not needed, slight overhead
         @agents.setUseSprites() # 24 -> 36
         # w/ refreshs off and 1 optimization 59/max-fps
-        # @agents.cacheLinks() # no improvement, but tests a.links
         
-        @anim.setRate 30, true # almost 3:1 steps/draws!
-        # @anim.setRate 60, false # for optimization studies & profiling
+        @animator.setRate 30, true # almost 3:1 steps/draws!
+        # @animator.setRate 60, false # for optimization studies & profiling
         
         # globals
         @numNodes = 30
@@ -32,15 +31,18 @@
         @baseVelocity = 0.1 # patchs
         @velocityDelta = 0.1 # patches
         
-        @links.setDefault "labelColor", [255,0,0]
+        @links.setDefault "labelColor", [255, 0, 0]
         
-        p.color = u.randomGray 10, 50 for p in @patches
-        for p in @patches.nOf @numNodes
-          p.sprout 1, @nodes, (a) => 
+        for patch in @patches.create()
+          patch.color = u.randomGray 10, 50
+
+        for patch in @patches.sample @numNodes
+          patch.sprout 1, @nodes, (agent) =>
             if @nodes.length > 1 # if @nodes().length > 1
-              @links.create a, @nodes.other(a).oneOf() # @links.create a, @nodes().other(a).oneOf()
+              @links.create agent, @nodes.other(agent).sample() # @links.create a, @nodes().other(a).sample()
         
-        if @layoutCircle then @links.layoutCircle @nodes, @patches.maxX - 1
+        if @layoutCircle
+          @nodes.formCircle @patches.max.x - 1
         
         # Test labels
         # l.label = l.length().toFixed(0) for l in @links
@@ -48,32 +50,27 @@
         # no defaults, hatch copies its values to new agent
         
         for i in [1..@numDrivers]
-          n = @nodes.oneOf() # n = @nodes().oneOf()
-          n.hatch 1, @drivers, (a) =>
-            a.fromNode = a.toNode = u.oneOf n.linkNeighbors() #.oneOf()
-            a.face a.toNode
-            a.v = @baseVelocity + u.randomFloat @velocityDelta
+          node = @nodes.sample() # n = @nodes().sample()
+          node.hatch 1, @drivers, (agent) =>
+            agent.fromNode = agent.toNode = node.linkNeighbors().sample() #.sample()
+            agent.face agent.toNode.position
+            agent.v = @baseVelocity + u.randomFloat @velocityDelta
         null # avoid returning "for" results above
             
       step: ->
-        console.log @anim.toString() if @anim.ticks % 100 is 0
-        for d in @drivers #for d in @drivers()
-          d.face d.toNode
-          d.forward Math.min d.v, d.distance d.toNode
-          if .01 > d.distance d.toNode # or (d.distance d.toNode) < .01
-            d.fromNode = d.toNode
-            d.toNode = u.oneOf d.toNode.linkNeighbors() #.oneOf()
+        console.log @animator.toString() if @animator.ticks % 100 is 0
+        for driver in @drivers
+          driver.face driver.toNode.position
+          driver.forward(
+            Math.min driver.v, driver.distance(driver.toNode.position))
+          if .01 > driver.distance driver.toNode.position
+            driver.fromNode = driver.toNode
+            driver.toNode = driver.toNode.linkNeighbors().sample()
         null # avoid returning "for" results above
 
-    # div, patchSize, minX, maxX, minY, maxY, isTorus, hasNeighbors
-    #   Defaults: 13, -16, 16, -16, 16, false, true
     model = new MyModel {
       div: "layers",
-      size: 13,
-      minX: -16,
-      maxX: 16,
-      minY: -16,
-      maxY: 16,
+      patchSize: 13,
       hasNeighbors: false
     }
     model.debug() # Debug: Put Model vars in global name space

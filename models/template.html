@@ -3,7 +3,179 @@
     <title>Template Model</title>
     <script src="../lib/agentscript.js"></script>
     <script src="../tools/coffee-script.js"></script>
-    <script src="template.coffee" type="text/coffeescript"></script>
+    <script type="text/coffeescript">
+    # This is a general template for creating models.
+    #
+    # To build your own model, extend class ABM.Model supplying the 
+    # two abstract methods `setup` and `step`.  `@foo` signifies
+    # an instance variable or method.
+    # See [CoffeeScript docs](http://jashkenas.github.com/coffee-script/#classes)
+    # for explanation of context of a class and its constructor.
+    #
+    # We do not provide a constructor of our own. 
+    # CoffeeScript automatically calls `Model.constructor <args>`
+    # and `setup` will be called by `Model.constructor`. See:
+    #
+    #     model = new MyModel "layers", 13, -16, 16, -16, 16
+    #
+    # below, which passes all its arguments to `Model`
+    
+    u = ABM.util
+
+    log = (arg) -> console.log arg
+
+    class MyModel extends ABM.Model
+      # `startup` initializes resources used by `setup` and `step`.
+      # This is called by the constructor which waits for all files
+      # processed by `starup`.  Useful for large files, but here just
+      # for an example, not needed by simple models.
+      startup: -> # called by constructor
+        u.shapes.add "bowtie", true, (c) -> u.shapes.poly c, [[-.5, -.5], [.5, .5], [-.5, .5], [.5, -.5]]
+        # The following two example lines don't work when opened locally
+        # in Chrome (they work fine from a webserver). Uncomment if you'd
+        # like to add custom images.
+        
+        # u.shapes.add "cc", true, u.importImage("data/coffee.png")
+        
+        # u.shapes.add "redfish", false, u.importImage("data/redfish64t.png")
+
+      # Initialize our model via the `setup` abstract method.
+      # This model simply creates `population` agents with
+      # arbitrary shapes with `size` size and `speed` velocity.
+      # We also periodically change the patch colors to random gray values.
+      setup: -> # called by Model.constructor        
+      # First, we initialize our model instance variables.
+      # Most instance variables are parameters we would like
+      # an external UI to setup for us.
+        @population = 100
+        @size = 1.5   # size in patch coords
+        @speed = .5   # move forward this amount in patch coords
+        @wiggle = u.degreesToRadians(30) # degrees/radians to wiggle
+        @startCircle = true  # initialize agents randomly or in circle
+        
+        # Set the default agent size (conserves storage)
+        @agents.setDefault "size", @size
+        # Set the agent to convert shape to bitmap for better performance.
+        @agents.setUseSprites()
+
+        # Set animation to 30fps, without multiple steps per draw:
+        @animator.setRate 30, false
+
+        # The patch grid will have been setup for us.  Here we initialize
+        # patch variables, either built-in ones or any new patch variables
+        # our model needs. In this case, we set the built-in color to a
+        # random gray value.
+        for patch in @patches.create()
+          patch.color = u.randomGray()
+          # Set x,y axes different color, use [0,0,0,0] for transparent pixel test
+          if patch.x is 0 or patch.y is 0
+            patch.color = [255,0,0]
+
+        # Our empty @agents Agents will have been created.  Here we
+        # add `population` Agents we use in our model.
+        # We set the build-in Agent variables `size` and `shape` 
+        # and layout the agents randomly or in a circle depending
+        # on our modeel's `startCircle` variable.
+        for agent in @agents.create @population
+          agent.shape = u.shapes.names().sample() # random shapes
+          if @startCircle
+            agent.forward @patches.max.x / 2 # start in circle
+          else
+            agent.moveTo @patches.randomPoint() # set random location
+
+        # Print number of agents and patches to the console.
+        # Note CoffeeScript
+        # [string interpolation](http://jashkenas.github.com/coffee-script/#strings)
+        log "total agents: #{@agents.length}, total patches: #{@patches.length}"
+        # Print number of agents with each shape
+        for s in u.shapes.names()
+          num = @agents.getPropertyWith("shape", s).length
+          log "#{num} #{s}"
+
+      # Update our model via the second abstract method, `step`
+      step: ->  # called by Model.animate
+        # First, update our agents via `updateAgents` below
+        for agent in @agents
+          @updateAgents(agent)
+
+        # Every 100 steps, update our patches, print stats to 
+        # the console, and use the Model refresh flag to redraw
+        # the patches. Otherwise don't refresh.
+        if @animator.ticks % 100 is 0
+          for patch in @patches
+            @updatePatches(patch)
+
+          @reportInfo()
+          @refreshPatches = true
+          # Add use of our first pull request:
+          @setSpotlight @agents.sample() if @animator.ticks is 300
+          @setSpotlight null if @animator.ticks is 600
+        else
+          @refreshPatches = false
+
+        if @animator.draws is 2 # Show the sprite sheet if there is one after first draw
+          sheet = u.shapes.spriteSheets.last() if u.shapes.spriteSheets.length isnt 0
+          if sheet?
+            log sheet
+            document.getElementById("play").appendChild(sheet.canvas)
+
+        log @animator.toString() if @animator.ticks % 100 is 0
+
+        # Stop the animation at 1000. Restart by `ABM.model.start()` in console.
+        if @animator.ticks is 1000
+          log "..stopping, restart by ABM.model.start()"
+          @stop()
+
+      # Three of our own methods to manage agents & patches
+      # and report model state.
+      updateAgents: (agent) -> # a is agent
+        # Have our agent "wiggle" by changing
+        # our heading by +/- `wiggle/2` radians
+        agent.rotate u.randomCentered @wiggle
+        # Then move forward by our speed.
+        agent.forward @speed
+
+      updatePatches: (patch) -> # p is patch
+        # Update patch colors to be a random gray.
+        if patch.x isnt 0 and patch.y isnt 0
+          patch.color = u.randomGray()
+
+      reportInfo: ->
+        # Report the average heading, in radians and degrees
+        headings = @agents.getProperty "heading"
+        avgHeading = (headings.reduce (a, b) -> a + b) / @agents.length
+        # Note: multiline strings. block strings also available.
+        log "
+average heading of agents: 
+#{avgHeading.toFixed(2)} radians, 
+#{u.radiansToDegrees(avgHeading).toFixed(2)} degrees"
+
+    # Now that we've build our class, we call it with Model's
+    # constructor arguments:
+    #
+    #     div: name of the div
+    #     patchSize = 13: size (width & height) of each patch in pixels
+    #     mapSize = 32: size (width & height) of the map in patches
+    #     torus = false: map has torus topology
+    # TODO
+    #     hasNeighbors = true
+    #
+    #     Alternatively to mapSize you can set the map-size manually:
+    #     min: {x: x-coordinaye, y: y-coordinate}
+    #     max: {x: x-coordinaye, y: y-coordinate}
+    #
+    # Defaults 13 for patchSize and 32 for mapSize
+    model = new MyModel({
+      div: "layers",
+      patchSize: 13,
+      mapSize: 32
+      isTorus: true,
+      hasNeighbors: false
+    })
+    .debug() # Debug: Put Model vars in global name space
+    .start() # Run model immediately after startup initialization
+    
+    </script>
   </head>
   <body>
     <div id="layers"></div>

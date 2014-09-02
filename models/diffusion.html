@@ -5,15 +5,13 @@
     <script src="../tools/coffee-script.js"></script>
     <script type="text/coffeescript">
 
-    u = ABM.util # ABM.util alias, u.s is also ABM.shape accessor.
+    u = ABM.util
+
     class MyModel extends ABM.Model
       setup: ->
 
         # No optimizations: 30fps
         @patches.usePixels() # 57+fps
-        # @patches.cacheAgentsHere() # 28-9fps, not needed * overhead
-        # two: 57+fps, fast patches get us to max
-        
 
         # globals
         @population = 100
@@ -21,36 +19,33 @@
         @coolingRate = .10
         @speed = .5
         
-        @anim.setRate 30, true
+        @animator.setRate 30, true
         
         # defaults
         @agents.setDefault "size", 1.5
 
+        for p in @patches.create()
+          p.heat = 0
+
         @agents.create @population
         # @agents.create @population, (a) => # fat arrow for @patches etc
         #   a.size = 1.5
-        for p in @patches
-          p.heat = 0
       step: ->
-        console.log @anim.toString() if @anim.ticks % 100 is 0
+        console.log @animator.toString() if @animator.ticks % 100 is 0
         for p in @patches
           p.heat *= (1-@coolingRate)
         for a in @agents
-          a.rotate u.randomCentered(u.degToRad(40))
+          a.rotate u.randomCentered(u.degreesToRadians(40))
           a.forward @speed
-          a.p.heat = 1
+          a.patch.heat = 1
         @patches.diffuse "heat", @diffusionRate, [255,0,0]
         # @stop() # debug: one step
 
-    # div, patchSize, minX, maxX, minY, maxY, isTorus, hasNeighbors
-    #   Defaults: 13, -16, 16, -16, 16, false, true
     model = new MyModel {
       div: "layers",
-      size: 10,
-      minX: -25,
-      maxX: 25,
-      minY: -20,
-      maxY: 20,
+      patchSize: 10,
+      min: {x: -25, y: -20},
+      max: {x: 25, y: 20}
       isTorus: true
     }
     model.debug() # Debug: Put Model vars in global name space

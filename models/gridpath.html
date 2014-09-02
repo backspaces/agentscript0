@@ -5,7 +5,8 @@
     <script src="../tools/coffee-script.js"></script>
     <script type="text/coffeescript">
 
-    u = ABM.util # ABM.util alias, u.s is also ABM.shape accessor.
+    u = ABM.util
+
     class MyModel extends ABM.Model
       setup: ->
         @refreshAgents = false # for static agents
@@ -14,86 +15,108 @@
         @prob = 1
         
         # defaults
-        @patches.setDefault "labelColor", [255,255,255]
-        offset=Math.floor @world.size*.45
+        @patches.setDefault "labelColor", [255, 255, 255]
+        offset = Math.floor @world.size * .45
         # @patches.setDefault "labelOffset", [12,14]
         @patches.setDefault "labelOffset", [offset, offset]
-        u.ctxTextParams @contexts.patches, "10px sans-serif", "right", "bottom"
-        # u.elementTextParams @contexts.patches, "10px sans-serif", "right", "bottom"
+        u.contextTextParams @contexts.patches, "10px sans-serif", "right", "bottom"
+        # u.elementTextParams @contexts.contexts.patches, "10px sans-serif", "right", "bottom"
         @agents.setDefault "shape", "circle"
-        @agents.setDefault "color", ([210,0,0])
+        @agents.setDefault "color", ([210, 0, 0])
         @agents.setDefault "size", .4
         @agents.setDefault "hidden", 2.5
         @agents.setDefault "heading",  0 # override promotion to random angle
 
-        @anim.setRate 10
+        @animator.setRate 10
 
-        for p in @patches
-          p.color = u.randomGray 160, 190
-          p.occupied = false
-        @drawGrid [0,0,0]
+        for patch in @patches.create()
+          patch.color = u.randomGray 160, 190
+          patch.occupied = false
+
+        @drawGrid [0, 0, 0]
         @walker = @agents.create(1)[0]
-        p0 = @patches[0]
-        @walker.setXY p0.x, p0.y
+        patch0 = @patches[0]
+        @walker.moveTo patch0.position
         @walker.penDown = true
         # @walker.color = [210,0,0]
         # @walker.shape = "circle"
         # @walker.size = .4
-        # @walker.setXY 0, 0 # needed? should start at 0,0
         @walker.stamp()
-        @walker.p.occupied = true
+        @walker.patch.occupied = true
         # @walker.penDown = true
         # @walker.penSize *= 2.5
         # @setTextParams @patches, "9px sans-serif", "right", "bottom"
-        # @setLabelParams @patches, [255,255,255], [12,12]
+        # @setLabelParams @patches, [255, 255, 255], [12, 12]
+
       step: ->
         @floodFill()
-        # p = @asSet (n for n in @walker.p.n4 when n.ok)
-        p = @patches.asSet (n for n in @walker.p.n4 when n.ok)
-        @drawNum p.length
-        @walker.moveTo p.oneOf()
+        patches = ABM.Set.from (neighbor for neighbor in @walker.patch.neighbors(diamond: 1) when neighbor.ok)
+        @drawNum patches.length
+        @walker.moveTo patches.sample().position
         @walker.stamp()
-        @walker.p.occupied = true
-        (@stop(); console.log "prob: #{@prob}") if @done()
+        @walker.patch.occupied = true
+        if @done()
+          @stop()
+          console.log "prob: #{@prob}"
       
-      # drawNum: (n) -> @walker.label = ""+n; @prob /= n
-      drawNum: (n) -> @walker.p.label = ""+n; @prob /= n
-      done: -> @patches.last().occupied
+      drawNum: (number) ->
+        @walker.patch.label = "" + number
+        @prob /= number
+
+      done: ->
+        @patches.last().occupied
       
-      drawGrid: (c) ->
-        a = @agents.create(1)[0]
-        a.color = c 
-        a.penSize *= .4
-        a.heading = Math.PI/2
-        for x in [0..@patches.maxX]
-          a.setXY(x,0); a.penDown = true; a.forward @patches.maxY; a.penDown = false
-        a.heading = 0
-        for y in [0..@patches.maxY]
-          a.setXY(0,y); a.penDown = true; a.forward @patches.maxX; a.penDown = false
-        a.die()
+      drawGrid: (color) ->
+        agent = @agents.create(1)[0]
+        agent.color = color
+        agent.penSize *= .4
+        agent.heading = Math.PI / 2
+
+        for x in [0..@patches.max.x]
+          agent.moveTo x: x, y: 0
+          agent.penDown = true
+          agent.forward @patches.max.y
+          agent.penDown = false
+        agent.heading = 0
+
+        for y in [0..@patches.max.y]
+          agent.moveTo x: 0, y: y
+          agent.penDown = true
+          agent.forward @patches.max.x
+          agent.penDown = false
+        agent.die()
       
       floodFill: ->
-        p.ok = false for p in @patches
-        pset = [@patches.last()]
-        while pset.length > 0
-          p.ok = true for p in pset
-          pnext = @asSet u.flatten (p.n4 for p in pset)
-          pnext.sortById().uniq()
-          pset = (n for n in pnext when not n.ok and not n.occupied)
+        for patch in @patches
+          patch.ok = false
+
+        patches = new ABM.Set @patches.last()
+
+        while patches.length > 0
+          for patch in patches
+            patch.ok = true
+
+          neighbors = new ABM.Set
+
+          for patch in patches
+            neighbors.push patch.neighbors(diamond: 1)
+
+          nextPatches = neighbors.flatten()
+          nextPatches = nextPatches.flatten()
+          nextPatches.sort("id").uniq()
+
+          patches = new ABM.Set
+          
+          for nextPatch in nextPatches
+            if not nextPatch.ok and not nextPatch.occupied
+              patches.push nextPatch
         null
 
-    # div, patchSize, minX, maxX, minY, maxY, isTorus, hasNeighbors
-    #   Defaults: 13, -16, 16, -16, 16, false, true
-    # model = new MyModel "layers", 30, 0,10, 0,10
-    # model.setRootVars() # Debug: Put Model vars in global name space
-    # model.start() # Run model immediately after startup initialization
     new MyModel({
       div: "layers",
-      size: 30,
-      minX: 0,
-      maxX: 10,
-      minY: 0,
-      maxY: 10
+      patchSize: 30,
+      min: {x: 0, y: 0},
+      max: {x: 10, y: 10}
     })
     .start()
     .debug()

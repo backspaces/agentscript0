@@ -5,18 +5,18 @@
     <script src="../tools/coffee-script.js"></script>
     <script type="text/coffeescript">
 
-    u = ABM.util # ABM.util alias, u.s is also ABM.shape accessor.
+    u = ABM.util
+
     class MyModel extends ABM.Model
       setup: ->
-        @agentBreeds "embers fires"
+        @agentBreeds ["embers", "fires"]
         @agents.setDefault "shape", "square"
-        @agents.setDefault "color", [255,0,0]
+        @agents.setDefault "color", [255, 0, 0]
         @agents.setDefault "heading", 0 # override promotion to random angle
         
         @refreshPatches = false # <1fps->50-55fps, no surprise, app optimized for this 
         # No optimizations: 50-55fps
         # @patches.usePixels() # 50-55fps .. not used, refresh off
-        # @patches.cacheAgentsHere() # 50-55fps, not needed * overhead
         # None of the optimizations particularly useful, other than refresh
         # If refresh on, fastPatches is in the 50+fps range.
         
@@ -25,52 +25,57 @@
         @initialTrees = 0
         
         # defaults
-        # @anim.setRate 10, true
-        @anim.setRate 60, false
+        # @animator.setRate 10, true
+        @animator.setRate 60, false
         
-
-        for p in @patches when u.randomInt(100) < @density
+        for patch in @patches.create() when u.randomInt(100) < @density
           # u.setColor p.color, 0, 255, 0
-          p.color = [0, 255, 0] # override default, set per patch color
-        @ignite p for p in @patches when p.x is @patches.minX
+          patch.color = [0, 255, 0] # override default, set per patch color
+
+        for patch in @patches
+          if patch.position.x is @patches.min.x
+            @ignite patch
+
         @initialTrees = (p for p in @patches when u.colorsEqual p.color, [0, 255, 0]).length
+
         console.log "burnedTrees #{@burnedTrees}"
+
         @burnedTrees = 0 # reset from initial ignites
-        # console.log "embers: ", @embers; window.embers = @embers
-        # console.log "fires: ", @fires; window.fires = @fires
-        # console.log "agents:", @agents
-      ignite: (p) ->
-        p.sprout 1, @fires, (a) -> 
-          #a.breed = "fires"
-          #a.color = [255, 0, 0]
-        p.color = [0, 0, 0] # in original model but apparently not needed, refresh off?
+
+      ignite: (patch) ->
+        patch.sprout 1, @fires
+        patch.color = [0, 0, 0] # in original model but apparently not needed, refresh off?
         @burnedTrees++
+
       fadeEmbers: ->
-        for a in @embers by -1 # -1: allow die() in loop
-          a.scaleColor a.color, .8
-          if 100 > Math.max a.color... # or (Math.max a.color...) < 100 , needs parens
-            a.p.color = a.color
-            a.p.draw @contexts.patches
-            a.die()
+        for ember in @embers by -1 # -1: allow die() in loop
+          ember.color = u.fractionOfColor ember.color, .8
+          if 100 > Math.max ember.color... # or (Math.max a.color...) < 100 , needs parens
+            ember.patch.color = ember.color
+            ember.patch.draw @contexts.patches
+            ember.die()
+
       step: ->
-        console.log @anim.toString() if @anim.ticks % 100 is 0
+        if @animator.ticks % 100 is 0
+          console.log @animator.toString()
+
         unless @agents.any()
-          console.log "..stopping, fire done at tick: #{@anim.ticks}"
+          console.log "..stopping, fire done at tick: #{@animator.ticks}"
           @stop()
-        for a in @fires by -1 # -1: allow changeBreed() in loop
-          @ignite p for p in a.p.n4 when u.colorsEqual p.color, [0, 255, 0]
-          @embers.setBreed a
+
+        for fire in @fires by -1 # -1: allow changeBreed() in loop
+          for patch in fire.patch.neighbors(diamond: 1)
+            if u.colorsEqual patch.color, [0, 255, 0]
+              @ignite patch
+
+          @embers.setBreed fire
+
         @fadeEmbers()
 
-    # div, patchSize, minX, maxX, minY, maxY, isTorus, hasNeighbors
-    #   Defaults: 13, -16, 16, -16, 16, false, true
     model = new MyModel {
       div: "layers",
-      size: 2,
-      minX: -125,
-      maxX: 125,
-      minY: -125,
-      maxY: 125
+      patchSize: 2,
+      mapSize: 250
     }
     model.debug() # Debug: Put Model vars in global name space
     model.start() # Run model immediately after startup initialization

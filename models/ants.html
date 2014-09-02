@@ -5,22 +5,21 @@
     <script src="../tools/coffee-script.js"></script>
     <script type="text/coffeescript">
 
-    u = ABM.util # ABM.util alias, u.s is also ABM.shape accessor.
+    u = ABM.util
+
     class MyModel extends ABM.Model
       setup: ->
-        
         # No optimizations: 10fps
         @patches.usePixels() # 24fps
-        # @patches.cacheAgentsHere() # 9-10fps, not needed & modest overhead
         # two: 27fps, now static colors larger percent of faster patches.
         @agents.setUseSprites() # 24->46-48fps!
         
-        # @anim.setRate 25, true # normal: let agents step faster than drawing
-        @anim.setRate 60, false # speed test
+        # @animator.setRate 25, true # normal: let agents step faster than drawing
+        @animator.setRate 60, false # speed test
         
         # globals
-        @nestColor = [255,255,0]  # yellow
-        @foodColor = [0,0,255]    # blue
+        @nestColor = [255, 255, 0]  # yellow
+        @foodColor = [0, 0, 255]    # blue
 
         # defaults
         @agents.setDefault "shape", "bug"
@@ -28,109 +27,133 @@
         @agents.setDefault "size", 3
         
         # UI globals:
-        @population = 255
+        @population = 155
         @maxPheromone = 35
         @diffusionRate = .30
         @evaporationRate = .01
-        @wiggleAngle = u.degToRad(30) # radians
+        @wiggleAngle = u.degreesToRadians(30) # radians
 
         if @agents.useSprites
-          @nestSprite = ABM.shapes.shapeToSprite "bug", @nestColor, @patches.toBits 18
-          @foodSprite = ABM.shapes.shapeToSprite "bug", @foodColor, @patches.toBits 18
+          @nestSprite = u.shapes.shapeToSprite "bug", @nestColor, @patches.toBits 18
+          @foodSprite = u.shapes.shapeToSprite "bug", @foodColor, @patches.toBits 18
         
         @setupPatches()
         @setupAgents()
+
       step: ->
-        console.log @anim.toString() if @anim.ticks % 100 is 0
+        if @animator.ticks % 100 is 0
+          console.log @animator.toString()
+
         @updateAgents()
         @updatePatches()
 
       setupPatches: ->
-        for p in @patches
-          p.isNest = false ; p.isFood = false 
-          # REMIND: agentsOwn etc; NL defaults to 0
-          p.foodPheromone = 0; p.nestPheromone = 0
-        (p.isNest=true;p.color=@nestColor) for p in @patchRect @patches.maxX-6,0,3,3
-        (p.isFood=true;p.color=@foodColor) for p in @patchRect @patches.minX+6,0,3,3
+        for patch in @patches.create()
+          patch.isNest = false
+          patch.isFood = false
+          patch.foodPheromone = 0
+          patch.nestPheromone = 0
+
+        for patch in @patchRectangle {x: @patches.max.x - 6, y: 0}, 3, 3
+          patch.isNest = true
+          patch.color = @nestColor
+
+        for patch in @patchRectangle {x: @patches.min.x + 6, y: 0}, 3, 3
+          patch.isFood = true
+          patch.color = @foodColor
+
         null
-      setupAgents: -> # a is agent
-        @agents.create @population, (a) => # fat arrow for @patches etc
-          #a.shape = "bug"
-          #a.size = 3
-          a.setXY @patches.maxX-6, 0
-          @resetAgent(a, false) # sets a.pheromone to max
-      resetAgent: (a, withFood) ->
-        a.carryingFood = withFood
+
+      setupAgents: ->
+        @agents.create @population, (agent) => # fat arrow for @patches etc
+          agent.moveTo x: @patches.max.x - 6, y: 0
+          @resetAgent(agent, false) # sets a.pheromone to max
+
+      resetAgent: (agent, withFood) ->
+        agent.carryingFood = withFood
         if @agents.useSprites
-          a.sprite = if withFood then @nestSprite else @foodSprite
-          # a.setSprite (if withFood then @nestSprite else @foodSprite)
+          if withFood
+            agent.sprite = @nestSprite
+          else
+            agent.sprite = @foodSprite
         else
-          a.color = if withFood then @nestColor else @foodColor
-          # a.colorStr = u.colorStr a.color if @agents.staticColors
-        a.pheromone = @maxPheromone
+          if withFood
+            agent.color = @nestColor
+          else
+            agent.color = @foodColor
+
+        agent.pheromone = @maxPheromone
 
       updateAgents: ->
-        for a in @agents when a.id < @anim.ticks # gradually leave nest
-            @wiggleUphill a
-            @dropPheromone a
+        for agent in @agents when agent.id < @animator.ticks # gradually leave nest
+          @wiggleUphill agent
+          @dropPheromone agent
+
         null # needed to avoid returning an absurd comprehension
-      wiggleUphill: (a) ->
-        if a.p.isOnEdge()
-          # a.rotate Math.PI 
-          a.rotate u.degToRad(180)
+
+      wiggleUphill: (agent) ->
+        if agent.patch.isOnEdge()
+          agent.rotate u.degreesToRadians(180)
         else
-          # nAhead = a.inCone a.p.n, Math.PI, 2
-          nAhead = a.inCone a.p.n, u.degToRad(180), 2
-          # nAhead = a.p.n.inCone a.p, a.heading, u.degToRad(180), 2
-          # nAhead = ABM.patches.inCone a.p, a.heading, u.degToRad(180), 2
-          [p, max] = nAhead.maxOneOf ((n) => @targetPheromone(a, n)), true # => for @
-          a.face p if max > .001/@maxPheromone
-          # p = nAhead.maxOneOf ((n) => @targetPheromone(a, n)) # => for @
-          # max = @targetPheromone(a, p)
-          # a.face p if max > .001/@maxPheromone
-        a.rotate u.randomCentered(@wiggleAngle)
-        a.forward 1
-      targetPheromone: (a, p) -> 
-        if a.carryingFood then p.nestPheromone else p.foodPheromone
-      dropPheromone: (a) ->
-        if (not a.carryingFood and a.p.isFood) or (a.carryingFood and a.p.isNest)
-          @resetAgent a, not a.carryingFood
-        if a.carryingFood
-        then a.p.foodPheromone += 0.1*a.pheromone
-        else a.p.nestPheromone += 0.1*a.pheromone
-        a.pheromone *= 0.9
+          nAhead = agent.patch.neighbors(
+            heading: agent.heading, cone: u.degreesToRadians(180), radius: 2)
+          [patch, max] = nAhead.max ((n) =>
+            @targetPheromone(agent, n)), true # => for @
+
+          if max > .001 / @maxPheromone
+            agent.face patch.position
+
+        agent.rotate u.randomCentered(@wiggleAngle)
+        agent.forward 1
+
+      targetPheromone: (agent, patch) ->
+        if agent.carryingFood
+          patch.nestPheromone
+        else
+          patch.foodPheromone
+
+      dropPheromone: (agent) ->
+        if (not agent.carryingFood and agent.patch.isFood) or (agent.carryingFood and agent.patch.isNest)
+          @resetAgent agent, not agent.carryingFood
+
+        if agent.carryingFood
+          agent.patch.foodPheromone += 0.1 * agent.pheromone
+        else
+          agent.patch.nestPheromone += 0.1 * agent.pheromone
+
+        agent.pheromone *= 0.9
       
       updatePatches: ->
         @patches.diffuse "nestPheromone", @diffusionRate
         @patches.diffuse "foodPheromone", @diffusionRate
-        for p in @patches
-          p.foodPheromone *= (1 - @evaporationRate)
-          p.nestPheromone *= (1 - @evaporationRate)
-          p.foodPheromone = p.nestPheromone = 0 if p.isOnEdge()
-          unless (p.isNest or p.isFood) #  or p.isOnEdge()
-            if p.foodPheromone > p.nestPheromone
-            then p.scaleColor @foodColor, p.foodPheromone
-            else p.scaleColor @nestColor, p.nestPheromone
+
+        for patch in @patches
+          patch.foodPheromone *= (1 - @evaporationRate)
+          patch.nestPheromone *= (1 - @evaporationRate)
+
+          if patch.isOnEdge()
+            patch.foodPheromone = patch.nestPheromone = 0
+
+          unless (patch.isNest or patch.isFood) #  or patch.isOnEdge()
+            if patch.foodPheromone > patch.nestPheromone
+              patch.color = u.fractionOfColor @foodColor, patch.foodPheromone
+            else
+              patch.color = u.fractionOfColor @nestColor, patch.nestPheromone
+
         null
 
       # utilities
-      patchRect: (x, y, dw, dh) ->
-        @patches.patchRect @patches.patch(x,y), dw, dh, true
+      patchRectangle: (point, dw, dh) ->
+        @patches.patchRectangle @patches.patch(point), dw, dh, true
 
-    # div, patchSize, minX, maxX, minY, maxY, isTorus, hasNeighbors
-    #   Defaults: 13, -16, 16, -16, 16, false, true
-    window.model = new MyModel {
+    model = new MyModel {
       div: "layers",
-      size: 6,
-      minX: -40,
-      maxX: 40,
-      minY: -40,
-      maxY: 40
+      patchSize: 6,
+      mapSize: 80
     }
     model.debug() # Debug: Put Model vars in global name space
     model.start() # Run model immediately after startup initialization
     </script>
-
   </head>
   <body>
     <div id="layers"></div>

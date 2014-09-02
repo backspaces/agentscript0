@@ -5,190 +5,195 @@
 # Create the namespace **ABM** for our project.
 # Note here `this` or `@` == window due to coffeescript wrapper call.
 # Thus @ABM is placed in the global scope.
-@ABM={}
+# Plain ABM is set for running tests on the command-line
+@ABM = ABM = {}
 
 root = @ # Keep a private copy of global object
 
 # Global shim for not-yet-standard requestAnimationFrame.
 # See: [Paul Irish Shim](https://gist.github.com/paulirish/1579671)
-do -> 
+do ->
   @requestAnimFrame = @requestAnimationFrame or null
   @cancelAnimFrame = @cancelAnimationFrame or null
   for vendor in ['ms', 'moz', 'webkit', 'o'] when not @requestAnimFrame
-    @requestAnimFrame or= @[vendor+'RequestAnimationFrame']
-    @cancelAnimFrame or= @[vendor+'CancelAnimationFrame']
-    @cancelAnimFrame or= @[vendor+'CancelRequestAnimationFrame']
+    @requestAnimFrame or= @[vendor + 'RequestAnimationFrame']
+    @cancelAnimFrame or= @[vendor + 'CancelAnimationFrame']
+    @cancelAnimFrame or= @[vendor + 'CancelRequestAnimationFrame']
   @requestAnimFrame or= (callback) -> @setTimeout(callback, 1000 / 60)
   @cancelAnimFrame or= (id) -> @clearTimeout(id)
-
-# Shim for `Array.indexOf` if not implemented.
-# Use [es5-shim](https://github.com/kriskowal/es5-shim) if additional shims needed.
-Array::indexOf or= (item) -> return i if x is item for x, i in @; -1
-
 
 # **ABM.util** contains the general utilities for the project. Note that within
 # **util** `@` referrs to ABM.util, *not* the global name space as above.
 # Alias: u is an alias for ABM.util within the agentscript module (not outside)
 #
-#      u.clearCtx(ctx) is equivalent to
-#      ABM.util.clearCtx(ctx)
+#      u.clearContext(context) is equivalent to
+#      ABM.util.clearContext(context)
 
+# Extended with ABM.util.array
+
+# TODO positions
 ABM.util = u =
-
+  # ### Language extensions
+  
   # Shortcut for throwing an error.  Good for debugging:
   #
   #     error("wtf? foo=#{foo}") if fooProblem
-  error: (s) -> throw new Error s
+  error: (string) ->
+    throw new Error string
   
-  # Two max/min int values. One for 2^53, largest int in float64, other for
+  # Two max/min int numbers. One for 2^53, largest int in float64, other for
   # bitwise ops which are 32 bit. See [discussion](http://goo.gl/WpAzT)
-  MaxINT: Math.pow(2,53); MinINT: -Math.pow(2,53) # -@MaxINT fails, @ not defined yet
-  MaxINT32: 0|0x7fffffff; MinINT32: 0|0x80000000
+  MaxINT: Math.pow(2, 53)
+  MinINT: -Math.pow(2, 53) # -@MaxINT fails, @ not defined yet
+  MaxINT32: 0 | 0x7fffffff
+  MinINT32: 0 | 0x80000000
+  Colors: {
+    black: [0, 0, 0], white: [255, 255, 255], gray: [128, 128, 128],
+    red: [255, 0, 0], yellow: [255, 255, 0], green: [0, 128, 0],
+    blue: [0, 0 ,255], purple: [128, 0, 128], brown: [165, 42, 42]
+  }
   
   # Good replacements for Javascript's badly broken`typeof` and `instanceof`
   # See [underscore.coffee](http://goo.gl/L0umK)
-  isArray: Array.isArray or
-    (obj) -> !!(obj and obj.concat and obj.unshift and not obj.callee)
-  isFunction: (obj) -> 
-    !!(obj and obj.constructor and obj.call and obj.apply)
-  isString: (obj) -> 
-    !!(obj is '' or (obj and obj.charCodeAt and obj.substr))
+  # TODO fix: Array.isArray or (object) ->
+  isArray: (object) ->
+    !!(object and object.concat and object.unshift and not object.callee)
+
+  isFunction: (object) ->
+    !!(object and object.constructor and object.call and object.apply)
+
+  isString: (object) ->
+    !!(object is '' or (object and object.charCodeAt and object.substr))
+
+  isNumber: (object) ->
+    !!(typeof object is "number")
   
-# ### Numeric Operations
+  # ### Numeric operations
 
   # Replace Math.random with a simple seedable generator.
   # See [StackOverflow](http://goo.gl/FafN3z)
-  randomSeed: (seed=123456) ->
-    Math.random = -> x=Math.sin(seed++)*10000; x-Math.floor(x)
+  randomSeed: (seed = 123456) ->
+    Math.random = ->
+      x = Math.sin(seed++) * 10000
+      x - Math.floor(x)
 
-  # Return random int in [0,max) or [min,max)
-  randomInt: (max) -> Math.floor(Math.random() * max)
-  randomInt2: (min, max) -> min + Math.floor(Math.random() * (max-min))
+  # Return random int in [0, max) or [min, max)
+  randomInt: (minmax = 2, max = null) ->
+    Math.floor(@randomFloat(minmax, max))
+
+  # Return float in [0, max) or [min, max) or [-r / 2, r / 2)
+  randomFloat: (minmax = 1, max = null) ->
+    if max is null
+      max = minmax
+      min = 0
+    else
+      min = minmax
+
+    min + Math.random() * (max - min)
+
   # Return float Gaussian normal with given mean, std deviation.
-  randomNormal: (mean = 0.0, sigma = 1.0) -> # Box-Muller
-    u1 = 1.0-Math.random(); u2 = Math.random() # u1 in (0,1]
-    norm = Math.sqrt(-2.0*Math.log(u1)) * Math.cos(2.0*Math.PI*u2)
-    norm*sigma + mean
-  # Return float in [0,max) or [min,max) or [-r/2,r/2)
-  randomFloat: (max) -> Math.random() * max
-  randomFloat2: (min, max) -> min + Math.random() * (max-min)
-  randomCentered: (r) -> @randomFloat2 -r/2, r/2
-  # Return log n where base is 10, base, e respectively.
-  # Note ln: (n) -> Math.log n .. i.e. JS's log is log base e
-  log10: (n) -> Math.log(n)/Math.LN10
-  log2: (n) -> @logN n, 2
-  logN: (n, base) -> Math.log(n)/Math.log(base)
-  # Return true [mod functin](http://goo.gl/spr24), % is remainder, not mod.
-  mod: (v, n) -> ((v % n) + n) % n
-  # Return v to be between min, max via mod fcn
-  wrap: (v, min, max) -> min + @mod(v-min, max-min)
-  # Return v to be between min, max via clamping with min/max
-  clamp: (v, min, max) -> Math.max(Math.min(v,max),min)
+  randomNormal: (mean = 0.0, standardDeviation = 1.0) -> # Box-Muller
+    u1 = 1.0 - Math.random()
+    u2 = Math.random() # u1 in (0, 1]
+    normal = Math.sqrt(-2.0 * Math.log(u1)) * Math.cos(2.0 * Math.PI * u2)
+    normal * standardDeviation + mean
+
+  randomCentered: (r) ->
+    @randomFloat -r / 2, r / 2
+
+  onceEvery: (number = 100) ->
+    @randomInt(number) is 1
+
+  # Return log number where base is 10, base, e respectively.
+  # Note ln: (n) -> Math.log number .. i.e. JS's log is log base e
+  log10: (number) ->
+    Math.log(number) / Math.LN10
+
+  log2: (number) ->
+    @logN number, 2
+
+  logN: (number, base) ->
+    Math.log(number) / Math.log(base)
+
+  # Return true [modulo](http://goo.gl/spr24), % is remainder, not mod.
+  mod: (number, moduloOf) ->
+    ((number % moduloOf) + moduloOf) % moduloOf
+
+  # Return number to be between min, max via modulo
+  wrap: (number, min, max) ->
+    min + @mod(number - min, max - min)
+
+  # Return number to be between min, max via clamping with min/max
+  clamp: (number, min, max) ->
+    Math.max(Math.min(number, max), min)
+
   # Return sign of a number as +/- 1
-  sign: (v) -> if v<0 then -1 else 1
-  # Return n to given precision, default 2
-  # Considerably faster than equivalent: Number(n.toFixed(p))
-  fixed: (n,p=2) -> p = Math.pow(10,p); Math.round(n*p)/p
-  # Return an array of floating pt numbers as strings at given precision;
-  # useful for printing
-  aToFixed: (a, p=2) -> (i.toFixed p for i in a)
-  # Return localized string for number, with commas etc
-  tls: (n) -> n.toLocaleString()
+  sign: (number) ->
+    if number < 0
+      -1
+    else
+      1
 
+  # ### Color and angle operations
 
-# ### Color and Angle Operations
-# Our colors are r,g,b,[a] arrays, with an optional color.str HTML
-# color string property. The str value is set on the first call to colorStr
-  
+  # Basic colors from string # TODO make better, so accepts arrays
+  colorFromString: (colorName) ->
+    color = @Colors[colorName]
+    if !@isArray color
+      @error "unless you're using basic colors, specify an rgb array [nr, nr, nr]"
+    color
+
   # Return a random RGB or gray color. Array passed to minimize garbage collection
-  randomColor: (c = []) ->
-    c.str = null if c.str?
-    c[i] = @randomInt(256) for i in [0..2]
-    c 
+  randomColor: () ->
+    color = []
+    for i in [0..2]
+      color[i] = @randomInt(256)
+    color
+
   # Note: if 2 args passed, assume they're min, max w/ default c
-  randomGray: (c = [], min = 64, max = 192) -> 
-    if arguments.length is 2 then return @randomGray null, c, min
-    c.str = null if c.str?
-    r=@randomInt2 min,max
-    c[i] = r for i in [0..2]
-    c
-  # Random color from a colormap set of r,g,b values.
+  randomGray: (min = 64, max = 192) ->
+    color = []
+    random = @randomInt min, max
+    for i in [0..2]
+      color[i] = random
+    color
+
+  # Random color from a colormap set of r, g, b values.
   # Default is one of 125 (5^3) colors
-  randomMapColor: (c = [], set = [0,63,127,191,255]) -> 
-    @setColor c, @oneOf(set), @oneOf(set), @oneOf(set)
-  randomBrightColor: (c=[]) -> @randomMapColor c, [0,127,255]
-  randomHSBColor: (c=[]) ->
-    c = @hsbToRgb([@randomInt(51)*5,255,255])
-  # Modify an existing rgb or gray color.  Alpha optional, not set if not provided.
-  # Modifying an existing array minimizes GC overhead
-  setColor: (c, r, g, b, a) ->
-    c.str = null if c.str?
-    c[0] = r; c[1] = g; c[2] = b; c[3] = a if a?
-    c
-  setGray: (c, g, a) -> @setColor c, g, g, g, a
+  randomMapColor: (set = [0, 63, 127, 191, 255]) ->
+    [@array.sample(set), @array.sample(set), @array.sample(set)]
+
+  randomBrightColor: () ->
+    @randomMapColor [0, 127, 255]
+
   # Return new color, c, by scaling each value of the rgb color max.
-  scaleColor: (max, s, c = []) -> 
-    c.str = null if c.str?
-    c[i] = @clamp(Math.round(val*s),0,255) for val, i in max # [r,g,b] must be ints
-    c
-  # Return HTML color as used by canvas element.  Can include Alpha
-  colorStr: (c) ->
-    return s if (s = c.str)?
-    @error "alpha > 1" if c.length is 4 and c[3] > 1
-    c.str = if c.length is 3 then "rgb(#{c})" else "rgba(#{c})"
+  fractionOfColor: (maxColor, fraction) ->
+    color = []
+    for value, i in maxColor
+      color[i] = @clamp(Math.round(value * fraction), 0, 255)
+    color
+
+  # lightens color with fraction of 0..255
+  brightenColor: (color, fraction) ->
+    newColor = []
+    for value in color
+      newColor.push @clamp(Math.round(value + fraction * 255), 0, 255)
+    newColor
+
+  # Return HTML color as used by canvas element. Can include Alpha
+  colorString: (color) ->
+    if not color.string?
+      if color.length is 4 and color[3] > 1
+        @error "alpha > 1"
+      if color.length is 3
+        color.string = "rgb(#{color})"
+      else
+        color.string = "rgba(#{color})"
+    color.string
+
   # Compare two colors.  Alas, there is no array.Equal operator.
-  colorsEqual: (c1, c2) -> c1.toString() is c2.toString()
-  # Convert r,g,b to a luminance float value (not color array).
-  # Round for 0-255 int for gray color value.
-  # [Good post on image filters](http://goo.gl/pE9cV8)
-  rgbToGray: (c) -> 0.2126*c[0] + 0.7152*c[1] + 0.0722*c[2]
-  # RGB <> HSB (HSV) conversions.
-  # RGB in [0-255], HSB in [0-1]
-  # See [Wikipedia](http://en.wikipedia.org/wiki/HSV_color_space)
-  # and [Blog Post](http://goo.gl/7yP4cO)
-  rgbToHsb: (c) ->
-    r=c[0]/255; g=c[1]/255; b=c[2]/255
-    max = Math.max(r,g,b); min = Math.min(r,g,b); v = max
-    h = 0; d = max-min; s = if max is 0 then 0 else d/max
-    if max isnt min then switch max
-      when r then h = (g - b) / d + (if g < b then 6 else 0)
-      when g then h = (b - r) / d + 2
-      when b then h = (r - g) / d + 4
-    [Math.round(255*h/6), Math.round(255*s), Math.round(255*v)]
-  hsbToRgb: (c) ->
-    h=c[0]/255; s=c[1]/255; v=c[2]/255; i = Math.floor(h*6)
-    f = h * 6 - i;        p = v * (1 - s)
-    q = v * (1 - f * s);  t = v * (1 - (1 - f) * s)
-    switch(i % 6)
-      when 0 then r = v; g = t; b = p
-      when 1 then r = q; g = v; b = p
-      when 2 then r = p; g = v; b = t
-      when 3 then r = p; g = q; b = v
-      when 4 then r = t; g = p; b = v
-      when 5 then r = v; g = p; b = q
-    [Math.round(r*255), Math.round(g*255), Math.round(b*255)]
-    
-  # Colormap utilities.  Create an array of colors which are
-  # shared by a set of objects.
-  # Note: Experimental, will change.
-  rgbMap: (R,G=R,B=R) ->
-    R = (Math.round(i*255/(R-1)) for i in [0...R]) if typeof R is "number"
-    G = (Math.round(i*255/(G-1)) for i in [0...G]) if typeof G is "number"
-    B = (Math.round(i*255/(B-1)) for i in [0...B]) if typeof B is "number"
-    map=[]; ((map.push [r,g,b] for b in B) for g in G) for r in R
-    map
-  grayMap: -> ([i,i,i] for i in [0..255])
-  hsbMap: (n=256, s=255,b=255)-> 
-    (@hsbToRgb [i*255/(n-1),s,b] for i in [0...n])
-  gradientMap: (nColors, stops, locs) ->
-    locs = (i/(stops.length-1) for i in [0...stops.length]) if not locs?
-    ctx = @createCtx nColors, 1
-    grad = ctx.createLinearGradient 0, 0, nColors, 0
-    grad.addColorStop locs[i], @colorStr stops[i] for i in [0...stops.length]
-    ctx.fillStyle = grad
-    ctx.fillRect 0, 0, nColors, 1
-    id = @ctxToImageData(ctx).data
-    ([id[i], id[i+1], id[i+2]] for i in [0...id.length] by 4)
+  colorsEqual: (color1, color2) ->
+    color1.toString() is color2.toString()
 
   # Return little/big endian-ness of hardware. 
   # See Mozilla pixel [manipulation article](http://goo.gl/Lxliq)
@@ -197,280 +202,104 @@ ABM.util = u =
     d32 = new Uint32Array [0x01020304]
     # return true if byte order reversed
     (new Uint8ClampedArray d32.buffer)[0] is 4
-  # Convert between degrees and radians.  We/Math package use radians.
-  degToRad: (degrees) -> degrees * Math.PI / 180
-  radToDeg: (radians) -> radians * 180 / Math.PI
-  # Return angle in (-pi,pi] that added to rad2 = rad1
-  # See NetLogo's [subtract-headings](http://goo.gl/CjoHuV) for explanation
-  subtractRads: (rad1, rad2) ->
-    dr = rad1-rad2; PI = Math.PI
-    dr += 2*PI if dr <= -PI; dr -= 2*PI if dr > PI; dr
 
+  # Convert between degrees and radians.  We/Math package use radians.
+  degreesToRadians: (degrees) ->
+    degrees * Math.PI / 180
+
+  radiansToDegrees: (radians) ->
+    radians * 180 / Math.PI
+
+  # Return angle in (-pi, pi] that added to rad2 = rad1
+  # See NetLogo's [subtract-headings](http://goo.gl/CjoHuV) for explanation
+  substractRadians: (radians1, radians2) ->
+    angle = radians1 - radians2
+    PI = Math.PI
+    if angle <= -PI
+      angle += 2 * PI
+    if angle > PI
+      angle -= 2 * PI
+    angle
   
-# ### Object Operations
+  # ### Object operations
   
   # Return object's own key or variable values
-  ownKeys: (obj) -> (key for own key, value of obj)
-  ownVarKeys: (obj) -> (key for own key, value of obj when not @isFunction value)
-  ownValues: (obj) -> (value for own key, value of obj)
-
-  # Parse a string to its JS value.
-  # If s isn't a JS expression, return decoded string
-  parseToPrimitive: (s) -> # http://goo.gl/jxb6Ae http://goo.gl/mQsQan
-    try JSON.parse(s); catch e then decodeURIComponent(s)
-  # Return URL queryString as object, defaulting to this page's.
-  # If query element has no "=", set value to true.
-  # Otherwise use parseToPrimitive. [StackOverflow](http://goo.gl/vIwdG6)
-  parseQueryString: (query = window.location.search.substring(1)) ->
-    res = {}
-    for s in query.split "&" when query.length isnt 0
-      t=s.split "="
-      res[t[0]]=if t.length is 1 then true else @parseToPrimitive(t[1])
-    res
-
-
-# ### Array Operations
-  
-  # Does the array have any elements? Is the array empty?
-  any: (array) -> array.length isnt 0
-  empty: (array) -> array.length is 0
-  # Make a copy of the array. Needed when you don't want to modify the given
-  # array with mutator methods like sort, splice or your own functions.
-  # By giving begin/arguments, retrieve a subset of the array.
-  # Works with TypedArrays too.
-  clone: (array, begin, end) ->
-    op = if array.slice? then "slice" else "subarray"
-    if begin? then array[op] begin, end else array[op] 0
-  # Return last element of array.  Error if empty.
-  last: (array) -> 
-    @error "last: empty array" if @empty array
-    array[array.length-1]
-  # Return random element of array.  Error if empty.
-  oneOf: (array) -> 
-    @error "oneOf: empty array" if @empty array
-    array[@randomInt array.length]
-  # Return n random elements of array. Error if n > length
-  # Note: array elements presumed unique, i.e. objects or distinct primitives
-  nOf: (array, n) -> # Note: clone, shuffle then first n: poor performance
-    n = Math.min(array.length, Math.floor(n)) # OK if n is float
-    r = []; while r.length < n
-      o = @oneOf(array); r.push o unless o in r
-    r
-
-  # True if item is in array. Binary search if f isnt null.
-  contains: (array, item, f) -> @indexOf(array, item, f) >= 0
-  # Remove an item from an array. Binary search if f isnt null.
-  # Error if item not in array.
-  removeItem: (array, item, f) ->
-    unless (i = @indexOf array, item, f) < 0 then array.splice i, 1 
-    else @error "removeItem: item not found" #; array
-  # Remove elements in items from an array. Binary search if f isnt null.
-  # Error if an item not in array.
-  removeItems: (array, items, f) -> @removeItem(array,i,f) for i in items; array
-  # Insert an item in a sorted array
-  insertItem: (array, item, f) ->
-    i = @sortedIndex array, item, f
-    error "insertItem: item already in array" if array[i] is item
-    array.splice i, 0, item
-    
-  # Randomize the elements of this array.
-  # Clever! See [cookbook](http://goo.gl/TT2SY)
-  shuffle: (array) -> array.sort -> 0.5 - Math.random()
-
-  # Return o when f(o) min/max in array. Error if array empty.
-  # If f is a string, return element with max value of that property.
-  # If "valueToo" then return a 2-array of the element and the value;
-  # used for cases where f is costly function.
-  # 
-  #     array = [{x:1,y:2}, {x:3,y:4}]
-  #     # returns {x: 1, y: 2} 5
-  #     [min, dist2] = minOneOf array, ((o)->o.x*o.x+o.y*o.y), true
-  #     # returns {x: 3, y: 4}
-  #     max = maxOneOf array, "x"
-  minOneOf: (array, f=@identity, valueToo=false) ->
-    @error "minOneOf: empty array" if @empty array
-    r = Infinity; o = null; f = @propFcn f if @isString f
-    for a in array
-      (r = r1; o = a) if (r1=f(a)) < r
-    if valueToo then [o, r] else o
-  maxOneOf: (array, f=@identity, valueToo=false) ->
-    @error "maxOneOf: empty array" if @empty array
-    r = -Infinity; o = null; f = @propFcn f if @isString f
-    for a in array
-      (r = r1; o = a) if (r1=f(a)) > r
-    if valueToo then [o, r] else o
-  firstOneOf: (array, f) ->
-    return i for a,i in array when f(a); return -1
-
-  # Return histogram of o when f(o) is a numeric value in array.
-  # Histogram interval is bin. Error if array empty.
-  # If f is a string, return histogram of that property.
   #
-  # In examples below, histOf returns [3,1,1,0,0,1]
-  #
-  #     a = [1,3,4,1,1,10]
-  #     h = histOf a, 2, (i) -> i
-  #     
-  #     b = ({id:i} for i in a)
-  #     h = histOf b, 2, (o) -> o.id
-  #     h = histOf b, 2, "id"
-  histOf: (array, bin=1, f=(i)->i) ->
-    r = []; f = @propFcn f if @isString f
-    for a in array
-      i = Math.floor f(a)/bin
-      r[i] = if (ri=r[i])? then ri+1 else 1
-    r[i] = 0 for val,i in r when not val?
-    r
+  ownKeys: (object) ->
+    ABM.Array.from(key for own key, value of object)
 
-  # Mutator. Sort array of objects in place by the function f.
-  # If f is string, f returns property of object.
-  # Returns array.
-  # Clone first if you want to preserve the original array.
-  #
-  #     array = [{i:1},{i:5},{i:-1},{i:2},{i:2}]
-  #     sortBy array, "i"
-  #     # array now is [{i:-1},{i:1},{i:2},{i:2},{i:5}]
-  sortBy: (array, f) -> 
-   f = @propFcn f if @isString f # use item[f] if f is string
-   array.sort (a,b) -> f(a) - f(b)
+  ownVariableKeys: (object) ->
+    ABM.Array.from(key for own key, value of object when not @isFunction value)
 
-  # Numeric sort, default to ascending. Mutator, see clone above.
-  # Works with TypedArrays too
-  sortNums: (array, ascending=true) ->
-    f = if ascending then (a,b) -> a-b else (a,b) -> b-a
-    if array.sort? then array.sort(f) else Array.prototype.sort.call(array, f)
+  ownValues: (object) ->
+    ABM.Array.from(value for own key, value of object)
 
-
-
-  # Mutator. Removes adjacent dups, by reference, in place from sorted array.
-  # Note "by reference" means litteraly same object, not copy. Returns array.
-  # Clone first if you want to preserve the original array.
-  #
-  #     ids = ({id:i} for i in [0..10])
-  #     a = (ids[i] for i in [1,3,4,1,1,10])
-  #     # a is [{id:1},{id:3},{id:4},{id:1},{id:1},{id:10}]
-  #     b = clone a
-  #     sortBy b, "id"
-  #     # b is [{id:1},{id:1},{id:1},{id:3},{id:4},{id:10}]
-  #     uniq b
-  #     # b now is [{id:1},{id:3},{id:4},{id:10}]
-  uniq: (array) ->
-    return array if array.length < 2 # return if empty or singlton
-    array.splice i,1 for i in [array.length-1..1] by -1 when array[i-1] is array[i]
-    array
+  # ### Topology operations
   
-  # Return a new array composed of the rows of a matrix. I.e. convert
-  #
-  #     [[1,2,3],[4,5,6]] to [1,2,3,4,5,6]
-  flatten: (matrix) -> matrix.reduce( (a,b) -> a.concat b )
-  
-  # Return array of property values of given array of objects
-  aProp: (array, propOrFn) ->
-    if typeof propOrFn is 'function'
-    then propOrFn(a) for a in array
-    else a[propOrFn] for a in array
-
-  # Return hybred array with object named properties. Good for returning multiple
-  # values from a function, and destructured assignment.
-  #
-  #     a = aToObj [1,2,3,4], ["one", "two", "three", "four"]
-  #     a = [1,2,3,4], a.one = 1, .. a.four = 4
-  aToObj: (array, names) -> array[n] = array[i] for n,i in names; array
-
-  # Return scalar max/min/sum/avg of numeric array
-  # Iterate rather than reduce: work with typed arrays
-  aMax: (array) -> v=array[0]; v=Math.max v,a for a in array; v
-  aMin: (array) -> v=array[0]; v=Math.min v,a for a in array; v
-  aSum: (array) -> v=0; v += a for a in array; v
-  aAvg: (array) -> @aSum(array)/array.length
-  aMid: (array) -> 
-    array = if array.sort? then @clone array else @typedToJS array
-    @sortNums array
-    array[Math.floor(array.length/2)]
-
-  aNaNs: (array) -> (i for v,i in array when isNaN v)
-  
-  # Return array composed of f pairwise on both arrays
-  aPairwise: (a1, a2, f) -> v=0; f(v,a2[i]) for v,i in a1 
-  aPairSum: (a1, a2) -> @aPairwise a1, a2, (a,b)->a+b
-  aPairDif: (a1, a2) -> @aPairwise a1, a2, (a,b)->a-b
-  aPairMul: (a1, a2) -> @aPairwise a1, a2, (a,b)->a*b
-
-  # Return a JS array given a TypedArray.
-  # To create TypedArray from JS array: new Uint8Array(jsa) etc
-  typedToJS: (typedArray) -> (i for i in typedArray)
-  
-  # Return a linear interpolation between lo and hi.
-  # Scale is in [0-1], and the result is in [lo,hi]
-  # [Why the name `lerp`?](http://goo.gl/QrzMc)
-  lerp: (lo, hi, scale) -> lo + (hi-lo)*scale # @clamp(scale, 0, 1)
-  # Return point interpolated between two points.
-  lerp2: (x0, y0, x1, y1, scale) -> [@lerp(x0,x1,scale), @lerp(y0,y1,scale)]
-  # Return an array with values in [lo,hi], defaults to [0,1].
-  # Note: to have a half-open interval, [lo,hi), try hi=hi-.00009
-  normalize: (array, lo = 0, hi = 1) ->
-    min = @aMin array; max = @aMax array; scale = 1/(max-min)
-    (@lerp(lo, hi, scale*(num-min)) for num in array)
-  # Return a Uint8ClampedArray, normalized to [.5,255.5] then round/clamp to [0,255]
-  normalize8: (array) -> new Uint8ClampedArray @normalize(array,-.5,255.5)
-  normalizeInt: (array, lo, hi) -> (Math.round i for i in @normalize array, lo, hi) # clamp?
-
-  # Return array index of item, or index for item if array to remain sorted.
-  # f is used to return an integer for sorting, primarily for object properties.
-  # If f is a string, it is the object property to sort by.
-  # Adapted from underscore's _.sortedIndex.
-  sortedIndex: (array, item, f=(o)->o) -> # update to _.sortedIndex someday
-    f = @propFcn f if @isString f # use item[f] if f is string
-    # Why not array.length - 1? Because we can insert 1 after end of array.
-    value = f(item); low = 0; high = array.length
-    while low < high
-      mid = (low + high) >>> 1 # floor (low+high)/2
-      if f(array[mid]) < value then low = mid + 1 else high = mid
-    low
-
-  # Return argument unchanged; for primitive arrays or objs sorted by reference
-  identity: (o) -> o
-  # Return a function that returns an object's property.  Property in fcn closure.
-  propFcn: (prop) -> (o)->o[prop]
-  # Return index of value in array or -1 if not found.
-  # If no property given, use Array.indexOf.
-  # If property given, use binary search.
-  # Property can be string or function. If property is "", use identity default.
-  indexOf: (array, item, property)->
-    if property?
-      i = @sortedIndex array, item, if property is "" then null else property
-      if array[i] is item then i else -1
-    else array.indexOf item
-
-# ### Topology Operations
-  
-  # Return angle in [-pi,pi] radians from x1,y1 to x2,y2
+  # Return angle in [-pi, pi] radians from point1 to point2
   # [See: Math.atan2](http://goo.gl/JS8DF)
-  radsToward: (x1, y1, x2, y2) -> Math.atan2 y2-y1, x2-x1
-  # Return true if x2,y2 is in cone radians around heading radians from x1,x2
-  # and within distance radius from x1,x2.
-  # I.e. is p2 in cone/heading/radius from p1?
-  inCone: (heading, cone, radius, x1, y1, x2, y2) ->
-    if radius < @distance x1, y1, x2, y2 then return false
-    angle12 = @radsToward x1, y1, x2, y2 # angle from 1 to 2
-    cone/2 >=Math.abs @subtractRads(heading, angle12)
-  # Return the Euclidean distance and distance squared between x1,y1, x2,y2.
-  # The squared distance is used for comparisons to avoid the Math.sqrt fcn.
-  distance: (x1, y1, x2, y2) -> dx = x1-x2; dy = y1-y2; Math.sqrt dx*dx + dy*dy
-  sqDistance: (x1, y1, x2, y2) -> dx = x1-x2; dy = y1-y2; dx*dx + dy*dy
-  
-  # Convert polar r,theta to cartesian x,y.
-  # Default to 0,0 origin, optional x,y origin.
-  polarToXY: (r, theta, x=0, y=0) -> [x+r*Math.cos(theta), y+r*Math.sin(theta)]
+  angle: (point1, point2, patches) ->
+    if patches.isTorus
+      @angleTorus point1, point2, patches
+    else
+      @angleEuclidian point1, point2
 
-  # Return the [torus distance](http://goo.gl/PgJ5N) and distance squared
-  # between two points A(x1,y1) and B(x2,y2):
+  # Euclidian radians toward
+  angleEuclidian: (point1, point2) ->
+    Math.atan2 point2.y - point1.y, point2.x - point1.x
+
+  # Return the angle from x1, y1 to x2, y2 on torus using shortest reflection.
+  angleTorus: (point1, point2, patches) ->
+    closest = @closestTorusPoint point1, point2, patches.width, patches.height
+    @angleEuclidian point1, closest
+
+  # Return true if point2 is in cone radians around heading radians from 
+  # point1.x, point2.x and within distance radius from point1.x,
+  # point2.x. I.e. is point2 in cone/heading/radius from point1?
+  inCone: (heading, cone, radius, point1, point2, patches) ->
+    if patches.isTorus
+      u.inConeTorus(heading, cone, radius, point1, point2, patches)
+    else
+      u.inConeEuclidian(heading, cone, radius, point1, point2)
+
+  # inCone for euclidian distance
+  inConeEuclidian: (heading, cone, radius, point1, point2) ->
+    if radius < @distanceEuclidian point1, point2
+      return false
+
+    angle = @angleEuclidian point1, point2 # angle from 1 to 2
+    cone / 2 >= Math.abs @substractRadians(heading, angle)
+
+  # Return true if point2 is in cone radians around heading radians from 
+  # point1.x, point2.x and within distance radius from point1.x, point2.x
+  # considering all torus reflections.
+  inConeTorus: (heading, cone, radius, point1, point2, patches) ->
+    for point in @torus4Points point1, point2, patches.width, patches.height
+      return true if @inConeEuclidian heading, cone, radius, point1, point
+    false
+
+  # Return the distance between point1 and 2
+  distance: (point1, point2, patches) ->
+    if patches.isTorus
+      @distanceTorus(point1, point2, patches)
+    else
+      @distanceEuclidian(point1, point2)
+
+  # Return the Euclidean distance between point1 and 2
+  distanceEuclidian: (point1, point2) ->
+    distanceX = point1.x - point2.x
+    distanceY = point1.y - point2.y
+    Math.sqrt distanceX * distanceX + distanceY * distanceY
+  
+  # Return the [torus distance](http://goo.gl/PgJ5N) between two points 
+  # point1 (A) and point2 (B):
   #
-  #     dx = |x2-x1|; dy = |y2-y1|
-  #     d=sqrt(min(dx, W-dx)^2 + min(dy, H-dy)^2)
+  #     dx = |point2.x - point1.x|
+  #     dy = |point2.y - point1.y|
+  #     d = sqrt(min(dx, W - dx)^2 + min(dy, H - dy)^2)
   #
   # Torus note: ABMs often use a Torus topology where the right and left edges
-  # fold to meet,and similarly for the top/bottom.
+  # fold to meet, and similarly for the top/bottom.
   # For points, this is easily handled with the mod function .. insuring the
   # point is within the rectangle modulo W & H.
   #
@@ -487,177 +316,230 @@ ABM.util = u =
   #     -----+---------------+-----
   #      B3  |           B2  |
   #          |               |
-  torusDistance: (x1, y1, x2, y2, w, h) -> 
-    Math.sqrt @torusSqDistance x1, y1, x2, y2, w, h
-  torusSqDistance: (x1, y1, x2, y2, w, h) ->
-    dx = Math.abs x2-x1; dy = Math.abs y2-y1
-    dxMin = Math.min dx, w-dx; dyMin = Math.min dy, h-dy
-    dxMin*dxMin + dyMin*dyMin
-  # Return true if closest path between x1,y1 & x2,y2 wraps around the torus.
-  torusWraps: (x1, y1, x2, y2, w, h) ->
-    dx = Math.abs x2-x1; dy = Math.abs y2-y1
-    dx > w-dx or dy > h-dy
-  # Return 4 torus point reflections of x2,y2 around x1,y1
-  torus4Pts: (x1, y1, x2, y2, w, h) ->
-    x2r = if x2<x1 then x2+w else x2-w
-    y2r = if y2<y1 then y2+h else y2-h
-    [ [x2,y2], [x2r,y2], [x2,y2r], [x2r,y2r] ]
-  # Return closest of 4 torus pts from A to B
-  torusPt: (x1, y1, x2, y2, w, h) ->
-    x2r = if x2<x1 then x2+w else x2-w
-    y2r = if y2<y1 then y2+h else y2-h
-    x = if Math.abs(x2r-x1) < Math.abs(x2-x1) then x2r else x2
-    y = if Math.abs(y2r-y1) < Math.abs(y2-y1) then y2r else y2
-    [x,y]
-  # Return the angle from x1,y1 to x2.y2 on torus using shortest reflection.
-  torusRadsToward: (x1, y1, x2, y2, w, h) -> 
-    [x2,y2] = @torusPt x1, y1, x2, y2, w, h
-    @radsToward x1, y1, x2, y2
-  # Return true if x2,y2 is in cone radians around heading radians from x1,x2
-  # and within distance radius from x1,x2 considering all torus reflections.
-  inTorusCone: (heading, cone, radius, x1, y1, x2, y2, w, h) ->
-    for p in @torus4Pts x1, y1, x2, y2, w, h
-      return true if @inCone heading, cone, radius, x1, y1, p[0], p[1]
-    false
+  distanceTorus: (point1, point2, patches) ->
+    xDistance = Math.abs point2.x - point1.x
+    yDistance = Math.abs point2.y - point1.y
+    minX = Math.min xDistance, patches.width - xDistance
+    minY = Math.min yDistance, patches.height - yDistance
+    Math.sqrt minX * minX + minY * minY
 
-# ### File I/O
+  # Return 4 torus point reflections of point2 around point1
+  torus4Points: (point1, point2, width, height) ->
+    [xReflected, yReflected] = @torusReflect(point1, point2, width, height)
+
+    [point2, {x: xReflected, y: point2.y},
+      {x: point2.x, y: yReflected}, {x: xReflected, y: yReflected}]
+
+  # Return closest of 4 torus points from point1 to 2
+  closestTorusPoint: (point1, point2, width, height) ->
+    [xReflected, yReflected] = @torusReflect(point1, point2, width, height)
+
+    if Math.abs(xReflected - point1.x) < Math.abs(point2.x - point1.x)
+      x = xReflected
+    else
+      x = point2.x
+
+    if Math.abs(yReflected - point1.y) < Math.abs(point2.y - point1.y)
+      y = yReflected
+    else
+      y = point2.y
+
+    {x: x, y: y}
+
+  # Used in torus4Points
+  torusReflect: (point1, point2, width, height) ->
+    if point2.x < point1.x
+      xReflected = point2.x + width
+    else
+      xReflected = point2.x - width
+
+    if point2.y < point1.y
+      yReflected = point2.y + height
+    else
+      yReflected = point2.y - height
+
+    [xReflected, yReflected]
+
+  # ### File I/O
 
   # Cache of file names used by file imports below
   fileIndex: {}
-  # Import an image, executing (async) optional function f(img) on completion
-  importImage: (name, f = ->) ->
-    if (img=@fileIndex[name])? # wtf? or ((img=name).width and img.height)
-      f(img) #if img.isDone
+
+  # Import an image, executing (async) optional function call(image) on completion
+  importImage: (name, call = ->) ->
+    image = @fileIndex[name]
+    if image?
+      if image.isDone
+        call(image)
     else
-      @fileIndex[name] = img = new Image()
-      img.isDone = false
-      img.crossOrigin = "Anonymous"
-      img.onload = -> f(img); img.isDone = true
-      img.src = name
-    img
+      image = new Image()
+      image.isDone = false
+      image.crossOrigin = "Anonymous"
+      image.onload = ->
+        call(image)
+        image.isDone = true
+      image.src = name
+      @fileIndex[name] = image
+    image
     
   # Use XMLHttpRequest to fetch data of several types. Data Types: text,
   # arraybuffer, blob, json, document, [See specification](http://goo.gl/y3r3h).
   # method is "GET" or "POST". f is function to call onload, default to no-op.
-  xhrLoadFile: (name, method="GET", type="text", f = ->) -> # AJAX async request
-    if (xhr=@fileIndex[name])?
-      f(xhr.response)
+  xhrLoadFile: (name, method = "GET", type = "text", call = ->) -> # AJAX async request
+    xhr = @fileIndex[name]
+    if xhr?
+      if xhr.isDone
+        call(xhr.response)
     else
-      @fileIndex[name] = xhr = new XMLHttpRequest()
+      xhr = new XMLHttpRequest()
       xhr.isDone = false
       xhr.open method, name # POST mainly for security and large files
       xhr.responseType = type
-      xhr.onload = -> f(xhr.response); xhr.isDone = true
+      xhr.onload = ->
+        call(xhr.response)
+        xhr.isDone = true
+      @fileIndex[name] = xhr
       xhr.send()
     xhr
   
   # Return true if all files are loaded.
   filesLoaded: (files = @fileIndex) ->
-    array = (v.isDone for v in (@ownValues files))
-    array.reduce ((a,b)->a and b), true
-  # Wait for files to be loaded before executing callback f
-  waitOnFiles: (f, files = @fileIndex) -> @waitOn (=> @filesLoaded files), f
-  # Wait for function done() to return true before calling callback f
-  waitOn: (done, f) ->
-    if done() then f() else setTimeout (=> @waitOn(done, f)), 1000
+    array = (object.isDone for object in (@ownValues files))
+    array.reduce ((valueA, valueB) -> valueA and valueB), true
 
-# ### Image Data Operations
+  # Wait for files to be loaded before executing callback call
+  waitOnFiles: (call, files = @fileIndex) ->
+    @waitOn (=> @filesLoaded files), call
+
+  # Wait for function done() to return true before calling callback f
+  waitOn: (done, call) ->
+    if done()
+      call()
+    else
+      setTimeout((=> @waitOn(done, call)), 1000)
+
+  # ### Image data operations
+
   # Make a copy of an image.
-  # Note: new image will have the naturalWidth/Height of input img.
+  # Note: new image will have the naturalWidth/Height of input image.
   # Should be sync
-  cloneImage: (img) -> (i=new Image()).src = img.src; i
+  cloneImage: (image) ->
+    newImage = new Image()
+    newImage.src = image.src
+    newImage
 
   # Create a data array from an image's imageData
-  # img may be a canvas.
-  # The function f = f(imageData, rgbIndex) -> number
-  imageToData: (img, f=@pixelByte(0), arrayType=Uint8ClampedArray) ->
-    @imageRowsToData img, img.height, f, arrayType
-  imageRowsToData: (img, rowsPerSlice, f=@pixelByte(0), arrayType=Uint8ClampedArray) ->
-    rowsDone = 0; data = new arrayType img.width*img.height
-    while rowsDone < img.height
-      rows = Math.min img.height - rowsDone, rowsPerSlice
-      ctx = @imageSliceToCtx img, 0, rowsDone, img.width, rows # REMIND: pass ctx
-      idata = @ctxToImageData(ctx).data
-      dataStart = rowsDone*img.width
-      data[dataStart+i] = f(idata,4*i) for i in [0...idata.length/4] by 1
-      rowsDone += rows
-    data
-  # Two utilities for Image data extraction.
-  # They return a fcn in a closure which "sees" the args and variables
-  pixelBytesToInt: (a) ->
-    ImageByteFmts = [[2],[1,2],[0,1,2],[3,0,1,2]]
-    a=ImageByteFmts[a-1] if typeof a is "number"
-    (id,i)->val = 0; val = val*256 + id[i+j] for j in a; val
-  pixelByte: (n) -> (id,i)->id[i+n]
+  # image may be a canvas.
+  # The function call = call(imageData, rgbIndex) -> number
+  imageToData: (image, call = @pixelByte(0), arrayType = Uint8ClampedArray) ->
+    @imageRowsToData image, image.height, call, arrayType
 
-# ### Canvas/Context Operations
+  imageRowsToData: (image, rowsPerSlice, call = @pixelByte(0),
+      arrayType = Uint8ClampedArray) ->
+    rowsDone = 0
+    data = new arrayType image.width * image.height
+
+    while rowsDone < image.height
+      rows = Math.min image.height - rowsDone, rowsPerSlice
+      context = @imageSliceToContext image, 0, rowsDone, image.width, rows # REMIND: pass context
+      idata = @contextToImageData(context).data
+      dataStart = rowsDone * image.width
+      data[dataStart + i] = call(idata, 4 * i) for i in [0...idata.length / 4] by 1
+      rowsDone += rows
+
+    data
+
+  imageSliceToContext: (image, sx, sy, sw, sh, context) ->
+    if context?
+      context.canvas.width = sw
+      context.canvas.height = sh
+    else
+      context = @createContext sw, sh
+    context.drawImage image, sx, sy, sw, sh, 0, 0, sw, sh
+    context
+
+  pixelByte: (n) ->
+    (byte, i) -> byte[i + n]
+
+  # ### Canvas/Context operations
 
   # Create a new canvas of given width/height
   createCanvas: (width, height) ->
-    can = document.createElement 'canvas'
-    can.width = width; can.height = height
-    can
+    canvas = document.createElement 'canvas'
+    canvas.width = width
+    canvas.height = height
+    canvas
+
   # As above, but returing the context object.
-  # Note ctx.canvas is the canvas for the ctx, and can be use as an image.
-  createCtx: (width, height, ctxType="2d") ->
-    can = @createCanvas width, height
-    if ctxType is "2d"
-    then can.getContext "2d" 
-    else can.getContext("webgl") ? can.getContext("experimental-webgl")
+  # Note context.canvas is the canvas for the context, and can be use as an image.
+  createContext: (width, height, contextType = "2d") ->
+    canvas = @createCanvas width, height
+    if contextType is "2d"
+      canvas.getContext "2d"
+    else
+      canvas.getContext("webgl") ? canvas.getContext("experimental-webgl")
 
   # Return a "layer" 2D/3D rendering context within the specified HTML `<div>`,
   # with the given width/height positioned absolutely at top/left within the div,
   # and with the z-index of z.
   #
   # The z level gives us the capability of buildng a "stack" of coordinated canvases.
-  createLayer: (div, width, height, z, ctx = "2d") -> # a canvas ctx object
-    if ctx is "img" 
-    then element = ctx = new Image(); ctx.width = width; ctx.height=height
-    else element = (ctx=@createCtx(width, height, ctx)).canvas
+  createLayer: (div, width, height, z, context = "2d") -> # a canvas context object
+    if context is "img"
+      element = context = new Image()
+      context.width = width
+      context.height = height
+    else
+      element = (context = @createContext(width, height, context)).canvas
     @insertLayer div, element, width, height, z
-    ctx
+    context
   insertLayer: (div, element, w, h, z) ->
     element.setAttribute 'style', # Note: this erases existing style, el.style.position doesnt
     "position:absolute;top:0;left:0;width:#{w};height:#{h};z-index:#{z}"
     div.appendChild(element)
 
-  setCtxSmoothing: (ctx, smoothing) ->
-    ctx.imageSmoothingEnabled = smoothing
-    ctx.mozImageSmoothingEnabled = smoothing
-    ctx.oImageSmoothingEnabled = smoothing
-    ctx.webkitImageSmoothingEnabled = smoothing
+  setContextSmoothing: (context, smoothing) ->
+    context.imageSmoothingEnabled = smoothing
+    context.mozImageSmoothingEnabled = smoothing
+    context.oImageSmoothingEnabled = smoothing
+    context.webkitImageSmoothingEnabled = smoothing
 
-
-  # Install identity transform.  Call ctx.restore() to revert to previous transform
-  setIdentity: (ctx) ->
-    ctx.save() # revert to native 2D transform
-    ctx.setTransform 1, 0, 0, 1, 0, 0
+  # Install identity transform.  Call context.restore() to revert to previous transform
+  setIdentity: (context) ->
+    context.save() # revert to native 2D transform
+    context.setTransform 1, 0, 0, 1, 0, 0
   
   # Clear the 2D/3D layer to be transparent. Note this [discussion](http://goo.gl/qekXS).
-  clearCtx: (ctx) ->
-    if ctx.save? # test for 2D ctx
-      @setIdentity ctx # ctx.canvas.width = ctx.canvas.width not used so as to preserve patch coords
-      ctx.clearRect 0, 0, ctx.canvas.width, ctx.canvas.height
-      ctx.restore()
+  clearContext: (context) ->
+    if context.save? # test for 2D context
+      @setIdentity context
+      # context.canvas.width = context.canvas.width not used so as to preserve
+      # patch coordinates
+      context.clearRect 0, 0, context.canvas.width, context.canvas.height
+      context.restore()
     else # 3D
-      ctx.clearColor 0, 0, 0, 0 # transparent!
-      ctx.clear ctx.COLOR_BUFFER_BIT | ctx.DEPTH_BUFFER_BIT
+      context.clearColor 0, 0, 0, 0 # transparent!
+      context.clear context.COLOR_BUFFER_BIT | context.DEPTH_BUFFER_BIT
+
   # Fill the 2D/3D layer with the given color
-  fillCtx: (ctx, color) ->
-    if ctx.fillStyle? # test for 2D ctx
-      @setIdentity ctx
-      ctx.fillStyle = @colorStr(color)
-      ctx.fillRect 0, 0, ctx.canvas.width, ctx.canvas.height
-      ctx.restore()
+  fillContext: (context, color) ->
+    if context.fillStyle? # test for 2D context
+      @setIdentity context
+      context.fillStyle = @colorString color
+      context.fillRect 0, 0, context.canvas.width, context.canvas.height
+      context.restore()
     else # 3D
-      ctx.clearColor color..., 1 # alpha = 1 unless color is rgba
-      ctx.clear ctx.COLOR_BUFFER_BIT | ctx.DEPTH_BUFFER_BIT
-  # Draw string of the given color at the xy location, in ctx pixel coords.
+      context.clearColor color..., 1 # alpha = 1 unless color is rgba
+      context.clear context.COLOR_BUFFER_BIT | context.DEPTH_BUFFER_BIT
+
+  # Draw string of the given color at the xy location, in context pixel coordinates.
   # Use setIdentity .. reset if a transform is being used by caller.
-  ctxDrawText: (ctx, string, x, y, color = [0,0,0], setIdentity = true) ->
-    @setIdentity(ctx) if setIdentity
-    ctx.fillStyle = @colorStr color;  ctx.fillText(string, x, y)
-    ctx.restore() if setIdentity
+  contextDrawText: (context, string, x, y, color = [0, 0, 0], setIdentity = true) ->
+    @setIdentity(context) if setIdentity
+    context.fillStyle = @colorString color
+    context.fillText(string, x, y)
+    if setIdentity
+      context.restore()
   # Set the element text align and baseline drawing parameters
   #
   # * font is a HTML/CSS string like: "9px sans-serif"
@@ -665,84 +547,81 @@ ABM.util = u =
   # * baseline is top hanging middle alphabetic ideographic bottom
   #
   # See [reference](http://goo.gl/AvEAq) for details.
-  ctxTextParams: (ctx, font, align = "center", baseline = "middle") -> 
-    ctx.font = font; ctx.textAlign = align; ctx.textBaseline = baseline
-  elementTextParams: (e, font, align = "center", baseline = "middle") -> 
-    e = e.canvas if e.canvas?
-    e.style.font = font; e.style.textAlign = align; e.style.textBaseline = baseline
+  contextTextParams: (context, font, align = "center", baseline = "middle") ->
+    context.font = font
+    context.textAlign = align
+    context.textBaseline = baseline
 
-  # Convert an image to a context. ctx.canvas gives the created canvas.
-  # If w, h provided, scale to that size. img may be a canvas
-  # Note: to convert a ctx to an "image" (drawImage) use ctx.canvas
-  imageToCtx: (img, w, h) ->
-    if w? and h?
-      ctx = @createCtx w, h
-      ctx.drawImage img, 0, 0, w, h
-    else
-      ctx = @createCtx img.width, img.height
-      ctx.drawImage img, 0, 0
-    ctx
-  imageSliceToCtx: (img, sx, sy, sw, sh, ctx) ->
-    if ctx?
-    then ctx.canvas.width = sw; ctx.canvas.height = sh
-    else ctx = @createCtx sw, sh
-    ctx.drawImage img, sx, sy, sw, sh, 0, 0, sw, sh
-    ctx
-  imageToCtxDownStepped: (img, tw, th) -> # http://goo.gl/UnLJSZ
-    ctx1 = u.createCtx tw, th
-    w = img.width; h = img.height; ihalf = (n) -> Math.ceil n/2
-    steps = Math.ceil(u.log2( if (w/tw)>(h/th) then (w/tw) else (h/th)) )
-    console.log "steps", steps
-    if steps <= 1
-      ctx1.drawImage img, 0, 0, tw, th
-    else
-      console.log "img w/h", w, h, "->", ihalf(w), ihalf(h)
-      ctx = u.createCtx w = ihalf(w), h = ihalf(h); can = ctx.canvas
-      ctx.drawImage img, 0, 0, w, h
-      for step in [steps...2] # 2 not 1 due to initial halving above
-        console.log "can w/h", w, h, "->", ihalf(w), ihalf(h)
-        ctx.drawImage can, 0, 0, w, h, 0, 0, w = ihalf(w), h = ihalf(h)
-      console.log "target w/h", w, h, "->", tw, th
-      ctx1.drawImage can, 0, 0, w, h, 0, 0, tw, th
-    ctx1
+  elementTextParams: (element, font, align = "center", baseline = "middle") ->
+    element = element.canvas if element.canvas?
+    element.style.font = font
+    element.style.textAlign = align
+    element.style.textBaseline = baseline
 
   # Convert a canvas to an image, executing fcn f on completion.
   # Generally can skip callback but see [stackoverflow](http://goo.gl/kIk2U)
   # Note: uses toDataURL thus possible cross origin problems.
-  # Fix: use ctx.canvas for programatic imaging.
-  ctxToDataUrl: (ctx) -> ctx.canvas.toDataURL "image/png"
-  ctxToDataUrlImage: (ctx, f) ->
-    img = new Image()
-    (img.onload = -> f(img)) if f?
-    img.src = ctx.canvas.toDataURL "image/png"
-    img
-  # Convert a ctx to an imageData object
-  ctxToImageData: (ctx) ->
-    ctx.getImageData 0, 0, ctx.canvas.width, ctx.canvas.height
+  # Fix: use context.canvas for programatic imaging.
+  contextToDataUrl: (context) -> context.canvas.toDataURL "image/png"
 
-  # Canvas versions of above
-  # canvasToImage: (canvas) -> ctxToImage(canvas.getContext "2d")
-  # canvasToImageData: (canvas) -> ctxToImageData(canvas.getContext "2d")
-  # imageToCanvas: (image) -> imageToCtx(image).canvas
-  
+  contextToDataUrlImage: (context, call) ->
+    image = new Image()
+    if call?
+      image.onload = -> call(image)
+    image.src = context.canvas.toDataURL "image/png"
+    image
+
+  # Convert a context to an imageData object
+  contextToImageData: (context) ->
+    context.getImageData 0, 0, context.canvas.width, context.canvas.height
+
   # Draw an image centered at x, y w/ image size dx, dy.
   # See [this tutorial](http://goo.gl/VUlhY).
-  drawCenteredImage: (ctx, img, rad, x, y, dx, dy) -> # presume save/restore surrounds this
-    ctx.translate x, y # translate to center
-    ctx.rotate rad
-    ctx.drawImage img, -dx/2, -dy/2
+  drawCenteredImage: (context, image, radians, x, y, dx, dy) ->
+    # presume save/restore surrounds this
+    context.translate x, y # translate to center
+    context.rotate radians
+    context.drawImage image, -dx / 2, -dy / 2
   
-  # Duplicate a ctx's image.  Returns the new ctx, use ctx.canvas for canvas.
-  copyCtx: (ctx0) ->
-    ctx = @createCtx ctx0.canvas.width, ctx0.canvas.height
-    ctx.drawImage ctx0.canvas, 0, 0
-    ctx
+  # Duplicate a context's image.  Returns the new context, use context.canvas for canvas.
+  copyContext: (context) ->
+    newContext = @createContext context.canvas.width, context.canvas.height
+    newContext.drawImage context.canvas, 0, 0
+    newContext
 
-  # Resize a ctx/canvas and preserve data.
-  resizeCtx: (ctx, width, height, scale = false) -> # http://goo.gl/Tp90B
-    copy = @copyCtx ctx
-    ctx.canvas.width = width; ctx.canvas.height = height
-    ctx.drawImage copy.canvas, 0, 0
+  # Resize a context/canvas and preserve data.
+  resizeContext: (context, width, height, scale = false) -> # http://goo.gl/Tp90B
+    newContext = @copyContext context
+    context.canvas.width = width
+    context.canvas.height = height
+    context.drawImage newContext.canvas, 0, 0
 
-    
+  # ### Misc / helpers
   
+  # Return a linear interpolation between low and high.
+  # Scale is in [0 - 1], and the result is in [low, high]
+  linearInterpolate: (low, high, scale) ->
+    low + (high - low) * scale
+
+  # Return argument unchanged; for primitive arrays or objs sorted by reference
+  identityFunction: (object) ->
+    object
+
+  # Return a function that returns an object's property.  Property in fcn closure.
+  propertyFunction: (property) ->
+    (object) -> object[property]
+
+  # Return a function that returns an object's property.  Property in fcn closure.
+  propertySortFunction: (property) ->
+    (objectA, objectB) ->
+      if objectA[property] < objectB[property]
+        -1
+      else if objectA[property] > objectB[property]
+        1
+      else
+        0
+
+  # Return a JS array given a TypedArray.
+  # To create TypedArray from JS array: new Uint8Array(jsa) etc
+  typedToJS: (typedArray) ->
+    (i for i in typedArray)

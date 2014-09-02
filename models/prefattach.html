@@ -5,45 +5,55 @@
     <script src="../tools/coffee-script.js"></script>
     <script type="text/coffeescript">
     
-    u = ABM.util # ABM.util alias, u.s is also ABM.shape accessor.
+    u = ABM.util
+
     class MyModel extends ABM.Model
       setup: ->
         @refreshPatches = false # for static patches
         
         # globals
         @circleLayout = true
-        @hist = []
+        @histogram = []
         @stopTick = 400
         
         # defaults
         @agents.setDefault "shape", "circle"
         @links.setDefault "thickness", .75 # Easier to see thiner link
         
-        @agents.create 1; @makeNode @agents[0]
+        @patches.create()
+        @agents.create 1
+        @makeNode @agents[0]
+
       step: ->
         @makeNode @findPartner()
-        a.size = Math.sqrt a.linkNeighbors().length for a in @agents
-        @links.layoutCircle @agents, @patches.maxX * 0.9
-        @hist = u.histOf @agents, 1, (a) -> a.linkNeighbors().length
-        console.log "Tick: #{@anim.ticks} Histogram: [#{@hist}]" if @anim.ticks % 25 is 0
-        (console.log "Stopping at stopTick: #{@anim.ticks}"; @stop()) if @anim.ticks is @stopTick
+
+        for agent in @agents
+          agent.size = Math.sqrt agent.linkNeighbors().length
+
+        @agents.formCircle @patches.max.x * 0.9
+
+        @histogram = @agents.histogram 1, (agent) ->
+          agent.linkNeighbors().length
+
+        if @animator.ticks % 25 is 0
+          console.log "Tick: #{@animator.ticks} Histogram: [#{@histogram}]"
+
+        if @animator.ticks is @stopTick
+          (console.log "Stopping at stopTick: #{@animator.ticks}"; @stop())
 
       makeNode: (toNode) ->
-        @agents.create 1, (a) =>
-          @links.create a, toNode
-          a.moveTo toNode; a.forward 8
-      findPartner: ->
-        u.oneOf @links.oneOf().bothEnds() # or @links.allEnds().oneOf()
+        @agents.create 1, (agent) =>
+          @links.create agent, toNode
+          agent.moveTo toNode.position
+          agent.forward 8
 
-    # div, patchSize, minX, maxX, minY, maxY, isTorus, hasNeighbors
-    #   Defaults: 13, -16, 16, -16, 16, false, true
+      findPartner: ->
+        @links.sample().bothEnds().sample()
+
     model = new MyModel {
       div: "layers",
-      size: 5,
-      minX: -45,
-      maxX: 45,
-      minY: -45,
-      maxY: 45,
+      patchSize: 5,
+      mapSize: 90,
       hasNeighbors: false
     }
     model.debug() # Debug: Put Model vars in global name space

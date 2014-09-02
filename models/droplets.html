@@ -6,7 +6,9 @@
     <script src="../tools/coffee-script.js"></script>
     <script type="text/coffeescript">
 
-    u = ABM.util; DataSet = ABM.DataSet # aliases
+    u = ABM.util
+    
+    DataSet = ABM.DataSet
 
     class MyModel extends ABM.Model
       startup: ->
@@ -29,7 +31,6 @@
         @patches.own "elevation slope aspect"
         # @globals "elevation slope aspect vision speed" # fix: problem with removeItem
         
-        @vision = 1 # try range in 1-5 or so
         @speed = .25
         @useAspect = true # model uses aspect/slope or elevation.
         @lastMoved = @patches.length
@@ -37,7 +38,6 @@
         @agents.setDefault "shape", "square"
         @agents.setDefault "size", .5
         @agents.setDefault "color", [100,100,150]
-        @patches.cacheRect @vision, false # cache inRadius @vision
         
         # Install startup globals into patches/drawing
         # img = @elevation.toDrawing()
@@ -45,43 +45,48 @@
         # p.elevation = p.color[0] for p in @patches # could also use toPatchVar below
         # @slope.toPatchVar("slope")
         # @aspect.toPatchVar("aspect")
-        @img=@elevation.toDrawing()
+        @img = @elevation.toDrawing()
         @elevation.toPatchVar("elevation")
         @slope.toPatchVar("slope")
         @aspect.toPatchVar("aspect")
         
-        p.sprout 1 for p in @patches
-        console.log "patches: #{@patches.length}, agents: #{@agents.length}"      
+        p.sprout 1 for p in @patches.create()
+        console.log "patches: #{@patches.length}, agents: #{@agents.length}"
       
 
       step: ->
         moved = 0
-        for a in @agents
-          n = if @useAspect then a.p.n else a.p.pRect
-          n = n.minOneOf "elevation"
-          if a.p.elevation > n.elevation #or a.p.slope < .0001
+        for agent in @agents
+          if @useAspect
+            neighbors = agent.patch.neighbors()
+          else
+            neighbors = agent.patch.pRectangle
+
+          neighbors = neighbors.min "elevation"
+
+          if agent.patch.elevation > neighbors.elevation
             if @useAspect
-              a.heading = a.p.aspect
+              agent.heading = agent.patch.aspect
             else
-              a.face n            
-            a.forward @speed
+              agent.face neighbors
+              # May not work?
+
+            agent.forward @speed
             moved += 1
+
         if moved is 0 or (@useAspect and @lastMoved is moved)
-          console.log "done, ticks: #{@anim.ticks}"
+          console.log "done, ticks: #{@animator.ticks}"
           @stop()
-        if @anim.ticks % 100 is 0
-          console.log @anim.toString(), "moved: #{moved}"
+
+        if @animator.ticks % 100 is 0
+          console.log @animator.toString(), "moved: #{moved}"
           @lastMoved = moved
     
-    # div, patchSize, minX, maxX, minY, maxY, isTorus, hasNeighbors
-    #   Defaults: 13, -16, 16, -16, 16, false, true
     model = new MyModel({
       div: "layers",
-      size: 6,
-      minX: 0,
-      maxX: 80,
-      minY: 0,
-      maxY: 80
+      patchSize: 6,
+      min: {x: 0, y: 0},
+      max: {x: 80, y: 80}
     })
     .debug() # Debug: Put Model vars in global name space
     .start() # Run model immediately after startup initialization

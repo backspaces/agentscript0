@@ -5,16 +5,15 @@
     <script src="../tools/coffee-script.js"></script>
     <script type="text/coffeescript">
     
-    u = ABM.util # ABM.util alias, u.s is also ABM.shape accessor.
+    u = ABM.util
+
     class MyModel extends ABM.Model
       setup: ->
-        @agentBreeds "nodes travelers"
+        @agentBreeds ["nodes", "travelers"]
         
         # no optimizations: 44fps
         @refreshPatches = false # for static patches
         @refreshAgents = false # for static agents
-        # @patches.usePixels(), setCacheAgentsHere would not apply
-        # both: 57+fps (max)
 
         # globals
         @nodeCount = 50
@@ -26,103 +25,103 @@
         @bestTourTick = 0
         @stopTickDifference = 500
         
-        @anim.setRate 10, true
-        # @anim.setRate 60, false
+        @animator.setRate 10, true
         
         # defaults
         @patches.setDefault "color", [250, 250, 0]
-        # @agents.setDefault "shape", "circle"
-        # @agents.setDefault "color", [255,0,0]
-        # @agents.setDefault "heading", 0 # override promotion to random angle
         @nodes.setDefault "shape", "circle"
-        @nodes.setDefault "color", [255,0,0]
+        @nodes.setDefault "color", [255, 0, 0]
         @nodes.setDefault "heading", 0 # override promotion to random angle
         @travelers.setDefault "hidden", true
-        @links.setDefault "color", [255,0,0]
+        @links.setDefault "color", [255, 0, 0]
 
-        # p.color = [250, 250, 0] for p in @patches
-        
-        # @setupNode a for a in @agents.create @nodeCount
+        @patches.create()
         @setupNode n for n in @nodes.create @nodeCount
         
         @createTourLinks @nodes #()
-        @bestTourLength = @links.reduce ((sum,l)->sum+l.length()), 0 
+        @bestTourLength = @links.reduce ((sum,l) -> sum + l.length()), 0
         
-        # @agents.create @travelersCount, (a) => @setupTraveler(a)
         @travelers.create @travelersCount, (a) => @setupTraveler(a)
 
-      setupNode: (a) =>
-        ## a.color = [255,0,0]
-        ## a.shape = "circle"
-        # a.breed = "nodes"
-        a.setXY @patches.randomPt()...
-        # a.setXY @patches.randomPt()... while @nodes().inRadius(a, 2).any()
-        a.setXY @patches.randomPt()... while @nodes.inRadius(a, 2).any()
-      setupTraveler: (a) =>
-        # a.hidden = true
-        # a.breed = "travelers"
-        a.tourNodes = @nodes.clone().shuffle() # ()
-        a.tourLength = @lengthFromNodes a.tourNodes
+      setupNode: (agent) =>
+        agent.moveTo @patches.randomPoint()
+        while @nodes.neighboring(agent, radius: 2).any()
+          agent.moveTo @patches.randomPoint()
+
+      setupTraveler: (agent) =>
+        agent.tourNodes = @nodes.clone().shuffle() # ()
+        agent.tourLength = @lengthFromNodes agent.tourNodes
         
       step: ->
-        console.log @anim.toString() if @anim.ticks % 100 is 0
-        @makeTour a for a in @travelers #()
+        console.log @animator.toString() if @animator.ticks % 100 is 0
+
+        for agent in @travelers #()
+          @makeTour agent
+
         @installBestTour()
-        if (@anim.ticks - @bestTourTick) is @stopTickDifference
-          console.log "Stopping at tick #{@anim.ticks} after no change in #{@stopTickDifference} ticks"
+
+        if (@animator.ticks - @bestTourTick) is @stopTickDifference
+          console.log "Stopping at tick #{@animator.ticks} after no change in" +
+            " #{@stopTickDifference} ticks"
           console.log "Best tour: #{@bestTourLength} at tick #{@bestTourTick}"
           @stop()
       
       createTourLinks: (nodeList) ->
         @links.clear()
         @links.create nodeList[0], nodeList.last()
-        @links.create nodeList[i], nodeList[i-1] for i in [1...nodeList.length]
-        # @links.setProp "color", [255,0,0]
+        @links.create nodeList[i], nodeList[i - 1] for i in [1...nodeList.length]
+        # @links.setProperty "color", [255,0,0]
+        
       lengthFromNodes: (nodeList) ->
-        len = nodeList[0].distance(nodeList.last())
-        len += nodeList[i].distance(nodeList[i-1]) for i in [1...nodeList.length]
+        len = nodeList[0].distance(nodeList.last().position)
+
+        for i in [1...nodeList.length]
+          len += nodeList[i].distance(nodeList[i - 1].position)
+
         len
+
       installBestTour: ->
-        # @travelers().maxOneOf("tourLength").die() while @travelers().length>@travelersCount
-        # a = @travelers().minOneOf("tourLength")
-        @travelers.maxOneOf("tourLength").die() while @travelers.length>@travelersCount
-        a = @travelers.minOneOf("tourLength")
+        # @travelers().max("tourLength").die() while @travelers().length>@travelersCount
+        # a = @travelers().min("tourLength")
+        @travelers.max("tourLength").die() while @travelers.length>@travelersCount
+        a = @travelers.min("tourLength")
         if a.tourLength < @bestTourLength
           @reportNewTour a
           @bestTourLength = a.tourLength
           @bestTourNodes = a.tourNodes
-          @bestTourTick = @anim.ticks
+          @bestTourTick = @animator.ticks
           @createTourLinks @bestTourNodes
 
       makeTour: (a) ->
         nlist = if @useInversion then @inversionStrategy a else @randomStrategy a
         len = @lengthFromNodes nlist
         if @growPopulation
-        then a.hatch 1, @travelers, (a) => a.tourNodes=nlist; a.tourLength=len
-        else (a.tourNodes=nlist; a.tourLength=len) if len < a.tourLength
-      randomStrategy: (a) -> a.tourNodes.clone().shuffle()
-      inversionStrategy: (a) -> @asSet @newInversion a.tourNodes
+        then a.hatch 1, @travelers, (a) => a.tourNodes = nlist; a.tourLength = len
+        else (a.tourNodes = nlist; a.tourLength = len) if len < a.tourLength
+
+      randomStrategy: (a) ->
+        a.tourNodes.clone().shuffle()
+
+      inversionStrategy: (a) ->
+        ABM.Set.from @newInversion a.tourNodes
 
       newInversion: (nlist) ->
         len = nlist.length
-        i = u.randomInt len-1
-        len = 2 + u.randomInt len-i-2
+        i = u.randomInt len - 1
+        len = 2 + u.randomInt len - i - 2
         [].concat (nlist.slice 0, i),
-                  (nlist.slice i, i+len).reverse(),
-                  (nlist.slice i+len)
+                  (nlist.slice i, i + len).reverse(),
+                  (nlist.slice i + len)
 
       reportNewTour: (a) ->
-        console.log "new best tour at tick #{@anim.ticks}: #{a.tourLength} by traveler #{a.id}"
+        console.log "new best tour at tick #{@animator.ticks}: #{a.tourLength} by traveler #{a.id}"
         
     # div, patchSize, minX, maxX, minY, maxY, isTorus, hasNeighbors
     #   Defaults: 13, -16, 16, -16, 16, false, true
     model = new MyModel {
       div: "layers",
-      size: 16,
-      minX: -14,
-      maxX: 14,
-      minY: -14,
-      maxY: 14,
+      patchSize: 16,
+      mapSize: 28,
       hasNeighbors: false
     }
     model.debug() # Debug: Put Model vars in global name space

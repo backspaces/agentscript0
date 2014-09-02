@@ -5,7 +5,8 @@
     <script src="../tools/coffee-script.js"></script>
     <script type="text/coffeescript">
 
-    u = ABM.util # ABM.util alias, u.s is also ABM.shape accessor.
+    u = ABM.util
+
     class MyModel extends ABM.Model
       setup: ->
         @refreshPatches = false # for static patches
@@ -21,49 +22,56 @@
         @agents.setDefault "heading", 0 # override promotion to random angle
         @links.setDefault "thickness", .5 # 2.5
         
-        
+        @patches.create()
         @agents.create @buttons, (a) => # fat arrow for @patches etc
           # a.size = 1.5
           # a.shape = "circle"
-          a.setXY @patches.randomPt()...
+          a.moveTo @patches.randomPoint()
 
       step: ->
-        b1 = @agents.oneOf()
-        b2 = @agents.other(b1).oneOf()
+        b1 = @agents.sample()
+        b2 = @agents.other(b1).sample()
         
         @links.create b1, b2, (l) =>
           l.draw @contexts.links
         
-        g = @graphOf b1
-        c = u.minOneOf(g, "id").color
-        node.color = c for node in g
-        if g.length > @cluster
-          console.log "New largest cluster: size: #{g.length} tick: #{@anim.ticks}"
-        @cluster = Math.max @cluster, g.length
+        graph = @graphOf b1
+        color = graph.min("id").color
+
+        for node in graph
+          node.color = color
+
+        if graph.length > @cluster
+          console.log "New largest cluster: size: #{graph.length} tick: #{@animator.ticks}"
+
+        @cluster = Math.max @cluster, graph.length
         
         if @cluster is @buttons
-          console.log "Completed at tick #{@anim.ticks}:  Cluster size #{@cluster} Links: #{@links.length}"
+          console.log "Completed at tick #{@animator.ticks}:" +
+            " Cluster size #{@cluster} Links: #{@links.length}"
           @stop()
         
       graphOf: (node) ->
-        a.marked = false for a in @agents
+        array = new ABM.Array
+
+        for agent in @agents
+          agent.marked = false
+
         @markNeighbors node
-        a for a in @agents when a.marked
+
+        for agent in @agents
+          if agent.marked
+            array.push agent
+
+        array
+
       markNeighbors: (node) ->
         node.marked = true
         unMarked = (n for n in node.linkNeighbors() when not n.marked)
         @markNeighbors n for n in unMarked
 
-
-    # div, patchSize, minX, maxX, minY, maxY, isTorus, hasNeighbors
-    #   Defaults: 13, -16, 16, -16, 16, false, true
     model = new MyModel {
       div: "layers",
-      size: 13,
-      minX: -16,
-      maxX: 16,
-      minY: -16,
-      maxY: 16,
       hasNeighbors: false
     }
     model.debug() # Debug: Put Model vars in global name space

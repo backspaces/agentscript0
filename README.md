@@ -194,7 +194,7 @@ We also have a few git tasks:
 
 #### Contribute
 
-Before any commit, please make sure all the models work as expected; they are our "unit tests."  We'll be adding more, smaller tests, soon.  Generally the test models will run locally with a file:// url, but http://localhost is safer.
+Before any commit, please make sure all the unit tests ("cake test") and models work as expected (they are part of our test-suite for now).  We'll be adding more tests, soon.  Generally the test models will run locally with a file:// url, but http://localhost is safer.
 
 Similarly, make sure the docco files display correctly.  They can be built with `npm run docs`.  Use your browser on docs/ to test.  Note that all single line comments are converted into docs using Markdown.  Be careful not to mistakenly add a "code" comment to the docs!
 
