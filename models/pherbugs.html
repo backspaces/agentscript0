@@ -95,7 +95,15 @@
 
       // div, patchSize, minX, maxX, minY, maxY, isTorus, hasNeighbors
       //   Defaults: 13, -16, 16, -16, 16, false, true
-      var model = new ABM.Model("layers", 5, -50, 50, -50, 50, true)
+      var model = new ABM.Model({
+          div: "model",
+          size: 5,
+          minX: -50,
+          maxX: 50,
+          minY: -50,
+          maxY: 50,
+          isTorus: true
+      })
         .debug()  // Debug: Put Model vars in global name space
         .start(); // Run model immediately after startup initialization
 
@@ -112,6 +120,6 @@
     </script>
   </head>
   <body onload="myModel();">
-    <div id="layers"></div>
+    <div id="model"></div>
   </body>
 </html>
