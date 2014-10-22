@@ -1,9 +1,9 @@
 # ### Patch
-  
+
 # Class Patch instances represent a rectangle on a grid.  They hold variables
 # that are in the patches the agents live on.  The set of all patches (@model.patches)
 # is the world on which the agents live and the model runs.
-class ABM.Patch
+class Patch
   # Constructor & Class Variables:
   # * id:         unique identifier, promoted by agentset create() factory method
   # * breed:      the agentset this agent belongs to
@@ -17,7 +17,7 @@ class ABM.Patch
   # * pRect:      cached rect for performance
   #
   # Patches may not need their neighbors, thus we use a default
-  # of none.  n and n4 are promoted by the Patches agent set 
+  # of none.  n and n4 are promoted by the Patches agent set
   # if world.neighbors is true, the default.
 
   id: null            # unique id, promoted by agentset create factory method
@@ -30,7 +30,7 @@ class ABM.Patch
   labelColor: [0,0,0] # text color
   labelOffset: [0,0]  # text offset from the patch center
   pRect: null         # Performance: cached rect of neighborhood larger than n.
-  
+
   # New Patch: Just set x,y. Neighbors set by Patches constructor if needed.
   constructor: (@x, @y) ->
 
@@ -43,10 +43,10 @@ class ABM.Patch
   #     p.scaleColor @foodColor, p.foodPheromone # ants model
   #
   # Promotes color if currently using the default.
-  scaleColor: (c, s) -> 
+  scaleColor: (c, s) ->
     @color = u.clone @color unless @.hasOwnProperty("color")
     u.scaleColor c, s, @color
-  
+
   # Draw the patch and its text label if there is one.
   draw: (ctx) ->
     ctx.fillStyle = u.colorStr @color
@@ -54,19 +54,19 @@ class ABM.Patch
     if @label? # REMIND: should be 2nd pass.
       [x,y] = @breed.patchXYtoPixelXY @x, @y
       u.ctxDrawText ctx, @label, x+@labelOffset[0], y+@labelOffset[1], @labelColor
-  
+
   # Return an array of the agents on this patch.
   # If patches.cacheAgentsHere has created an @agents instance
   # variable for the patches, agents will add/remove themselves
   # as they move from patch to patch.
   agentsHere: ->
     @agents ? (a for a in @model.agents when a.p is @)
-  
+
   # Returns true if this patch is on the edge of the grid.
   isOnEdge: ->
     @x is @breed.minX or @x is @breed.maxX or \
     @y is @breed.minY or @y is @breed.maxY
-  
+
   # Factory: Create num new agents on this patch. The optional init
   # proc is called on the new agent after inserting in its agentSet.
   sprout: (num = 1, breed = @model.agents, init = ->) ->

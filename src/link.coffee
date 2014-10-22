@@ -1,7 +1,7 @@
 # ### Link
-  
+
 # Class Link connects two agent endpoints for graph modeling.
-class ABM.Link
+class Link
   # Constructor initializes instance variables:
   #
   # * id:         unique identifier, promoted by agentset create() factory method
@@ -27,7 +27,7 @@ class ABM.Link
     if @end1.links?
       @end1.links.push @
       @end2.links.push @
-      
+
   # Draw a line between the two endpoints.  Draws "around" the
   # torus if appropriate using two lines. As with Agent.draw,
   # is called with patch coordinate transform installed.
@@ -54,20 +54,20 @@ class ABM.Link
       [x0, y0]  = u.lerp2 @end1.x, @end1.y, @end2.x, @end2.y, .5
       [x,y] = @model.patches.patchXYtoPixelXY x0, y0
       u.ctxDrawText ctx, @label, x+@labelOffset[0], y+@labelOffset[1], @labelColor
-  
+
   # Remove this link from the agent set
   die: ->
     @breed.remove @
     u.removeItem @end1.links, @ if @end1.links?
     u.removeItem @end2.links, @ if @end2.links?
     null
-  
+
   # Return the two endpoints of this link
   bothEnds: -> [@end1, @end2]
-  
+
   # Return the distance between the endpoints with the current topology.
   length: -> @end1.distance @end2
-  
+
   # Return the other end of the link, given an endpoint agent.
   # Assumes the given input *is* one of the link endpoint pairs!
   otherEnd: (a) -> if @end1 is a then @end2 else @end1

@@ -51,7 +51,7 @@ and an image-as-data class.</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>
-u = ABM.util
+u = ABM.Util
 ABM.DataSet = <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DataSet</span></span></pre></div></div>
             
         </li>
@@ -140,7 +140,7 @@ The parse method converts a string into a dataset. Async</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">constructor</span>: <span class="hljs-function"><span class="hljs-params">(width=<span class="hljs-number">0</span>, height=<span class="hljs-number">0</span>, data=[], <span class="hljs-property">@model</span>)</span> -&gt;</span> 
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">constructor</span>: <span class="hljs-function"><span class="hljs-params">(width=<span class="hljs-number">0</span>, height=<span class="hljs-number">0</span>, data=[], <span class="hljs-property">@model</span>)</span> -&gt;</span>
     <span class="hljs-property">@setDefaults</span>()
     <span class="hljs-property">@reset</span> width, height, data</pre></div></div>
             
@@ -614,14 +614,14 @@ See <a href="http://goo.gl/ubFiji">Convolution article</a></p>
                 <a class="pilcrow" href="#section-33">&#182;</a>
               </div>
               <p>Create two new convolved datasets, slope and aspect, common in
-the use of an elevation data set. See Esri tutorials for 
+the use of an elevation data set. See Esri tutorials for
 <a href="http://goo.gl/ZcOl08">slope</a> and <a href="http://goo.gl/KoI4y5">aspect</a>
 It also returns the two derivitive DataSets, dzdx, dzdy for
 those wanting to use the results of the two convolutions.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">slopeAndAspect</span>: <span class="hljs-function"><span class="hljs-params">(noNaNs=<span class="hljs-literal">true</span>, posAngle=<span class="hljs-literal">true</span>)</span> -&gt;</span> 
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">slopeAndAspect</span>: <span class="hljs-function"><span class="hljs-params">(noNaNs=<span class="hljs-literal">true</span>, posAngle=<span class="hljs-literal">true</span>)</span> -&gt;</span>
     dzdx = <span class="hljs-property">@dzdx</span>() <span class="hljs-comment"># sub left z from right</span>
     dzdy = <span class="hljs-property">@dzdy</span>() <span class="hljs-comment"># sub bottom z from top</span>
     aspect = []; slope = []; h = dzdx.height; w = dzdx.width
@@ -783,7 +783,7 @@ img may be a canvas</p>
     <span class="hljs-property">@rowsPerSlice</span> <span class="hljs-keyword">or</span>= img.height
     data = u.imageRowsToData img, <span class="hljs-property">@rowsPerSlice</span>, <span class="hljs-property">@f</span>, <span class="hljs-property">@arrayType</span>
     <span class="hljs-property">@reset</span> img.width, img.height, data
-    
+
 ABM.PatchDataSet = <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">PatchDataSet</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">DataSet</span></span>
   <span class="hljs-attribute">constructor</span>: <span class="hljs-function"><span class="hljs-params">(f, arrayType=Array, <span class="hljs-property">@model</span>)</span> -&gt;</span>
     data = <span class="hljs-keyword">new</span> arrayType (ps=<span class="hljs-property">@model</span>.patches).length

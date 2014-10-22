@@ -4,14 +4,13 @@
 
 # ### Class Model
 
-ABM.models = {} # user space, put your models here
-class ABM.Model
+class Model
 
   # Class variable for layers parameters.
   # Can be added to by programmer to modify/create layers, **before** starting your own model.
   # Example:
   #
-  #     v.z++ for k,v of ABM.Model::contextsInit # increase each z value by one
+  #     v.z++ for k,v of Model::contextsInit # increase each z value by one
   contextsInit: { # Experimental: image:   {z:15,  ctx:"img"}
     patches:   {z:10, ctx:"2d"}
     drawing:   {z:20, ctx:"2d"}
@@ -65,10 +64,10 @@ class ABM.Model
 
     # if isHeadless
     # # Initialize animator to headless default: 30fps, async
-    # then @anim = new ABM.Animator @, null, true
+    # then @anim = new Animator @, null, true
     # # Initialize animator to default: 30fps, not async
     # else
-    @anim = new ABM.Animator @
+    @anim = new Animator @
     # Set drawing controls.  Default to drawing each agentset.
     # Optimization: If any of these is set to false, the associated
     # agentset is drawn only once, remaining static after that.
@@ -78,9 +77,9 @@ class ABM.Model
     # agent class.  Clone the agent classes so that they
     # can use "defaults" in isolation when multiple
     # models run on a page.
-    @Patches = ABM.Patches; @Patch = u.cloneClass(ABM.Patch)
-    @Agents = ABM.Agents; @Agent = u.cloneClass(ABM.Agent)
-    @Links = ABM.Links; @Link = u.cloneClass(ABM.Link)
+    @Patches = Patches; @Patch = u.cloneClass(Patch)
+    @Agents = Agents; @Agent = u.cloneClass(Agent)
+    @Links = Links; @Link = u.cloneClass(Link)
 
     # Initialize agentsets.
     @patches = new @Patches @, @Patch, "patches"
@@ -119,20 +118,6 @@ class ABM.Model
     if globalNames?
     then @globalNames = globalNames; @globalNames.set = true
     else @globalNames = u.removeItems u.ownKeys(@), @globalNames
-
-  # Add this model to a class's prototype. This is used in
-  # the model constructor to create Patch/Patches, Agent/Agents,
-  # and Link/Links classes with a built-in reference to their model.
-  extend: (aClass) ->
-    newClass = u.cloneClass aClass
-    newClass.model = @
-    newClass
-    # model = @
-    # class extendedClass extends aClass
-    #   model: model
-    #   constructor: ->
-    #     super
-    # return extendedClass;
 
 #### Optimizations:
 
@@ -256,7 +241,8 @@ class ABM.Model
   createBreeds: (s, agentClass, breedSet) ->
     breeds = []; breeds.classes = {}; breeds.sets = {}
     for b in s.split(" ")
-      c = class Breed extends agentClass
+      cname = b.charAt(0).toUpperCase() + b.substr(1)
+      c = u.cloneClass agentClass, cname # c = class Breed extends agentClass
       breed = @[b] = # add @<breed> to local scope
         new breedSet @, c, b, agentClass::breed # create subset agentSet
       breeds.push breed
@@ -271,7 +257,7 @@ class ABM.Model
   #
   #     even = @asSet (a for a in @agents when a.id % 2 is 0)
   #     even.shuffle().getProp("id") # [6, 0, 4, 2, 8]
-  asSet: (a, setType = ABM.AgentSet) -> ABM.AgentSet.asSet a, setType
+  asSet: (a, setType = AgentSet) -> AgentSet.asSet a, setType
 
   # A simple debug aid which places short names in the global name space.
   # Note we avoid using the actual name, such as "patches" because this
@@ -292,9 +278,32 @@ class ABM.Model
     window.ls  = @links
     window.l0  = @links[0]
     window.dr  = @drawing
-    window.u   = ABM.util
+    window.u   = Util
     window.cx  = @contexts
     window.an  = @anim
     window.gl  = @globals()
     window.dv  = @div
     window.app = @
+
+# Create the namespace **ABM** for our project.
+# Note here `this` or `@` == window due to coffeescript wrapper call.
+# Thus @ABM is placed in the global scope.
+# @ABM={}
+
+
+@ABM = {
+  util    # deprecated
+  shapes  # deprecated
+  Util
+  Color
+  Shapes
+  AgentSet
+  Patch
+  Patches
+  Agent
+  Agents
+  Link
+  Links
+  Animator
+  Model
+}

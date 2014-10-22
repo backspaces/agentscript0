@@ -10,7 +10,7 @@
 # * [Timeout tutorial](http://javascript.info/tutorial/settimeout-setinterval)
 # * [Events and timing in depth](http://javascript.info/tutorial/events-and-timing-depth)
 
-class ABM.Animator
+class Animator
   # Create initial animator for the model, specifying default rate (fps) and multiStep.
   # If multiStep, run the draw() and step() methods separately by draw() using
   # requestAnimationFrame and step() using setTimeout.
@@ -31,7 +31,7 @@ class ABM.Animator
     if @timeoutHandle? then clearTimeout @timeoutHandle
     if @intervalHandle? then clearInterval @intervalHandle
     @animHandle = @timerHandle = @intervalHandle = null
-  # Internal util: reset time instance variables
+  # Internal utility: reset time instance variables
   resetTimes: ->
     @startMS = @now()
     @startTick = @ticks

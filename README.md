@@ -123,7 +123,7 @@ CoffeeScript modelers simply subclass ABM.Model, supplying the three abstract me
 JavaScript modelers can simply replace the empty ABM.Model abstract methods:
 
     myModel = function () {
-      var u = ABM.util; // useful alias for utilities
+      var u = ABM.Util; // useful alias for utilities
       ABM.Model.prototype.startup = function () {...};
       ABM.Model.prototype.setup = function () {...};
       ABM.Model.prototype.step = function () {...};

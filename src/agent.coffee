@@ -1,9 +1,9 @@
 # ### Agent
 
-# Class Agent instances represent the dynamic, behavioral element of ABM.
+# Class Agent instances represent the dynamic, behavioral element of modeling.
 # Each agent knows the patch it is on, and interacts with that and other
 # patches, as well as other agents.
-class ABM.Agent
+class Agent
   # Constructor & Class Variables:
   #
   # * id:         unique identifier, promoted by agentset create() factory method
@@ -94,13 +94,13 @@ class ABM.Agent
 
   # Draw the agent, instanciating a sprite if required
   draw: (ctx) ->
-    shape = ABM.shapes[@shape]
+    shape = Shapes[@shape]
     rad = if shape.rotate then @heading else 0 # radians
     if @sprite? or @breed.useSprites
       @setSprite() unless @sprite? # lazy evaluation of useSprites
-      ABM.shapes.drawSprite ctx, @sprite, @x, @y, @size, rad
+      Shapes.drawSprite ctx, @sprite, @x, @y, @size, rad
     else
-      ABM.shapes.draw ctx, shape, @x, @y, @size, rad, @color, @strokeColor
+      Shapes.draw ctx, shape, @x, @y, @size, rad, @color, @strokeColor
     if @label?
       [x,y] = @model.patches.patchXYtoPixelXY @x, @y
       u.ctxDrawText ctx, @label, x+@labelOffset[0], y+@labelOffset[1], @labelColor
@@ -111,7 +111,7 @@ class ABM.Agent
       @sprite = s; @color = s.color; @strokeColor = s.strokeColor; @shape = s.shape; @size = s.size
     else
       @color = u.randomColor unless @color?
-      @sprite = ABM.shapes.shapeToSprite @shape, @color, @model.patches.toBits(@size), @strokeColor
+      @sprite = Shapes.shapeToSprite @shape, @color, @model.patches.toBits(@size), @strokeColor
 
   # Draw the agent on the drawing layer, leaving permanent image.
   stamp: -> @draw @model.drawing

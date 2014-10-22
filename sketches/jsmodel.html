@@ -1,11 +1,11 @@
 <html>
   <head>
     <title>JavaScript Random Walker</title>
-    <script src="http://agentscript.org/lib/agentscript.js"></script>
+    <script src="../lib/agentscript.js"></script>
     <script>
 
     myModel = function () {
-      var u = ABM.util; // useful alias for utilities
+      var u = ABM.Util; // useful alias for utilities
       ABM.Model.prototype.startup = function () {
         console.log("startup");
       };
@@ -43,7 +43,7 @@
         .debug()  // Debug: Put Model vars in global name space
         .start(); // Run model immediately after startup initialization
     }
-   
+
     </script>
   </head>
   <body onload="myModel();">

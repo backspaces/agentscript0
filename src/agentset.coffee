@@ -4,7 +4,7 @@
 #
 # It is a subclass of `Array` and is the base class for
 # `Patches`, `Agents`, and `Links`. An AgentSet keeps track of all
-# its created instances.  It also provides, much like the **ABM.util**
+# its created instances.  It also provides, much like the **Util**
 # module, many methods shared by all subclasses of AgentSet.
 #
 # A model contains three agentsets:
@@ -23,7 +23,7 @@
 #
 # Because we are an array subset, @[i] == this[i] == agentset[i]
 
-class ABM.AgentSet extends Array
+class AgentSet extends Array
 # ### Static members
 
   # `asSet` is a static wrapper function converting an array of agents into
@@ -34,7 +34,7 @@ class ABM.AgentSet extends Array
   #     evens = (a for a in @model.agents when a.id % 2 is 0)
   #     ABM.AgentSet.asSet(evens)
   #     randomEven = evens.oneOf()
-  @asSet: (a, setType = ABM.AgentSet) ->
+  @asSet: (a, setType = AgentSet) -> #(a, setType = ABM.AgentSet)
     a.__proto__ = setType.prototype ? setType.constructor.prototype # setType.__proto__
     a.model=a[0].model if a[0]?
     a
@@ -155,7 +155,7 @@ class ABM.AgentSet extends Array
 
   # The static `ABM.AgentSet.asSet` as a method.
   # Used by agentset methods creating new agentsets.
-  asSet: (a, setType = @) -> ABM.AgentSet.asSet a, setType # setType = ABM.AgentSet
+  asSet: (a, setType = @) -> AgentSet.asSet a, setType # setType = AgentSet
 
   # Similar to above but sorted via `id`.
   asOrderedSet: (a) -> @asSet(a).sortById()
@@ -199,7 +199,7 @@ class ABM.AgentSet extends Array
   minProp: (prop) -> u.aMin @getProp(prop)
   histOfProp: (prop, bin=1) -> u.histOf @, bin, prop
 
-# ### Array Utilities, often from ABM.util
+# ### Array Utilities, often from Util
 
   # Randomize the agentset
   #
@@ -275,7 +275,7 @@ class ABM.AgentSet extends Array
 
 # ### Topology
 
-  # For patches & agents, which have x,y. See ABM.util doc.
+  # For patches & agents, which have x,y. See Util doc.
   #
   # Return all agents in agentset within d distance from given object.
   # By default excludes the given object. Uses linear/torus distance

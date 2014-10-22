@@ -40,13 +40,13 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-2">&#182;</a>
               </div>
-              <p>Class Agent instances represent the dynamic, behavioral element of ABM.
+              <p>Class Agent instances represent the dynamic, behavioral element of modeling.
 Each agent knows the patch it is on, and interacts with that and other
 patches, as well as other agents.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ABM</span>.<span class="hljs-title">Agent</span></span></pre></div></div>
+            <div class="content"><div class='highlight'><pre><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Agent</span></span></pre></div></div>
             
         </li>
         
@@ -234,13 +234,13 @@ Returns new heading.</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">draw</span>: <span class="hljs-function"><span class="hljs-params">(ctx)</span> -&gt;</span>
-    shape = ABM.shapes[<span class="hljs-property">@shape</span>]
+    shape = Shapes[<span class="hljs-property">@shape</span>]
     rad = <span class="hljs-keyword">if</span> shape.rotate <span class="hljs-keyword">then</span> <span class="hljs-property">@heading</span> <span class="hljs-keyword">else</span> <span class="hljs-number">0</span> <span class="hljs-comment"># radians</span>
     <span class="hljs-keyword">if</span> <span class="hljs-property">@sprite</span>? <span class="hljs-keyword">or</span> <span class="hljs-property">@breed</span>.useSprites
       <span class="hljs-property">@setSprite</span>() <span class="hljs-keyword">unless</span> <span class="hljs-property">@sprite</span>? <span class="hljs-comment"># lazy evaluation of useSprites</span>
-      ABM.shapes.drawSprite ctx, <span class="hljs-property">@sprite</span>, <span class="hljs-property">@x</span>, <span class="hljs-property">@y</span>, <span class="hljs-property">@size</span>, rad
+      Shapes.drawSprite ctx, <span class="hljs-property">@sprite</span>, <span class="hljs-property">@x</span>, <span class="hljs-property">@y</span>, <span class="hljs-property">@size</span>, rad
     <span class="hljs-keyword">else</span>
-      ABM.shapes.draw ctx, shape, <span class="hljs-property">@x</span>, <span class="hljs-property">@y</span>, <span class="hljs-property">@size</span>, rad, <span class="hljs-property">@color</span>, <span class="hljs-property">@strokeColor</span>
+      Shapes.draw ctx, shape, <span class="hljs-property">@x</span>, <span class="hljs-property">@y</span>, <span class="hljs-property">@size</span>, rad, <span class="hljs-property">@color</span>, <span class="hljs-property">@strokeColor</span>
     <span class="hljs-keyword">if</span> <span class="hljs-property">@label</span>?
       [x,y] = <span class="hljs-property">@model</span>.patches.patchXYtoPixelXY <span class="hljs-property">@x</span>, <span class="hljs-property">@y</span>
       u.ctxDrawText ctx, <span class="hljs-property">@label</span>, x+<span class="hljs-property">@labelOffset</span>[<span class="hljs-number">0</span>], y+<span class="hljs-property">@labelOffset</span>[<span class="hljs-number">1</span>], <span class="hljs-property">@labelColor</span></pre></div></div>
@@ -263,7 +263,7 @@ Returns new heading.</p>
       <span class="hljs-property">@sprite</span> = s; <span class="hljs-property">@color</span> = s.color; <span class="hljs-property">@strokeColor</span> = s.strokeColor; <span class="hljs-property">@shape</span> = s.shape; <span class="hljs-property">@size</span> = s.size
     <span class="hljs-keyword">else</span>
       <span class="hljs-property">@color</span> = u.randomColor <span class="hljs-keyword">unless</span> <span class="hljs-property">@color</span>?
-      <span class="hljs-property">@sprite</span> = ABM.shapes.shapeToSprite <span class="hljs-property">@shape</span>, <span class="hljs-property">@color</span>, <span class="hljs-property">@model</span>.patches.toBits(<span class="hljs-property">@size</span>), <span class="hljs-property">@strokeColor</span></pre></div></div>
+      <span class="hljs-property">@sprite</span> = Shapes.shapeToSprite <span class="hljs-property">@shape</span>, <span class="hljs-property">@color</span>, <span class="hljs-property">@model</span>.patches.toBits(<span class="hljs-property">@size</span>), <span class="hljs-property">@strokeColor</span></pre></div></div>
             
         </li>
         

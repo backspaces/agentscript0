@@ -5,23 +5,23 @@
     <script src="../tools/coffee-script.js"></script>
     <script type="text/coffeescript">
 
-    u = ABM.util # ABM.util alias, u.s is also ABM.shape accessor.
+    u = ABM.Util # ABM.Util alias
     class MyModel extends ABM.Model
       setup: ->
         @refreshPatches = false # for static patches
         @refreshLinks = false # for static links .. drown as created
-        
+
         # globals
         @buttons = 200
         @cluster = 0
-        
+
         # defaults
         @agents.setDefault "shape", "circle"
         @agents.setDefault "size", 1.5
         @agents.setDefault "heading", 0 # override promotion to random angle
         @links.setDefault "thickness", .5 # 2.5
-        
-        
+
+
         @agents.create @buttons, (a) => # fat arrow for @patches etc
           # a.size = 1.5
           # a.shape = "circle"
@@ -30,21 +30,21 @@
       step: ->
         b1 = @agents.oneOf()
         b2 = @agents.other(b1).oneOf()
-        
+
         @links.create b1, b2, (l) =>
           l.draw @contexts.links
-        
+
         g = @graphOf b1
         c = u.minOneOf(g, "id").color
         node.color = c for node in g
         if g.length > @cluster
           console.log "New largest cluster: size: #{g.length} tick: #{@anim.ticks}"
         @cluster = Math.max @cluster, g.length
-        
+
         if @cluster is @buttons
           console.log "Completed at tick #{@anim.ticks}:  Cluster size #{@cluster} Links: #{@links.length}"
           @stop()
-        
+
       graphOf: (node) ->
         a.marked = false for a in @agents
         @markNeighbors node

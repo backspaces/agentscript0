@@ -42,7 +42,8 @@ and <code>setup</code> will be called by <code>Model.constructor</code>. See:</p
             </div>
             
             <div class="content"><div class='highlight'><pre>
-u = ABM.util <span class="hljs-comment"># ABM.util alias, u.s is also ABM.shapes accessor.</span>
+u = ABM.Util <span class="hljs-comment"># ABM.Util alias</span>
+Shapes = ABM.Shapes <span class="hljs-comment"># ABM.Util alias, u.s is also ABM.shapes accessor.</span>
 <span class="hljs-function"><span class="hljs-title">log</span> = <span class="hljs-params">(arg)</span> -&gt;</span> <span class="hljs-built_in">console</span>.log arg
 <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyModel</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">ABM</span>.<span class="hljs-title">Model</span></span></pre></div></div>
             
@@ -73,11 +74,11 @@ for an example, not needed by simple models.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-3">&#182;</a>
               </div>
-              <p>Add new shapes; u.s. is ABM.shapes.</p>
+              <p>Add new shapes.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    u.s.add <span class="hljs-string">"bowtie"</span>, <span class="hljs-literal">true</span>, <span class="hljs-function"><span class="hljs-params">(c)</span> -&gt;</span> u.s.poly c, [[-<span class="hljs-number">.5</span>,-<span class="hljs-number">.5</span>],[<span class="hljs-number">.5</span>,<span class="hljs-number">.5</span>],[-<span class="hljs-number">.5</span>,<span class="hljs-number">.5</span>],[<span class="hljs-number">.5</span>,-<span class="hljs-number">.5</span>]]</pre></div></div>
+            <div class="content"><div class='highlight'><pre>    Shapes.add <span class="hljs-string">"bowtie"</span>, <span class="hljs-literal">true</span>, <span class="hljs-function"><span class="hljs-params">(c)</span> -&gt;</span> Shapes.poly c, [[-<span class="hljs-number">.5</span>,-<span class="hljs-number">.5</span>],[<span class="hljs-number">.5</span>,<span class="hljs-number">.5</span>],[-<span class="hljs-number">.5</span>,<span class="hljs-number">.5</span>],[<span class="hljs-number">.5</span>,-<span class="hljs-number">.5</span>]]</pre></div></div>
             
         </li>
         
@@ -103,7 +104,7 @@ like to add custom images.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-5">&#182;</a>
               </div>
-              <p>u.s.add “cc”, true, u.importImage(“data/coffee.png”)</p>
+              <p>Shapes.add “cc”, true, u.importImage(“data/coffee.png”)</p>
 
             </div>
             
@@ -116,7 +117,7 @@ like to add custom images.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-6">&#182;</a>
               </div>
-              <p>u.s.add “redfish”, false, u.importImage(“data/redfish64t.png”)</p>
+              <p>Shapes.add “redfish”, false, u.importImage(“data/redfish64t.png”)</p>
 
             </div>
             
@@ -256,7 +257,7 @@ on our modeel’s <code>startCircle</code> variable.</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">for</span> a <span class="hljs-keyword">in</span> <span class="hljs-property">@agents</span>.create <span class="hljs-property">@population</span>
-      a.shape = u.oneOf u.s.names() <span class="hljs-comment"># random shapes</span>
+      a.shape = u.oneOf Shapes.names() <span class="hljs-comment"># random shapes</span>
       <span class="hljs-keyword">if</span> <span class="hljs-property">@startCircle</span>
         a.forward <span class="hljs-property">@patches</span>.maxX/<span class="hljs-number">2</span> <span class="hljs-comment"># start in circle</span>
       <span class="hljs-keyword">else</span>
@@ -292,7 +293,7 @@ Note CoffeeScript
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">for</span> s <span class="hljs-keyword">in</span> u.s.names()
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">for</span> s <span class="hljs-keyword">in</span> Shapes.names()
       num = <span class="hljs-property">@agents</span>.getPropWith(<span class="hljs-string">"shape"</span>, s).length
       log <span class="hljs-string">"<span class="hljs-subst">#{num}</span> <span class="hljs-subst">#{s}</span>"</span></pre></div></div>
             
@@ -364,7 +365,7 @@ the patches. Otherwise don’t refresh.</p>
     <span class="hljs-keyword">else</span>
       <span class="hljs-property">@refreshPatches</span> = <span class="hljs-literal">false</span>
     <span class="hljs-keyword">if</span> <span class="hljs-property">@anim</span>.draws <span class="hljs-keyword">is</span> <span class="hljs-number">2</span> <span class="hljs-comment"># Show the sprite sheet if there is one after first draw</span>
-      sheet = u.last(u.s.spriteSheets) <span class="hljs-keyword">if</span> u.s.spriteSheets.length <span class="hljs-keyword">isnt</span> <span class="hljs-number">0</span>
+      sheet = u.last(Shapes.spriteSheets) <span class="hljs-keyword">if</span> Shapes.spriteSheets.length <span class="hljs-keyword">isnt</span> <span class="hljs-number">0</span>
       <span class="hljs-keyword">if</span> sheet?
         log sheet
         <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">"play"</span>).appendChild(sheet.canvas)

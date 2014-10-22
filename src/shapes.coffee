@@ -1,8 +1,8 @@
 # A *very* simple shapes module for drawing
 # [NetLogo-like](http://ccl.northwestern.edu/netlogo/docs/) agents.
 
-ABM.shapes = ABM.util.s = do ->
-  # Each shape is a named object with two members: 
+shapes = Shapes = do -> # TODO: Shapes is external name
+  # Each shape is a named object with two members:
   # a boolean rotate and a draw procedure and two optional
   # properties: img for images, and shortcut for a transform-less version of draw.
   # The shape is used in the following context with a color set
@@ -16,13 +16,13 @@ ABM.shapes = ABM.util.s = do ->
   #     ctx.fill()
   #     ctx.restore()
   #
-  # The list of current shapes, via `ABM.shapes.names()` below, is:
+  # The list of current shapes, via `ABM.Shapes.names()` below, is:
   #
-  #     ["default", "triangle", "arrow", "bug", "pyramid", 
+  #     ["default", "triangle", "arrow", "bug", "pyramid",
   #      "circle", "square", "pentagon", "ring", "cup", "person"]
-  
+
   # A simple polygon utility:  c is the 2D context, and a is an array of 2D points.
-  # c.closePath() and c.fill() will be called by the calling agent, see initial 
+  # c.closePath() and c.fill() will be called by the calling agent, see initial
   # discription of drawing context.  It is used in adding a new shape above.
   poly = (c, a) ->
     for p, i in a
@@ -35,15 +35,15 @@ ABM.shapes = ABM.util.s = do ->
   ccirc = (c,x,y,s)->c.arc x,y,s/2,0,2*Math.PI,true # centered counter clockwise circle
   cimg = (c,x,y,s,img)->c.scale 1,-1;c.drawImage img,x-s/2,y-s/2,s,s;c.scale 1,-1 # centered image
   csq = (c,x,y,s)->c.fillRect x-s/2, y-s/2, s, s # centered square
-  
-  # An async util for delayed drawing of images into sprite slots
+
+  # An async utility for delayed drawing of images into sprite slots
   fillSlot = (slot, img) ->
     slot.ctx.save(); slot.ctx.scale 1, -1
-    slot.ctx.drawImage img, slot.x, -(slot.y+slot.spriteSize), slot.spriteSize, slot.spriteSize    
+    slot.ctx.drawImage img, slot.x, -(slot.y+slot.spriteSize), slot.spriteSize, slot.spriteSize
     slot.ctx.restore()
   # The spritesheet data, indexed by slotSize
   spriteSheets = []
-  
+
   # The module returns the following object:
   default:
     rotate: true
@@ -94,16 +94,16 @@ ABM.shapes = ABM.util.s = do ->
       [.1,-.15],[.25,-.5],[.05,-.5],[0,-.25],
       [-.05,-.5],[-.25,-.5],[-.1,-.15],[-.125,.05],
       [-.125,-.1],[-.3,0],[-.15,.2]  ]
-      c.closePath(); circ c,0,.35,.30 
+      c.closePath(); circ c,0,.35,.30
   # Return a list of the available shapes, see above.
   names: ->
     (name for own name, val of @ when val.rotate? and val.draw?)
   # Add your own shape. Will be included in names list.  Usage:
   #
-  #     ABM.shapes.add "test", true, (c) -> # bowtie/hourglass
-  #       ABM.shapes.poly c, [[-.5,-.5],[.5,.5],[-.5,.5],[.5,-.5]]
+  #     ABM.Shapes.add "test", true, (c) -> # bowtie/hourglass
+  #       ABM.Shapes.poly c, [[-.5,-.5],[.5,.5],[-.5,.5],[.5,-.5]]
   #
-  # Note: an image that is not rotated automatically gets a shortcut. 
+  # Note: an image that is not rotated automatically gets a shortcut.
   add: (name, rotate, draw, shortcut) -> # draw can be an image, shortcut defaults to null
     s = @[name] =
       if u.isFunction draw then {rotate,draw} else {rotate,img:draw,draw:(c)->cimg c,.5,.5,1,@img}
@@ -137,7 +137,7 @@ ABM.shapes = ABM.util.s = do ->
         ctx.restore()
         ctx.fill()
         ctx.stroke() if strokeColor
-        
+
       ctx.restore()
     shape
   drawSprite: (ctx, s, x, y, size, rad) ->
@@ -192,6 +192,3 @@ ABM.shapes = ABM.util.s = do ->
       ctx.stroke() if strokeColor
       ctx.restore()
     ctx.nextX++; slot
-
-    
-

@@ -1,8 +1,8 @@
 # ### Agents
 
-# Class Agents is a subclass of AgentSet which stores instances of Agent or 
+# Class Agents is a subclass of AgentSet which stores instances of Agent or
 # Breeds, which are subclasses of Agent
-class ABM.Agents extends ABM.AgentSet
+class Agents extends AgentSet
   # Constructor creates the empty AgentSet instance and installs
   # the agentClass (breed) variable shared by all the Agents in this set.
   constructor: -> # agentClass, name, mainSet
@@ -15,7 +15,7 @@ class ABM.Agents extends ABM.AgentSet
 
   # Use sprites rather than drawing
   setUseSprites: (@useSprites=true) ->
-  
+
   # Filter to return all instances of this breed.  Note: if used by
   # the mainSet, returns just the agents that are not subclassed breeds.
   in: (array) -> @asSet (o for o in array when o.breed is @)
@@ -28,26 +28,26 @@ class ABM.Agents extends ABM.AgentSet
   # Remove all agents from set via agent.die()
   # Note call in reverse order to optimize list restructuring.
   clear: -> @last().die() while @any(); null # tricky, each die modifies list
-  
+
   # Return an agentset of agents within the patch array
   inPatches: (patches) ->
     array = []
     array.push p.agentsHere()... for p in patches # concat measured slower
     if @mainSet? then @in array else @asSet array
-  
+
   # Return an agentset of agents within the patchRect
   inRect: (a, dx, dy, meToo=false) ->
     rect = @model.patches.patchRect a.p, dx, dy, true
     rect = @inPatches rect
     u.removeItem rect, a unless meToo
     rect
-  
+
   # Return the members of this agentset that are within radius distance
   # from me, and within cone radians of my heading using patch topology
   inCone: (a, heading, cone, radius, meToo=false) -> # heading? .. so p ok?
     as = @inRect a, radius, radius, true
     super a, heading, cone, radius, meToo #as.inCone a, heading, cone, radius, meToo
-  
+
   # Return the members of this agentset that are within radius distance
   # from me, using patch topology
   inRadius: (a, radius, meToo=false)->

@@ -32,7 +32,7 @@ are the items of the array.  Instances of the class are created
 by the <code>create</code> factory method of an AgentSet.</p>
 <p>It is a subclass of <code>Array</code> and is the base class for
 <code>Patches</code>, <code>Agents</code>, and <code>Links</code>. An AgentSet keeps track of all
-its created instances.  It also provides, much like the <strong>ABM.util</strong>
+its created instances.  It also provides, much like the <strong>Util</strong>
 module, many methods shared by all subclasses of AgentSet.</p>
 <p>A model contains three agentsets:</p>
 <ul>
@@ -51,7 +51,7 @@ but thus far we’ve resolved all related problems.</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>
-<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ABM</span>.<span class="hljs-title">AgentSet</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Array</span></span></pre></div></div>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AgentSet</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Array</span></span></pre></div></div>
             
         </li>
         
@@ -85,7 +85,7 @@ randomEven = evens.oneOf()
 </code></pre>
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-property">@asSet</span>: <span class="hljs-function"><span class="hljs-params">(a, setType = ABM.AgentSet)</span> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-property">@asSet</span>: <span class="hljs-function"><span class="hljs-params">(a, setType = AgentSet)</span> -&gt;</span> <span class="hljs-comment">#(a, setType = ABM.AgentSet)</span>
     a.__proto__ = setType.prototype ? setType.constructor.prototype <span class="hljs-comment"># setType.__proto__</span>
     a.model=a[<span class="hljs-number">0</span>].model <span class="hljs-keyword">if</span> a[<span class="hljs-number">0</span>]?
     a</pre></div></div>
@@ -382,7 +382,7 @@ Used by agentset methods creating new agentsets.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">asSet</span>: <span class="hljs-function"><span class="hljs-params">(a, setType = @)</span> -&gt;</span> ABM.AgentSet.asSet a, setType <span class="hljs-comment"># setType = ABM.AgentSet</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">asSet</span>: <span class="hljs-function"><span class="hljs-params">(a, setType = @)</span> -&gt;</span> AgentSet.asSet a, setType <span class="hljs-comment"># setType = AgentSet</span></pre></div></div>
             
         </li>
         
@@ -513,7 +513,7 @@ max = AS.maxProp <span class="hljs-string">"y"</span>  <span class="hljs-comment
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-26">&#182;</a>
               </div>
-              <h3 id="array-utilities-often-from-abm-util">Array Utilities, often from ABM.util</h3>
+              <h3 id="array-utilities-often-from-util">Array Utilities, often from Util</h3>
 
             </div>
             
@@ -745,7 +745,7 @@ To show/hide an individual object, set its prototype: o.hidden = bool</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-40">&#182;</a>
               </div>
-              <p>For patches &amp; agents, which have x,y. See ABM.util doc.</p>
+              <p>For patches &amp; agents, which have x,y. See Util doc.</p>
 <p>Return all agents in agentset within d distance from given object.
 By default excludes the given object. Uses linear/torus distance
 depending on patches.isTorus, and patches width/height if needed.</p>

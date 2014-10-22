@@ -18,7 +18,7 @@
 # Similarly for left-hand wall followers w/ obvious changes, managed
 # by a +/-1 direction agent variable.
 
-u = ABM.util # static variables
+u = ABM.Util # static variables
 class MyModel extends ABM.Model
   startup: ->
   setup: ->
@@ -32,7 +32,8 @@ class MyModel extends ABM.Model
     # Four shared colors, so @acolor === @bcolor works
     @black = @patches[0].color # patch default
     @green = [0, 255, 0]
-    @brown = [222, 184, 135] # BurlyWood not Brown, it's too red
+    # @brown = [222, 184, 135] # BurlyWood not Brown, it's too red
+    @brown = [157, 110, 72] # NL's brown via show extract-rgb
     @blue = [0, 0, 255]
     @population = 40
 

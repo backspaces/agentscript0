@@ -2,19 +2,14 @@
 # [docco](http://jashkenas.github.com/docco/) which allows
 # [markdown](http://daringfireball.net/projects/markdown/syntax).
 
-# Create the namespace **ABM** for our project.
-# Note here `this` or `@` == window due to coffeescript wrapper call.
-# Thus @ABM is placed in the global scope.
-@ABM={}
-
-# **ABM.util** contains the general utilities for the project. Note that within
-# a **util** function `@` referrs to ABM.util, *not* the global name space.
-# Alias: u is an alias for ABM.util within the agentscript module (not outside)
+# **Util** contains the general utilities for the project. Note that within
+# a **Util** function `@` referrs to Util, *not* the global name space.
+# Alias: u is an alias for ABM.Util within the agentscript module (not outside)
 #
 #      u.clearCtx(ctx) is equivalent to
-#      ABM.util.clearCtx(ctx)
+#      ABM.Util.clearCtx(ctx)
 
-ABM.util = u =
+Util = util = u = # TODO: "util" deprecated in favor of Util
 
   # Shortcut for throwing an error.  Good for debugging:
   #
@@ -63,7 +58,7 @@ ABM.util = u =
   mod: (v, n) -> ((v % n) + n) % n
   # Return v to be between min, max via mod fcn
   wrap: (v, min, max) -> min + @mod(v-min, max-min)
-  # Return v to be between min, max via clamping with min/max
+  # Return v to be between min, max via clamping with Math.min/max
   clamp: (v, min, max) -> Math.max(Math.min(v,max),min)
   # Return sign of a number as +/- 1
   sign: (v) -> if v<0 then -1 else 1
@@ -217,8 +212,12 @@ ABM.util = u =
   # Clone a class (a constructor function) including
   # a copied prototype.  This is used when we have multiple
   # models in a page when the prototype has global variables.
-  cloneClass: (oldClass) ->
-    eval(oldClass.toString().replace(/^/, "var ctor = "))
+  cloneClass: (oldClass, newName) ->
+    ctorStr = oldClass.toString().replace(/^/, "var ctor = ")
+    if newName
+      ctorStr = ctorStr.replace(/function.*{/, "function #{newName}() {")
+    # eval(oldClass.toString().replace(/^/, "var ctor = "))
+    eval(ctorStr)
     ctor.prototype = @cloneObject(oldClass.prototype)
     ctor.constructor = oldClass.constructor
     ctor.prototype.constructor = oldClass.prototype.constructor
@@ -312,9 +311,10 @@ ABM.util = u =
   firstOneOf: (array, f) ->
     return i for a,i in array when f(a); return -1
 
-  # Return histogram of o when f(o) is a numeric value in array.
-  # Histogram interval is bin. Error if array empty.
-  # If f is a string, return histogram of that property.
+  # Return histogram of numbers or objects in array.
+  # f(obj) converts objects to numbers for histogram, defaults to identity.
+  # Histogram interval is bin.
+  # If f is a string, return histogram of that property in objects.
   #
   # In examples below, histOf returns [3,1,1,0,0,1]
   #
@@ -393,12 +393,32 @@ ABM.util = u =
   aMin: (array) -> v=array[0]; v=Math.min v,a for a in array; v
   aSum: (array) -> v=0; v += a for a in array; v
   aAvg: (array) -> @aSum(array)/array.length
-  aMid: (array) ->
+  aMid: (array) -> # mid == median
     array = if array.sort? then @clone array else @typedToJS array
     @sortNums array
     array[Math.floor(array.length/2)]
+  aStats: (array) ->
+    min = @aMin array
+    max = @aMax array
+    avg = @aAvg array
+    mid = @aMid array
+    {min, max, avg, mid}
 
+  # Return array indices for which array value is NaN
   aNaNs: (array) -> (i for v,i in array when isNaN v)
+
+  # Return a "ramp" (array of sorted numbers)
+  # in [start,stop] with numItems, equally spaced.
+  # If useInts, round all the numbers to integers.
+  aRamp: (start, stop, numItems, useInts=false) ->
+    step = (stop-start)/(numItems-1)
+    array = (num for num in [start..stop] by step)
+    array = (Math.round(num) for num in array) if useInts
+    array
+  # Return a range, an array [start..stop]
+  # If start>stop, the array is from [stop..start]
+  aRange: (start, stop) -> [start..stop]
+
 
   # Return array composed of f pairwise on both arrays
   aPairwise: (a1, a2, f) -> v=0; f(v,a2[i]) for v,i in a1
@@ -412,8 +432,12 @@ ABM.util = u =
 
   # Return a linear interpolation between lo and hi.
   # Scale is in [0-1], and the result is in [lo,hi]
+  # If lo>hi, scaling is from hi end of range.
   # [Why the name `lerp`?](http://goo.gl/QrzMc)
-  lerp: (lo, hi, scale) -> lo + (hi-lo)*scale # @clamp(scale, 0, 1)
+  lerp: (lo, hi, scale) ->
+    if lo <= hi then lo + (hi-lo)*scale else lo - (lo-hi)*scale
+  # Calculate the lerp scale given a number and a lo/hi pair.
+  lerpScale: (number, lo, hi) -> (number-lo)/(hi-lo)
   # Return point interpolated between two points.
   lerp2: (x0, y0, x1, y1, scale) -> [@lerp(x0,x1,scale), @lerp(y0,y1,scale)]
   # Return an array with values in [lo,hi], defaults to [0,1].
@@ -425,7 +449,9 @@ ABM.util = u =
   normalize8: (array) -> new Uint8ClampedArray @normalize(array,-.5,255.5)
   normalizeInt: (array, lo, hi) -> (Math.round i for i in @normalize array, lo, hi) # clamp?
 
-  # Return array index of item, or index for item if array to remain sorted.
+  # Binary search:
+  # Return array index of item, where array is sorted.
+  # if item not found, return index for item for array to remain sorted.
   # f is used to return an integer for sorting, primarily for object properties.
   # If f is a string, it is the object property to sort by.
   # Adapted from underscore's _.sortedIndex.

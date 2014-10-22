@@ -9,14 +9,14 @@
 # Two specific subclasses are provided for Asc GIS elevation data,
 # and an image-as-data class.
 
-u = ABM.util
+u = ABM.Util
 ABM.DataSet = class DataSet
   # Static members:
-  
+
   # Create a new dataset using function f on each patch.
   # If f is string, f set to fcn returning p[f]
   @patchDataSet: (f) -> new PatchDataSet f
-  
+
   # Create a new dataset from an image file name.
   # Note that datasets can be built in two steps:
   # An empty constructor which then can be completed by an
@@ -27,7 +27,7 @@ ABM.DataSet = class DataSet
       ds.parse img
       f(ds) if f?
     ds # async: ds will be empty until import finishes
-  
+
   # Create a new dataset from an Asc GIS file.
   # The parse method converts a string into a dataset. Async
   @importAscDataSet: (name, f) ->
@@ -38,7 +38,7 @@ ABM.DataSet = class DataSet
     ds # async: ds will be empty until import finishes
 
   # 2D Dataset: width/height and an array with length = width*height
-  constructor: (width=0, height=0, data=[], @model) -> 
+  constructor: (width=0, height=0, data=[], @model) ->
     @setDefaults()
     @reset width, height, data
   # Reset a dataset to have new width, height and data.  Allows creating
@@ -126,7 +126,7 @@ ABM.DataSet = class DataSet
     then p[name] = @data[i] for p,i in ps
     else p[name] = @patchSample p.x, p.y, model for p in ps
     null
-  
+
   # Sample via transformed coords.
   # x,y is in topleft-bottomright box: [tlx,tly,tlx+w,tly-h]
   coordSample: (x, y, tlx, tly, w, h) -> #brx, bry) ->
@@ -135,7 +135,7 @@ ABM.DataSet = class DataSet
   patchSample: (px, py, model = @model) ->
     w=model.world
     @coordSample px, py, w.minXcor, w.maxYcor, w.numX, w.numY
-  
+
   # Normalize a dataset to linear interpolation: [min,max] -> [lo, hi], float
   normalize: (lo, hi) -> new DataSet @width, @height, u.normalize(@data, lo, hi), @model
   # Normalize a dataset to clamped Uint8 bytes [0-255]
@@ -183,11 +183,11 @@ ABM.DataSet = class DataSet
   filter: (f) -> new DataSet @width, @height, (f(d) for d in @data), @model
 
   # Create two new convolved datasets, slope and aspect, common in
-  # the use of an elevation data set. See Esri tutorials for 
+  # the use of an elevation data set. See Esri tutorials for
   # [slope](http://goo.gl/ZcOl08) and [aspect](http://goo.gl/KoI4y5)
   # It also returns the two derivitive DataSets, dzdx, dzdy for
   # those wanting to use the results of the two convolutions.
-  slopeAndAspect: (noNaNs=true, posAngle=true) -> 
+  slopeAndAspect: (noNaNs=true, posAngle=true) ->
     dzdx = @dzdx() # sub left z from right
     dzdy = @dzdy() # sub bottom z from top
     aspect = []; slope = []; h = dzdx.height; w = dzdx.width
@@ -225,7 +225,7 @@ ABM.AscDataSet = class AscDataSet extends DataSet
   #     NODATA_value -9999
   #
   # ..followed by a ncols X nrows matrix of numbers
-  
+
   # Constructor takes a string generally via an xhr request.
   # It can be "empty" .. i.e. needing a second parse() call
   # so that it can be used in an async file operation.
@@ -262,7 +262,7 @@ ABM.ImageDataSet = class ImageDataSet extends DataSet
     @rowsPerSlice or= img.height
     data = u.imageRowsToData img, @rowsPerSlice, @f, @arrayType
     @reset img.width, img.height, data
-    
+
 ABM.PatchDataSet = class PatchDataSet extends DataSet
   constructor: (f, arrayType=Array, @model) ->
     data = new arrayType (ps=@model.patches).length
@@ -272,4 +272,3 @@ ABM.PatchDataSet = class PatchDataSet extends DataSet
     @useNearest = true
   toPatchVar: (name) ->
     p[name] = @data[i] for p,i in @model.patches; null
-

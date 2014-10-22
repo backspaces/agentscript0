@@ -15,7 +15,7 @@
 
             this.width = width;
             this.height = height;
-            
+
             this.model = model;
 
             this.zoom = 0;
@@ -42,7 +42,7 @@
                 tileY = Math.floor(pixelCoord.y / this.tileSize);
 
             var tileCtx = this.tiles[zoom+"/"+tileX+"/"+tileY];
-            
+
             if (!tileCtx) {
                 console.log("ERR: tried to sample tile", zoom, tileX, tileY, "but it doesn't exist.");
             }
@@ -91,12 +91,12 @@
                     }
 
                     var imageData = curTile.getImageData(0,0,this.tileSize,this.tileSize);
-                    
+
                     var curTilePos = { // in pixels
                         left: (mapTopLeftTile.x + tileX) * this.tileSize,
                         top: (mapTopLeftTile.y + tileY) * this.tileSize
                     };
-                    
+
                     var tileStartCoord = { x: 0, y: 0 };
                     var tileEndCoord = { x: this.tileSize-1, y: this.tileSize-1 };
                     if (tileX == 0)
@@ -169,8 +169,8 @@
                     console.log("err: couldn't parse tile coordinates for", e.url);
                     return;
                 }
-                
-                var tile = ABM.util.imageToCtx(e.tile, this.tileSize, this.tileSize);
+
+                var tile = ABM.Util.imageToCtx(e.tile, this.tileSize, this.tileSize);
 
                 this.addTile(tilePoint, tile);
             }.bind(this));
@@ -194,7 +194,7 @@
             // by wrapping the leafletLayer's event listener
             this.on = function(name, fn) {
                 var leafletLayer = this.leafletLayer;
-                
+
                 if (!leafletLayer) {
                     return;
                 }
@@ -204,7 +204,7 @@
 
             this.off = function(name, fn) {
                 var leafletLayer = this.leafletLayer;
-                
+
                 if (!leafletLayer) {
                     return;
                 }
@@ -257,11 +257,11 @@
                 return;
             }
 
-            ABM.util.insertLayer(this.model.div, this.leafletMap.getContainer(), this.model.world.pxWidth+"px", this.model.world.pxHeight+"px", 15);
+            ABM.Util.insertLayer(this.model.div, this.leafletMap.getContainer(), this.model.world.pxWidth+"px", this.model.world.pxHeight+"px", 15);
             // Alert Leaflet that its dimensions have changed
             this.leafletMap.invalidateSize();
         }
-
+ 
         return TileDataSet;
 
     })();

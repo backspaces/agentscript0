@@ -40,7 +40,7 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-2">&#182;</a>
               </div>
-              <p>Class Patches is a singleton 2D matrix of Patch instances, each patch 
+              <p>Class Patches is a singleton 2D matrix of Patch instances, each patch
 representing a 1x1 square in patch coordinates (via 2D coord transforms).</p>
 <p>From @model.world, set in Model:</p>
 <ul>
@@ -55,7 +55,7 @@ representing a 1x1 square in patch coordinates (via 2D coord transforms).</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ABM</span>.<span class="hljs-title">Patches</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">ABM</span>.<span class="hljs-title">AgentSet</span></span></pre></div></div>
+            <div class="content"><div class='highlight'><pre><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Patches</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">AgentSet</span></span></pre></div></div>
             
         </li>
         
@@ -168,7 +168,7 @@ inCone, inRect, inRadius.  Ex: flock demo model’s vision rect.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">setNeighbors</span>:<span class="hljs-function"> -&gt;</span> 
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">setNeighbors</span>:<span class="hljs-function"> -&gt;</span>
     <span class="hljs-keyword">for</span> p <span class="hljs-keyword">in</span> @
       p.n =  <span class="hljs-property">@patchRect</span> p, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>
       p.n4 = <span class="hljs-property">@asSet</span> (n <span class="hljs-keyword">for</span> n <span class="hljs-keyword">in</span> p.n <span class="hljs-keyword">when</span> n.x <span class="hljs-keyword">is</span> p.x <span class="hljs-keyword">or</span> n.y <span class="hljs-keyword">is</span> p.y)</pre></div></div>
@@ -255,7 +255,7 @@ inCone, inRect, inRadius.  Ex: flock demo model’s vision rect.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-13">&#182;</a>
               </div>
-              <p>Return the patch at matrix position x,y where 
+              <p>Return the patch at matrix position x,y where
 x &amp; y are both valid integer patch coordinates.</p>
 
             </div>
@@ -337,7 +337,7 @@ using either clamp/wrap above according to isTorus topology.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">patch</span>: <span class="hljs-function"><span class="hljs-params">(x,y)</span> -&gt;</span> 
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">patch</span>: <span class="hljs-function"><span class="hljs-params">(x,y)</span> -&gt;</span>
     [x,y]=<span class="hljs-property">@coord</span> x,y
     x = u.clamp Math.round(x), <span class="hljs-property">@minX</span>, <span class="hljs-property">@maxX</span>
     y = u.clamp Math.round(y), <span class="hljs-property">@minY</span>, <span class="hljs-property">@maxY</span>
@@ -423,8 +423,8 @@ using either clamp/wrap above according to isTorus topology.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-24">&#182;</a>
               </div>
-              <p>Return an array of patches in a rectangle centered on the given 
-patch <code>p</code>, dx, dy units to the right/left and up/down. 
+              <p>Return an array of patches in a rectangle centered on the given
+patch <code>p</code>, dx, dy units to the right/left and up/down.
 Exclude <code>p</code> unless meToo is true, default false.</p>
 
             </div>
@@ -495,7 +495,7 @@ soon as the onload callback executes.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-27">&#182;</a>
               </div>
-              <p>Utility function for pixel manipulation.  Given a patch, returns the 
+              <p>Utility function for pixel manipulation.  Given a patch, returns the
 native canvas index i into the pixel data.
 The top-left order simplifies finding pixels in data sets</p>
 
@@ -588,7 +588,7 @@ Map is a color map, only for gray for now</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>      p.color = <span class="hljs-keyword">if</span> map? <span class="hljs-keyword">then</span> map[i] <span class="hljs-keyword">else</span> [data[i++],data[i++],data[i]] 
+            <div class="content"><div class='highlight'><pre>      p.color = <span class="hljs-keyword">if</span> map? <span class="hljs-keyword">then</span> map[i] <span class="hljs-keyword">else</span> [data[i++],data[i++],data[i]]
     <span class="hljs-property">@pixelsCtx</span>.restore() <span class="hljs-comment"># restore patch transform</span></pre></div></div>
             
         </li>
@@ -616,7 +616,7 @@ See Mozilla pixel <a href="http://goo.gl/Lxliq">manipulation article</a></p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-34">&#182;</a>
               </div>
-              <p>u.setIdentity ctx &amp; ctx.restore() only needed if patch size 
+              <p>u.setIdentity ctx &amp; ctx.restore() only needed if patch size
 not 1, pixel ops don’t use transform but @size&gt;1 uses
 a drawimage</p>
 

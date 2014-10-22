@@ -46,7 +46,7 @@ is the world on which the agents live and the model runs.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ABM</span>.<span class="hljs-title">Patch</span></span></pre></div></div>
+            <div class="content"><div class='highlight'><pre><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Patch</span></span></pre></div></div>
             
         </li>
         
@@ -71,7 +71,7 @@ is the world on which the agents live and the model runs.</p>
 <li>pRect:      cached rect for performance</li>
 </ul>
 <p>Patches may not need their neighbors, thus we use a default
-of none.  n and n4 are promoted by the Patches agent set 
+of none.  n and n4 are promoted by the Patches agent set
 if world.neighbors is true, the default.</p>
 
             </div>
@@ -134,7 +134,7 @@ p.scaleColor <span class="hljs-property">@foodColor</span>, p.foodPheromone <spa
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">scaleColor</span>: <span class="hljs-function"><span class="hljs-params">(c, s)</span> -&gt;</span> 
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">scaleColor</span>: <span class="hljs-function"><span class="hljs-params">(c, s)</span> -&gt;</span>
     <span class="hljs-property">@color</span> = u.clone <span class="hljs-property">@color</span> <span class="hljs-keyword">unless</span> @.hasOwnProperty(<span class="hljs-string">"color"</span>)
     u.scaleColor c, s, <span class="hljs-property">@color</span></pre></div></div>
             

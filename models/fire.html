@@ -5,29 +5,29 @@
     <script src="../tools/coffee-script.js"></script>
     <script type="text/coffeescript">
 
-    u = ABM.util # ABM.util alias, u.s is also ABM.shape accessor.
+    u = ABM.Util # ABM.Util alias
     class MyModel extends ABM.Model
       setup: ->
         @agentBreeds "embers fires"
         @agents.setDefault "shape", "square"
         @agents.setDefault "color", [255,0,0]
         @agents.setDefault "heading", 0 # override promotion to random angle
-        
-        @refreshPatches = false # <1fps->50-55fps, no surprise, app optimized for this 
+
+        @refreshPatches = false # <1fps->50-55fps, no surprise, app optimized for this
         # No optimizations: 50-55fps
         # @patches.usePixels() # 50-55fps .. not used, refresh off
         # @patches.cacheAgentsHere() # 50-55fps, not needed * overhead
         # None of the optimizations particularly useful, other than refresh
         # If refresh on, fastPatches is in the 50+fps range.
-        
+
         @density = 60 # percent
         @burnedTrees = 0
         @initialTrees = 0
-        
+
         # defaults
         # @anim.setRate 10, true
         @anim.setRate 60, false
-        
+
 
         for p in @patches when u.randomInt(100) < @density
           # u.setColor p.color, 0, 255, 0
@@ -40,7 +40,7 @@
         # console.log "fires: ", @fires; window.fires = @fires
         # console.log "agents:", @agents
       ignite: (p) ->
-        p.sprout 1, @fires, (a) -> 
+        p.sprout 1, @fires, (a) ->
           #a.breed = "fires"
           #a.color = [255, 0, 0]
         p.color = [0, 0, 0] # in original model but apparently not needed, refresh off?
@@ -57,7 +57,7 @@
         unless @agents.any()
           console.log "..stopping, fire done at tick: #{@anim.ticks}"
           @stop()
-        for a in @fires by -1 # -1: allow changeBreed() in loop
+        for a in @fires by -1 # -1: allow setBreed() in loop
           @ignite p for p in a.p.n4 when u.colorsEqual p.color, [0, 255, 0]
           @embers.setBreed a
         @fadeEmbers()
@@ -74,7 +74,7 @@
     }
     model.debug() # Debug: Put Model vars in global name space
     model.start() # Run model immediately after startup initialization
-    
+
     </script>
   </head>
   <body>

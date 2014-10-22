@@ -33,7 +33,7 @@
             </div>
             
             <div class="content"><div class='highlight'><pre>
-ABM.shapes = ABM.util.s = <span class="hljs-keyword">do</span><span class="hljs-function"> -&gt;</span></pre></div></div>
+shapes = Shapes = <span class="hljs-keyword">do</span><span class="hljs-function"> -&gt;</span> <span class="hljs-comment"># TODO: Shapes is external name</span></pre></div></div>
             
         </li>
         
@@ -44,7 +44,7 @@ ABM.shapes = ABM.util.s = <span class="hljs-keyword">do</span><span class="hljs-
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-2">&#182;</a>
               </div>
-              <p>Each shape is a named object with two members: 
+              <p>Each shape is a named object with two members:
 a boolean rotate and a draw procedure and two optional
 properties: img for images, and shortcut for a transform-less version of draw.
 The shape is used in the following context with a color set
@@ -56,8 +56,8 @@ ctx.rotate heading <span class="hljs-keyword">if</span> shape.rotate
 ctx.beginPath(); shape.draw(ctx); ctx.closePath()
 ctx.fill()
 ctx.restore()
-</code></pre><p>The list of current shapes, via <code>ABM.shapes.names()</code> below, is:</p>
-<pre><code>[<span class="hljs-string">"default"</span>, <span class="hljs-string">"triangle"</span>, <span class="hljs-string">"arrow"</span>, <span class="hljs-string">"bug"</span>, <span class="hljs-string">"pyramid"</span>, 
+</code></pre><p>The list of current shapes, via <code>ABM.Shapes.names()</code> below, is:</p>
+<pre><code>[<span class="hljs-string">"default"</span>, <span class="hljs-string">"triangle"</span>, <span class="hljs-string">"arrow"</span>, <span class="hljs-string">"bug"</span>, <span class="hljs-string">"pyramid"</span>,
  <span class="hljs-string">"circle"</span>, <span class="hljs-string">"square"</span>, <span class="hljs-string">"pentagon"</span>, <span class="hljs-string">"ring"</span>, <span class="hljs-string">"cup"</span>, <span class="hljs-string">"person"</span>]
 </code></pre>
             </div>
@@ -72,7 +72,7 @@ ctx.restore()
                 <a class="pilcrow" href="#section-3">&#182;</a>
               </div>
               <p>A simple polygon utility:  c is the 2D context, and a is an array of 2D points.
-c.closePath() and c.fill() will be called by the calling agent, see initial 
+c.closePath() and c.fill() will be called by the calling agent, see initial
 discription of drawing context.  It is used in adding a new shape above.</p>
 
             </div>
@@ -110,13 +110,13 @@ Useful for shortcuts</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-5">&#182;</a>
               </div>
-              <p>An async util for delayed drawing of images into sprite slots</p>
+              <p>An async utility for delayed drawing of images into sprite slots</p>
 
             </div>
             
             <div class="content"><div class='highlight'><pre>  <span class="hljs-function"><span class="hljs-title">fillSlot</span> = <span class="hljs-params">(slot, img)</span> -&gt;</span>
     slot.ctx.save(); slot.ctx.scale <span class="hljs-number">1</span>, -<span class="hljs-number">1</span>
-    slot.ctx.drawImage img, slot.x, -(slot.y+slot.spriteSize), slot.spriteSize, slot.spriteSize    
+    slot.ctx.drawImage img, slot.x, -(slot.y+slot.spriteSize), slot.spriteSize, slot.spriteSize
     slot.ctx.restore()</pre></div></div>
             
         </li>
@@ -224,9 +224,9 @@ Useful for shortcuts</p>
                 <a class="pilcrow" href="#section-9">&#182;</a>
               </div>
               <p>Add your own shape. Will be included in names list.  Usage:</p>
-<pre><code>ABM.shapes.add <span class="hljs-string">"test"</span>, <span class="hljs-literal">true</span>, <span class="hljs-function"><span class="hljs-params">(c)</span> -&gt;</span> <span class="hljs-comment"># bowtie/hourglass</span>
-  ABM.shapes.poly c, [[-<span class="hljs-number">.5</span>,-<span class="hljs-number">.5</span>],[<span class="hljs-number">.5</span>,<span class="hljs-number">.5</span>],[-<span class="hljs-number">.5</span>,<span class="hljs-number">.5</span>],[<span class="hljs-number">.5</span>,-<span class="hljs-number">.5</span>]]
-</code></pre><p>Note: an image that is not rotated automatically gets a shortcut. </p>
+<pre><code>ABM.Shapes.add <span class="hljs-string">"test"</span>, <span class="hljs-literal">true</span>, <span class="hljs-function"><span class="hljs-params">(c)</span> -&gt;</span> <span class="hljs-comment"># bowtie/hourglass</span>
+  ABM.Shapes.poly c, [[-<span class="hljs-number">.5</span>,-<span class="hljs-number">.5</span>],[<span class="hljs-number">.5</span>,<span class="hljs-number">.5</span>],[-<span class="hljs-number">.5</span>,<span class="hljs-number">.5</span>],[<span class="hljs-number">.5</span>,-<span class="hljs-number">.5</span>]]
+</code></pre><p>Note: an image that is not rotated automatically gets a shortcut.</p>
 
             </div>
             
@@ -289,7 +289,7 @@ Useful for shortcuts</p>
         ctx.restore()
         ctx.fill()
         ctx.stroke() <span class="hljs-keyword">if</span> strokeColor
-        
+
       ctx.restore()
     shape
   <span class="hljs-attribute">drawSprite</span>: <span class="hljs-function"><span class="hljs-params">(ctx, s, x, y, size, rad)</span> -&gt;</span>

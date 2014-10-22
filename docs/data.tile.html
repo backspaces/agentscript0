@@ -60,7 +60,7 @@ easier to get data out of a tile server and into a model.</p>
 
             <span class="hljs-keyword">this</span>.width = width;
             <span class="hljs-keyword">this</span>.height = height;
-            
+
             <span class="hljs-keyword">this</span>.model = model;
 
             <span class="hljs-keyword">this</span>.zoom = <span class="hljs-number">0</span>;
@@ -99,7 +99,7 @@ in pixels relative to the dataset origin.</p>
                 tileY = <span class="hljs-built_in">Math</span>.floor(pixelCoord.y / <span class="hljs-keyword">this</span>.tileSize);
 
             <span class="hljs-keyword">var</span> tileCtx = <span class="hljs-keyword">this</span>.tiles[zoom+<span class="hljs-string">"/"</span>+tileX+<span class="hljs-string">"/"</span>+tileY];
-            
+
             <span class="hljs-keyword">if</span> (!tileCtx) {
                 <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"ERR: tried to sample tile"</span>, zoom, tileX, tileY, <span class="hljs-string">"but it doesn't exist."</span>);
             }
@@ -184,12 +184,12 @@ or after receiving a ‘tilesready’ event.</p>
                     }
 
                     <span class="hljs-keyword">var</span> imageData = curTile.getImageData(<span class="hljs-number">0</span>,<span class="hljs-number">0</span>,<span class="hljs-keyword">this</span>.tileSize,<span class="hljs-keyword">this</span>.tileSize);
-                    
+
                     <span class="hljs-keyword">var</span> curTilePos = { <span class="hljs-comment">// in pixels</span>
                         left: (mapTopLeftTile.x + tileX) * <span class="hljs-keyword">this</span>.tileSize,
                         top: (mapTopLeftTile.y + tileY) * <span class="hljs-keyword">this</span>.tileSize
                     };
-                    
+
                     <span class="hljs-keyword">var</span> tileStartCoord = { x: <span class="hljs-number">0</span>, y: <span class="hljs-number">0</span> };
                     <span class="hljs-keyword">var</span> tileEndCoord = { x: <span class="hljs-keyword">this</span>.tileSize-<span class="hljs-number">1</span>, y: <span class="hljs-keyword">this</span>.tileSize-<span class="hljs-number">1</span> };
                     <span class="hljs-keyword">if</span> (tileX == <span class="hljs-number">0</span>)
@@ -333,8 +333,8 @@ inside of the Agentscript wrapper</p>
                     <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"err: couldn't parse tile coordinates for"</span>, e.url);
                     <span class="hljs-keyword">return</span>;
                 }
-                
-                <span class="hljs-keyword">var</span> tile = ABM.util.imageToCtx(e.tile, <span class="hljs-keyword">this</span>.tileSize, <span class="hljs-keyword">this</span>.tileSize);
+
+                <span class="hljs-keyword">var</span> tile = ABM.Util.imageToCtx(e.tile, <span class="hljs-keyword">this</span>.tileSize, <span class="hljs-keyword">this</span>.tileSize);
 
                 <span class="hljs-keyword">this</span>.addTile(tilePoint, tile);
             }.bind(<span class="hljs-keyword">this</span>));</pre></div></div>
@@ -406,7 +406,7 @@ by wrapping the leafletLayer’s event listener</p>
             
             <div class="content"><div class='highlight'><pre>            <span class="hljs-keyword">this</span>.on = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(name, fn)</span> </span>{
                 <span class="hljs-keyword">var</span> leafletLayer = <span class="hljs-keyword">this</span>.leafletLayer;
-                
+
                 <span class="hljs-keyword">if</span> (!leafletLayer) {
                     <span class="hljs-keyword">return</span>;
                 }
@@ -416,7 +416,7 @@ by wrapping the leafletLayer’s event listener</p>
 
             <span class="hljs-keyword">this</span>.off = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(name, fn)</span> </span>{
                 <span class="hljs-keyword">var</span> leafletLayer = <span class="hljs-keyword">this</span>.leafletLayer;
-                
+
                 <span class="hljs-keyword">if</span> (!leafletLayer) {
                     <span class="hljs-keyword">return</span>;
                 }
@@ -481,7 +481,7 @@ finished loading</p>
                 <span class="hljs-keyword">return</span>;
             }
 
-            ABM.util.insertLayer(<span class="hljs-keyword">this</span>.model.div, <span class="hljs-keyword">this</span>.leafletMap.getContainer(), <span class="hljs-keyword">this</span>.model.world.pxWidth+<span class="hljs-string">"px"</span>, <span class="hljs-keyword">this</span>.model.world.pxHeight+<span class="hljs-string">"px"</span>, <span class="hljs-number">15</span>);</pre></div></div>
+            ABM.Util.insertLayer(<span class="hljs-keyword">this</span>.model.div, <span class="hljs-keyword">this</span>.leafletMap.getContainer(), <span class="hljs-keyword">this</span>.model.world.pxWidth+<span class="hljs-string">"px"</span>, <span class="hljs-keyword">this</span>.model.world.pxHeight+<span class="hljs-string">"px"</span>, <span class="hljs-number">15</span>);</pre></div></div>
             
         </li>
         
@@ -498,7 +498,7 @@ finished loading</p>
             
             <div class="content"><div class='highlight'><pre>            <span class="hljs-keyword">this</span>.leafletMap.invalidateSize();
         }
-
+ 
         <span class="hljs-keyword">return</span> TileDataSet;
 
     })();

@@ -5,19 +5,20 @@
     <script src="../tools/coffee-script.js"></script>
     <script type="text/coffeescript">
 
-    u = ABM.util # ABM.util alias, u.s is also ABM.shape accessor.
+    u = ABM.Util # aliases
+    Shapes = ABM.shapes
     class MyModel extends ABM.Model
       setup: ->
-        
+
         # No optimizations: 10fps
         @patches.usePixels() # 24fps
         # @patches.cacheAgentsHere() # 9-10fps, not needed & modest overhead
         # two: 27fps, now static colors larger percent of faster patches.
         @agents.setUseSprites() # 24->46-48fps!
-        
+
         # @anim.setRate 25, true # normal: let agents step faster than drawing
         @anim.setRate 60, false # speed test
-        
+
         # globals
         @nestColor = [255,255,0]  # yellow
         @foodColor = [0,0,255]    # blue
@@ -26,7 +27,7 @@
         @agents.setDefault "shape", "bug"
         @agents.setDefault "color", @foodColor # so default sprite not random color
         @agents.setDefault "size", 3
-        
+
         # UI globals:
         @population = 255
         @maxPheromone = 35
@@ -35,9 +36,9 @@
         @wiggleAngle = u.degToRad(30) # radians
 
         if @agents.useSprites
-          @nestSprite = ABM.shapes.shapeToSprite "bug", @nestColor, @patches.toBits 18
-          @foodSprite = ABM.shapes.shapeToSprite "bug", @foodColor, @patches.toBits 18
-        
+          @nestSprite = Shapes.shapeToSprite "bug", @nestColor, @patches.toBits 18
+          @foodSprite = Shapes.shapeToSprite "bug", @foodColor, @patches.toBits 18
+
         @setupPatches()
         @setupAgents()
       step: ->
@@ -47,7 +48,7 @@
 
       setupPatches: ->
         for p in @patches
-          p.isNest = false ; p.isFood = false 
+          p.isNest = false ; p.isFood = false
           # REMIND: agentsOwn etc; NL defaults to 0
           p.foodPheromone = 0; p.nestPheromone = 0
         (p.isNest=true;p.color=@nestColor) for p in @patchRect @patches.maxX-6,0,3,3
@@ -76,13 +77,13 @@
         null # needed to avoid returning an absurd comprehension
       wiggleUphill: (a) ->
         if a.p.isOnEdge()
-          # a.rotate Math.PI 
+          # a.rotate Math.PI
           a.rotate u.degToRad(180)
         else
           # nAhead = a.inCone a.p.n, Math.PI, 2
           nAhead = a.inCone a.p.n, u.degToRad(180), 2
           # nAhead = a.p.n.inCone a.p, a.heading, u.degToRad(180), 2
-          # nAhead = ABM.patches.inCone a.p, a.heading, u.degToRad(180), 2
+          # nAhead = @patches.inCone a.p, a.heading, u.degToRad(180), 2
           [p, max] = nAhead.maxOneOf ((n) => @targetPheromone(a, n)), true # => for @
           a.face p if max > .001/@maxPheromone
           # p = nAhead.maxOneOf ((n) => @targetPheromone(a, n)) # => for @
@@ -90,7 +91,7 @@
           # a.face p if max > .001/@maxPheromone
         a.rotate u.randomCentered(@wiggleAngle)
         a.forward 1
-      targetPheromone: (a, p) -> 
+      targetPheromone: (a, p) ->
         if a.carryingFood then p.nestPheromone else p.foodPheromone
       dropPheromone: (a) ->
         if (not a.carryingFood and a.p.isFood) or (a.carryingFood and a.p.isNest)
@@ -99,7 +100,7 @@
         then a.p.foodPheromone += 0.1*a.pheromone
         else a.p.nestPheromone += 0.1*a.pheromone
         a.pheromone *= 0.9
-      
+
       updatePatches: ->
         @patches.diffuse "nestPheromone", @diffusionRate
         @patches.diffuse "foodPheromone", @diffusionRate

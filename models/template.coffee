@@ -14,7 +14,8 @@
 #
 # below, which passes all its arguments to `Model`
 
-u = ABM.util # ABM.util alias, u.s is also ABM.shapes accessor.
+u = ABM.Util # ABM.Util alias
+Shapes = ABM.Shapes # ABM.Util alias, u.s is also ABM.shapes accessor.
 log = (arg) -> console.log arg
 class MyModel extends ABM.Model
   # `startup` initializes resources used by `setup` and `step`.
@@ -22,15 +23,15 @@ class MyModel extends ABM.Model
   # processed by `starup`.  Useful for large files, but here just
   # for an example, not needed by simple models.
   startup: -> # called by constructor
-    # Add new shapes; u.s. is ABM.shapes.
-    u.s.add "bowtie", true, (c) -> u.s.poly c, [[-.5,-.5],[.5,.5],[-.5,.5],[.5,-.5]]
+    # Add new shapes.
+    Shapes.add "bowtie", true, (c) -> Shapes.poly c, [[-.5,-.5],[.5,.5],[-.5,.5],[.5,-.5]]
     # The following two example lines don't work when opened locally
     # in Chrome (they work fine from a webserver). Uncomment if you'd
     # like to add custom images.
 
-    # u.s.add "cc", true, u.importImage("data/coffee.png")
+    # Shapes.add "cc", true, u.importImage("data/coffee.png")
 
-    # u.s.add "redfish", false, u.importImage("data/redfish64t.png")
+    # Shapes.add "redfish", false, u.importImage("data/redfish64t.png")
 
   # Initialize our model via the `setup` abstract method.
   # This model simply creates `population` agents with
@@ -69,7 +70,7 @@ class MyModel extends ABM.Model
     # and layout the agents randomly or in a circle depending
     # on our modeel's `startCircle` variable.
     for a in @agents.create @population
-      a.shape = u.oneOf u.s.names() # random shapes
+      a.shape = u.oneOf Shapes.names() # random shapes
       if @startCircle
         a.forward @patches.maxX/2 # start in circle
       else
@@ -80,7 +81,7 @@ class MyModel extends ABM.Model
     # [string interpolation](http://jashkenas.github.com/coffee-script/#strings)
     log "total agents: #{@agents.length}, total patches: #{@patches.length}"
     # Print number of agents with each shape
-    for s in u.s.names()
+    for s in Shapes.names()
       num = @agents.getPropWith("shape", s).length
       log "#{num} #{s}"
 
@@ -101,7 +102,7 @@ class MyModel extends ABM.Model
     else
       @refreshPatches = false
     if @anim.draws is 2 # Show the sprite sheet if there is one after first draw
-      sheet = u.last(u.s.spriteSheets) if u.s.spriteSheets.length isnt 0
+      sheet = u.last(Shapes.spriteSheets) if Shapes.spriteSheets.length isnt 0
       if sheet?
         log sheet
         document.getElementById("play").appendChild(sheet.canvas)

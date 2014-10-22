@@ -1,6 +1,6 @@
 # ### Patches
 
-# Class Patches is a singleton 2D matrix of Patch instances, each patch 
+# Class Patches is a singleton 2D matrix of Patch instances, each patch
 # representing a 1x1 square in patch coordinates (via 2D coord transforms).
 #
 # From @model.world, set in Model:
@@ -12,7 +12,7 @@
 # * isTorus:      true if coord system wraps around at edges
 # * hasNeighbors: true if each patch caches its neighbors
 # * isHeadless:   true if not using canvas drawing
-class ABM.Patches extends ABM.AgentSet
+class Patches extends AgentSet
   # Constructor: super creates the empty AgentSet instance and installs
   # the agentClass (breed) variable shared by all the Patches in this set.
   # Patches are created from top-left to bottom-right to match data sets.
@@ -21,7 +21,7 @@ class ABM.Patches extends ABM.AgentSet
     @monochrome = false # set to true to optimize patches all default color
     @[k] = v for own k,v of @model.world # add world items to patches
     @populate() unless @mainSet?
-  
+
   # Setup patch world from world parameters.
   # Note that this is done as separate method so like other agentsets,
   # patches are started up empty and filled by "create" calls.
@@ -31,7 +31,7 @@ class ABM.Patches extends ABM.AgentSet
         @add new @agentClass x, y
     @setNeighbors() if @hasNeighbors
     @setPixels() unless @isHeadless # setup off-page canvas for pixel ops
-    
+
   # Have patches cache the agents currently on them.
   # Optimizes p.agentsHere method.
   # Call before first agent is created.
@@ -52,13 +52,13 @@ class ABM.Patches extends ABM.AgentSet
     radius
 
   # Install neighborhoods in patches
-  setNeighbors: -> 
+  setNeighbors: ->
     for p in @
       p.n =  @patchRect p, 1, 1
       p.n4 = @asSet (n for n in p.n when n.x is p.x or n.y is p.y)
 
   # Setup pixels used for `drawScaledPixels` and `importColors`
-  # 
+  #
   setPixels: ->
     if @size is 1
     then @usePixels(); @pixelsCtx = @model.contexts.patches
@@ -68,7 +68,7 @@ class ABM.Patches extends ABM.AgentSet
     if @pixelsData instanceof Uint8Array # Check for typed arrays
       @pixelsData32 = new Uint32Array @pixelsData.buffer
       @pixelsAreLittleEndian = u.isLittleEndian()
-  
+
   # Draw patches.  Three cases:
   #
   # * Pixels: use pixel manipulation rather than canvas draws
@@ -79,19 +79,19 @@ class ABM.Patches extends ABM.AgentSet
     else if @drawWithPixels then @drawScaledPixels ctx else super ctx
 
 # #### Patch grid coord system utilities:
-  
+
   # Return the patch id/index given integer x,y in patch coords
   patchIndex: (x,y) -> x-@minX + @numX*(@maxY-y)
-  # Return the patch at matrix position x,y where 
+  # Return the patch at matrix position x,y where
   # x & y are both valid integer patch coordinates.
   patchXY: (x,y) -> @[@patchIndex x,y]
-  
+
   # Return x,y float values to be between min/max patch coord values
   clamp: (x,y) -> [u.clamp(x, @minXcor, @maxXcor), u.clamp(y, @minYcor, @maxYcor)]
-  
+
   # Return x,y float values to be modulo min/max patch coord values.
   wrap: (x,y)  -> [u.wrap(x, @minXcor, @maxXcor),  u.wrap(y, @minYcor, @maxYcor)]
-  
+
   # Return x,y float values to be between min/max patch values
   # using either clamp/wrap above according to isTorus topology.
   coord: (x,y) -> #returns a valid world coord (real, not int)
@@ -100,26 +100,26 @@ class ABM.Patches extends ABM.AgentSet
   isOnWorld: (x,y) -> @isTorus or (@minXcor<=x<=@maxXcor and @minYcor<=y<=@maxYcor)
 
   # Return patch at x,y float values according to topology.
-  patch: (x,y) -> 
+  patch: (x,y) ->
     [x,y]=@coord x,y
     x = u.clamp Math.round(x), @minX, @maxX
     y = u.clamp Math.round(y), @minY, @maxY
     @patchXY x, y
-  
+
   # Return a random valid float x,y point in patch space
   randomPt: -> [u.randomFloat2(@minXcor,@maxXcor), u.randomFloat2(@minYcor,@maxYcor)]
 
 # #### Patch metrics
-  
+
   # Convert patch measure to pixels
   toBits: (p) -> p*@size
   # Convert bit measure to patches
   fromBits: (b) -> b/@size
 
 # #### Patch utilities
-  
-  # Return an array of patches in a rectangle centered on the given 
-  # patch `p`, dx, dy units to the right/left and up/down. 
+
+  # Return an array of patches in a rectangle centered on the given
+  # patch `p`, dx, dy units to the right/left and up/down.
   # Exclude `p` unless meToo is true, default false.
   patchRect: (p, dx, dy, meToo=false) ->
     return p.pRect if p.pRect? and p.pRect.radius is dx # and p.pRect.radius is dy
@@ -153,8 +153,8 @@ class ABM.Patches extends ABM.AgentSet
     u.setIdentity ctx
     ctx.drawImage img, 0, 0, ctx.canvas.width, ctx.canvas.height
     ctx.restore() # restore patch transform
-  
-  # Utility function for pixel manipulation.  Given a patch, returns the 
+
+  # Utility function for pixel manipulation.  Given a patch, returns the
   # native canvas index i into the pixel data.
   # The top-left order simplifies finding pixels in data sets
   pixelByteIndex: (p) -> 4*p.id # Uint8
@@ -163,8 +163,8 @@ class ABM.Patches extends ABM.AgentSet
   pixelXYtoPatchXY: (x,y) -> [@minXcor+(x/@size), @maxYcor-(y/@size)]
   # Convert patch coords (float) to pixel location (top/left offset i.e. mouse)
   patchXYtoPixelXY: (x,y) -> [(x-@minXcor)*@size, (@maxYcor-y)*@size]
-  
-    
+
+
   # Draws, or "imports" an image URL into the patches as their color property.
   # The drawing is scaled to the number of x,y patches, thus one pixel
   # per patch.  The colors are then transferred to the patches.
@@ -181,13 +181,13 @@ class ABM.Patches extends ABM.AgentSet
     for p in @
       i = @pixelByteIndex p
       # promote initial default
-      p.color = if map? then map[i] else [data[i++],data[i++],data[i]] 
+      p.color = if map? then map[i] else [data[i++],data[i++],data[i]]
     @pixelsCtx.restore() # restore patch transform
 
   # Draw the patches via pixel manipulation rather than 2D drawRect.
   # See Mozilla pixel [manipulation article](http://goo.gl/Lxliq)
-  drawScaledPixels: (ctx) -> 
-    # u.setIdentity ctx & ctx.restore() only needed if patch size 
+  drawScaledPixels: (ctx) ->
+    # u.setIdentity ctx & ctx.restore() only needed if patch size
     # not 1, pixel ops don't use transform but @size>1 uses
     # a drawimage
     u.setIdentity ctx if @size isnt 1
