@@ -107,6 +107,14 @@ Util = util = u = # TODO: "util" deprecated in favor of Util
     c.str = null if c.str?
     c[i] = @clamp(Math.round(val*s),0,255) for val, i in max # [r,g,b] must be ints
     c
+  # Return color with new opacity, result, by scaling a value of rgba.
+  scaleOpacity: (rgba, scale, result = u.clone(rgba)) ->
+    result.str = null if result.str?
+    if rgba.length == 3
+    then rgba.push(1)
+    result[3] = @clamp((rgba[3]*scale),0,1).toFixed(3)
+    result
+
   # Return HTML color as used by canvas element.  Can include Alpha
   colorStr: (c) ->
     return s if (s = c.str)?

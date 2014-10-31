@@ -404,10 +404,13 @@ If p &lt; 0, print data, otherwise use toFixed to truncate to p precision</p>
     <span class="hljs-keyword">else</span>
       data = (Math.round d <span class="hljs-keyword">for</span> d <span class="hljs-keyword">in</span> <span class="hljs-property">@data</span>)
     <span class="hljs-keyword">for</span> num, i <span class="hljs-keyword">in</span> data
-      j=<span class="hljs-number">4</span>*i; ta[j+<span class="hljs-number">3</span>] = <span class="hljs-property">@alpha</span>
+      j=<span class="hljs-number">4</span>*i
       <span class="hljs-keyword">if</span> <span class="hljs-property">@gray</span>
-      <span class="hljs-keyword">then</span> ta[j] = ta[j+<span class="hljs-number">1</span>] = ta[j+<span class="hljs-number">2</span>] = Math.floor num
-      <span class="hljs-keyword">else</span> ta[j]=num&gt;&gt;&gt;<span class="hljs-number">16</span>; ta[j+<span class="hljs-number">1</span>]=(num&gt;&gt;<span class="hljs-number">8</span>)&amp;<span class="hljs-number">0xff</span>; ta[j+<span class="hljs-number">2</span>]=num&amp;<span class="hljs-number">0xff</span>
+        ta[j] = ta[j+<span class="hljs-number">1</span>] = ta[j+<span class="hljs-number">2</span>] = Math.floor num
+        ta[j+<span class="hljs-number">3</span>] = <span class="hljs-property">@alpha</span>
+      <span class="hljs-keyword">else</span>
+        ta[j]=(num&gt;&gt;<span class="hljs-number">16</span>)&amp;<span class="hljs-number">0xff</span>; ta[j+<span class="hljs-number">1</span>]=(num&gt;&gt;<span class="hljs-number">8</span>)&amp;<span class="hljs-number">0xff</span>; ta[j+<span class="hljs-number">2</span>]=num&amp;<span class="hljs-number">0xff</span>
+        ta[j+<span class="hljs-number">3</span>] = <span class="hljs-keyword">if</span> <span class="hljs-property">@normalizeImage</span> <span class="hljs-keyword">then</span> <span class="hljs-property">@alpha</span> <span class="hljs-keyword">else</span> ta[j+<span class="hljs-number">3</span>]=(num&gt;&gt;<span class="hljs-number">24</span>)&amp;<span class="hljs-number">0xff</span>
     ctx.putImageData idata, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>
     ctx</pre></div></div>
             

@@ -181,7 +181,7 @@ class Model
     @agents = new @Agents @, @Agent, "agents"
     console.log "reset: links"
     @links = new @Links @, @Link, "links"
-    u.s.spriteSheets.length = 0 # possibly null out entries?
+    Shapes.spriteSheets.length = 0 # possibly null out entries?
     console.log "reset: setup"
     @setup()
     @setRootVars() if @debugging

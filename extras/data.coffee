@@ -109,10 +109,13 @@ ABM.DataSet = class DataSet
     else
       data = (Math.round d for d in @data)
     for num, i in data
-      j=4*i; ta[j+3] = @alpha
+      j=4*i
       if @gray
-      then ta[j] = ta[j+1] = ta[j+2] = Math.floor num
-      else ta[j]=num>>>16; ta[j+1]=(num>>8)&0xff; ta[j+2]=num&0xff
+        ta[j] = ta[j+1] = ta[j+2] = Math.floor num
+        ta[j+3] = @alpha
+      else
+        ta[j]=(num>>16)&0xff; ta[j+1]=(num>>8)&0xff; ta[j+2]=num&0xff
+        ta[j+3] = if @normalizeImage then @alpha else ta[j+3]=(num>>24)&0xff
     ctx.putImageData idata, 0, 0
     ctx
   # Show dataset as image in patch drawing layer or patch colors, return image

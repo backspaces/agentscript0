@@ -47,6 +47,10 @@ class Patch
     @color = u.clone @color unless @.hasOwnProperty("color")
     u.scaleColor c, s, @color
 
+  scaleOpacity: (c, s) ->
+    @color = u.clone @color unless @.hasOwnProperty("color")
+    u.scaleOpacity c, s, @color
+
   # Draw the patch and its text label if there is one.
   draw: (ctx) ->
     ctx.fillStyle = u.colorStr @color

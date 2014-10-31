@@ -123,7 +123,11 @@ This can be a huge savings in memory.</p>
             
             <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">scaleColor</span>: <span class="hljs-function"><span class="hljs-params">(c, s)</span> -&gt;</span>
     <span class="hljs-property">@color</span> = u.clone <span class="hljs-property">@color</span> <span class="hljs-keyword">unless</span> <span class="hljs-property">@hasOwnProperty</span> <span class="hljs-string">"color"</span> <span class="hljs-comment"># promote color to inst var</span>
-    u.scaleColor c, s, <span class="hljs-property">@color</span></pre></div></div>
+    u.scaleColor c, s, <span class="hljs-property">@color</span>
+
+  <span class="hljs-attribute">scaleOpacity</span>: <span class="hljs-function"><span class="hljs-params">(c, s)</span> -&gt;</span>
+    <span class="hljs-property">@color</span> = u.clone <span class="hljs-property">@color</span> <span class="hljs-keyword">unless</span> <span class="hljs-property">@hasOwnProperty</span> <span class="hljs-string">"color"</span>
+    u.scaleOpacity c, s, <span class="hljs-property">@color</span></pre></div></div>
             
         </li>
         

@@ -15,6 +15,7 @@
         @sun = true
         @v0max = 1
         @gravExp = -2
+        @maxDistanceFromSun = Math.sqrt(Math.pow(@world.maxY,2)+Math.pow(@world.maxX,2))
         
         # defaults
         @agents.setDefault "shape", "circle"
@@ -42,6 +43,10 @@
             a.vx += (a1.x-a.x)*k; a.vy += (a1.y-a.y)*k
         for a in @agents when not (@sun and a.id is 0)
           # unless (@sun and a.id is 0)
+          # scale opacity by distance to center
+          opacityScale = (1-a.distance(@patches.patch(0,0))/@maxDistanceFromSun)
+          a.scaleOpacity a.color.slice(0,3), opacityScale
+          
           a.setXY u.clamp(a.x+a.vx, @patches.minX, @patches.maxX),
                   u.clamp(a.y+a.vy, @patches.minY, @patches.maxY)
           a.vx = u.sign(-a.x)*.001 if Math.abs(a.x) is @patches.maxX
