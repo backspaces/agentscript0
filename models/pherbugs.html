@@ -7,7 +7,7 @@
     <script src="../lib/as.dat.gui.js"></script>
     <script>
     var gui;
-    myModel = function () {
+    var myModel = function () {
       var u = ABM.util; // useful alias for utilities
       ABM.Model.prototype.startup = function () {
         console.log("startup");
@@ -21,6 +21,7 @@
         this.maxStates = 255;
         this.evapRate = 0.1;
         this.diffuseRate = 1.0;
+        // diffusionOrder - number of times to call patches.diffuse(), approximates higher order diffusion algorithms
         this.diffusionOrder = 3;
         this.maxPher = this.maxStates;
         this.minIdealPher = 1;
@@ -44,24 +45,35 @@
           this.agents[aNdx].color = [255,255,0];
           this.agents[aNdx].idealPher = u.randomInt(this.maxIdealPher-this.minIdealPher)+this.minIdealPher;
           this.agents[aNdx].outputPher = u.randomInt(this.maxOutputPher-this.minOutputPher)+this.minOutputPher;
-          this.agents[aNdx].unhappiness = 0;
+          // The bug is happy when the patch contains its ideal amount.
+          this.agents[aNdx].unhappiness = 0; 
         }
         console.log("patches: " + this.patches.length + " agents: " + this.agents.length);
       };
       ABM.Model.prototype.step = function () {
+
+        /*
+         * agent operations -- loop over all agents
+         */
+
         for (var aNdx=0; aNdx < this.agents.length; aNdx++) {
           var a = this.agents[aNdx];
-          if (a.p.pheromones < a.idealPher)
+          if (a.p.pheromones < a.idealPher) // if there is too little pheromone here
             a.unhappiness = (a.idealPher - a.p.pheromone) / this.maxPher;
-          else
+          else // there is the right amount or too much phereomone here
             a.unhappiness = (a.p.pheromone - a.idealPher) / this.maxPher;
-          var tgtPatch = a.p;
+
+          // Decide where to move to, if at all
+          var tgtPatch = a.p; // default to staying here
           var move = false;
-          var tgtPher = a.p.pheromone;
+          var tgtPher = a.p.pheromone; // pheromone at the target patch
+
+          // Check for a pseudo-random movement
           if (u.randomFloat(1.0) < this.randomMove) {
             move = true;
             tgtPatch = a.p.n[u.randomInt(a.p.n.length)];
-          } else if (a.p.pheromone < a.idealPher) {
+          } else if (a.p.pheromone < a.idealPher) { // too little pheromone here
+            // loop over the neighboring patches for one with minimal pheromone
             for (var j=0 ; j < a.p.n.length ; j++ ) {
               if (a.p.n[j].pheromone < tgtPher) {
                 move = true;
@@ -69,7 +81,8 @@
                 tgtPher = a.p.n[j].pheromone;
               }
             }
-          } else if (a.p.pheromone > a.idealPher) {
+          } else if (a.p.pheromone > a.idealPher) { // too much pheromone here
+            // loop over neighbors for one with maximal pheromone
             for (var j=0 ; j < a.p.n.length ; j++ ) {
               if (a.p.n[j].pheromone > tgtPher) {
                 move = true;
@@ -77,17 +90,26 @@
                 tgtPher = a.p.n[j].pheromone;
               }
             }
-          } // else do nothing
+          } // else stay here
 
+          // Emit more pheromone into my current patch, clipping at the maximum
           a.p.pheromone += a.outputPher;
           if (a.p.pheromone > this.maxPher) a.p.pheromone = this.maxPher;
-          if (move && (tgtPatch.agentsHere().length == 0)) a.moveTo(tgtPatch);
-        }
 
-        // space operations
+          // If I decided to move, then do so.
+          if (move && (tgtPatch.agentsHere().length == 0)) a.moveTo(tgtPatch);
+        } // end agent operations
+
+        /* 
+         * space operations
+         */
+
+        // For every patch, reduce pheromone by evapRate
         for (var i=0 ; i < this.patches.length ; i++ ) {
           this.patches[i].pheromone *= (1-this.evapRate);
         };
+
+        // For each patch, distribute pheromone to neighbors
         for (var dNdx=0 ; dNdx<this.diffusionOrder ; dNdx++)
           this.patches.diffuse("pheromone",this.diffuseRate,[this.maxStates,0,0]);
 
