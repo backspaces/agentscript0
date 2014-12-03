@@ -23,12 +23,14 @@ Util = util = u = # TODO: "util" deprecated in favor of Util
 
   # Good replacements for Javascript's badly broken`typeof` and `instanceof`
   # See [underscore.coffee](http://goo.gl/L0umK)
-  isArray: Array.isArray or
+  isArray: Array.isArray or # returns a function that is then applied to arg.
     (obj) -> !!(obj and obj.concat and obj.unshift and not obj.callee)
   isFunction: (obj) ->
     !!(obj and obj.constructor and obj.call and obj.apply)
   isString: (obj) ->
     !!(obj is '' or (obj and obj.charCodeAt and obj.substr))
+  isInteger: Number.isInteger or # like isArray
+    (num) -> Math.floor(num) is num
 
 # ### Numeric Operations
 
@@ -223,13 +225,19 @@ Util = util = u = # TODO: "util" deprecated in favor of Util
   cloneClass: (oldClass, newName) ->
     ctorStr = oldClass.toString().replace(/^/, "var ctor = ")
     if newName
-      ctorStr = ctorStr.replace(/function.*{/, "function #{newName}() {")
+      ctorStr = ctorStr.replace(/function.*(?=\()/, "function #{newName}")
     # eval(oldClass.toString().replace(/^/, "var ctor = "))
     eval(ctorStr)
     ctor.prototype = @cloneObject(oldClass.prototype)
     ctor.constructor = oldClass.constructor
     ctor.prototype.constructor = oldClass.prototype.constructor
     ctor
+  # Mix the attributes from one class into another;
+  # an alternative to prototypal inheritance. Similar to extend, but
+  # mixin() knows to copy prototype functions into the prototype
+  mixin: (destObj, srcObject) ->
+    destObj[key] = srcObject[key] for own key of srcObject
+    destObj.__proto__[key] = srcObject.__proto__[key] for own key of srcObject.__proto__
 
   # Parse a string to its JS value.
   # If s isn't a JS expression, return decoded string
@@ -415,17 +423,24 @@ Util = util = u = # TODO: "util" deprecated in favor of Util
   # Return array indices for which array value is NaN
   aNaNs: (array) -> (i for v,i in array when isNaN v)
 
-  # Return a "ramp" (array of sorted numbers)
-  # in [start,stop] with numItems, equally spaced.
-  # If useInts, round all the numbers to integers.
-  aRamp: (start, stop, numItems, useInts=false) ->
-    step = (stop-start)/(numItems-1)
-    array = (num for num in [start..stop] by step)
-    array = (Math.round(num) for num in array) if useInts
-    array
-  # Return a range, an array [start..stop]
-  # If start>stop, the array is from [stop..start]
-  aRange: (start, stop) -> [start..stop]
+  # Return a range, an array [start..stop] by optional step.
+  # If start>stop, use step negative, like -1.
+  # All three args can be floats
+  # with the usual caveat that floats can be surprising!
+  # Warning: if step isn't exact, stop may not be in array.
+  aRange: (start, stop, step=1) -> (x for x in [start..stop] by step)
+  # Return a "ramp" (array of sorted floats)
+  # in [start,stop] (floats) with numItems (positive integer).
+  # OK for start>stop. Unlike aRange, this will always
+  # include start/stop w/in float accuracy.
+  aRamp: (start, stop, numItems) ->
+  # Note: start + step*i, where step is (stop-start)/(numItems-1),
+  # has float accuracy problems
+    ( start + (stop-start)*(i/(numItems-1)) for i in [0...numItems] )
+  # Integer version of aRamp, rounding each element
+  aIntRamp: (start, stop, numItems) ->
+    (Math.round(num) for num in @aRamp start, stop, numItems)
+
 
 
   # Return array composed of f pairwise on both arrays

@@ -108,10 +108,10 @@ the model interface in all browsers will be in sync.</p>
             
             <div class="content"><div class='highlight'><pre>
     <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">DatGUI</span><span class="hljs-params">(fbuiOrModel, uiObject)</span> </span>{
-
-      <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;
+      ABM.Util.mixin(<span class="hljs-keyword">this</span>, <span class="hljs-keyword">new</span> ABM.Evented())
       <span class="hljs-keyword">this</span>.gui = <span class="hljs-keyword">new</span> dat.GUI();
       <span class="hljs-keyword">this</span>.datGuiModel = {};
+      <span class="hljs-keyword">this</span>.datGuiControllers = {};
 
       <span class="hljs-keyword">var</span> model, ui, fbui;
       <span class="hljs-keyword">if</span> (<span class="hljs-built_in">arguments</span>.length == <span class="hljs-number">2</span>) {
@@ -123,19 +123,16 @@ the model interface in all browsers will be in sync.</p>
         ui = <span class="hljs-keyword">this</span>.ui = fbui.ui;
       }
 
+      <span class="hljs-keyword">this</span>.initUIElements(ui, <span class="hljs-keyword">this</span>.gui);
+    }
+
+    DatGUI.prototype.initUIElements = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(ui, folder)</span> </span>{
+      <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;
       <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> name <span class="hljs-keyword">in</span> ui) {
         <span class="hljs-keyword">if</span> (ui.hasOwnProperty(name)) {
           <span class="hljs-keyword">var</span> uiEl = ui[name];
-          <span class="hljs-keyword">if</span> (uiEl.type != <span class="hljs-string">'button'</span>) {
-            <span class="hljs-keyword">this</span>.datGuiModel[name] = uiEl.val;
-
-            fbui &amp;&amp; fbui.refs[name].child(<span class="hljs-string">'val'</span>).on(<span class="hljs-string">'value'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(valSnap)</span> </span>{
-              self.datGuiModel[<span class="hljs-keyword">this</span>.name] = valSnap.val();
-              self.updateGui();
-            }.bind({ name: name }));
-          }
-
-          <span class="hljs-keyword">var</span> ctrl = <span class="hljs-literal">null</span>;</pre></div></div>
+          
+          <span class="hljs-keyword">if</span> (isFolder(uiEl)) {</pre></div></div>
             
         </li>
         
@@ -146,43 +143,9 @@ the model interface in all browsers will be in sync.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-5">&#182;</a>
               </div>
-              <p>a uiEl can be of type “button”, “choice”, “switch”, or “slider”</p>
+              <p>You can group ui elements into folders by nesting objects. E.g.:</p>
 
             </div>
-            
-            <div class="content"><div class='highlight'><pre>          <span class="hljs-keyword">switch</span>(uiEl.type) {
-            <span class="hljs-keyword">case</span> <span class="hljs-string">'button'</span>:
-              <span class="hljs-keyword">this</span>.datGuiModel[name] = self.fbui ?
-                <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{ 
-                  self.fbui.setUIValue(<span class="hljs-keyword">this</span>.name, <span class="hljs-literal">true</span>); 
-                }.bind({ name: name }) :
-                <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
-                  self.setModelValue(<span class="hljs-keyword">this</span>.name);
-                }.bind({ name: name });
-              <span class="hljs-keyword">this</span>.gui.add(<span class="hljs-keyword">this</span>.datGuiModel, name);
-            <span class="hljs-keyword">break</span>;
-            <span class="hljs-keyword">case</span> <span class="hljs-string">'choice'</span>:
-              ctrl = <span class="hljs-keyword">this</span>.gui.add(<span class="hljs-keyword">this</span>.datGuiModel, name, uiEl.vals);
-            <span class="hljs-keyword">break</span>;
-            <span class="hljs-keyword">case</span> <span class="hljs-string">'switch'</span>:
-              ctrl = <span class="hljs-keyword">this</span>.gui.add(<span class="hljs-keyword">this</span>.datGuiModel, name);
-            <span class="hljs-keyword">break</span>;
-            <span class="hljs-keyword">case</span> <span class="hljs-string">'slider'</span>:
-              ctrl = <span class="hljs-keyword">this</span>.gui.add(<span class="hljs-keyword">this</span>.datGuiModel, name, uiEl.min, uiEl.max).step(uiEl.step);
-            <span class="hljs-keyword">break</span>;
-          }
-          <span class="hljs-keyword">if</span> (ctrl) {
-            <span class="hljs-keyword">var</span> callback;
-            <span class="hljs-keyword">if</span> (self.fbui) {
-              callback = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(value)</span> </span>{
-                self.fbui.setUIValue(<span class="hljs-keyword">this</span>.name, value);
-              }.bind({ name: name });
-            }
-            <span class="hljs-keyword">else</span> {
-              callback = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(value)</span> </span>{
-                self.setModelValue(<span class="hljs-keyword">this</span>.name, value);
-              }.bind({ name: name }); 
-            }</pre></div></div>
             
         </li>
         
@@ -193,14 +156,29 @@ the model interface in all browsers will be in sync.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-6">&#182;</a>
               </div>
-              <p>a slider can be ‘smooth’, in which case
-the setter is called during a drag</p>
-
+              <pre><code>{
+  <span class="hljs-string">"Moose stuff"</span>: {
+    <span class="hljs-string">"Create a moose"</span>: {
+      type: <span class="hljs-string">"button"</span>
+    },
+    <span class="hljs-string">"Moose color"</span>: {
+      type: <span class="hljs-string">"choice"</span>,
+      vals: [<span class="hljs-string">"brown"</span>, <span class="hljs-string">"dark brown"</span>]
+    }
+  },
+  <span class="hljs-string">"Goat stuff"</span>: {
+    <span class="hljs-string">"Look for a goat"</span>: {
+      type: <span class="hljs-string">"button"</span>
+    },
+    <span class="hljs-string">"Goat size"</span>: {
+      type: <span class="hljs-string">"slider"</span>,
+      min: <span class="hljs-number">1</span>,
+      max: <span class="hljs-number">9000</span>
+    }
+  }
+}
+</code></pre>
             </div>
-            
-            <div class="content"><div class='highlight'><pre>            <span class="hljs-keyword">if</span> (uiEl.smooth) {
-              ctrl.onChange(callback);
-            }</pre></div></div>
             
         </li>
         
@@ -211,21 +189,17 @@ the setter is called during a drag</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-7">&#182;</a>
               </div>
-              <p>otherwise the setter is called at the end
-of the drag</p>
+              <p>Element names should still be unique across folders.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>            <span class="hljs-keyword">else</span> {
-              ctrl.onFinishChange(callback);
-            }
+            <div class="content"><div class='highlight'><pre>
+            <span class="hljs-keyword">var</span> subFolder = folder.addFolder(name);
+            <span class="hljs-keyword">this</span>.initUIElements(uiEl, subFolder);
+            <span class="hljs-keyword">continue</span>;
           }
-        }
-      }
-    }
-
-    DatGUI.prototype.setModelValue = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(name, value)</span> </span>{
-      <span class="hljs-keyword">var</span> setter = <span class="hljs-keyword">this</span>.ui[name].setter;</pre></div></div>
+          
+          <span class="hljs-keyword">if</span> (uiEl.type != <span class="hljs-string">'button'</span>) {</pre></div></div>
             
         </li>
         
@@ -236,14 +210,21 @@ of the drag</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-8">&#182;</a>
               </div>
-              <p>if you specify a setter, DatGUI will look for
-it in the model and call it with the new value</p>
+              <p>The state of all non-button elements is stored in <code>this.datGuiModel</code>.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">if</span> (setter) {
-        <span class="hljs-keyword">this</span>.model[setter](value);
-      }</pre></div></div>
+            <div class="content"><div class='highlight'><pre>            <span class="hljs-keyword">this</span>.datGuiModel[name] = uiEl.val;
+
+            <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> fbui != <span class="hljs-string">'undefined'</span>) {
+              fbui.refs[name].child(<span class="hljs-string">'val'</span>).on(<span class="hljs-string">'value'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(valSnap)</span> </span>{
+                self.datGuiModel[<span class="hljs-keyword">this</span>.name] = valSnap.val();
+                self.updateGui();
+              }.bind({ name: name }));
+            }
+          }
+
+          <span class="hljs-keyword">var</span> ctrl = <span class="hljs-literal">null</span>;</pre></div></div>
             
         </li>
         
@@ -254,13 +235,164 @@ it in the model and call it with the new value</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-9">&#182;</a>
               </div>
-              <p>otherwise we assume the ui element name is
-the name of a model variable</p>
+              <p>A uiEl can be of type <code>&quot;button&quot;</code>, <code>&quot;choice&quot;</code>, <code>&quot;switch&quot;</code>, or <code>&quot;slider&quot;</code>.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>          <span class="hljs-keyword">switch</span>(uiEl.type) {
+            <span class="hljs-keyword">case</span> <span class="hljs-string">'button'</span>:
+              <span class="hljs-keyword">this</span>.datGuiModel[name] = self.fbui ?
+                <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{ 
+                  self.fbui.setUIValue(<span class="hljs-keyword">this</span>.name, <span class="hljs-literal">true</span>); 
+                }.bind({ name: name }) :
+                <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+                  self.setModelValue(<span class="hljs-keyword">this</span>.name, <span class="hljs-literal">null</span>, <span class="hljs-keyword">this</span>.setter);
+                }.bind({ name: name, setter: ui[name].setter });
+              folder.add(<span class="hljs-keyword">this</span>.datGuiModel, name);
+            <span class="hljs-keyword">break</span>;
+            <span class="hljs-keyword">case</span> <span class="hljs-string">'choice'</span>:
+              ctrl = folder.add(<span class="hljs-keyword">this</span>.datGuiModel, name, uiEl.vals);
+            <span class="hljs-keyword">break</span>;
+            <span class="hljs-keyword">case</span> <span class="hljs-string">'switch'</span>:
+              ctrl = folder.add(<span class="hljs-keyword">this</span>.datGuiModel, name);
+            <span class="hljs-keyword">break</span>;
+            <span class="hljs-keyword">case</span> <span class="hljs-string">'slider'</span>:
+              ctrl = folder.add(<span class="hljs-keyword">this</span>.datGuiModel, name, uiEl.min, uiEl.max).step(uiEl.step);
+            <span class="hljs-keyword">break</span>;
+          }
+
+          <span class="hljs-keyword">if</span> (ctrl) {
+            <span class="hljs-keyword">var</span> callback;
+            <span class="hljs-keyword">if</span> (self.fbui) {
+              callback = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(value)</span> </span>{
+                self.fbui.setUIValue(<span class="hljs-keyword">this</span>.name, value);
+              }.bind({ name: name });
+            }
+            <span class="hljs-keyword">else</span> {
+              callback = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(value)</span> </span>{
+                self.setModelValue(<span class="hljs-keyword">this</span>.name, value, <span class="hljs-keyword">this</span>.setter);
+              }.bind({ name: name, setter: ui[name].setter });
+            }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-10">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-10">&#182;</a>
+              </div>
+              <p>A slider can be <code>&quot;smooth&quot;</code>, in which case
+the setter is called during a drag.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>            <span class="hljs-keyword">if</span> (uiEl.smooth) {
+              ctrl.onChange(callback);
+            }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-11">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-11">&#182;</a>
+              </div>
+              <p>Otherwise, the setter is called at the end
+of the drag.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>            <span class="hljs-keyword">else</span> {
+              ctrl.onFinishChange(callback);
+            }
+            <span class="hljs-keyword">this</span>.datGuiControllers[name] = ctrl;
+          }
+        }
+      }
+    }
+
+    DatGUI.prototype.setModelValue = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(name, value, setter)</span> </span>{
+      <span class="hljs-keyword">if</span> (setter) {
+        <span class="hljs-keyword">this</span>.model[setter](value);
+      }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-12">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-12">&#182;</a>
+              </div>
+              <p>If you don’t specify a setter, we assume the ui element name is
+the name of a model variable.</p>
 
             </div>
             
             <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">else</span> {
         <span class="hljs-keyword">this</span>.model[name] = value;
+      }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-13">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-13">&#182;</a>
+              </div>
+              <p>ABM.DatGUI will emit a <code>&#39;change&#39;</code> event
+whenever part of its model changes.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">this</span>.emit(<span class="hljs-string">'change'</span>, { name: name, value: value });
+    }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-14">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-14">&#182;</a>
+              </div>
+              <p>Use <code>update</code> to set the current state of the UI. E.g.:</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    DatGUI.prototype.update = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(uiObject)</span> </span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-15">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-15">&#182;</a>
+              </div>
+              <pre><code>myUI.update({
+  <span class="hljs-string">"Moose color"</span>: <span class="hljs-string">"brown"</span>,
+  <span class="hljs-string">"Goat size"</span>: <span class="hljs-number">500</span>
+})
+</code></pre>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> name <span class="hljs-keyword">in</span> uiObject) {
+        <span class="hljs-keyword">var</span> curCtrl = <span class="hljs-keyword">this</span>.datGuiControllers[name];
+        <span class="hljs-keyword">if</span> (curCtrl) {
+          curCtrl.setValue(uiObject[name]);
+          <span class="hljs-keyword">var</span> changeFun = curCtrl.__onChange || curCtrl.__onFinishChange;
+          changeFun(<span class="hljs-keyword">this</span>.datGuiModel[name]);
+        }
       }
     }
 
@@ -268,6 +400,10 @@ the name of a model variable</p>
       <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i <span class="hljs-keyword">in</span> <span class="hljs-keyword">this</span>.gui.__controllers) {
         <span class="hljs-keyword">this</span>.gui.__controllers[i].updateDisplay();
       }
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">isFolder</span><span class="hljs-params">(obj)</span> </span>{
+      <span class="hljs-keyword">return</span> <span class="hljs-keyword">typeof</span> obj.type == <span class="hljs-string">'undefined'</span>;
     }
         
     <span class="hljs-keyword">return</span> DatGUI;

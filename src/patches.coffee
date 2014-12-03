@@ -216,8 +216,8 @@ class Patches extends AgentSet
     return if @size is 1
     ctx.drawImage @pixelsCtx.canvas, 0, 0, ctx.canvas.width, ctx.canvas.height
 
-  floodFillOnce: (aset, fCandidate, fJoin, fCallback, fNeighbors=((p)->p.n), asetLast=[]) ->
-    super aset, fCandidate, fJoin, fCallback, fNeighbors, asetLast
+  floodFillOnce: (aset, fCandidate, fJoin, fNeighbors=((p)->p.n), asetLast=[]) ->
+    super aset, fCandidate, fJoin, fNeighbors, asetLast
 
   # Diffuse the value of patch variable `p.v` by distributing `rate` percent
   # of each patch's value of `v` to its neighbors. If a color `c` is given,

@@ -39,7 +39,7 @@ class Animator
   # Reset used by model.reset when resetting model.
   reset: -> @stop(); @ticks = @draws = 0
   # Two handlers used by animation loop
-  step: -> @ticks++; @model.step()
+  step: -> @ticks++; @model.stepAndEmit()
   draw: -> @draws++; @model.draw()
   # step and draw the model once, mainly debugging
   once: -> @step(); @draw()

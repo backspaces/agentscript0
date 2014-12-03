@@ -3,6 +3,9 @@
     <title>ColorMap</title>
     <script src="../lib/agentscript.js"></script>
     <script src="../tools/coffee-script.js"></script>
+<!--
+    <script src="colorobject.coffee" type="text/coffeescript"></script>
+ -->
     <script type="text/coffeescript">
 
 # REST interface tests:
@@ -10,372 +13,128 @@
 pw=15&ph=1&ps=20&map=gradient&args=[15,[[0,0,0],[0,255,255],[255,255,255]]]
 pw=16&ph=1&ps=32&map=gradient&args=[16,[[255,255,0],[0,255,255]]]
 pw=16&ph=4&ps=32&map=gradient&args=[64,[[255,255,0],[0,255,255]]]
-pw=16&ph=16&ps=32&map=gradient&args=[256,jetColors]
+
+pw=16&ph=16&ps=20&map=gradient&args=[256,jetColors]
 pw=64&ph=1&ps=10&map=gradient&args=[64,jetColors]
 pw=64&ph=1&ps=10&map=gradient&args=[64,jetColors1,jetLocs1]
 pw=64&ph=1&ps=10&map=gradient&args=[64,jetColors]
 pw=64&ph=1&ps=10&map=gradient&args=[64,jetColors]&sort
-pw=64&ph=1&ps=10&map=gradient&args=[64,rainbowColors]
-pw=32&ph=32&ps=16&map=gradient&args=[1024,jetColors]
-pw=32&ph=32&ps=16&map=gradient&args=[1024,rainbowColors]
+pw=64&ph=1&ps=10&map=gradient&args=[64,jetColors]&sort&key=pixel
+
+pw=64&ph=1&ps=10&map=gradient&args=[64,rgbRainbowColors]
+pw=32&ph=4&ps=10&map=gradient&args=[128,rgbRainbowColors]
+pw=16&ph=16&ps=20&map=gradient&args=[256,rgbRainbowColors]
+pw=32&ph=16&ps=10&map=gradient&args=[512,rgbRainbowColors] # many dups
+
+pw=64&ph=1&ps=10&map=gradient&args=[64,namedRainbowArray]
+pw=32&ph=4&ps=10&map=gradient&args=[128,namedRainbowArray]
+pw=16&ph=16&ps=20&map=gradient&args=[256,namedRainbowArray]
+pw=32&ph=16&ps=10&map=gradient&args=[512,namedRainbowArray] # many dups
+
+pw=32&ph=8&ps=10&map=gradient&args=[256,namedRainbowArray]
+pw=32&ph=16&ps=10&map=gradient&args=[512,namedRainbowArray]
+
+pw=32&ph=32&ps=16&map=gradient&args=[1024,jetColors] # many dups
+pw=32&ph=32&ps=16&map=gradient&args=[1024,rgbRainbowColors] # many dups
+
 pw=16&ph=4&ps=32&map=gray&args=64
 pw=16&ph=16&ps=32&map=gray&args=256
-pw=6&ph=36&ps=32&map=rgb&args=6
+
+pw=9&ph=3&ps=30&map=rgb&args=3
+pw=24&ph=9&ps=30&map=rgb&args=6
+pw=32&ph=16&ps=30&map=rgb&args=8
+pw=36&ph=21&ps=28&map=rgb&args=9
+pw=40&ph=25&ps=25&map=rgb&args=10
+pw=48&ph=36&ps=25&map=rgb&args=12
+pw=64&ph=64&ps=12&map=rgb&args=16
+
+pw=32&ph=16&ps=30&map=rgb&args=8
+
 pw=16&ph=4&ps=32&map=rgb&args=4
 pw=16&ph=4&ps=32&map=rgb&args=4&sort
 pw=16&ph=4&ps=32&map=rgb&args=4&sort&key=pixel
 pw=40&ph=25&ps=16&map=rgb&args=10
 pw=40&ph=25&ps=16&map=rgb&args=10&sort
-pw=40&ph=25&ps=16&map=rgb&args=10&sort&key=h
+pw=40&ph=25&ps=16&map=rgb&args=10&sort&key=hue
 pw=64&ph=64&ps=10&map=rgb&args=16
-pw=64&ph=64&ps=10&map=rgb&args=16&sort&key=h
+pw=64&ph=64&ps=10&map=rgb&args=16&sort&key=hue
 pw=96&ph=32&ps=8&map=rgb&args=10
-pw=10&ph=5&ps=32&map=name&args=[simpleNamedColors]
-pw=10&ph=5&ps=32&map=name&args=[simpleNamedColors]&sort
-pw=10&ph=14&ps=32&map=name&args=[namedColors,null,true]
+
+pw=11&ph=5&ps=32&map=name&args=[simpleNamedColors]
+pw=11&ph=5&ps=32&map=name&args=[simpleNamedColors]&sort
+pw=10&ph=14&ps=32&map=name&args=[namedColors]
 pw=10&ph=14&ps=32&map=name&args=[namedColors]&sort
+pw=6&ph=1&ps=128&map=name&args=[namedRainbowObj]
 pw=5&ph=6&ps=32&map=name&args=[triColors]&sort
 pw=8&ph=8&ps=32&map=name&args=[quadColors]&sort
+pw=8&ph=8&ps=32&map=name&args=[quadColors]&sort
+
 pw=16&ph=16&ps=32&map=random&args=256
 pw=16&ph=16&ps=32&map=random&args=256&sort
-pw=32&ph=32&ps=16&map=random&args=1024&sort
-pw=64&ph=1&ps=10&map=hsv&args=4
-pw=64&ph=1&ps=10&map=hsv&args=4&sort
-pw=64&ph=1&ps=10&map=hsv&args=[1,8,8]
-pw=64&ph=1&ps=10&map=hsv&args=[1,8,8]
-pw=64&ph=1&ps=10&map=hsv&args=[1,8,8]&sort
-pw=64&ph=1&ps=10&map=hsv&args=[64,1,1]&sort
-pw=64&ph=1&ps=10&map=hsv&args=[[43],64,[255]]
-pw=64&ph=1&ps=10&map=hsv&args=[[43],[255],64]
-pw=32&ph=32&ps=16&map=hsv&args=1024
-pw=16&ph=16&ps=32&map=hsv&args=256
+pw=32&ph=32&ps=16&map=random&args=1024&sort&key=hue
+
+pw=36&ph=10&ps=20&map=hsl&args=[360,[100],[50]]
+pw=25&ph=1&ps=15&map=hsl&args=[1,5,5,,true]
+pw=10&ph=10&ps=30&map=hsl&args=[1,10,10,,true]
+These test well against the w3c standard:
+    http://dev.w3.org/csswg/css-color/#hsl-examples
+pw=5&ph=9&ps=30&map=hsl&args=[[0],[100,75,50,25,0],[100,88,75,63,50,38,25,13,0],,true]
+pw=5&ph=9&ps=30&map=hsl&args=[[30],[100,75,50,25,0],[100,88,75,63,50,38,25,13,0],,true]
+pw=5&ph=9&ps=30&map=hsl&args=[[60],[100,75,50,25,0],[100,88,75,63,50,38,25,13,0],,true]
+
+
+pw=64&ph=1&ps=10&map=hsl&args=4&sort
+pw=64&ph=1&ps=10&map=hsl&args=[1,8,8,true]
+pw=64&ph=1&ps=10&map=hsl&args=[1,8,8]&sort
+pw=64&ph=1&ps=10&map=hsl&args=[64,1,1]&sort
+pw=64&ph=1&ps=10&map=hsl&args=[[43],64,[255]]
+pw=64&ph=1&ps=10&map=hsl&args=[[43],[255],64]
+pw=32&ph=32&ps=16&map=hsl&args=[256,1,3]
+pw=16&ph=16&ps=32&map=hsl&args=256
 ###
 u = ABM.Util # static variables
-window.Color = ABM.Color
+window.c = window.Color = ABM.Color
 
-# ARGGG: Aqua == Cyan and Fuchsia == Magenta
+# Note: Aqua == Cyan and Fuchsia == Magenta
 # The 140 standard html colors are the X11 set
-namedColors = {
-  AliceBlue: [240, 248, 255],
-  AntiqueWhite: [250, 235, 215],
-  Aqua: [0, 255, 255],
-  Aquamarine: [127, 255, 212],
-  Azure: [240, 255, 255],
-  Beige: [245, 245, 220],
-  Bisque: [255, 228, 196],
-  Black: [0, 0, 0],
-  BlanchedAlmond: [255, 235, 205],
-  Blue: [0, 0, 255],
-  BlueViolet: [138, 43, 226],
-  Brown: [165, 42, 42],
-  BurlyWood: [222, 184, 135],
-  CadetBlue: [95, 158, 160],
-  Chartreuse: [127, 255, 0],
-  Chocolate: [210, 105, 30],
-  Coral: [255, 127, 80],
-  CornflowerBlue: [100, 149, 237],
-  Cornsilk: [255, 248, 220],
-  Crimson: [220, 20, 60],
-  Cyan: [0, 255, 255],
-  DarkBlue: [0, 0, 139],
-  DarkCyan: [0, 139, 139],
-  DarkGoldenRod: [184, 134, 11],
-  DarkGray: [169, 169, 169],
-  DarkGreen: [0, 100, 0],
-  DarkKhaki: [189, 183, 107],
-  DarkMagenta: [139, 0, 139],
-  DarkOliveGreen: [85, 107, 47],
-  DarkOrange: [255, 140, 0],
-  DarkOrchid: [153, 50, 204],
-  DarkRed: [139, 0, 0],
-  DarkSalmon: [233, 150, 122],
-  DarkSeaGreen: [143, 188, 143],
-  DarkSlateBlue: [72, 61, 139],
-  DarkSlateGray: [47, 79, 79],
-  DarkTurquoise: [0, 206, 209],
-  DarkViolet: [148, 0, 211],
-  DeepPink: [255, 20, 147],
-  DeepSkyBlue: [0, 191, 255],
-  DimGray: [105, 105, 105],
-  DodgerBlue: [30, 144, 255],
-  FireBrick: [178, 34, 34],
-  FloralWhite: [255, 250, 240],
-  ForestGreen: [34, 139, 34],
-  Fuchsia: [255, 0, 255],
-  Gainsboro: [220, 220, 220],
-  GhostWhite: [248, 248, 255],
-  Gold: [255, 215, 0],
-  GoldenRod: [218, 165, 32],
-  Gray: [128, 128, 128],
-  Green: [0, 128, 0],
-  GreenYellow: [173, 255, 47],
-  HoneyDew: [240, 255, 240],
-  HotPink: [255, 105, 180],
-  IndianRed: [205, 92, 92],
-  Indigo: [75, 0, 130],
-  Ivory: [255, 255, 240],
-  Khaki: [240, 230, 140],
-  Lavender: [230, 230, 250],
-  LavenderBlush: [255, 240, 245],
-  LawnGreen: [124, 252, 0],
-  LemonChiffon: [255, 250, 205],
-  LightBlue: [173, 216, 230],
-  LightCoral: [240, 128, 128],
-  LightCyan: [224, 255, 255],
-  LightGoldenRodYellow: [250, 250, 210],
-  LightGray: [211, 211, 211],
-  LightGreen: [144, 238, 144],
-  LightPink: [255, 182, 193],
-  LightSalmon: [255, 160, 122],
-  LightSeaGreen: [32, 178, 170],
-  LightSkyBlue: [135, 206, 250],
-  LightSlateGray: [119, 136, 153],
-  LightSteelBlue: [176, 196, 222],
-  LightYellow: [255, 255, 224],
-  Lime: [0, 255, 0],
-  LimeGreen: [50, 205, 50],
-  Linen: [250, 240, 230],
-  Magenta: [255, 0, 255],
-  Maroon: [128, 0, 0],
-  MediumAquaMarine: [102, 205, 170],
-  MediumBlue: [0, 0, 205],
-  MediumOrchid: [186, 85, 211],
-  MediumPurple: [147, 112, 219],
-  MediumSeaGreen: [60, 179, 113],
-  MediumSlateBlue: [123, 104, 238],
-  MediumSpringGreen: [0, 250, 154],
-  MediumTurquoise: [72, 209, 204],
-  MediumVioletRed: [199, 21, 133],
-  MidnightBlue: [25, 25, 112],
-  MintCream: [245, 255, 250],
-  MistyRose: [255, 228, 225],
-  Moccasin: [255, 228, 181],
-  NavajoWhite: [255, 222, 173],
-  Navy: [0, 0, 128],
-  OldLace: [253, 245, 230],
-  Olive: [128, 128, 0],
-  OliveDrab: [107, 142, 35],
-  Orange: [255, 165, 0],
-  OrangeRed: [255, 69, 0],
-  Orchid: [218, 112, 214],
-  PaleGoldenRod: [238, 232, 170],
-  PaleGreen: [152, 251, 152],
-  PaleTurquoise: [175, 238, 238],
-  PaleVioletRed: [219, 112, 147],
-  PapayaWhip: [255, 239, 213],
-  PeachPuff: [255, 218, 185],
-  Peru: [205, 133, 63],
-  Pink: [255, 192, 203],
-  Plum: [221, 160, 221],
-  PowderBlue: [176, 224, 230],
-  Purple: [128, 0, 128],
-  Red: [255, 0, 0],
-  RosyBrown: [188, 143, 143],
-  RoyalBlue: [65, 105, 225],
-  SaddleBrown: [139, 69, 19],
-  Salmon: [250, 128, 114],
-  SandyBrown: [244, 164, 96],
-  SeaGreen: [46, 139, 87],
-  SeaShell: [255, 245, 238],
-  Sienna: [160, 82, 45],
-  Silver: [192, 192, 192],
-  SkyBlue: [135, 206, 235],
-  SlateBlue: [106, 90, 205],
-  SlateGray: [112, 128, 144],
-  Snow: [255, 250, 250],
-  SpringGreen: [0, 255, 127],
-  SteelBlue: [70, 130, 180],
-  Tan: [210, 180, 140],
-  Teal: [0, 128, 128],
-  Thistle: [216, 191, 216],
-  Tomato: [255, 99, 71],
-  Turquoise: [64, 224, 208],
-  Violet: [238, 130, 238],
-  Wheat: [245, 222, 179],
-  White: [255, 255, 255],
-  WhiteSmoke: [245, 245, 245],
-  Yellow: [255, 255, 0],
-  YellowGreen: [154, 205, 50]
+namedColorString = "AliceBlue AntiqueWhite Aqua Aquamarine Azure Beige Bisque Black BlanchedAlmond Blue BlueViolet Brown BurlyWood CadetBlue Chartreuse Chocolate Coral CornflowerBlue Cornsilk Crimson Cyan DarkBlue DarkCyan DarkGoldenRod DarkGray DarkGreen DarkKhaki DarkMagenta DarkOliveGreen DarkOrange DarkOrchid DarkRed DarkSalmon DarkSeaGreen DarkSlateBlue DarkSlateGray DarkTurquoise DarkViolet DeepPink DeepSkyBlue DimGray DodgerBlue FireBrick FloralWhite ForestGreen Fuchsia Gainsboro GhostWhite Gold GoldenRod Gray Green GreenYellow HoneyDew HotPink IndianRed Indigo Ivory Khaki Lavender LavenderBlush LawnGreen LemonChiffon LightBlue LightCoral LightCyan LightGoldenRodYellow LightGray LightGreen LightPink LightSalmon LightSeaGreen LightSkyBlue LightSlateGray LightSteelBlue LightYellow Lime LimeGreen Linen Magenta Maroon MediumAquaMarine MediumBlue MediumOrchid MediumPurple MediumSeaGreen MediumSlateBlue MediumSpringGreen MediumTurquoise MediumVioletRed MidnightBlue MintCream MistyRose Moccasin NavajoWhite Navy OldLace Olive OliveDrab Orange OrangeRed Orchid PaleGoldenRod PaleGreen PaleTurquoise PaleVioletRed PapayaWhip PeachPuff Peru Pink Plum PowderBlue Purple Red RosyBrown RoyalBlue SaddleBrown Salmon SandyBrown SeaGreen SeaShell Sienna Silver SkyBlue SlateBlue SlateGray Snow SpringGreen SteelBlue Tan Teal Thistle Tomato Turquoise Violet Wheat White WhiteSmoke Yellow YellowGreen"
+
+namedColors = namedColorString.split(" ")
+
+# names with published values, lets us test stringToRgba:
+namedColorsRgb={AliceBlue:[240,248,255], AntiqueWhite:[250,235,215], Aqua:[0,255,255], Aquamarine:[127,255,212], Azure:[240,255,255], Beige:[245,245,220], Bisque:[255,228,196], Black:[0,0,0], BlanchedAlmond:[255,235,205], Blue:[0,0,255], BlueViolet:[138,43,226], Brown:[165,42,42], BurlyWood:[222,184,135], CadetBlue:[95,158,160], Chartreuse:[127,255,0], Chocolate:[210,105,30], Coral:[255,127,80], CornflowerBlue:[100,149,237], Cornsilk:[255,248,220], Crimson:[220,20,60], Cyan:[0,255,255], DarkBlue:[0,0,139], DarkCyan:[0,139,139], DarkGoldenRod:[184,134,11], DarkGray:[169,169,169], DarkGreen:[0,100,0], DarkKhaki:[189,183,107], DarkMagenta:[139,0,139], DarkOliveGreen:[85,107,47], DarkOrange:[255,140,0], DarkOrchid:[153,50,204], DarkRed:[139,0,0], DarkSalmon:[233,150,122], DarkSeaGreen:[143,188,143], DarkSlateBlue:[72,61,139], DarkSlateGray:[47,79,79], DarkTurquoise:[0,206,209], DarkViolet:[148,0,211], DeepPink:[255,20,147], DeepSkyBlue:[0,191,255], DimGray:[105,105,105], DodgerBlue:[30,144,255], FireBrick:[178,34,34], FloralWhite:[255,250,240], ForestGreen:[34,139,34], Fuchsia:[255,0,255], Gainsboro:[220,220,220], GhostWhite:[248,248,255], Gold:[255,215,0], GoldenRod:[218,165,32], Gray:[128,128,128], Green:[0,128,0], GreenYellow:[173,255,47], HoneyDew:[240,255,240], HotPink:[255,105,180], IndianRed:[205,92,92], Indigo:[75,0,130], Ivory:[255,255,240], Khaki:[240,230,140], Lavender:[230,230,250], LavenderBlush:[255,240,245], LawnGreen:[124,252,0], LemonChiffon:[255,250,205], LightBlue:[173,216,230], LightCoral:[240,128,128], LightCyan:[224,255,255], LightGoldenRodYellow:[250,250,210], LightGray:[211,211,211], LightGreen:[144,238,144], LightPink:[255,182,193], LightSalmon:[255,160,122], LightSeaGreen:[32,178,170], LightSkyBlue:[135,206,250], LightSlateGray:[119,136,153], LightSteelBlue:[176,196,222], LightYellow:[255,255,224], Lime:[0,255,0], LimeGreen:[50,205,50], Linen:[250,240,230], Magenta:[255,0,255], Maroon:[128,0,0], MediumAquaMarine:[102,205,170], MediumBlue:[0,0,205], MediumOrchid:[186,85,211], MediumPurple:[147,112,219], MediumSeaGreen:[60,179,113], MediumSlateBlue:[123,104,238], MediumSpringGreen:[0,250,154], MediumTurquoise:[72,209,204], MediumVioletRed:[199,21,133], MidnightBlue:[25,25,112], MintCream:[245,255,250], MistyRose:[255,228,225], Moccasin:[255,228,181], NavajoWhite:[255,222,173], Navy:[0,0,128], OldLace:[253,245,230], Olive:[128,128,0], OliveDrab:[107,142,35], Orange:[255,165,0], OrangeRed:[255,69,0], Orchid:[218,112,214], PaleGoldenRod:[238,232,170], PaleGreen:[152,251,152], PaleTurquoise:[175,238,238], PaleVioletRed:[219,112,147], PapayaWhip:[255,239,213], PeachPuff:[255,218,185], Peru:[205,133,63], Pink:[255,192,203], Plum:[221,160,221], PowderBlue:[176,224,230], Purple:[128,0,128], Red:[255,0,0], RosyBrown:[188,143,143], RoyalBlue:[65,105,225], SaddleBrown:[139,69,19], Salmon:[250,128,114], SandyBrown:[244,164,96], SeaGreen:[46,139,87], SeaShell:[255,245,238], Sienna:[160,82,45], Silver:[192,192,192], SkyBlue:[135,206,235], SlateBlue:[106,90,205], SlateGray:[112,128,144], Snow:[255,250,250], SpringGreen:[0,255,127], SteelBlue:[70,130,180], Tan:[210,180,140], Teal:[0,128,128], Thistle:[216,191,216], Tomato:[255,99,71], Turquoise:[64,224,208], Violet:[238,130,238], Wheat:[245,222,179], White:[255,255,255], WhiteSmoke:[245,245,245], Yellow:[255,255,0], YellowGreen:[154,205,50]}
+
+# Note: Sky === SkyBlue below.  Chrome has "sky"=[154,205,50], yellowgreen!!
+simpleNamedColors = ["Aqua", "Aquamarine", "Azure", "Beige", "Bisque", "Black", "Blue", "Brown", "Chartreuse", "Chocolate", "Coral", "Cornsilk", "Crimson", "Cyan", "Fuchsia", "Gainsboro", "Gold", "Gray", "Green", "Indigo", "Ivory", "Khaki", "Lavender", "Lime", "Linen", "Magenta", "Maroon", "Moccasin", "Navy", "Olive", "Orange", "Orchid", "Peru", "Pink", "Plum", "Purple", "Red", "Salmon", "Sienna", "Silver", "SkyBlue", "Snow", "Tan", "Teal", "Thistle", "Tomato", "Turquoise", "Violet", "Wheat", "White", "Yellow"]
+
+# Note: Aqua == Cyan and Fuchsia == Magenta
+htmlColors = ["Aqua", "Black", "Blue", "Fuchsia", "Gray", "Green", "Lime", "Maroon", "Navy", "Olive", "Orange", "Purple", "Red", "Silver", "Teal", "White", "Yellow"]
+
+netLogoColors = { # NL does not use the std rgb values for every name
+  Gray: [128,128,128],
+  Red: [255,0,0],
+  Orange: [255,165,0],
+  Brown: [165,42,42],
+  Yellow: [255,255,0],
+  Green: [0,128,0],
+  Lime: [0,255,0],
+  Turquoise: [64,224,208],
+  Cyan: [0,255,255],
+  Sky: [135,206,235],
+  Blue: [0,0,255],
+  Violet: [238,130,238],
+  Magenta: [255,0,255],
+  Pink: [255,192,203]
 }
-# Note: Sky === SkyBlue below
-simpleNamedColors = {
-  Aqua: [0, 255, 255],
-  Aquamarine: [127, 255, 212],
-  Azure: [240, 255, 255],
-  Beige: [245, 245, 220],
-  Bisque: [255, 228, 196],
-  Black: [0, 0, 0],
-  Blue: [0, 0, 255],
-  Brown: [165, 42, 42],
-  Chartreuse: [127, 255, 0],
-  Chocolate: [210, 105, 30],
-  Coral: [255, 127, 80],
-  Cornsilk: [255, 248, 220],
-  Crimson: [220, 20, 60],
-  Cyan: [0, 255, 255],
-  Fuchsia: [255, 0, 255],
-  Gainsboro: [220, 220, 220],
-  Gold: [255, 215, 0],
-  Gray: [128, 128, 128],
-  Green: [0, 128, 0],
-  Indigo: [75, 0, 130],
-  Ivory: [255, 255, 240],
-  Khaki: [240, 230, 140],
-  Lavender: [230, 230, 250],
-  Lime: [0, 255, 0],
-  Linen: [250, 240, 230],
-  Magenta: [255, 0, 255],
-  Maroon: [128, 0, 0],
-  Moccasin: [255, 228, 181],
-  Navy: [0, 0, 128],
-  Olive: [128, 128, 0],
-  Orange: [255, 165, 0],
-  Orchid: [218, 112, 214],
-  Peru: [205, 133, 63],
-  Pink: [255, 192, 203],
-  Plum: [221, 160, 221],
-  Purple: [128, 0, 128],
-  Red: [255, 0, 0],
-  Salmon: [250, 128, 114],
-  Sienna: [160, 82, 45],
-  Silver: [192, 192, 192],
-  Sky: [135, 206, 235],
-  Snow: [255, 250, 250],
-  Tan: [210, 180, 140],
-  Teal: [0, 128, 128],
-  Thistle: [216, 191, 216],
-  Tomato: [255, 99, 71],
-  Turquoise: [64, 224, 208],
-  Violet: [238, 130, 238],
-  Wheat: [245, 222, 179],
-  White: [255, 255, 255],
-  Yellow: [255, 255, 0]
-}
-htmlColors = {
-  Aqua: [0, 255, 255],
-  Black: [0, 0, 0],
-  Blue: [0, 0, 255],
-  Fuchsia: [255, 0, 255],
-  Gray: [128, 128, 128],
-  Green: [0, 128, 0],
-  Lime: [0, 255, 0],
-  Maroon: [128, 0, 0],
-  Navy: [0, 0, 128],
-  Olive: [128, 128, 0],
-  Orange: [255, 165, 0],
-  Purple: [128, 0, 128],
-  Red: [255, 0, 0],
-  Silver: [192, 192, 192],
-  Teal: [0, 128, 128],
-  White: [255, 255, 255],
-  Yellow: [255, 255, 0]
-}
-netLogoColors = {
-  Gray: [128, 128, 128],
-  Red: [255, 0, 0],
-  Orange: [255, 165, 0],
-  Brown: [165, 42, 42],
-  Yellow: [255, 255, 0],
-  Green: [0, 128, 0],
-  Lime: [0, 255, 0],
-  Turquoise: [64, 224, 208],
-  Cyan: [0, 255, 255],
-  Sky: [135, 206, 235],
-  Blue: [0, 0, 255],
-  Violet: [238, 130, 238],
-  Magenta: [255, 0, 255],
-  Pink: [255, 192, 203]
-}
-triColors = {
-  Black: [0, 0, 0],
-  Navy: [0, 0, 128],
-  Blue: [0, 0, 255],
-  Green: [0, 128, 0],
-  Teal: [0, 128, 128],
-  DodgerBlue: [30, 144, 255],
-  Lime: [0, 255, 0],
-  SpringGreen: [0, 255, 127],
-  Cyan: [0, 255, 255],
-  Maroon: [128, 0, 0],
-  Purple: [128, 0, 128],
-  DarkViolet: [148, 0, 211],
-  Olive: [128, 128, 0],
-  Gray: [128, 128, 128],
-  MediumSlateBlue: [123, 104, 238],
-  Chartreuse: [127, 255, 0],
-  LightGreen: [144, 238, 144],
-  Aquamarine: [127, 255, 212],
-  Red: [255, 0, 0],
-  DeepPink: [255, 20, 147],
-  Magenta: [255, 0, 255],
-  DarkOrange: [255, 140, 0],
-  Salmon: [250, 128, 114],
-  Violet: [238, 130, 238],
-  Yellow: [255, 255, 0],
-  Khaki: [240, 230, 140],
-  White: [255, 255, 255]
-}
-quadColors = {
-  Black: [0, 0, 0],
-  Navy: [0, 0, 128],
-  DarkBlue: [0, 0, 139],
-  Blue: [0, 0, 255],
-  DarkGreen: [0, 100, 0],
-  DarkSlateGray: [47, 79, 79],
-  Teal: [0, 128, 128],
-  RoyalBlue: [65, 105, 225],
-  Green: [0, 128, 0],
-  SeaGreen: [46, 139, 87],
-  LightSeaGreen: [32, 178, 170],
-  DeepSkyBlue: [0, 191, 255],
-  Lime: [0, 255, 0],
-  SpringGreen: [0, 255, 127],
-  MediumSpringGreen: [0, 250, 154],
-  Cyan: [0, 255, 255],
-  Maroon: [128, 0, 0],
-  Indigo: [75, 0, 130],
-  DarkViolet: [148, 0, 211],
-  DarkOliveGreen: [85, 107, 47],
-  SlateBlue: [106, 90, 205],
-  OliveDrab: [107, 142, 35],
-  MediumSeaGreen: [60, 179, 113],
-  CadetBlue: [95, 158, 160],
-  CornflowerBlue: [100, 149, 237],
-  LawnGreen: [124, 252, 0],
-  LimeGreen: [50, 205, 50],
-  Turquoise: [64, 224, 208],
-  Aquamarine: [127, 255, 212],
-  DarkRed: [139, 0, 0],
-  Purple: [128, 0, 128],
-  DarkMagenta: [139, 0, 139],
-  SaddleBrown: [139, 69, 19],
-  IndianRed: [205, 92, 92],
-  MediumOrchid: [186, 85, 211],
-  DarkGoldenRod: [184, 134, 11],
-  DarkKhaki: [189, 183, 107],
-  DarkGray: [169, 169, 169],
-  LightSteelBlue: [176, 196, 222],
-  Chartreuse: [127, 255, 0],
-  GreenYellow: [173, 255, 47],
-  PaleGreen: [152, 251, 152],
-  PaleTurquoise: [175, 238, 238],
-  Red: [255, 0, 0],
-  Crimson: [220, 20, 60],
-  DeepPink: [255, 20, 147],
-  Magenta: [255, 0, 255],
-  OrangeRed: [255, 69, 0],
-  Tomato: [255, 99, 71],
-  HotPink: [255, 105, 180],
-  Violet: [238, 130, 238],
-  Orange: [255, 165, 0],
-  SandyBrown: [244, 164, 96],
-  LightPink: [255, 182, 193],
-  Plum: [221, 160, 221],
-  Yellow: [255, 255, 0],
-  Khaki: [240, 230, 140],
-  LemonChiffon: [255, 250, 205],
-  White: [255, 255, 255]
-}
+# Roughly ramp 3
+triColorsRgb={Black:[0,0,0], Navy:[0,0,128], Blue:[0,0,255], Green:[0,128,0], Teal:[0,128,128], DodgerBlue:[30,144,255], Lime:[0,255,0], SpringGreen:[0,255,127], Cyan:[0,255,255], Maroon:[128,0,0], Purple:[128,0,128], DarkViolet:[148,0,211], Olive:[128,128,0], Gray:[128,128,128], MediumSlateBlue:[123,104,238], Chartreuse:[127,255,0], LightGreen:[144,238,144], Aquamarine:[127,255,212], Red:[255,0,0], DeepPink:[255,20,147], Magenta:[255,0,255], DarkOrange:[255,140,0], Salmon:[250,128,114], Violet:[238,130,238], Yellow:[255,255,0], Khaki:[240,230,140], White:[255,255,255]}
+
+triColors=["Black", "Navy", "Blue", "Green", "Teal", "DodgerBlue", "Lime", "SpringGreen", "Cyan", "Maroon", "Purple", "DarkViolet", "Olive", "Gray", "MediumSlateBlue", "Chartreuse", "LightGreen", "Aquamarine", "Red", "DeepPink", "Magenta", "DarkOrange", "Salmon", "Violet", "Yellow", "Khaki", "White"]
+
+# Roughly ramp 4
+quadColorsRgb = {Black:[0,0,0], Navy:[0,0,128], DarkBlue:[0,0,139], Blue:[0,0,255], DarkGreen:[0,100,0], DarkSlateGray:[47,79,79], Teal:[0,128,128], RoyalBlue:[65,105,225], Green:[0,128,0], SeaGreen:[46,139,87], LightSeaGreen:[32,178,170], DeepSkyBlue:[0,191,255], Lime:[0,255,0], SpringGreen:[0,255,127], MediumSpringGreen:[0,250,154], Cyan:[0,255,255], Maroon:[128,0,0], Indigo:[75,0,130], DarkViolet:[148,0,211], DarkOliveGreen:[85,107,47], SlateBlue:[106,90,205], OliveDrab:[107,142,35], MediumSeaGreen:[60,179,113], CadetBlue:[95,158,160], CornflowerBlue:[100,149,237], LawnGreen:[124,252,0], LimeGreen:[50,205,50], Turquoise:[64,224,208], Aquamarine:[127,255,212], DarkRed:[139,0,0], Purple:[128,0,128], DarkMagenta:[139,0,139], SaddleBrown:[139,69,19], IndianRed:[205,92,92], MediumOrchid:[186,85,211], DarkGoldenRod:[184,134,11], DarkKhaki:[189,183,107], DarkGray:[169,169,169], LightSteelBlue:[176,196,222], Chartreuse:[127,255,0], GreenYellow:[173,255,47], PaleGreen:[152,251,152], PaleTurquoise:[175,238,238], Red:[255,0,0], Crimson:[220,20,60], DeepPink:[255,20,147], Magenta:[255,0,255], OrangeRed:[255,69,0], Tomato:[255,99,71], HotPink:[255,105,180], Violet:[238,130,238], Orange:[255,165,0], SandyBrown:[244,164,96], LightPink:[255,182,193], Plum:[221,160,221], Yellow:[255,255,0], Khaki:[240,230,140], LemonChiffon:[255,250,205], White:[255,255,255]}
+
+quadColors=["Black", "Navy", "DarkBlue", "Blue", "DarkGreen", "DarkSlateGray", "Teal", "RoyalBlue", "Green", "SeaGreen", "LightSeaGreen", "DeepSkyBlue", "Lime", "SpringGreen", "MediumSpringGreen", "Cyan", "Maroon", "Indigo", "DarkViolet", "DarkOliveGreen", "SlateBlue", "OliveDrab", "MediumSeaGreen", "CadetBlue", "CornflowerBlue", "LawnGreen", "LimeGreen", "Turquoise", "Aquamarine", "DarkRed", "Purple", "DarkMagenta", "SaddleBrown", "IndianRed", "MediumOrchid", "DarkGoldenRod", "DarkKhaki", "DarkGray", "LightSteelBlue", "Chartreuse", "GreenYellow", "PaleGreen", "PaleTurquoise", "Red", "Crimson", "DeepPink", "Magenta", "OrangeRed", "Tomato", "HotPink", "Violet", "Orange", "SandyBrown", "LightPink", "Plum", "Yellow", "Khaki", "LemonChiffon", "White"]
 
 
 window.namedColors = namedColors
@@ -394,10 +153,13 @@ jetColors = [ [0,0,127], [0,0,255], [0,127,255], [0,255,255],
 jetColors1 = [ [0,0,131], [0,60,170], [5,255,255], [255,255,0],
   [250,0,0], [128,0,0] ]
 jetLocs1 = [0, 0.125, 0.373, 0.625, 0.875, 1]
-rainbowColors = [ [150,0,90], [0,0,200], [0,25,255], [0,152,255],
+rgbRainbowColors = [ [150,0,90], [0,0,200], [0,25,255], [0,152,255],
   [44,255,150], [151,255,0], [255,234,0], [255,111,0], [255,0,0] ]
-
-
+namedRainbowObj = {}
+for n in ["red", "orange", "yellow", "green", "blue", "indigo"]
+  # console.log "rainbow", n, c.stringToRgba(n)
+  namedRainbowObj[n] = c.stringToColor n
+namedRainbowArray = (v for k,v of namedRainbowObj)
 
 # Map Types
 # grayColorMap: (size = 256)
@@ -412,8 +174,12 @@ window.flags =
   map: "gradient"
   args: [64,[[255,255,0],[0,255,255]]]
   sort: false
-  decending: false
   key: "intensity"
+  sortFcns:
+    intensity: (a,b) -> c.rgbIntensity(a...) - c.rgbIntensity(b...)
+    pixel: (a,b) -> c.getPixel(a) - c.getPixel(b)
+    hue: (a,b) -> c.rgbToHsl(a...)[0] - c.rgbToHsl(b...)[0]
+
   # w: 16/4, h: 4, s: 50, map: "gradient"
 # Use query string to update flags.
 flags[k] = v for k,v of u.parseQueryString()
@@ -439,14 +205,90 @@ class ColorTestModel extends ABM.Model
         Color[flags.map] flags.args...
 
     # window.map = @map = Color[flags.map] flags.args...
-    @map.sortBy(flags.key, not flags.decending) if flags.sort
-    console.log (c[flags.key] for c in @map) if flags.sort
-    @patches[i].color = colorObj.rgb for colorObj,i in @map
+    @map.sort(flags.sortFcns[flags.key]) if flags.sort
+    # console.log (c[flags.key] for c in @map) if flags.sort
 
-    console.log "patches: #{@patches.length}"
+    # debugger;
+    @patches[i].color = c.colorToArray(color) for color,i in @map
+
+    console.log "patches: #{@patches.length}; map: #{map.length}"
+    console.log "testNamedColors: start"
+    @testNamedColors()
+    console.log "testNamedColors: done"
 
   step: -> @stop() # stop: just one tick
 
+  testNamedColors: -> # Works! Yay! Don't need arrays, just names
+    for k,v in namedColorsRgb
+      s1=v.toString()
+      s2=c.stringToRgba(v...).toString()
+      console.log "nameTest: #{k} #{s1} #{s2}" if s1 isnt s2
+    null
+  testGrays: (n) -> # see how many grays are in map
+    grays = c.grayValueArray(n)
+    for g in grays
+      color = map.findClosest g,g,g
+      diff = Math.round(c.rgbDistance(color.rgb...,g,g,g))
+      console.log "gray: #{g}, closest: #{color.rgb}, diff: #{diff}"
+    null
+  testRandomColors: (n) ->
+    randomRgbs = c.randomColorArray(n)
+    for randomRgb in randomRgbs
+      color = map.findClosest randomRgb...
+      diff = Math.round(c.rgbDistance(color.r, color.g, color.b, randomRgb...))
+      # console.log randomRgbs, randomRgb, color, diff
+      console.log "random: #{randomRgb}, closest: #{color.rgb}, diff: #{diff}"
+    null
+  compareRandomColors: ->
+    n = Math.floor(@patches.length/2)
+    for i in [0...n]
+      randomRgb = c.randomRgbColor()
+      color = map.findClosest randomRgb...
+      ps[i*2].color = color.rgb
+      ps[i*2+1].color = randomRgb
+      app.draw()
+    null
+  getClosestRgb: (r, g, b, itemsPerChannel) ->
+    step = 255/(itemsPerChannel-1)
+    # [r, g, b] = (Math.round(channel/step)*step for channel in [r, g, b])
+    [rLoc, gLoc, bLoc] = (Math.round(color/step) for color in [r, g, b])
+    # [r, g, b] = (Math.round(loc*step) for loc in [rLoc, gLoc, bLoc])
+    i = rLoc + gLoc*itemsPerChannel + bLoc*itemsPerChannel*itemsPerChannel
+    # console.log r,g,b,rLoc,gLoc,bLoc,i,map[i].ix,map[i].rgb
+    i
+  compareRandomColors: ->
+    n = Math.floor(@patches.length/2)
+    console.log "comparing #{n} random colors"
+    for i in [0...n]
+      randomRgb = c.randomRgbColor()
+      closestRgb = c.colorObjToRgb(map.findClosest randomRgb...)
+      ps[i*2].color = closestRgb
+      ps[i*2+1].color = randomRgb
+    console.log "drawing"
+    app.draw()
+    null
+  compareRandomColors1: ->
+    n = Math.floor(@patches.length/2)
+    step = Math.round(Math.pow(map.length,1/3))
+    console.log "comparing #{n} random colors"
+    for i in [0...n]
+      randomRgb = c.randomRgbColor()
+      closestRgb = c.colorObjToRgb(map[@getClosestRgb(randomRgb...,step)])
+      ps[i*2].color = closestRgb
+      ps[i*2+1].color = randomRgb
+    console.log "drawing"
+    app.draw()
+    null
+  memoryTest: ->
+    window.fatMap = c.rgbColorMap(64)
+    window.fatterMap = new c.ObjColorMap(64)
+    # for color in fatMap
+    #   cobj = {}
+    #   cobj.rgba = new Uint8ClampedArray color
+    #   cobj.pixel = new Uint32Array(cobj.rgba.buffer)
+    #   cobj.str = color.str+"x"
+    #   fatterMap.push cobj
+    null
 window.model = new ColorTestModel({
   div: "layers",
   size: flags.ps,

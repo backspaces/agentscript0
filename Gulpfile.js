@@ -8,7 +8,7 @@ var lazypipe= require('lazypipe');
 var taskList= require('gulp-task-listing');
 
 
-var ASNames = 'util color shapes agentset patch patches agent agents link links model animator'.split(' ');
+var ASNames = 'util evented color shapes agentset patch patches agent agents link links model animator'.split(' ');
 var ASPaths = ASNames.map(function(n){return 'src/'+n+'.coffee';});
 
 // Create "macro" pipes.  Note 'pipe(name,args)' not 'pipe(name(args))'
@@ -22,7 +22,7 @@ var coffeeTasks = lazypipe()
   .pipe(coffee)
   .pipe(jsTasks);
 
-gulp.task('all', ['build', 'docs']);
+gulp.task('all', ['build', 'docs', 'models']);
 
 // Build tasks:
 gulp.task('build-agentscript', function () {
@@ -55,6 +55,14 @@ gulp.task('watch', function() {
     .pipe(coffeeTasks());
   });
 });
+
+// Build any models not embedded in html file:
+gulp.task('models', function() {
+  return gulp.src('./models/*.coffee')
+  .pipe(coffee())
+  .pipe(gulp.dest('./models/'));
+});
+
 
 // Documentation tasks
 gulp.task('docs', function() {

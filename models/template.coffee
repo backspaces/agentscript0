@@ -24,14 +24,18 @@ class MyModel extends ABM.Model
   # for an example, not needed by simple models.
   startup: -> # called by constructor
     # Add new shapes.
-    Shapes.add "bowtie", true, (c) -> Shapes.poly c, [[-.5,-.5],[.5,.5],[-.5,.5],[.5,-.5]]
+    Shapes.add "bowtie", true, (c) ->
+      Shapes.poly c, [[-.5,-.5],[.5,.5],[-.5,.5],[.5,-.5]]
     # The following two example lines don't work when opened locally
     # in Chrome (they work fine from a webserver). Uncomment if you'd
     # like to add custom images.
-
-    # Shapes.add "cc", true, u.importImage("data/coffee.png")
-
-    # Shapes.add "redfish", false, u.importImage("data/redfish64t.png")
+    if window.location.protocol is "file:"
+      console.log "Warning: file:// protocol used!"
+      console.log "This prevents two user defined image shapes from loading!"
+      console.log "Use http:// protocol to enable image shapes."
+    else
+      Shapes.add "cc", true, u.importImage("data/coffee.png")
+      Shapes.add "redfish", false, u.importImage("data/redfish64t.png")
 
   # Initialize our model via the `setup` abstract method.
   # This model simply creates `population` agents with

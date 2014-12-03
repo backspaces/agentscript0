@@ -64,8 +64,10 @@
           @linkEnabled = true
 
         setupBothModels: () ->
-          @setup()
-          @linkedModel.setup()
+          @reset()
+          @linkedModel.reset()
+          @start()
+          @linkedModel.start()
 
         toggleLink: () ->
           @linkEnabled = @linkedModel.linkEnabled = not @linkEnabled
@@ -83,6 +85,22 @@
 
       model1.linkModel(model2)
       model2.linkModel(model1)
+
+      model1.on 'step', () ->
+        ticks = model1.anim.ticks
+        if (ticks % 100 is 0)
+          console.log "model1:", model1.anim.toString()
+
+      model2.on 'draw', () ->
+        draws = model2.anim.draws
+        if (draws % 100 is 0)
+          console.log "model2:", model2.anim.toString()
+
+      model1.on 'setup', () ->
+        console.log "setup model1"
+
+      model2.on 'setup', () ->
+        console.log "setup model2"
 
       window.gui1 = new ABM.DatGUI(model1, {
         "setup": {

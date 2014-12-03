@@ -1,5 +1,3 @@
-# ### Agent
-
 # Class Agent instances represent the dynamic, behavioral element of modeling.
 # Each agent knows the patch it is on, and interacts with that and other
 # patches, as well as other agents.
@@ -178,10 +176,12 @@ class Agent
 
   # Factory: create num new agents at this agents location. The optional init
   # proc is called on the new agent after inserting in its agentSet.
-  hatch: (num = 1, breed = @model.agents, init = ->) ->
+  hatch: (num = 1, breed = @breed, init = ->) ->
     breed.create num, (a) => # fat arrow so that @ = this agent
       a.setXY @x, @y # for side effects like patches.agentsHere
-      a[k] = v for own k, v of @ when k isnt "id"
+      a.color = @color
+      a[k] = @[k] for k in breed.ownVariables when a[k] is null # hatched agent inherits parents' breed properties
+      # possible alternative: a[k] = @[k] for k, v in a when v is null
       init(a); a # Important: init called after object inserted in agent set
 
   # Return the members of the given agentset that are within radius distance

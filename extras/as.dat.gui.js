@@ -41,10 +41,10 @@
     // TODO: Allow a subset of ui elements to remain in sync.
 
     function DatGUI(fbuiOrModel, uiObject) {
-
-      var self = this;
+      ABM.Util.mixin(this, new ABM.Evented())
       this.gui = new dat.GUI();
       this.datGuiModel = {};
+      this.datGuiControllers = {};
 
       var model, ui, fbui;
       if (arguments.length == 2) {
@@ -56,20 +56,61 @@
         ui = this.ui = fbui.ui;
       }
 
+      this.initUIElements(ui, this.gui);
+    }
+
+    DatGUI.prototype.initUIElements = function(ui, folder) {
+      var self = this;
       for (var name in ui) {
         if (ui.hasOwnProperty(name)) {
           var uiEl = ui[name];
+          
+          if (isFolder(uiEl)) {
+            // You can group ui elements into folders by nesting objects. E.g.:
+
+            //     {
+            //       "Moose stuff": {
+            //         "Create a moose": {
+            //           type: "button"
+            //         },
+            //         "Moose color": {
+            //           type: "choice",
+            //           vals: ["brown", "dark brown"]
+            //         }
+            //       },
+            //       "Goat stuff": {
+            //         "Look for a goat": {
+            //           type: "button"
+            //         },
+            //         "Goat size": {
+            //           type: "slider",
+            //           min: 1,
+            //           max: 9000
+            //         }
+            //       }
+            //     }
+
+            // Element names should still be unique across folders.
+
+            var subFolder = folder.addFolder(name);
+            this.initUIElements(uiEl, subFolder);
+            continue;
+          }
+          
           if (uiEl.type != 'button') {
+            // The state of all non-button elements is stored in `this.datGuiModel`.
             this.datGuiModel[name] = uiEl.val;
 
-            fbui && fbui.refs[name].child('val').on('value', function(valSnap) {
-              self.datGuiModel[this.name] = valSnap.val();
-              self.updateGui();
-            }.bind({ name: name }));
+            if (typeof fbui != 'undefined') {
+              fbui.refs[name].child('val').on('value', function(valSnap) {
+                self.datGuiModel[this.name] = valSnap.val();
+                self.updateGui();
+              }.bind({ name: name }));
+            }
           }
 
           var ctrl = null;
-          // a uiEl can be of type "button", "choice", "switch", or "slider"
+          // A uiEl can be of type `"button"`, `"choice"`, `"switch"`, or `"slider"`.
           switch(uiEl.type) {
             case 'button':
               this.datGuiModel[name] = self.fbui ?
@@ -77,20 +118,21 @@
                   self.fbui.setUIValue(this.name, true); 
                 }.bind({ name: name }) :
                 function() {
-                  self.setModelValue(this.name);
-                }.bind({ name: name });
-              this.gui.add(this.datGuiModel, name);
+                  self.setModelValue(this.name, null, this.setter);
+                }.bind({ name: name, setter: ui[name].setter });
+              folder.add(this.datGuiModel, name);
             break;
             case 'choice':
-              ctrl = this.gui.add(this.datGuiModel, name, uiEl.vals);
+              ctrl = folder.add(this.datGuiModel, name, uiEl.vals);
             break;
             case 'switch':
-              ctrl = this.gui.add(this.datGuiModel, name);
+              ctrl = folder.add(this.datGuiModel, name);
             break;
             case 'slider':
-              ctrl = this.gui.add(this.datGuiModel, name, uiEl.min, uiEl.max).step(uiEl.step);
+              ctrl = folder.add(this.datGuiModel, name, uiEl.min, uiEl.max).step(uiEl.step);
             break;
           }
+
           if (ctrl) {
             var callback;
             if (self.fbui) {
@@ -100,35 +142,52 @@
             }
             else {
               callback = function(value) {
-                self.setModelValue(this.name, value);
-              }.bind({ name: name }); 
+                self.setModelValue(this.name, value, this.setter);
+              }.bind({ name: name, setter: ui[name].setter });
             }
-            // a slider can be 'smooth', in which case
-            // the setter is called during a drag
+            // A slider can be `"smooth"`, in which case
+            // the setter is called during a drag.
             if (uiEl.smooth) {
               ctrl.onChange(callback);
             }
-            // otherwise the setter is called at the end
-            // of the drag
+            // Otherwise, the setter is called at the end
+            // of the drag.
             else {
               ctrl.onFinishChange(callback);
             }
+            this.datGuiControllers[name] = ctrl;
           }
         }
       }
     }
 
-    DatGUI.prototype.setModelValue = function(name, value) {
-      var setter = this.ui[name].setter;
-      // if you specify a setter, DatGUI will look for
-      // it in the model and call it with the new value
+    DatGUI.prototype.setModelValue = function(name, value, setter) {
       if (setter) {
         this.model[setter](value);
       }
-      // otherwise we assume the ui element name is
-      // the name of a model variable
+      // If you don't specify a setter, we assume the ui element name is
+      // the name of a model variable.
       else {
         this.model[name] = value;
+      }
+      // ABM.DatGUI will emit a `'change'` event
+      // whenever part of its model changes.
+      this.emit('change', { name: name, value: value });
+    }
+
+    // Use `update` to set the current state of the UI. E.g.:
+    DatGUI.prototype.update = function(uiObject) {
+      //     myUI.update({
+      //       "Moose color": "brown",
+      //       "Goat size": 500
+      //     })
+      for (var name in uiObject) {
+        var curCtrl = this.datGuiControllers[name];
+        if (curCtrl) {
+          curCtrl.setValue(uiObject[name]);
+          var changeFun = curCtrl.__onChange || curCtrl.__onFinishChange;
+          changeFun(this.datGuiModel[name]);
+        }
       }
     }
 
@@ -136,6 +195,10 @@
       for (var i in this.gui.__controllers) {
         this.gui.__controllers[i].updateDisplay();
       }
+    }
+
+    function isFolder(obj) {
+      return typeof obj.type == 'undefined';
     }
         
     return DatGUI;

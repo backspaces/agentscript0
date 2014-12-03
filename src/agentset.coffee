@@ -93,8 +93,6 @@ class AgentSet extends Array
   # Vars = a string of space separated names or an array of name strings
   # Return agentset.
   own: (vars) -> # maybe not set default if val is null?
-    # vars = vars.split(" ") if not u.isArray vars
-    # for name in vars#.split(" ") # if not u.isArray vars
     for name in vars.split(" ")
       @setDefault name, null
       @ownVariables.push name
@@ -116,32 +114,33 @@ class AgentSet extends Array
     breeds = breeds.split(" ")
     @asSet (o for o in @ when o.breed.name not in breeds)
 
+  # A generalized, but complex, flood fill, designed to work on any
+  # agentset type. To see a simpler version, look at the gridpath model.
+  #
   # Floodfill arguments:
   #
   # * aset: initial array of agents, often a single agent: [a]
   # * fCandidate(a, asetLast) -> true if a is elegible to be added to the set
-  # * fJoin(a, asetLast) -> adds a to the agentset, usually by setting a variable
-  # * fCallback(asetLast, asetNext) -> optional function to be called each iteration of floodfill;
-  # if fCallback returns true, the flood is aborted
+  # * fJoin(a, asetLast) -> adds a to the agentset, often by setting a variable
   # * fNeighbors(a) -> returns the neighbors of this agent
-  # * asetLast: the array of the last set of agents to join the flood;
-  # gets passed into fJoin, fCandidate, and fCallback
-  floodFill: (aset, fCandidate, fJoin, fCallback, fNeighbors, asetLast=[]) ->
-    floodFunc = @floodFillOnce(aset, fCandidate, fJoin, fCallback, fNeighbors, asetLast)
+  # * asetLast: the array of the last set of agents to join the flood.
+  floodFill: (aset, fCandidate, fJoin, fNeighbors, asetLast=[]) ->
+    floodFunc = @floodFillOnce(aset, fCandidate, fJoin, fNeighbors, asetLast)
     floodFunc = floodFunc() while floodFunc
 
-  # Move one step forward in a floodfill. floodFillOnce() returns a function that performs the next step of the flood.
+  # Move one step forward in a floodfill.
+  # floodFillOnce() returns a function that performs the next step of the flood.
   # This is useful if you want to watch your flood progress as an animation.
-  floodFillOnce: (aset, fCandidate, fJoin, fCallback, fNeighbors, asetLast=[]) ->
+  floodFillOnce: (aset, fCandidate, fJoin, fNeighbors, asetLast=[]) ->
     fJoin p, asetLast for p in aset
     asetNext = []
     for p in aset
       for n in fNeighbors(p) when fCandidate n, aset
         asetNext.push n if asetNext.indexOf(n) < 0
-    stopEarly = fCallback and fCallback(aset, asetNext)
-    if stopEarly or asetNext.length is 0 then return null
-    else return () =>
-      @floodFillOnce asetNext, fCandidate, fJoin, fCallback, fNeighbors, aset
+    if asetNext.length is 0
+      null
+    else
+      () => @floodFillOnce asetNext, fCandidate, fJoin, fNeighbors, aset
 
   # Remove adjacent duplicates, by reference, in a sorted agentset.
   # Use `sortById` first if agentset not sorted.
