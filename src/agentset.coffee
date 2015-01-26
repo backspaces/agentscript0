@@ -268,11 +268,6 @@ class AgentSet extends Array
   draw: (ctx) ->
     u.clearCtx(ctx); o.draw(ctx) for o in @ when not o.hidden; null
 
-  # Show/Hide all of an agentset or breed.
-  # To show/hide an individual object, set its prototype: o.hidden = bool
-  show: -> o.hidden = false for o in @; @draw(@model.contexts[@name])
-  hide: -> o.hidden = true for o in @; @draw(@model.contexts[@name])
-
 # ### Topology
 
   # For patches & agents, which have x,y. See Util doc.

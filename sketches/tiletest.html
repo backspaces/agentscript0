@@ -1,0 +1,46 @@
+<html>
+  <head>
+    <title>Simple Model</title>
+    <script src="../lib/agentscript.js"></script>
+    <!--
+    <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet-src.js"></script>
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
+    -->
+    <script src="../tools/leaflet-src.js"></script>
+    <link rel="stylesheet" href="../tools/leaflet.css" />
+    <script src="../tools/coffee-script.js"></script>
+    <script type="text/coffeescript">
+    
+    u = ABM.Util # shortcut for ABM.Util
+    class MyModel extends ABM.Model
+      setup: -> # called by Model constructor
+        @anim.setRate(20)
+        @agents.setDefault('size', 2)
+        @agents.create 100
+        for agent, idx in @agents
+          agent.setXY(-10+idx*0.2, -10+idx*0.2)
+      step: ->
+        for agent in @agents
+          agent.rotate(u.randomCentered(Math.PI / 3))
+          agent.forward(0.1)
+        
+    # div, size, minX, maxX, minY, maxY, torus=true, neighbors=true
+    model = new MyModel({
+      div: "layers",
+      size: 10,
+      minX: -25,
+      maxX: 25,
+      minY: -20,
+      maxY: 20,
+      torus: true
+    }).debug() # Debug: Put Model vars in global name space
+      .start() # Run model immediately after startup initialization
+
+    </script>
+  </head>
+  <body>
+    <div id="layers"></div>
+  </body>
+</html>
+
+

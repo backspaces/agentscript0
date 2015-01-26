@@ -137,22 +137,13 @@ class Patches extends AgentSet
           rect.push pnext if (meToo or p isnt pnext)
     @asSet rect
 
-  # Draws, or "imports" an image URL into the drawing layer.
-  # The image is scaled to fit the drawing layer.
-  #
-  # This is an async load, see this
-  # [new Image()](http://javascript.mfields.org/2011/creating-an-image-in-javascript/)
-  # tutorial.  We draw the image into the drawing layer as
-  # soon as the onload callback executes.
+  # Deprecated
   importDrawing: (imageSrc, f) ->
-    u.importImage imageSrc, (img) => # fat arrow, this context
-      @installDrawing img
-      f() if f?
-  # Direct install image into the given context, not async.
-  installDrawing: (img, ctx=@model.contexts.drawing) ->
-    u.setIdentity ctx
-    ctx.drawImage img, 0, 0, ctx.canvas.width, ctx.canvas.height
-    ctx.restore() # restore patch transform
+    console.warn("Patches.importDrawing is deprecated. Use Model.importDrawing instead.")
+    @model.importDrawing(imageSrc, f)
+  installDrawing: (img, ctx) ->
+    console.warn("Patches.installDrawing is deprecated. Use Model.installDrawing instead.")
+    @model.installDrawing(img, ctx)
 
   # Utility function for pixel manipulation.  Given a patch, returns the
   # native canvas index i into the pixel data.
@@ -163,7 +154,6 @@ class Patches extends AgentSet
   pixelXYtoPatchXY: (x,y) -> [@minXcor+(x/@size), @maxYcor-(y/@size)]
   # Convert patch coords (float) to pixel location (top/left offset i.e. mouse)
   patchXYtoPixelXY: (x,y) -> [(x-@minXcor)*@size, (@maxYcor-y)*@size]
-
 
   # Draws, or "imports" an image URL into the patches as their color property.
   # The drawing is scaled to the number of x,y patches, thus one pixel

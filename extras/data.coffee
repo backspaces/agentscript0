@@ -119,7 +119,7 @@ ABM.DataSet = class DataSet
     ctx.putImageData idata, 0, 0
     ctx
   # Show dataset as image in patch drawing layer or patch colors, return image
-  toDrawing: (model = @model) -> model.patches.installDrawing(img=@toImage()); img
+  toDrawing: (model = @model) -> model.installDrawing(img=@toImage()); img
   toPatchColors: (model = @model) -> model.patches.installColors(img=@toImage()); img
   # Resample dataset to patch width/height and set named patch variable.
   # Note this "insets" the dataset so the variable is sampled the center of the patch.

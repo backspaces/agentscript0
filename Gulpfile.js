@@ -8,7 +8,7 @@ var lazypipe= require('lazypipe');
 var taskList= require('gulp-task-listing');
 
 
-var ASNames = 'util evented color colormaps shapes agentset patch patches agent agents link links model animator'.split(' ');
+var ASNames = 'util evented color colormaps shapes agentset patch patches agent agents link links model animator canvasview canvastileview'.split(' ');
 var ASPaths = ASNames.map(function(n){return 'src/'+n+'.coffee';});
 
 // Create "macro" pipes.  Note 'pipe(name,args)' not 'pipe(name(args))'
