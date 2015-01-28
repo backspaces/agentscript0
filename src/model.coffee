@@ -243,20 +243,26 @@ class Model
 # ..will set the default color for just the embers. Note: patch breeds are currently
 # not usable due to the patches being prebuilt.  Stay tuned.
 
-  createBreeds: (breedNames, baseClass, baseSet) ->
+  createBreeds: (breedNames, baseClass, baseSet, mainSet) ->
     breeds = []; breeds.classes = {}; breeds.sets = {}
     for breedName in breedNames.split(" ")
       className = breedName.charAt(0).toUpperCase() + breedName.substr(1)
       breedClass = u.cloneClass baseClass, className # breedClass = class Breed extends baseClass
       breed = @[breedName] = # add @<breed> to local scope
-        new baseSet @, breedClass, breedName, baseClass::breed # create subset agentSet
+        new baseSet @, breedClass, breedName, mainSet # create subset agentSet
       breeds.push breed
       breeds.sets[breedName] = breed
       breeds.classes["#{breedName}Class"] = breedClass
     breeds
-  patchBreeds: (breedNames) -> @patches.breeds = @createBreeds breedNames, @Patch, @Patches
-  agentBreeds: (breedNames) -> @agents.breeds  = @createBreeds breedNames, @Agent, @Agents
-  linkBreeds:  (breedNames) -> @links.breeds   = @createBreeds breedNames, @Link,  @Links
+
+  patchBreeds: (breedNames, baseClass = @Patch, baseSet = @Patches, mainSet = @patches) ->
+    @patches.breeds = @createBreeds breedNames, baseClass, baseSet, mainSet
+
+  agentBreeds: (breedNames, baseClass = @Agent, baseSet = @Agents, mainSet = @agents) ->
+    @agents.breeds = @createBreeds breedNames, baseClass, baseSet, mainSet
+
+  linkBreeds: (breedNames, baseClass = @Link, baseSet = @Links, mainSet = @links) ->
+    @links.breeds = @createBreeds breedNames, baseClass, baseSet, mainSet
 
   # Utility for models to create agentsets from arrays.  Ex:
   #
