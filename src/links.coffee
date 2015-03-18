@@ -5,7 +5,7 @@
 class Links extends AgentSet
   # Constructor: super creates the empty AgentSet instance and installs
   # the agentClass (breed) variable shared by all the Links in this set.
-  constructor: -> # agentClass, name, mainSet
+  constructor: -> # model, agentClass, name, mainSet
     super # call super with all the args I was called with
 
   # Factory: Add 1 or more links from the from agent to the to agent(s) which
@@ -44,3 +44,16 @@ class Links extends AgentSet
       a.heading = startAngle + direction*dTheta*i
       a.forward radius
     null
+
+  setDraggable: () ->
+    @on 'dragstart', (mouseEvent) =>
+      mouseEvent.target.dragging = true
+
+    @on 'dragend', (mouseEvent) =>
+      mouseEvent.target.dragging = false
+
+    @on 'drag', (mouseEvent) =>
+      end1 = mouseEvent.target.end1
+      end2 = mouseEvent.target.end2
+      end1.setXY(end1.x - mouseEvent.dx, end1.y - mouseEvent.dy)
+      end2.setXY(end2.x - mouseEvent.dx, end2.y - mouseEvent.dy)

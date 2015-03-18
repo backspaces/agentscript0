@@ -1,11 +1,13 @@
 (function() {
-  var MyModel, Shapes, log, model, u,
+  var Maps, MyModel, Shapes, log, model, u,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   u = ABM.Util;
 
   Shapes = ABM.Shapes;
+
+  Maps = ABM.ColorMaps;
 
   log = function(arg) {
     return console.log(arg);
@@ -33,7 +35,7 @@
     };
 
     MyModel.prototype.setup = function() {
-      var a, num, p, s, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2, _results;
+      var a, num, p, s, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2;
       this.population = 100;
       this.size = 1.5;
       this.speed = .5;
@@ -45,9 +47,9 @@
       _ref = this.patches;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         p = _ref[_i];
-        p.color = u.randomGray();
+        p.color = Maps.randomGray(0, 100);
         if (p.x === 0 || p.y === 0) {
-          p.color = [255, 0, 0];
+          p.color = "blue";
         }
       }
       _ref1 = this.agents.create(this.population);
@@ -62,13 +64,12 @@
       }
       log("total agents: " + this.agents.length + ", total patches: " + this.patches.length);
       _ref2 = Shapes.names();
-      _results = [];
       for (_k = 0, _len2 = _ref2.length; _k < _len2; _k++) {
         s = _ref2[_k];
         num = this.agents.getPropWith("shape", s).length;
-        _results.push(log("" + num + " " + s));
+        log("" + num + " " + s);
       }
-      return _results;
+      return console.log("Patch(0,0): ", this.patches.patchXY(0, 0));
     };
 
     MyModel.prototype.step = function() {
@@ -120,7 +121,7 @@
 
     MyModel.prototype.updatePatches = function(p) {
       if (p.x !== 0 && p.y !== 0) {
-        return u.randomGray(p.color);
+        return p.color = Maps.randomColor();
       }
     };
 

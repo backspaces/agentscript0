@@ -202,6 +202,16 @@
                 leafletLayer.on(name, fn);
             }
 
+            this.once = function(name, fn) {
+                var leafletLayer = this.leafletLayer;
+                
+                if (!leafletLayer) {
+                    return;
+                }
+
+                leafletLayer.once(name, fn);
+            }
+
             this.off = function(name, fn) {
                 var leafletLayer = this.leafletLayer;
 

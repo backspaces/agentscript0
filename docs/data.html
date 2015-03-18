@@ -423,6 +423,23 @@ If p &lt; 0, print data, otherwise use toFixed to truncate to p precision</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-23">&#182;</a>
               </div>
+              <p>Get a data url representing this dataset as an image. Useful for
+debugging: console.log the data url to the console and open it
+in a new browser tab for viewing.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">toDataUrl</span>: <span class="hljs-function"><span class="hljs-params">()</span> -&gt;</span> u.ctxToDataUrl <span class="hljs-property">@toContext</span>()</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-24">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-24">&#182;</a>
+              </div>
               <p>Show dataset as image in patch drawing layer or patch colors, return image</p>
 
             </div>
@@ -433,11 +450,11 @@ If p &lt; 0, print data, otherwise use toFixed to truncate to p precision</p>
         </li>
         
         
-        <li id="section-24">
+        <li id="section-25">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-24">&#182;</a>
+                <a class="pilcrow" href="#section-25">&#182;</a>
               </div>
               <p>Resample dataset to patch width/height and set named patch variable.
 Note this “insets” the dataset so the variable is sampled the center of the patch.
@@ -454,11 +471,11 @@ The dataset can be sampled directly to its edges .. i.e. in agent coords.</p>
         </li>
         
         
-        <li id="section-25">
+        <li id="section-26">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-25">&#182;</a>
+                <a class="pilcrow" href="#section-26">&#182;</a>
               </div>
               <p>Sample via transformed coords.
 x,y is in topleft-bottomright box: [tlx,tly,tlx+w,tly-h]</p>
@@ -475,11 +492,11 @@ x,y is in topleft-bottomright box: [tlx,tly,tlx+w,tly-h]</p>
         </li>
         
         
-        <li id="section-26">
+        <li id="section-27">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-26">&#182;</a>
+                <a class="pilcrow" href="#section-27">&#182;</a>
               </div>
               <p>Normalize a dataset to linear interpolation: [min,max] -&gt; [lo, hi], float</p>
 
@@ -490,11 +507,11 @@ x,y is in topleft-bottomright box: [tlx,tly,tlx+w,tly-h]</p>
         </li>
         
         
-        <li id="section-27">
+        <li id="section-28">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-27">&#182;</a>
+                <a class="pilcrow" href="#section-28">&#182;</a>
               </div>
               <p>Normalize a dataset to clamped Uint8 bytes [0-255]</p>
 
@@ -505,11 +522,11 @@ x,y is in topleft-bottomright box: [tlx,tly,tlx+w,tly-h]</p>
         </li>
         
         
-        <li id="section-28">
+        <li id="section-29">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-28">&#182;</a>
+                <a class="pilcrow" href="#section-29">&#182;</a>
               </div>
               <p>Resample dataset to new width, height</p>
 
@@ -527,11 +544,11 @@ x,y is in topleft-bottomright box: [tlx,tly,tlx+w,tly-h]</p>
         </li>
         
         
-        <li id="section-29">
+        <li id="section-30">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-29">&#182;</a>
+                <a class="pilcrow" href="#section-30">&#182;</a>
               </div>
               <p>Return neighbor values of the given x,y of the dataset.
 Off-edge neighbors revert to nearest edge value.</p>
@@ -550,11 +567,11 @@ Off-edge neighbors revert to nearest edge value.</p>
         </li>
         
         
-        <li id="section-30">
+        <li id="section-31">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-30">&#182;</a>
+                <a class="pilcrow" href="#section-31">&#182;</a>
               </div>
               <p>Return a new dataset of same size convolved with the given kernel 3x3 matrix.
 See <a href="http://goo.gl/ubFiji">Convolution article</a></p>
@@ -575,11 +592,11 @@ See <a href="http://goo.gl/ubFiji">Convolution article</a></p>
         </li>
         
         
-        <li id="section-31">
+        <li id="section-32">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-31">&#182;</a>
+                <a class="pilcrow" href="#section-32">&#182;</a>
               </div>
               <p>A few common convolutions.  dzdx/y are also called horiz/vert Sobel</p>
 
@@ -595,11 +612,11 @@ See <a href="http://goo.gl/ubFiji">Convolution article</a></p>
         </li>
         
         
-        <li id="section-32">
+        <li id="section-33">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-32">&#182;</a>
+                <a class="pilcrow" href="#section-33">&#182;</a>
               </div>
               <p>Return filtered dataset by applying f to each dataset element</p>
 
@@ -610,11 +627,11 @@ See <a href="http://goo.gl/ubFiji">Convolution article</a></p>
         </li>
         
         
-        <li id="section-33">
+        <li id="section-34">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-33">&#182;</a>
+                <a class="pilcrow" href="#section-34">&#182;</a>
               </div>
               <p>Create two new convolved datasets, slope and aspect, common in
 the use of an elevation data set. See Esri tutorials for
@@ -638,11 +655,11 @@ those wanting to use the results of the two convolutions.</p>
         </li>
         
         
-        <li id="section-34">
+        <li id="section-35">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-34">&#182;</a>
+                <a class="pilcrow" href="#section-35">&#182;</a>
               </div>
               <p>radians in [-PI,PI], downhill</p>
 
@@ -653,11 +670,11 @@ those wanting to use the results of the two convolutions.</p>
         </li>
         
         
-        <li id="section-35">
+        <li id="section-36">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-35">&#182;</a>
+                <a class="pilcrow" href="#section-36">&#182;</a>
               </div>
               <p>positive radians in [0,2PI] if desired</p>
 
@@ -672,11 +689,11 @@ those wanting to use the results of the two convolutions.</p>
         </li>
         
         
-        <li id="section-36">
+        <li id="section-37">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-36">&#182;</a>
+                <a class="pilcrow" href="#section-37">&#182;</a>
               </div>
               <p>Return a subset of the dataset. x,y,width,height integers</p>
 
@@ -695,11 +712,11 @@ ABM.AscDataSet = <span class="hljs-class"><span class="hljs-keyword">class</span
         </li>
         
         
-        <li id="section-37">
+        <li id="section-38">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-37">&#182;</a>
+                <a class="pilcrow" href="#section-38">&#182;</a>
               </div>
               <p>An .asc GIS file a text file with a header:</p>
 <pre><code>ncols <span class="hljs-number">195</span>
@@ -715,11 +732,11 @@ NODATA_value -<span class="hljs-number">9999</span>
         </li>
         
         
-        <li id="section-38">
+        <li id="section-39">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-38">&#182;</a>
+                <a class="pilcrow" href="#section-39">&#182;</a>
               </div>
               <p>Constructor takes a string generally via an xhr request.
 It can be “empty” .. i.e. needing a second parse() call
@@ -735,11 +752,11 @@ so that it can be used in an async file operation.</p>
         </li>
         
         
-        <li id="section-39">
+        <li id="section-40">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-39">&#182;</a>
+                <a class="pilcrow" href="#section-40">&#182;</a>
               </div>
               <p>Complete an initial, empty dataset object who’s string
 is read via an xhr request.</p>
@@ -762,11 +779,11 @@ ABM.ImageDataSet = <span class="hljs-class"><span class="hljs-keyword">class</sp
         </li>
         
         
-        <li id="section-40">
+        <li id="section-41">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-40">&#182;</a>
+                <a class="pilcrow" href="#section-41">&#182;</a>
               </div>
               <p>An image-as-data dataset.  The parser takes an image
 data Uint8Array, enumerates it in 4-byte segments converting

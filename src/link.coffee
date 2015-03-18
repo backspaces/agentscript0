@@ -33,7 +33,7 @@ class Link
   # is called with patch coordinate transform installed.
   draw: (ctx) ->
     ctx.save()
-    ctx.strokeStyle = u.colorStr @color
+    ctx.strokeStyle = @color.css # u.colorStr @color
     ctx.lineWidth = @model.patches.fromBits @thickness
     ctx.beginPath()
     if !@model.patches.isTorus
@@ -62,6 +62,10 @@ class Link
     u.removeItem @end2.links, @ if @end2.links?
     null
 
+  hitTest: (x, y) ->
+    distance = u.aSum (a.distanceXY x, y for a in @bothEnds())
+    distance - @length() < 0.05 / @model.patches.size
+
   # Return the two endpoints of this link
   bothEnds: -> [@end1, @end2]
 
@@ -71,3 +75,7 @@ class Link
   # Return the other end of the link, given an endpoint agent.
   # Assumes the given input *is* one of the link endpoint pairs!
   otherEnd: (a) -> if @end1 is a then @end2 else @end1
+
+# use colorMixin to setup colors
+colorMixin(Link, "color", [130,130,130])
+colorMixin(Link, "labelColor", "black")

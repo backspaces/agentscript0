@@ -59,7 +59,7 @@ is the world on which the agents live and the model runs.</p>
               </div>
               <p>Constructor &amp; Class Variables:</p>
 <ul>
-<li>id:         unique identifier, promoted by agentset create() factory method</li>
+<li>id:         unique id, promoted by agentset create() factory method</li>
 <li>breed:      the agentset this agent belongs to</li>
 <li>x,y:        position on the patch grid, in patch coordinates</li>
 <li>color:      the color of the patch as an RGBA array, A optional.</li>
@@ -80,13 +80,7 @@ if world.neighbors is true, the default.</p>
   <span class="hljs-attribute">id</span>: <span class="hljs-literal">null</span>            <span class="hljs-comment"># unique id, promoted by agentset create factory method</span>
   <span class="hljs-attribute">breed</span>: <span class="hljs-literal">null</span>         <span class="hljs-comment"># set by the agentSet owning this patch</span>
   <span class="hljs-attribute">x</span>:<span class="hljs-literal">null</span>; <span class="hljs-attribute">y</span>:<span class="hljs-literal">null</span>      <span class="hljs-comment"># The patch position in the patch grid</span>
-  <span class="hljs-attribute">n</span>:<span class="hljs-literal">null</span>; <span class="hljs-attribute">n4</span>:<span class="hljs-literal">null</span>     <span class="hljs-comment"># The neighbors, n: 8, n4: 4. null OK if model doesn't need them.</span>
-  <span class="hljs-attribute">color</span>: [<span class="hljs-number">0</span>,<span class="hljs-number">0</span>,<span class="hljs-number">0</span>]      <span class="hljs-comment"># The patch color</span>
-  <span class="hljs-attribute">hidden</span>: <span class="hljs-literal">false</span>       <span class="hljs-comment"># draw me?</span>
-  <span class="hljs-attribute">label</span>: <span class="hljs-literal">null</span>         <span class="hljs-comment"># text for the patch</span>
-  <span class="hljs-attribute">labelColor</span>: [<span class="hljs-number">0</span>,<span class="hljs-number">0</span>,<span class="hljs-number">0</span>] <span class="hljs-comment"># text color</span>
-  <span class="hljs-attribute">labelOffset</span>: [<span class="hljs-number">0</span>,<span class="hljs-number">0</span>]  <span class="hljs-comment"># text offset from the patch center</span>
-  <span class="hljs-attribute">pRect</span>: <span class="hljs-literal">null</span>         <span class="hljs-comment"># Performance: cached rect of neighborhood larger than n.</span></pre></div></div>
+  <span class="hljs-attribute">n</span>:<span class="hljs-literal">null</span>; <span class="hljs-attribute">n4</span>:<span class="hljs-literal">null</span>     <span class="hljs-comment"># The neighbors, n: 8, n4: 4. null OK if model doesn't need them.</span></pre></div></div>
             
         </li>
         
@@ -97,11 +91,12 @@ if world.neighbors is true, the default.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-4">&#182;</a>
               </div>
-              <p>New Patch: Just set x,y. Neighbors set by Patches constructor if needed.</p>
+              <p>color: [0,0,0]      # The patch color</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">constructor</span>: <span class="hljs-function"><span class="hljs-params">(<span class="hljs-property">@x</span>, <span class="hljs-property">@y</span>)</span> -&gt;</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">hidden</span>: <span class="hljs-literal">false</span>       <span class="hljs-comment"># draw me?</span>
+  <span class="hljs-attribute">label</span>: <span class="hljs-literal">null</span>         <span class="hljs-comment"># text for the patch</span></pre></div></div>
             
         </li>
         
@@ -112,11 +107,12 @@ if world.neighbors is true, the default.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-5">&#182;</a>
               </div>
-              <p>Return a string representation of the patch.</p>
+              <p>labelColor: [0,0,0] # text color</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">toString</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-string">"{id:<span class="hljs-subst">#{<span class="hljs-property">@id</span>}</span> xy:<span class="hljs-subst">#{[<span class="hljs-property">@x</span>,<span class="hljs-property">@y</span>]}</span> c:<span class="hljs-subst">#{<span class="hljs-property">@color</span>}</span>}"</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">labelOffset</span>: [<span class="hljs-number">0</span>,<span class="hljs-number">0</span>]  <span class="hljs-comment"># text offset from the patch center</span>
+  <span class="hljs-attribute">pRect</span>: <span class="hljs-literal">null</span>         <span class="hljs-comment"># Performance: cached rect of neighborhood larger than n.</span></pre></div></div>
             
         </li>
         
@@ -127,20 +123,11 @@ if world.neighbors is true, the default.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-6">&#182;</a>
               </div>
-              <p>Set patch color to <code>c</code> scaled by <code>s</code>. Usage:</p>
-<pre><code>p.scaleColor p.color, <span class="hljs-number">.8</span> <span class="hljs-comment"># reduce patch color by .8</span>
-p.scaleColor <span class="hljs-property">@foodColor</span>, p.foodPheromone <span class="hljs-comment"># ants model</span>
-</code></pre><p>Promotes color if currently using the default.</p>
+              <p>New Patch: Just set x,y. Neighbors set by Patches constructor if needed.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">scaleColor</span>: <span class="hljs-function"><span class="hljs-params">(c, s)</span> -&gt;</span>
-    <span class="hljs-property">@color</span> = u.clone <span class="hljs-property">@color</span> <span class="hljs-keyword">unless</span> @.hasOwnProperty(<span class="hljs-string">"color"</span>)
-    u.scaleColor c, s, <span class="hljs-property">@color</span>
-
-  <span class="hljs-attribute">scaleOpacity</span>: <span class="hljs-function"><span class="hljs-params">(c, s)</span> -&gt;</span>
-    <span class="hljs-property">@color</span> = u.clone <span class="hljs-property">@color</span> <span class="hljs-keyword">unless</span> @.hasOwnProperty(<span class="hljs-string">"color"</span>)
-    u.scaleOpacity c, s, <span class="hljs-property">@color</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">constructor</span>: <span class="hljs-function"><span class="hljs-params">(<span class="hljs-property">@x</span>, <span class="hljs-property">@y</span>)</span> -&gt;</span></pre></div></div>
             
         </li>
         
@@ -151,16 +138,11 @@ p.scaleColor <span class="hljs-property">@foodColor</span>, p.foodPheromone <spa
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-7">&#182;</a>
               </div>
-              <p>Draw the patch and its text label if there is one.</p>
+              <p>Return a string representation of the patch.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">draw</span>: <span class="hljs-function"><span class="hljs-params">(ctx)</span> -&gt;</span>
-    ctx.fillStyle = u.colorStr <span class="hljs-property">@color</span>
-    ctx.fillRect <span class="hljs-property">@x</span>-<span class="hljs-number">.5</span>, <span class="hljs-property">@y</span>-<span class="hljs-number">.5</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>
-    <span class="hljs-keyword">if</span> <span class="hljs-property">@label</span>? <span class="hljs-comment"># REMIND: should be 2nd pass.</span>
-      [x,y] = <span class="hljs-property">@breed</span>.patchXYtoPixelXY <span class="hljs-property">@x</span>, <span class="hljs-property">@y</span>
-      u.ctxDrawText ctx, <span class="hljs-property">@label</span>, x+<span class="hljs-property">@labelOffset</span>[<span class="hljs-number">0</span>], y+<span class="hljs-property">@labelOffset</span>[<span class="hljs-number">1</span>], <span class="hljs-property">@labelColor</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">toString</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-string">"{id:<span class="hljs-subst">#{<span class="hljs-property">@id</span>}</span> xy:<span class="hljs-subst">#{[<span class="hljs-property">@x</span>,<span class="hljs-property">@y</span>]}</span> c:<span class="hljs-subst">#{<span class="hljs-property">@color</span>}</span>}"</span></pre></div></div>
             
         </li>
         
@@ -170,6 +152,79 @@ p.scaleColor <span class="hljs-property">@foodColor</span>, p.foodPheromone <spa
               
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              <p>Set patch color to <code>c</code> scaled by <code>s</code>. Usage:</p>
+<pre><code>p.scaleColor p.color, <span class="hljs-number">.8</span> <span class="hljs-comment"># reduce patch color by .8</span>
+p.scaleColor <span class="hljs-property">@foodColor</span>, p.foodPheromone <span class="hljs-comment"># ants model</span>
+</code></pre><p>Promotes color if currently using the default.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">scaleColor</span>: <span class="hljs-function"><span class="hljs-params">(c, s)</span> -&gt;</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-9">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-9">&#182;</a>
+              </div>
+              <p>@color = u.clone @color unless @hasOwnProperty(“color”)
+u.scaleColor c, s, @color</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    u.deprecated <span class="hljs-string">"Patch.scaleColor: use ColorMaps ramps or closestColor"</span>
+    <span class="hljs-property">@color</span> = ColorMaps.scaleColor(c, s)
+
+  <span class="hljs-attribute">scaleOpacity</span>: <span class="hljs-function"><span class="hljs-params">(c, s)</span> -&gt;</span>
+    u.deprecated <span class="hljs-string">"Patch.scaleOpacity: use ColorMaps ramps"</span>
+    <span class="hljs-property">@color</span> = u.scaleOpacity c, s, <span class="hljs-property">@color</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-10">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-10">&#182;</a>
+              </div>
+              <p>@color = u.clone @color unless @.hasOwnProperty(“color”)
+u.scaleOpacity c, s, @color</p>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-11">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-11">&#182;</a>
+              </div>
+              <p>Draw the patch and its text label if there is one.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">draw</span>: <span class="hljs-function"><span class="hljs-params">(ctx)</span> -&gt;</span>
+    ctx.fillStyle = <span class="hljs-property">@color</span>.css <span class="hljs-comment"># u.colorStr @color</span>
+    ctx.fillRect <span class="hljs-property">@x</span>-<span class="hljs-number">.5</span>, <span class="hljs-property">@y</span>-<span class="hljs-number">.5</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>
+    <span class="hljs-keyword">if</span> <span class="hljs-property">@label</span>? <span class="hljs-comment"># REMIND: should be 2nd pass.</span>
+      [x,y] = <span class="hljs-property">@breed</span>.patchXYtoPixelXY <span class="hljs-property">@x</span>, <span class="hljs-property">@y</span>
+      u.ctxDrawText ctx, <span class="hljs-property">@label</span>, x+<span class="hljs-property">@labelOffset</span>[<span class="hljs-number">0</span>], y+<span class="hljs-property">@labelOffset</span>[<span class="hljs-number">1</span>], <span class="hljs-property">@labelColor</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-12">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-12">&#182;</a>
               </div>
               <p>Return an array of the agents on this patch.
 If patches.cacheAgentsHere has created an @agents instance
@@ -184,11 +239,11 @@ as they move from patch to patch.</p>
         </li>
         
         
-        <li id="section-9">
+        <li id="section-13">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-9">&#182;</a>
+                <a class="pilcrow" href="#section-13">&#182;</a>
               </div>
               <p>Returns true if this patch is on the edge of the grid.</p>
 
@@ -201,11 +256,11 @@ as they move from patch to patch.</p>
         </li>
         
         
-        <li id="section-10">
+        <li id="section-14">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-10">&#182;</a>
+                <a class="pilcrow" href="#section-14">&#182;</a>
               </div>
               <p>Factory: Create num new agents on this patch. The optional init
 proc is called on the new agent after inserting in its agentSet.</p>
@@ -215,6 +270,22 @@ proc is called on the new agent after inserting in its agentSet.</p>
             <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">sprout</span>: <span class="hljs-function"><span class="hljs-params">(num = <span class="hljs-number">1</span>, breed = <span class="hljs-property">@model</span>.agents, init = -&gt;)</span> -&gt;</span>
     breed.create num, <span class="hljs-function"><span class="hljs-params">(a)</span> =&gt;</span> <span class="hljs-comment"># fat arrow so that @ = this patch</span>
       a.setXY <span class="hljs-property">@x</span>, <span class="hljs-property">@y</span>; init(a); a</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-15">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-15">&#182;</a>
+              </div>
+              <p>use colorMixin to setup colors</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>colorMixin(Patch,<span class="hljs-string">"color"</span>,<span class="hljs-string">"black"</span>)
+colorMixin(Patch,<span class="hljs-string">"labelColor"</span>,<span class="hljs-string">"black"</span>)</pre></div></div>
             
         </li>
         

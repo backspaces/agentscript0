@@ -11,6 +11,7 @@
     <script src="../tools/dat.gui.min.js"></script>
     
     <script src="../lib/agentscript.js"></script>
+    <script src="../lib/mouse.js"></script>
     <script src="../lib/data.js"></script>
     <script src="../lib/data.tile.js"></script>
     <script src="../lib/as.dat.gui.js"></script>
@@ -70,6 +71,16 @@
                 this.agents.setDefault("size", .5);
                 this.agents.setDefault("color", [60, 157, 255]);
                 this.patches.cacheRect(this.vision, false);
+
+                new ABM.Mouse(this);
+
+                this.patches.on ('mousemove', function(mouseEvent) {
+                    agent = mouseEvent.target;
+                    var pats = this.patches.patchRect(agent, 7, 7);
+                    pats.forEach(function(patch) {
+                        patch.sprout(1);
+                    });
+                }.bind(this))
             }
 
             ABM.Model.prototype.rain = function() {

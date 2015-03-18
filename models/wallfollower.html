@@ -19,6 +19,8 @@
 # by a +/-1 direction agent variable.
 
 u = ABM.Util # static variables
+Color = ABM.Color
+ColorMaps = ABM.ColorMaps
 class MyModel extends ABM.Model
   startup: ->
   setup: ->
@@ -29,17 +31,21 @@ class MyModel extends ABM.Model
     # direction: +1 follow right hand wall, -1 left hand
     @agents.own "direction"
 
-    # Four shared colors, so @acolor === @bcolor works
+    # Old: Four shared colors, so @acolor === @bcolor works
     @black = @patches[0].color # patch default
     @green = [0, 255, 0]
     # @brown = [222, 184, 135] # BurlyWood not Brown, it's too red
-    @brown = [157, 110, 72] # NL's brown via show extract-rgb
+    # Old color model
+    # @brown = [157, 110, 72] # NL's brown via show extract-rgb
+    @brown = ColorMaps.netLogoColors.brown
     @blue = [0, 0, 255]
     @population = 40
 
     # Make some random walls for the agents to follow
     p.color = @brown for p in @patches when u.randomFloat(1) < 0.04
-    for p in (p for p in @patches when p.color is @brown)
+    # Old Color model
+    #for p in (p for p in @patches when p.color is @brown)
+    for p in (p for p in @patches when Color.colorsEqual p.color, @brown)
       n.color = @brown for n in @patches.inRadius p, u.randomFloat(3)
     p.color = @brown for p in @patches when \
       (n for n in p.n4 when n.color is @brown).length is 4
@@ -81,7 +87,9 @@ class MyModel extends ABM.Model
     # Return true if wall is ahead.
     angle = u.degToRad angle
     p=agent.patchRightAndAhead(angle, 1)
-    p.color is @brown
+    # Old color model:
+    # p.color is @brown
+    Color.colorsEqual p.color, @brown
 
 # div, patchSize, minX, maxX, minY, maxY, isTorus, hasNeighbors
 #   Defaults: 13, -16, 16, -16, 16, false, true

@@ -16,7 +16,7 @@ class Patches extends AgentSet
   # Constructor: super creates the empty AgentSet instance and installs
   # the agentClass (breed) variable shared by all the Patches in this set.
   # Patches are created from top-left to bottom-right to match data sets.
-  constructor: -> # agentClass, name, mainSet
+  constructor: -> # model, agentClass, name, mainSet
     super # call super with all the args I was called with
     @monochrome = false # set to true to optimize patches all default color
     @[k] = v for own k,v of @model.world # add world items to patches
@@ -160,7 +160,7 @@ class Patches extends AgentSet
   pixelByteIndex: (p) -> 4*p.id # Uint8
   pixelWordIndex: (p) -> p.id   # Uint32
   # Convert pixel location (top/left offset i.e. mouse) to patch coords (float)
-  pixelXYtoPatchXY: (x,y) -> [@minXcor+(x/@size), @maxYcor-(y/@size)]
+  pixelXYtoPatchXY: (x,y) -> [@minXcor+(x / @size), @maxYcor-(y / @size)]
   # Convert patch coords (float) to pixel location (top/left offset i.e. mouse)
   patchXYtoPixelXY: (x,y) -> [(x-@minXcor)*@size, (@maxYcor-y)*@size]
 
@@ -216,25 +216,31 @@ class Patches extends AgentSet
     return if @size is 1
     ctx.drawImage @pixelsCtx.canvas, 0, 0, ctx.canvas.width, ctx.canvas.height
 
-  floodFillOnce: (aset, fCandidate, fJoin, fNeighbors=((p)->p.n), asetLast=[]) ->
-    super aset, fCandidate, fJoin, fNeighbors, asetLast
-
   # Diffuse the value of patch variable `p.v` by distributing `rate` percent
-  # of each patch's value of `v` to its neighbors. If a color `c` is given,
-  # scale the patch's color to be `p.v` of `c`. If the patch has
-  # less than 8 neighbors, return the extra to the patch.
-  diffuse: (v, rate, c) -> # variable name, diffusion rate, max color (optional)
+  # of each patch's value of `v` to its neighbors.
+  # If a color map `cMap` is given, scale the patch color via variable's value
+  # If the patch has less than 8 neighbors, return the extra to the patch.
+  diffuse: (v, rate, color) -> # variable name, diffusion rate, cMap (optional)
     # zero temp variable if not yet set
     unless @[0]._diffuseNext?
       p._diffuseNext = 0 for p in @
     # pass 1: calculate contribution of all patches to themselves and neighbors
+    # if cMap
+    #   minVal = Infinity; maxVal = -Infinity
+    #   unless cMap.scaleColor?
+    #     u.deprecated "Patch.diffuse: convert to ColorMap usage, using Jet"
+    #     cMap = ColorMaps.Jet
     for p in @
       dv = p[v]*rate; dv8 = dv/8; nn = p.n.length
       p._diffuseNext += p[v] - dv + (8-nn)*dv8
       n._diffuseNext += dv8 for n in p.n
+      # if cMap
+      #   minVal = Math.min minVal, p[v]
+      #   maxVal = Math.max maxVal, p[v]
     # pass 2: set new value for all patches, zero temp, modify color if c given
     for p in @
       p[v] = p._diffuseNext
       p._diffuseNext = 0
-      p.scaleColor c, p[v] if c
+      p.color = ColorMaps.scaleColor color, p[v] if color?
+
     null # avoid returning copy of @

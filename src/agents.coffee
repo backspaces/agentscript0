@@ -5,16 +5,19 @@
 class Agents extends AgentSet
   # Constructor creates the empty AgentSet instance and installs
   # the agentClass (breed) variable shared by all the Agents in this set.
-  constructor: -> # agentClass, name, mainSet
+  constructor: -> # model, agentClass, name, mainSet
     super # call super with all the args I was called with
-    @useSprites = false
+    #@useSprites = false
 
   # Have agents cache the links with them as a node.
   # Optimizes Agent a.myLinks method. Call before any agents created.
   cacheLinks: -> @agentClass::cacheLinks = true # all agents, not individual breeds
 
   # Use sprites rather than drawing
-  setUseSprites: (@useSprites=true) ->
+  setUseSprites: (useSprites=true) ->
+    u.deprecated 'Agents.setUseSprites: use agents.setDefault("useSprites",bool)'
+    @setDefault("useSprites", useSprites)
+
 
   # Filter to return all instances of this breed.  Note: if used by
   # the mainSet, returns just the agents that are not subclassed breeds.
@@ -53,3 +56,13 @@ class Agents extends AgentSet
   inRadius: (a, radius, meToo=false)->
     as = @inRect a, radius, radius, true
     super a, radius, meToo # as.inRadius a, radius, meToo
+
+  setDraggable: ->
+    @on 'dragstart', (mouseEvent) =>
+      mouseEvent.target.dragging = true
+
+    @on 'dragend', (mouseEvent) =>
+      mouseEvent.target.dragging = false
+
+    @on 'drag', (mouseEvent) =>
+      mouseEvent.target.setXY(mouseEvent.patchX, mouseEvent.patchY)

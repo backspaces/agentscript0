@@ -50,11 +50,11 @@ and <code>setup</code> will be called by <code>Model.constructor</code>. See:</p
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-2">&#182;</a>
               </div>
-              <p>ABM.Util, ABM.Shapes aliases</p>
+              <p>ABM.Util, ABM.Shapes, ABM.ColorMaps aliases</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>u = ABM.Util; Shapes = ABM.Shapes
+            <div class="content"><div class='highlight'><pre>u = ABM.Util; Shapes = ABM.Shapes; Maps = ABM.ColorMaps
 <span class="hljs-function"><span class="hljs-title">log</span> = <span class="hljs-params">(arg)</span> -&gt;</span> <span class="hljs-built_in">console</span>.log arg
 <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyModel</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">ABM</span>.<span class="hljs-title">Model</span></span></pre></div></div>
             
@@ -163,7 +163,7 @@ an external UI to setup for us.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-8">&#182;</a>
               </div>
-              <p>Set the default agent size (conserves storage)</p>
+              <p>Set the default agent size; save storage over setting size for each agent</p>
 
             </div>
             
@@ -216,7 +216,7 @@ random gray value.</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">for</span> p <span class="hljs-keyword">in</span> <span class="hljs-property">@patches</span>
-      p.color = u.randomGray()</pre></div></div>
+      p.color = Maps.randomGray(<span class="hljs-number">0</span>,<span class="hljs-number">100</span>)</pre></div></div>
             
         </li>
         
@@ -227,11 +227,11 @@ random gray value.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-12">&#182;</a>
               </div>
-              <p>Set x,y axes different color, use [0,0,0,0] for transparent pixel test</p>
+              <p>Set x,y axes different color</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>      p.color = [<span class="hljs-number">255</span>,<span class="hljs-number">0</span>,<span class="hljs-number">0</span>] <span class="hljs-keyword">if</span> p.x <span class="hljs-keyword">is</span> <span class="hljs-number">0</span> <span class="hljs-keyword">or</span> p.y <span class="hljs-keyword">is</span> <span class="hljs-number">0</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>      p.color = <span class="hljs-string">"blue"</span> <span class="hljs-keyword">if</span> p.x <span class="hljs-keyword">is</span> <span class="hljs-number">0</span> <span class="hljs-keyword">or</span> p.y <span class="hljs-keyword">is</span> <span class="hljs-number">0</span></pre></div></div>
             
         </li>
         
@@ -289,7 +289,8 @@ Note CoffeeScript
             
             <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">for</span> s <span class="hljs-keyword">in</span> Shapes.names()
       num = <span class="hljs-property">@agents</span>.getPropWith(<span class="hljs-string">"shape"</span>, s).length
-      log <span class="hljs-string">"<span class="hljs-subst">#{num}</span> <span class="hljs-subst">#{s}</span>"</span></pre></div></div>
+      log <span class="hljs-string">"<span class="hljs-subst">#{num}</span> <span class="hljs-subst">#{s}</span>"</span>
+    <span class="hljs-built_in">console</span>.log <span class="hljs-string">"Patch(0,0): "</span>, <span class="hljs-property">@patches</span>.patchXY <span class="hljs-number">0</span>,<span class="hljs-number">0</span></pre></div></div>
             
         </li>
         
@@ -440,11 +441,12 @@ our heading by +/- <code>wiggle/2</code> radians</p>
                 <a class="pilcrow" href="#section-24">&#182;</a>
               </div>
               <p>Update patch colors to be a random gray.
-Note we modify the existing color, GC minimization.</p>
+u.randomGray(p.color) if p.x isnt 0 and p.y isnt 0 # aviod GC, reuse color
+Avoid Garbage collection by using a colormap</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    u.randomGray(p.color) <span class="hljs-keyword">if</span> p.x <span class="hljs-keyword">isnt</span> <span class="hljs-number">0</span> <span class="hljs-keyword">and</span> p.y <span class="hljs-keyword">isnt</span> <span class="hljs-number">0</span> <span class="hljs-comment"># aviod GC, reuse color</span>
+            <div class="content"><div class='highlight'><pre>    p.color = Maps.randomColor() <span class="hljs-keyword">if</span> p.x <span class="hljs-keyword">isnt</span> <span class="hljs-number">0</span> <span class="hljs-keyword">and</span> p.y <span class="hljs-keyword">isnt</span> <span class="hljs-number">0</span>
   <span class="hljs-attribute">reportInfo</span>:<span class="hljs-function"> -&gt;</span></pre></div></div>
             
         </li>

@@ -8,7 +8,15 @@ Currently the documentation is hosted directly on our [GitHub Pages](http://back
 
 [**util.coffee**](docs/util.html) The base module for all of the miscellaneous functions used by the rest of the project.
 
+[**color.coffee**](docs/color.html) The color module for all browser colortypes: css strings, pixels, and rgba typed arrays.
+
+[**colormaps.coffee**](docs/colormaps.html) The color maps module for creating color arrays of any type and size.
+
+[**colormixin.coffee**](docs/colormixin.html) Utility to automatically add a new color to a class or object.
+
 [**shapes.coffee**](docs/shapes.html) A simple agent shapes module containing the default shapes and a few functions for getting at named shapes and adding your own shapes.
+
+[**evented.coffee**](docs/evented.html) Our tiny and elegant Pub/Sub event module.
 
 [**agentset.coffee**](docs/agentset.html) The core Array subclass used by Patches, Agents, and Links.
 

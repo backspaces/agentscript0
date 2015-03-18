@@ -5,7 +5,7 @@
 # is the world on which the agents live and the model runs.
 class Patch
   # Constructor & Class Variables:
-  # * id:         unique identifier, promoted by agentset create() factory method
+  # * id:         unique id, promoted by agentset create() factory method
   # * breed:      the agentset this agent belongs to
   # * x,y:        position on the patch grid, in patch coordinates
   # * color:      the color of the patch as an RGBA array, A optional.
@@ -24,10 +24,10 @@ class Patch
   breed: null         # set by the agentSet owning this patch
   x:null; y:null      # The patch position in the patch grid
   n:null; n4:null     # The neighbors, n: 8, n4: 4. null OK if model doesn't need them.
-  color: [0,0,0]      # The patch color
+  # color: [0,0,0]      # The patch color
   hidden: false       # draw me?
   label: null         # text for the patch
-  labelColor: [0,0,0] # text color
+  # labelColor: [0,0,0] # text color
   labelOffset: [0,0]  # text offset from the patch center
   pRect: null         # Performance: cached rect of neighborhood larger than n.
 
@@ -44,16 +44,20 @@ class Patch
   #
   # Promotes color if currently using the default.
   scaleColor: (c, s) ->
-    @color = u.clone @color unless @.hasOwnProperty("color")
-    u.scaleColor c, s, @color
+    # @color = u.clone @color unless @hasOwnProperty("color")
+    # u.scaleColor c, s, @color
+    u.deprecated "Patch.scaleColor: use ColorMaps ramps or closestColor"
+    @color = ColorMaps.scaleColor(c, s)
 
   scaleOpacity: (c, s) ->
-    @color = u.clone @color unless @.hasOwnProperty("color")
-    u.scaleOpacity c, s, @color
+    u.deprecated "Patch.scaleOpacity: use ColorMaps ramps"
+    @color = u.scaleOpacity c, s, @color
+    # @color = u.clone @color unless @.hasOwnProperty("color")
+    # u.scaleOpacity c, s, @color
 
   # Draw the patch and its text label if there is one.
   draw: (ctx) ->
-    ctx.fillStyle = u.colorStr @color
+    ctx.fillStyle = @color.css # u.colorStr @color
     ctx.fillRect @x-.5, @y-.5, 1, 1
     if @label? # REMIND: should be 2nd pass.
       [x,y] = @breed.patchXYtoPixelXY @x, @y
@@ -76,3 +80,7 @@ class Patch
   sprout: (num = 1, breed = @model.agents, init = ->) ->
     breed.create num, (a) => # fat arrow so that @ = this patch
       a.setXY @x, @y; init(a); a
+
+# use colorMixin to setup colors
+colorMixin(Patch,"color","black")
+colorMixin(Patch,"labelColor","black")

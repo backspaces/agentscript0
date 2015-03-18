@@ -31,7 +31,8 @@ class Model
     u.mixin(@, new Evented())
     if typeof divOrOpts is 'string'
       div = divOrOpts
-      @setWorldDeprecated size, minX, maxX, minY, maxY, isTorus, hasNeighbors, isHeadless
+      @setWorldDeprecated size, minX, maxX, minY, maxY,
+        isTorus, hasNeighbors, isHeadless
     else
       div = divOrOpts.div
       isHeadless = divOrOpts.isHeadless = divOrOpts.isHeadless or not div?
@@ -72,14 +73,14 @@ class Model
     # agent class.  Clone the agent classes so that they
     # can use "defaults" in isolation when multiple
     # models run on a page.
-    @Patches = Patches; @Patch = u.cloneClass(Patch)
-    @Agents = Agents; @Agent = u.cloneClass(Agent)
-    @Links = Links; @Link = u.cloneClass(Link)
+    @Patch = u.cloneClass(Patch)
+    @Agent = u.cloneClass(Agent)
+    @Link = u.cloneClass(Link)
 
     # Initialize agentsets.
-    @patches = new @Patches @, @Patch, "patches"
-    @agents = new @Agents @, @Agent, "agents"
-    @links = new @Links @, @Link, "links"
+    @patches = new Patches @, @Patch, "patches"
+    @agents = new Agents @, @Agent, "agents"
+    @links = new Links @, @Link, "links"
 
     # Initialize model global resources
     @debugging = false
@@ -171,11 +172,11 @@ class Model
     console.log "reset: contexts" # clear/resize canvas xfms b4 agentsets
     (v.restore(); @setCtxTransform v) for k,v of @contexts when v.canvas?
     console.log "reset: patches"
-    @patches = new @Patches @, @Patch, "patches"
+    @patches = new Patches @, @Patch, "patches"
     console.log "reset: agents"
-    @agents = new @Agents @, @Agent, "agents"
+    @agents = new Agents @, @Agent, "agents"
     console.log "reset: links"
-    @links = new @Links @, @Link, "links"
+    @links = new Links @, @Link, "links"
     Shapes.spriteSheets.length = 0 # possibly null out entries?
     console.log "reset: setup"
     @setupAndEmit()
@@ -187,11 +188,11 @@ class Model
 # Call the agentset draw methods if either the first draw call or
 # their "refresh" flags are set.  The latter are simple optimizations
 # to avoid redrawing the same static scene. Called by animator.
-  draw: (force=@anim.stopped) ->
-    @patches.draw @contexts.patches  if force or @refreshPatches or @anim.draws is 1
-    @links.draw   @contexts.links    if force or @refreshLinks   or @anim.draws is 1
-    @agents.draw  @contexts.agents   if force or @refreshAgents  or @anim.draws is 1
-    @drawSpotlight @spotlightAgent, @contexts.spotlight  if @spotlightAgent?
+  draw: (force = @anim.stopped or @anim.draws is 1) ->
+    @patches.draw @contexts.patches  if force or @refreshPatches
+    @links.draw   @contexts.links    if force or @refreshLinks
+    @agents.draw  @contexts.agents   if force or @refreshAgents
+    @drawSpotlight @spotlightAgent, @contexts.spotlight if @spotlightAgent?
     @emit('draw')
 
 #### Wrappers around user-implemented methods
@@ -214,7 +215,7 @@ class Model
 
   drawSpotlight: (agent, ctx) ->
     u.clearCtx ctx
-    u.fillCtx ctx, [0,0,0,0.6]
+    u.fillCtx ctx, Color.typedColor(0,0,0,.6*255)
     ctx.beginPath()
     ctx.arc agent.x, agent.y, 3, 0, 2*Math.PI, false
     ctx.fill()
@@ -246,17 +247,20 @@ class Model
   createBreeds: (breedNames, baseClass, baseSet) ->
     breeds = []; breeds.classes = {}; breeds.sets = {}
     for breedName in breedNames.split(" ")
-      className = breedName.charAt(0).toUpperCase() + breedName.substr(1)
-      breedClass = u.cloneClass baseClass, className # breedClass = class Breed extends baseClass
-      breed = @[breedName] = # add @<breed> to local scope
-        new baseSet @, breedClass, breedName, baseClass::breed # create subset agentSet
+      className = u.upperCamelCase breedName
+      breedClass = u.cloneClass baseClass, className
+      breed = @[breedName] =
+        new baseSet @, breedClass, breedName, baseClass::breed
       breeds.push breed
       breeds.sets[breedName] = breed
       breeds.classes["#{breedName}Class"] = breedClass
     breeds
-  patchBreeds: (breedNames) -> @patches.breeds = @createBreeds breedNames, @Patch, @Patches
-  agentBreeds: (breedNames) -> @agents.breeds  = @createBreeds breedNames, @Agent, @Agents
-  linkBreeds:  (breedNames) -> @links.breeds   = @createBreeds breedNames, @Link,  @Links
+  patchBreeds: (breedNames) ->
+    @patches.breeds = @createBreeds breedNames, @Patch, Patches
+  agentBreeds: (breedNames) ->
+    @agents.breeds = @createBreeds breedNames, @Agent, Agents
+  linkBreeds:  (breedNames) ->
+    @links.breeds = @createBreeds breedNames, @Link, Links
 
   # Utility for models to create agentsets from arrays.  Ex:
   #
@@ -270,17 +274,17 @@ class Model
   # See [CoffeeConsole](http://goo.gl/1i7bd) Chrome extension too.
   debug: (@debugging=true)->u.waitOn (=>@modelReady),(=>@setRootVars()); @
   setRootVars: ->
-    window.psc = @Patches
+    window.psc = Patches
+    window.asc = Agents
+    window.lsc = Links
     window.pc  = @Patch
-    window.ps  = @patches
-    window.p0  = @patches[0]
-    window.asc = @Agents
     window.ac  = @Agent
-    window.as  = @agents
-    window.a0  = @agents[0]
-    window.lsc = @Links
     window.lc  = @Link
+    window.ps  = @patches
+    window.as  = @agents
     window.ls  = @links
+    window.p0  = @patches[0]
+    window.a0  = @agents[0]
     window.l0  = @links[0]
     window.dr  = @drawing
     window.u   = Util
@@ -297,10 +301,12 @@ class Model
 
 
 @ABM = {
-  util    # deprecated
-  shapes  # deprecated
+  util    # deprecated, Util
+  shapes  # deprecated, Shapes
   Util
   Color
+  ColorMaps
+  colorMixin
   Shapes
   AgentSet
   Patch

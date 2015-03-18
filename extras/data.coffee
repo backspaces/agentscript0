@@ -118,6 +118,10 @@ ABM.DataSet = class DataSet
         ta[j+3] = if @normalizeImage then @alpha else ta[j+3]=(num>>24)&0xff
     ctx.putImageData idata, 0, 0
     ctx
+  # Get a data url representing this dataset as an image. Useful for
+  # debugging: console.log the data url to the console and open it
+  # in a new browser tab for viewing.
+  toDataUrl: () -> u.ctxToDataUrl @toContext()
   # Show dataset as image in patch drawing layer or patch colors, return image
   toDrawing: (model = @model) -> model.patches.installDrawing(img=@toImage()); img
   toPatchColors: (model = @model) -> model.patches.installColors(img=@toImage()); img

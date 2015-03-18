@@ -72,7 +72,7 @@ Patches are created from top-left to bottom-right to match data sets.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">constructor</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-comment"># agentClass, name, mainSet</span>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">constructor</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-comment"># model, agentClass, name, mainSet</span>
     <span class="hljs-keyword">super</span> <span class="hljs-comment"># call super with all the args I was called with</span>
     <span class="hljs-property">@monochrome</span> = <span class="hljs-literal">false</span> <span class="hljs-comment"># set to true to optimize patches all default color</span>
     @[k] = v <span class="hljs-keyword">for</span> own k,v <span class="hljs-keyword">of</span> <span class="hljs-property">@model</span>.world <span class="hljs-comment"># add world items to patches</span>
@@ -517,7 +517,7 @@ The top-left order simplifies finding pixels in data sets</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">pixelXYtoPatchXY</span>: <span class="hljs-function"><span class="hljs-params">(x,y)</span> -&gt;</span> [<span class="hljs-property">@minXcor</span>+(x<span class="hljs-regexp">/@size), @maxYcor-(y/</span><span class="hljs-property">@size</span>)]</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">pixelXYtoPatchXY</span>: <span class="hljs-function"><span class="hljs-params">(x,y)</span> -&gt;</span> [<span class="hljs-property">@minXcor</span>+(x / <span class="hljs-property">@size</span>), <span class="hljs-property">@maxYcor</span>-(y / <span class="hljs-property">@size</span>)]</pre></div></div>
             
         </li>
         
@@ -672,10 +672,7 @@ a drawimage</p>
       <span class="hljs-keyword">else</span> data[i] = (c[<span class="hljs-number">0</span>] &lt;&lt; <span class="hljs-number">24</span>) | (c[<span class="hljs-number">1</span>] &lt;&lt; <span class="hljs-number">16</span>) | (c[<span class="hljs-number">2</span>] &lt;&lt; <span class="hljs-number">8</span>) | a
     <span class="hljs-property">@pixelsCtx</span>.putImageData <span class="hljs-property">@pixelsImageData</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>
     <span class="hljs-keyword">return</span> <span class="hljs-keyword">if</span> <span class="hljs-property">@size</span> <span class="hljs-keyword">is</span> <span class="hljs-number">1</span>
-    ctx.drawImage <span class="hljs-property">@pixelsCtx</span>.canvas, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, ctx.canvas.width, ctx.canvas.height
-
-  <span class="hljs-attribute">floodFillOnce</span>: <span class="hljs-function"><span class="hljs-params">(aset, fCandidate, fJoin, fNeighbors=((p)-&gt;p.n), asetLast=[])</span> -&gt;</span>
-    <span class="hljs-keyword">super</span> aset, fCandidate, fJoin, fNeighbors, asetLast</pre></div></div>
+    ctx.drawImage <span class="hljs-property">@pixelsCtx</span>.canvas, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, ctx.canvas.width, ctx.canvas.height</pre></div></div>
             
         </li>
         
@@ -687,13 +684,13 @@ a drawimage</p>
                 <a class="pilcrow" href="#section-37">&#182;</a>
               </div>
               <p>Diffuse the value of patch variable <code>p.v</code> by distributing <code>rate</code> percent
-of each patch’s value of <code>v</code> to its neighbors. If a color <code>c</code> is given,
-scale the patch’s color to be <code>p.v</code> of <code>c</code>. If the patch has
-less than 8 neighbors, return the extra to the patch.</p>
+of each patch’s value of <code>v</code> to its neighbors.
+If a color map <code>cMap</code> is given, scale the patch color via variable’s value
+If the patch has less than 8 neighbors, return the extra to the patch.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">diffuse</span>: <span class="hljs-function"><span class="hljs-params">(v, rate, c)</span> -&gt;</span> <span class="hljs-comment"># variable name, diffusion rate, max color (optional)</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">diffuse</span>: <span class="hljs-function"><span class="hljs-params">(v, rate, color)</span> -&gt;</span> <span class="hljs-comment"># variable name, diffusion rate, cMap (optional)</span></pre></div></div>
             
         </li>
         
@@ -720,7 +717,12 @@ less than 8 neighbors, return the extra to the patch.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-39">&#182;</a>
               </div>
-              <p>pass 1: calculate contribution of all patches to themselves and neighbors</p>
+              <p>pass 1: calculate contribution of all patches to themselves and neighbors
+if cMap
+  minVal = Infinity; maxVal = -Infinity
+  unless cMap.scaleColor?
+    u.deprecated “Patch.diffuse: convert to ColorMap usage, using Jet”
+    cMap = ColorMaps.Jet</p>
 
             </div>
             
@@ -738,14 +740,18 @@ less than 8 neighbors, return the extra to the patch.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-40">&#182;</a>
               </div>
-              <p>pass 2: set new value for all patches, zero temp, modify color if c given</p>
+              <p>if cMap
+  minVal = Math.min minVal, p[v]
+  maxVal = Math.max maxVal, p[v]
+pass 2: set new value for all patches, zero temp, modify color if c given</p>
 
             </div>
             
             <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">for</span> p <span class="hljs-keyword">in</span> @
       p[v] = p._diffuseNext
       p._diffuseNext = <span class="hljs-number">0</span>
-      p.scaleColor c, p[v] <span class="hljs-keyword">if</span> c
+      p.color = ColorMaps.scaleColor color, p[v] <span class="hljs-keyword">if</span> color?
+
     <span class="hljs-literal">null</span> <span class="hljs-comment"># avoid returning copy of @</span></pre></div></div>
             
         </li>

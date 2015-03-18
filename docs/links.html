@@ -61,7 +61,7 @@ the agentClass (breed) variable shared by all the Links in this set.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">constructor</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-comment"># agentClass, name, mainSet</span>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">constructor</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-comment"># model, agentClass, name, mainSet</span>
     <span class="hljs-keyword">super</span> <span class="hljs-comment"># call super with all the args I was called with</span></pre></div></div>
             
         </li>
@@ -161,7 +161,20 @@ defaulting to -1 (clockwise).</p>
       a.setXY <span class="hljs-number">0</span>, <span class="hljs-number">0</span>
       a.heading = startAngle + direction*dTheta*i
       a.forward radius
-    <span class="hljs-literal">null</span></pre></div></div>
+    <span class="hljs-literal">null</span>
+
+  <span class="hljs-attribute">setDraggable</span>: <span class="hljs-function"><span class="hljs-params">()</span> -&gt;</span>
+    <span class="hljs-property">@on</span> <span class="hljs-string">'dragstart'</span>, <span class="hljs-function"><span class="hljs-params">(mouseEvent)</span> =&gt;</span>
+      mouseEvent.target.dragging = <span class="hljs-literal">true</span>
+
+    <span class="hljs-property">@on</span> <span class="hljs-string">'dragend'</span>, <span class="hljs-function"><span class="hljs-params">(mouseEvent)</span> =&gt;</span>
+      mouseEvent.target.dragging = <span class="hljs-literal">false</span>
+
+    <span class="hljs-property">@on</span> <span class="hljs-string">'drag'</span>, <span class="hljs-function"><span class="hljs-params">(mouseEvent)</span> =&gt;</span>
+      end1 = mouseEvent.target.end1
+      end2 = mouseEvent.target.end2
+      end1.setXY(end1.x - mouseEvent.dx, end1.y - mouseEvent.dy)
+      end2.setXY(end2.x - mouseEvent.dx, end2.y - mouseEvent.dy)</pre></div></div>
             
         </li>
         

@@ -34,7 +34,8 @@
           p.color = [0, 255, 0] # override default, set per patch color
         @ignite p for p in @patches when p.x is @patches.minX
         @initialTrees = (p for p in @patches when u.colorsEqual p.color, [0, 255, 0]).length
-        console.log "burnedTrees #{@burnedTrees}"
+        console.log "patches: #{@patches.length}, agents #{@agents.length}"
+        console.log "initialTrees: #{@initialTrees}, burnedTrees #{@burnedTrees}"
         @burnedTrees = 0 # reset from initial ignites
         # console.log "embers: ", @embers; window.embers = @embers
         # console.log "fires: ", @fires; window.fires = @fires
@@ -48,7 +49,7 @@
       fadeEmbers: ->
         for a in @embers by -1 # -1: allow die() in loop
           a.scaleColor a.color, .8
-          if 100 > Math.max a.color... # or (Math.max a.color...) < 100 , needs parens
+          if 100 > Math.max a.color.subarray(0,3)... # or (Math.max a.color...) < 100 , needs parens
             a.p.color = a.color
             a.p.draw @contexts.patches
             a.die()

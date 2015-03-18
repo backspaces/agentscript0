@@ -270,7 +270,7 @@ Useful for shortcuts</p>
             <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">draw</span>: <span class="hljs-function"><span class="hljs-params">(ctx, shape, x, y, size, rad, color, strokeColor)</span> -&gt;</span>
     <span class="hljs-keyword">if</span> shape.shortcut?
       <span class="hljs-keyword">unless</span> shape.img?
-        ctx.fillStyle = u.colorStr color
+        ctx.fillStyle = color.css <span class="hljs-comment"># u.colorStr color</span>
       shape.shortcut ctx,x,y,size
     <span class="hljs-keyword">else</span>
       ctx.save()
@@ -280,9 +280,9 @@ Useful for shortcuts</p>
       <span class="hljs-keyword">if</span> shape.img? <span class="hljs-comment"># is an image, not a path function</span>
         shape.draw ctx
       <span class="hljs-keyword">else</span>
-        ctx.fillStyle = u.colorStr color
+        ctx.fillStyle = color.css <span class="hljs-comment"># u.colorStr color</span>
         <span class="hljs-keyword">if</span> strokeColor
-          ctx.strokeStyle = u.colorStr strokeColor
+          ctx.strokeStyle = strokeColor.css <span class="hljs-comment"># u.colorStr strokeColor</span>
           ctx.lineWidth = <span class="hljs-number">0.05</span>
         ctx.save()
         ctx.beginPath(); shape.draw ctx; ctx.closePath()
@@ -318,12 +318,12 @@ the shape to fit it. Return existing sprite if duplicate.</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">shapeToSprite</span>: <span class="hljs-function"><span class="hljs-params">(name, color, size, strokeColor)</span> -&gt;</span>
+    colorCss = Color.convertColor color, <span class="hljs-string">"css"</span>
+    strokeCss = Color.convertColor strokeColor, <span class="hljs-string">"css"</span> <span class="hljs-keyword">if</span> strokeColor?
     spriteSize = Math.ceil size
     strokePadding = <span class="hljs-number">4</span>
     slotSize = spriteSize + strokePadding
-    shape = @[name]
-    index = <span class="hljs-keyword">if</span> shape.img? <span class="hljs-keyword">then</span> name <span class="hljs-keyword">else</span> <span class="hljs-string">"<span class="hljs-subst">#{name}</span>-<span class="hljs-subst">#{u.colorStr(color)}</span>"</span>
-    ctx = spriteSheets[slotSize]</pre></div></div>
+    shape = @[name]</pre></div></div>
             
         </li>
         
@@ -333,6 +333,22 @@ the shape to fit it. Return existing sprite if duplicate.</p>
               
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-13">&#182;</a>
+              </div>
+              <p>index = if shape.img? then name else “#{name}-#{u.colorStr(color)}”</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    index = <span class="hljs-keyword">if</span> shape.img? <span class="hljs-keyword">then</span> name <span class="hljs-keyword">else</span> <span class="hljs-string">"<span class="hljs-subst">#{name}</span>-<span class="hljs-subst">#{colorCss}</span>"</span>
+    ctx = spriteSheets[slotSize]</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-14">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-14">&#182;</a>
               </div>
               <p>Create sheet for this bit size if it does not yet exist</p>
 
@@ -345,11 +361,11 @@ the shape to fit it. Return existing sprite if duplicate.</p>
         </li>
         
         
-        <li id="section-14">
+        <li id="section-15">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-14">&#182;</a>
+                <a class="pilcrow" href="#section-15">&#182;</a>
               </div>
               <p>Return matching sprite if index match found</p>
 
@@ -360,11 +376,11 @@ the shape to fit it. Return existing sprite if duplicate.</p>
         </li>
         
         
-        <li id="section-15">
+        <li id="section-16">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-15">&#182;</a>
+                <a class="pilcrow" href="#section-16">&#182;</a>
               </div>
               <p>Extend the sheet if we’re out of space</p>
 
@@ -377,11 +393,11 @@ the shape to fit it. Return existing sprite if duplicate.</p>
         </li>
         
         
-        <li id="section-16">
+        <li id="section-17">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-16">&#182;</a>
+                <a class="pilcrow" href="#section-17">&#182;</a>
               </div>
               <p>Create the sprite “slot” object and install in index object</p>
 
@@ -394,11 +410,11 @@ the shape to fit it. Return existing sprite if duplicate.</p>
         </li>
         
         
-        <li id="section-17">
+        <li id="section-18">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-17">&#182;</a>
+                <a class="pilcrow" href="#section-18">&#182;</a>
               </div>
               <p>Draw the shape into the sprite slot</p>
 
@@ -411,9 +427,9 @@ the shape to fit it. Return existing sprite if duplicate.</p>
       ctx.save()
       ctx.translate (ctx.nextX+<span class="hljs-number">0.5</span>)*(slotSize), (ctx.nextY+<span class="hljs-number">0.5</span>)*(slotSize)
       ctx.scale spriteSize, spriteSize
-      ctx.fillStyle = u.colorStr color
+      ctx.fillStyle = colorCss <span class="hljs-comment"># u.colorStr color</span>
       <span class="hljs-keyword">if</span> strokeColor
-        ctx.strokeStyle = u.colorStr strokeColor
+        ctx.strokeStyle = strokeCss <span class="hljs-comment"># u.colorStr strokeColor</span>
         ctx.lineWidth = <span class="hljs-number">0.05</span>
       ctx.save()
       ctx.beginPath(); shape.draw ctx; ctx.closePath()

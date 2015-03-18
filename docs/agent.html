@@ -27,6 +27,18 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-1">&#182;</a>
               </div>
+              
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
               <p>Class Agent instances represent the dynamic, behavioral element of modeling.
 Each agent knows the patch it is on, and interacts with that and other
 patches, as well as other agents.</p>
@@ -38,11 +50,11 @@ patches, as well as other agents.</p>
         </li>
         
         
-        <li id="section-2">
+        <li id="section-3">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-2">&#182;</a>
+                <a class="pilcrow" href="#section-3">&#182;</a>
               </div>
               <p>Constructor &amp; Class Variables:</p>
 <ul>
@@ -85,36 +97,16 @@ This can be a huge savings in memory.</p>
   <span class="hljs-attribute">penSize</span>: <span class="hljs-number">1</span>          <span class="hljs-comment"># the pen thickness in pixels</span>
   <span class="hljs-attribute">heading</span>: <span class="hljs-literal">null</span>       <span class="hljs-comment"># the direction I'm pointed in, in radians</span>
   <span class="hljs-attribute">sprite</span>: <span class="hljs-literal">null</span>        <span class="hljs-comment"># an image of me for optimized drawing</span>
+  <span class="hljs-attribute">useSprites</span>: <span class="hljs-literal">false</span>   <span class="hljs-comment"># should I use sprites?</span>
   <span class="hljs-attribute">cacheLinks</span>: <span class="hljs-literal">false</span>   <span class="hljs-comment"># should I keep links to/from me in links array?.</span>
   <span class="hljs-attribute">links</span>: <span class="hljs-literal">null</span>         <span class="hljs-comment"># array of links to/from me as an endpoint; init by ctor</span>
   <span class="hljs-attribute">constructor</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-comment"># called by agentSets create factory, not user</span>
     <span class="hljs-property">@x</span> = <span class="hljs-property">@y</span> = <span class="hljs-number">0</span>
     <span class="hljs-property">@p</span> = <span class="hljs-property">@model</span>.patches.patch <span class="hljs-property">@x</span>, <span class="hljs-property">@y</span>
-    <span class="hljs-property">@color</span> = u.randomColor() <span class="hljs-keyword">unless</span> <span class="hljs-property">@color</span>? <span class="hljs-comment"># promote color if default not set</span>
+    <span class="hljs-property">@color</span> = u.randomColor() <span class="hljs-keyword">unless</span> <span class="hljs-property">@color</span>? <span class="hljs-comment"># or @useSprites or @hidden</span>
     <span class="hljs-property">@heading</span> = u.randomFloat(Math.PI*<span class="hljs-number">2</span>) <span class="hljs-keyword">unless</span> <span class="hljs-property">@heading</span>?
     <span class="hljs-property">@p</span>.agents.push @ <span class="hljs-keyword">if</span> <span class="hljs-property">@p</span>.agents? <span class="hljs-comment"># @model.patches.cacheAgentsHere</span>
     <span class="hljs-property">@links</span> = [] <span class="hljs-keyword">if</span> <span class="hljs-property">@cacheLinks</span></pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-3">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-3">&#182;</a>
-              </div>
-              <p>Set agent color to <code>c</code> scaled by <code>s</code>. Usage: see patch.scaleColor</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">scaleColor</span>: <span class="hljs-function"><span class="hljs-params">(c, s)</span> -&gt;</span>
-    <span class="hljs-property">@color</span> = u.clone <span class="hljs-property">@color</span> <span class="hljs-keyword">unless</span> <span class="hljs-property">@hasOwnProperty</span> <span class="hljs-string">"color"</span> <span class="hljs-comment"># promote color to inst var</span>
-    u.scaleColor c, s, <span class="hljs-property">@color</span>
-
-  <span class="hljs-attribute">scaleOpacity</span>: <span class="hljs-function"><span class="hljs-params">(c, s)</span> -&gt;</span>
-    <span class="hljs-property">@color</span> = u.clone <span class="hljs-property">@color</span> <span class="hljs-keyword">unless</span> <span class="hljs-property">@hasOwnProperty</span> <span class="hljs-string">"color"</span>
-    u.scaleOpacity c, s, <span class="hljs-property">@color</span></pre></div></div>
             
         </li>
         
@@ -125,11 +117,13 @@ This can be a huge savings in memory.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-4">&#182;</a>
               </div>
-              <p>Return a string representation of the agent.</p>
+              <p>Set agent color to <code>c</code> scaled by <code>s</code>. Usage: see patch.scaleColor</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">toString</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-string">"{id:<span class="hljs-subst">#{<span class="hljs-property">@id</span>}</span> xy:<span class="hljs-subst">#{u.aToFixed [<span class="hljs-property">@x</span>,<span class="hljs-property">@y</span>]}</span> c:<span class="hljs-subst">#{<span class="hljs-property">@color</span>}</span> h: <span class="hljs-subst">#{h=<span class="hljs-property">@heading</span>.toFixed <span class="hljs-number">2</span>}</span>/<span class="hljs-subst">#{Math.round(u.radToDeg(h))}</span>}"</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">scaleColor</span>: <span class="hljs-function"><span class="hljs-params">(c, s)</span> -&gt;</span>
+    u.deprecated <span class="hljs-string">"Agent.scaleColor: use ColorMaps ramps or closestColor"</span>
+    <span class="hljs-property">@color</span> = ColorMaps.scaleColor(c, s)</pre></div></div>
             
         </li>
         
@@ -139,6 +133,54 @@ This can be a huge savings in memory.</p>
               
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>@color = u.clone @color unless @hasOwnProperty “color” # promote color to inst var
+u.scaleColor c, s, @color</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>
+  <span class="hljs-attribute">scaleOpacity</span>: <span class="hljs-function"><span class="hljs-params">(c, s)</span> -&gt;</span>
+    u.deprecated <span class="hljs-string">"Agent.scaleOpacity: use ColorMaps ramps"</span>
+    <span class="hljs-property">@color</span> = u.scaleOpacity c, s, <span class="hljs-property">@color</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p>@color = u.clone @color unless @hasOwnProperty “color”
+u.scaleOpacity c, s, @color</p>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <p>Return a string representation of the agent.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">toString</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-string">"{id:<span class="hljs-subst">#{<span class="hljs-property">@id</span>}</span> xy:<span class="hljs-subst">#{u.aToFixed [<span class="hljs-property">@x</span>,<span class="hljs-property">@y</span>]}</span> c:<span class="hljs-subst">#{<span class="hljs-property">@color</span>}</span> h: <span class="hljs-subst">#{h=<span class="hljs-property">@heading</span>.toFixed <span class="hljs-number">2</span>}</span>/<span class="hljs-subst">#{Math.round(u.radToDeg(h))}</span>}"</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
               </div>
               <p>Place the agent at the given x,y (floats) in patch coords
 using patch topology (isTorus)</p>
@@ -155,7 +197,7 @@ using patch topology (isTorus)</p>
       <span class="hljs-property">@p</span>.agents.push @
     <span class="hljs-keyword">if</span> <span class="hljs-property">@penDown</span>
       drawing = <span class="hljs-property">@model</span>.drawing
-      drawing.strokeStyle = u.colorStr <span class="hljs-property">@color</span>
+      drawing.strokeStyle = <span class="hljs-property">@color</span>.css <span class="hljs-comment"># u.colorStr @color</span>
       drawing.lineWidth = <span class="hljs-property">@model</span>.patches.fromBits <span class="hljs-property">@penSize</span>
       drawing.beginPath()
       drawing.moveTo x0, y0; drawing.lineTo x, y <span class="hljs-comment"># REMIND: euclidean</span>
@@ -164,11 +206,11 @@ using patch topology (isTorus)</p>
         </li>
         
         
-        <li id="section-6">
+        <li id="section-9">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-6">&#182;</a>
+                <a class="pilcrow" href="#section-9">&#182;</a>
               </div>
               <p>Place the agent at the given patch/agent location</p>
 
@@ -179,11 +221,11 @@ using patch topology (isTorus)</p>
         </li>
         
         
-        <li id="section-7">
+        <li id="section-10">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-7">&#182;</a>
+                <a class="pilcrow" href="#section-10">&#182;</a>
               </div>
               <p>Move forward (along heading) d units (patch coords),
 using patch topology (isTorus)</p>
@@ -196,11 +238,11 @@ using patch topology (isTorus)</p>
         </li>
         
         
-        <li id="section-8">
+        <li id="section-11">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-8">&#182;</a>
+                <a class="pilcrow" href="#section-11">&#182;</a>
               </div>
               <p>Change current heading by rad radians which can be + (left) or - (right).
 Returns new heading.</p>
@@ -214,11 +256,11 @@ Returns new heading.</p>
         </li>
         
         
-        <li id="section-9">
+        <li id="section-12">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-9">&#182;</a>
+                <a class="pilcrow" href="#section-12">&#182;</a>
               </div>
               <p>Draw the agent, instanciating a sprite if required</p>
 
@@ -227,23 +269,24 @@ Returns new heading.</p>
             <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">draw</span>: <span class="hljs-function"><span class="hljs-params">(ctx)</span> -&gt;</span>
     shape = Shapes[<span class="hljs-property">@shape</span>]
     rad = <span class="hljs-keyword">if</span> shape.rotate <span class="hljs-keyword">then</span> <span class="hljs-property">@heading</span> <span class="hljs-keyword">else</span> <span class="hljs-number">0</span> <span class="hljs-comment"># radians</span>
-    <span class="hljs-keyword">if</span> <span class="hljs-property">@sprite</span>? <span class="hljs-keyword">or</span> <span class="hljs-property">@breed</span>.useSprites
+    <span class="hljs-keyword">if</span> <span class="hljs-property">@sprite</span>? <span class="hljs-keyword">or</span> <span class="hljs-property">@useSprites</span> <span class="hljs-comment"># @breed.useSprites</span>
       <span class="hljs-property">@setSprite</span>() <span class="hljs-keyword">unless</span> <span class="hljs-property">@sprite</span>? <span class="hljs-comment"># lazy evaluation of useSprites</span>
       Shapes.drawSprite ctx, <span class="hljs-property">@sprite</span>, <span class="hljs-property">@x</span>, <span class="hljs-property">@y</span>, <span class="hljs-property">@size</span>, rad
     <span class="hljs-keyword">else</span>
       Shapes.draw ctx, shape, <span class="hljs-property">@x</span>, <span class="hljs-property">@y</span>, <span class="hljs-property">@size</span>, rad, <span class="hljs-property">@color</span>, <span class="hljs-property">@strokeColor</span>
     <span class="hljs-keyword">if</span> <span class="hljs-property">@label</span>?
       [x,y] = <span class="hljs-property">@model</span>.patches.patchXYtoPixelXY <span class="hljs-property">@x</span>, <span class="hljs-property">@y</span>
-      u.ctxDrawText ctx, <span class="hljs-property">@label</span>, x+<span class="hljs-property">@labelOffset</span>[<span class="hljs-number">0</span>], y+<span class="hljs-property">@labelOffset</span>[<span class="hljs-number">1</span>], <span class="hljs-property">@labelColor</span></pre></div></div>
+      u.ctxDrawText ctx, <span class="hljs-property">@label</span>,
+        x+<span class="hljs-property">@labelOffset</span>[<span class="hljs-number">0</span>], y+<span class="hljs-property">@labelOffset</span>[<span class="hljs-number">1</span>], <span class="hljs-property">@labelColor</span></pre></div></div>
             
         </li>
         
         
-        <li id="section-10">
+        <li id="section-13">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-10">&#182;</a>
+                <a class="pilcrow" href="#section-13">&#182;</a>
               </div>
               <p>Set an individual agent’s sprite, synching its color, shape, size</p>
 
@@ -251,19 +294,34 @@ Returns new heading.</p>
             
             <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">setSprite</span>: <span class="hljs-function"><span class="hljs-params">(sprite)</span>-&gt;</span>
     <span class="hljs-keyword">if</span> (s=sprite)?
-      <span class="hljs-property">@sprite</span> = s; <span class="hljs-property">@color</span> = s.color; <span class="hljs-property">@strokeColor</span> = s.strokeColor; <span class="hljs-property">@shape</span> = s.shape; <span class="hljs-property">@size</span> = s.size
-    <span class="hljs-keyword">else</span>
-      <span class="hljs-property">@color</span> = u.randomColor <span class="hljs-keyword">unless</span> <span class="hljs-property">@color</span>?
-      <span class="hljs-property">@sprite</span> = Shapes.shapeToSprite <span class="hljs-property">@shape</span>, <span class="hljs-property">@color</span>, <span class="hljs-property">@model</span>.patches.toBits(<span class="hljs-property">@size</span>), <span class="hljs-property">@strokeColor</span></pre></div></div>
+      <span class="hljs-property">@sprite</span> = s; <span class="hljs-property">@color</span> = s.color; <span class="hljs-property">@strokeColor</span> = s.strokeColor
+      <span class="hljs-property">@shape</span> = s.shape; <span class="hljs-property">@size</span> = <span class="hljs-property">@model</span>.patches.fromBits(s.size)
+    <span class="hljs-keyword">else</span></pre></div></div>
             
         </li>
         
         
-        <li id="section-11">
+        <li id="section-14">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-11">&#182;</a>
+                <a class="pilcrow" href="#section-14">&#182;</a>
+              </div>
+              <p>@color = u.randomColor() unless @color? # not needed if lazy evaluation</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-property">@sprite</span> = Shapes.shapeToSprite <span class="hljs-property">@shape</span>, <span class="hljs-property">@color</span>,
+        <span class="hljs-property">@model</span>.patches.toBits(<span class="hljs-property">@size</span>), <span class="hljs-property">@strokeColor</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-15">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-15">&#182;</a>
               </div>
               <p>Draw the agent on the drawing layer, leaving permanent image.</p>
 
@@ -274,11 +332,11 @@ Returns new heading.</p>
         </li>
         
         
-        <li id="section-12">
+        <li id="section-16">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-12">&#182;</a>
+                <a class="pilcrow" href="#section-16">&#182;</a>
               </div>
               <p>Return distance in patch coords from me to x,y
 using patch topology (isTorus)</p>
@@ -293,11 +351,11 @@ using patch topology (isTorus)</p>
         </li>
         
         
-        <li id="section-13">
+        <li id="section-17">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-13">&#182;</a>
+                <a class="pilcrow" href="#section-17">&#182;</a>
               </div>
               <p>Return distance in patch coords from me to given agent/patch using patch topology.</p>
 
@@ -309,11 +367,11 @@ using patch topology (isTorus)</p>
         </li>
         
         
-        <li id="section-14">
+        <li id="section-18">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-14">&#182;</a>
+                <a class="pilcrow" href="#section-18">&#182;</a>
               </div>
               <p>Return the closest torus topology point of given x,y relative to myself.
 Used internally to determine how to draw links between two agents.
@@ -327,11 +385,11 @@ See util.torusPt.</p>
         </li>
         
         
-        <li id="section-15">
+        <li id="section-19">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-15">&#182;</a>
+                <a class="pilcrow" href="#section-19">&#182;</a>
               </div>
               <p>Return the closest torus topology point of given agent/patch
 relative to myself. See util.torusPt.</p>
@@ -344,11 +402,11 @@ relative to myself. See util.torusPt.</p>
         </li>
         
         
-        <li id="section-16">
+        <li id="section-20">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-16">&#182;</a>
+                <a class="pilcrow" href="#section-20">&#182;</a>
               </div>
               <p>Set my heading towards given agent/patch using patch topology.</p>
 
@@ -359,11 +417,11 @@ relative to myself. See util.torusPt.</p>
         </li>
         
         
-        <li id="section-17">
+        <li id="section-21">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-17">&#182;</a>
+                <a class="pilcrow" href="#section-21">&#182;</a>
               </div>
               <p>Return heading towards x,y using patch topology.</p>
 
@@ -377,11 +435,11 @@ relative to myself. See util.torusPt.</p>
         </li>
         
         
-        <li id="section-18">
+        <li id="section-22">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-18">&#182;</a>
+                <a class="pilcrow" href="#section-22">&#182;</a>
               </div>
               <p>Return heading towards given agent/patch using patch topology.</p>
 
@@ -392,11 +450,11 @@ relative to myself. See util.torusPt.</p>
         </li>
         
         
-        <li id="section-19">
+        <li id="section-23">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-19">&#182;</a>
+                <a class="pilcrow" href="#section-23">&#182;</a>
               </div>
               <p>Return patch ahead of me by given distance and heading.
 Returns null if non-torus and off patch world.
@@ -418,11 +476,11 @@ Heading is + for left, - for right.</p>
         </li>
         
         
-        <li id="section-20">
+        <li id="section-24">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-20">&#182;</a>
+                <a class="pilcrow" href="#section-24">&#182;</a>
               </div>
               <p>Remove myself from the model.  Includes removing myself from the agents
 agentset and removing any links I may have.</p>
@@ -438,11 +496,11 @@ agentset and removing any links I may have.</p>
         </li>
         
         
-        <li id="section-21">
+        <li id="section-25">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-21">&#182;</a>
+                <a class="pilcrow" href="#section-25">&#182;</a>
               </div>
               <p>Factory: create num new agents at this agents location. The optional init
 proc is called on the new agent after inserting in its agentSet.</p>
@@ -458,11 +516,11 @@ proc is called on the new agent after inserting in its agentSet.</p>
         </li>
         
         
-        <li id="section-22">
+        <li id="section-26">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-22">&#182;</a>
+                <a class="pilcrow" href="#section-26">&#182;</a>
               </div>
               <p>possible alternative: a[k] = @[k] for k, v in a when v is null</p>
 
@@ -473,11 +531,11 @@ proc is called on the new agent after inserting in its agentSet.</p>
         </li>
         
         
-        <li id="section-23">
+        <li id="section-27">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-23">&#182;</a>
+                <a class="pilcrow" href="#section-27">&#182;</a>
               </div>
               <p>Return the members of the given agentset that are within radius distance
 from me, and within cone radians of my heading using patch topology</p>
@@ -490,11 +548,27 @@ from me, and within cone radians of my heading using patch topology</p>
         </li>
         
         
-        <li id="section-24">
+        <li id="section-28">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-24">&#182;</a>
+                <a class="pilcrow" href="#section-28">&#182;</a>
+              </div>
+              <p>Return true if world coordinate falls on agent sprite</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">hitTest</span>: <span class="hljs-function"><span class="hljs-params">(x, y)</span> -&gt;</span>
+    <span class="hljs-property">@distanceXY</span>(x, y) &lt; <span class="hljs-property">@size</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-29">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-29">&#182;</a>
               </div>
               <p>Return other end of link from me</p>
 
@@ -505,11 +579,11 @@ from me, and within cone radians of my heading using patch topology</p>
         </li>
         
         
-        <li id="section-25">
+        <li id="section-30">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-25">&#182;</a>
+                <a class="pilcrow" href="#section-30">&#182;</a>
               </div>
               <p>Return all links linked to me</p>
 
@@ -521,11 +595,11 @@ from me, and within cone radians of my heading using patch topology</p>
         </li>
         
         
-        <li id="section-26">
+        <li id="section-31">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-26">&#182;</a>
+                <a class="pilcrow" href="#section-31">&#182;</a>
               </div>
               <p>Return all agents linked to me.</p>
 
@@ -537,11 +611,11 @@ from me, and within cone radians of my heading using patch topology</p>
         </li>
         
         
-        <li id="section-27">
+        <li id="section-32">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-27">&#182;</a>
+                <a class="pilcrow" href="#section-32">&#182;</a>
               </div>
               <p>Return links where I am the “to” agent in links.create</p>
 
@@ -553,11 +627,11 @@ from me, and within cone radians of my heading using patch topology</p>
         </li>
         
         
-        <li id="section-28">
+        <li id="section-33">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-28">&#182;</a>
+                <a class="pilcrow" href="#section-33">&#182;</a>
               </div>
               <p>Return other end of myInLinks</p>
 
@@ -569,11 +643,11 @@ from me, and within cone radians of my heading using patch topology</p>
         </li>
         
         
-        <li id="section-29">
+        <li id="section-34">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-29">&#182;</a>
+                <a class="pilcrow" href="#section-34">&#182;</a>
               </div>
               <p>Return links where I am the “from” agent in links.create</p>
 
@@ -585,11 +659,11 @@ from me, and within cone radians of my heading using patch topology</p>
         </li>
         
         
-        <li id="section-30">
+        <li id="section-35">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-30">&#182;</a>
+                <a class="pilcrow" href="#section-35">&#182;</a>
               </div>
               <p>Return other end of myOutinks</p>
 
@@ -597,6 +671,23 @@ from me, and within cone radians of my heading using patch topology</p>
             
             <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">outLinkNeighbors</span>:<span class="hljs-function"> -&gt;</span>
     l.end2 <span class="hljs-keyword">for</span> l <span class="hljs-keyword">in</span> <span class="hljs-property">@myLinks</span>() <span class="hljs-keyword">when</span> l.end1 <span class="hljs-keyword">is</span> @</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-36">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-36">&#182;</a>
+              </div>
+              <p>use colorMixin to setup colors</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>colorMixin(Agent, <span class="hljs-string">"color"</span>, <span class="hljs-literal">null</span>)
+colorMixin(Agent, <span class="hljs-string">"strokeColor"</span>, <span class="hljs-literal">null</span>)
+colorMixin(Agent, <span class="hljs-string">"labelColor"</span>, <span class="hljs-string">"black"</span>)</pre></div></div>
             
         </li>
         

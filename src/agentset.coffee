@@ -56,6 +56,7 @@ class AgentSet extends Array
   # This sub-array feature is how breeds are managed, see class `Model`
   constructor: (@model, @agentClass, @name, @mainSet) ->
     super(0) # doesn't yield empty array if already instances in the mainSet
+    u.mixin(@, new Evented())
     @breeds = [] unless @mainSet?
     @agentClass::breed = @ # let the breed know I'm it's agentSet
     @agentClass::model = @model # let the breed know its model
@@ -88,7 +89,11 @@ class AgentSet extends Array
     @
 
   # Set the default value of an agent class, return agentset
-  setDefault: (name, value) -> @agentClass::[name] = value; @
+  setDefault: (name, value) ->
+    if name.match(/color/i) and u.isArray value
+      value = ColorMaps.Rgb.findClosestColor value...
+    @agentClass::[name] = value # ; @
+  getDefault: (name) -> @agentClass::[name]
   # Declare variables of an agent class.
   # Vars = a string of space separated names or an array of name strings
   # Return agentset.
@@ -113,34 +118,6 @@ class AgentSet extends Array
   exclude: (breeds) ->
     breeds = breeds.split(" ")
     @asSet (o for o in @ when o.breed.name not in breeds)
-
-  # A generalized, but complex, flood fill, designed to work on any
-  # agentset type. To see a simpler version, look at the gridpath model.
-  #
-  # Floodfill arguments:
-  #
-  # * aset: initial array of agents, often a single agent: [a]
-  # * fCandidate(a, asetLast) -> true if a is elegible to be added to the set
-  # * fJoin(a, asetLast) -> adds a to the agentset, often by setting a variable
-  # * fNeighbors(a) -> returns the neighbors of this agent
-  # * asetLast: the array of the last set of agents to join the flood.
-  floodFill: (aset, fCandidate, fJoin, fNeighbors, asetLast=[]) ->
-    floodFunc = @floodFillOnce(aset, fCandidate, fJoin, fNeighbors, asetLast)
-    floodFunc = floodFunc() while floodFunc
-
-  # Move one step forward in a floodfill.
-  # floodFillOnce() returns a function that performs the next step of the flood.
-  # This is useful if you want to watch your flood progress as an animation.
-  floodFillOnce: (aset, fCandidate, fJoin, fNeighbors, asetLast=[]) ->
-    fJoin p, asetLast for p in aset
-    asetNext = []
-    for p in aset
-      for n in fNeighbors(p) when fCandidate n, aset
-        asetNext.push n if asetNext.indexOf(n) < 0
-    if asetNext.length is 0
-      null
-    else
-      () => @floodFillOnce asetNext, fCandidate, fJoin, fNeighbors, aset
 
   # Remove adjacent duplicates, by reference, in a sorted agentset.
   # Use `sortById` first if agentset not sorted.

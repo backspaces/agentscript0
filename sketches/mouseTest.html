@@ -2,9 +2,10 @@
   <head>
     <title>Link Travel Model</title>
     <script src="../lib/agentscript.js"></script>
+    <script src="../lib/mouse.js"></script>
     <script src="../tools/coffee-script.js"></script>
     <script type="text/coffeescript">
-
+    
     u = ABM.Util # ABM.Util alias
     class MyModel extends ABM.Model
       setup: ->
@@ -12,44 +13,41 @@
         @nodes.setDefault "shape", "circle"
         @nodes.setDefault "size", .3
         @drivers.setDefault "size", 1.5
-
-        @linkBreeds "roads"
-        @roads.setDefault "labelColor", [255,0,0]
-
+        
         # 40-44fps->58+fps
         @refreshPatches = false # 56fps
-        @refreshLinks = false # 40-49fps
+        @refreshLinks = true # 40-49fps
         # @patches.usePixels() # 58+fps same as refresh off
         # @patches.cacheAgentsHere() # 40fps; not needed, slight overhead
-        # Deprecated:
-        # @agents.setUseSprites() # 24 -> 36
-        @agents.setDefault "useSprites", true
+        @agents.setUseSprites() # 24 -> 36
         # w/ refreshs off and 1 optimization 59/max-fps
         # @agents.cacheLinks() # no improvement, but tests a.links
-
+        
         @anim.setRate 30, true # almost 3:1 steps/draws!
         # @anim.setRate 60, false # for optimization studies & profiling
-
+        
         # globals
         @numNodes = 30
         @numDrivers = 100
         @layoutCircle = true
         @baseVelocity = 0.1 # patchs
         @velocityDelta = 0.1 # patches
-
+        
+        @links.setDefault "labelColor", [255,0,0]
+        
         p.color = u.randomGray 10, 50 for p in @patches
         for p in @patches.nOf @numNodes
-          p.sprout 1, @nodes, (a) =>
+          p.sprout 1, @nodes, (a) => 
             if @nodes.length > 1 # if @nodes().length > 1
-              @roads.create a, @nodes.other(a).oneOf() # @roads.create a, @nodes().other(a).oneOf()
-
-        if @layoutCircle then @roads.layoutCircle @nodes, @patches.maxX - 1
-
+              @links.create a, @nodes.other(a).oneOf() # @links.create a, @nodes().other(a).oneOf()
+        
+        if @layoutCircle then @links.layoutCircle @nodes, @patches.maxX - 1
+        
         # Test labels
-        # l.label = l.length().toFixed(0) for l in @roads
-
+        # l.label = l.length().toFixed(0) for l in @links
+        
         # no defaults, hatch copies its values to new agent
-
+        
         for i in [1..@numDrivers]
           n = @nodes.oneOf() # n = @nodes().oneOf()
           n.hatch 1, @drivers, (a) =>
@@ -57,10 +55,37 @@
             a.face a.toNode
             a.v = @baseVelocity + u.randomFloat @velocityDelta
         null # avoid returning "for" results above
+        
+        new ABM.Mouse(@)
+
+        @agents.on 'mouseover', (mouseEvent) =>
+          agent = mouseEvent.target
+          unless agent.origColor?
+           agent.origColor = agent.color
+          agent.color = [0,0,255]
+
+        @agents.on 'mouseout', (mouseEvent) =>
+          agent = mouseEvent.target
+          if agent.origColor
+            agent.color = agent.origColor
+
+        @links.on 'mouseover', (mouseEvent) =>
+          agent = mouseEvent.target
+          unless agent.origColor?
+           agent.origColor = agent.color
+          agent.color = [0,0,255]
+
+        @links.on 'mouseout', (mouseEvent) =>
+          agent = mouseEvent.target
+          if agent.origColor
+            agent.color = agent.origColor
+
+        @links.setDraggable()
+        @drivers.setDraggable()
 
       step: ->
         console.log @anim.toString() if @anim.ticks % 100 is 0
-        for d in @drivers #for d in @drivers()
+        for d in @drivers when not d.dragging
           d.face d.toNode
           d.forward Math.min d.v, d.distance d.toNode
           if .01 > d.distance d.toNode # or (d.distance d.toNode) < .01
@@ -77,7 +102,7 @@
       maxX: 16,
       minY: -16,
       maxY: 16,
-      hasNeighbors: false
+     # hasNeighbors: false
     }
     model.debug() # Debug: Put Model vars in global name space
     model.start() # Run model immediately after startup initialization

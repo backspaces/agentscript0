@@ -4,19 +4,19 @@
     <script src="../lib/agentscript.js"></script>
     <script src="../tools/coffee-script.js"></script>
     <script type="text/coffeescript">
-    
+
     u = ABM.Util # ABM.Util alias
     class MyModel extends ABM.Model
       setup: ->
         @refreshPatches = false # for static patches
-        
+
         # globals
         @population = 4
         @sun = true
         @v0max = 1
         @gravExp = -2
         @maxDistanceFromSun = Math.sqrt(Math.pow(@world.maxY,2)+Math.pow(@world.maxX,2))
-        
+
         # defaults
         @agents.setDefault "shape", "circle"
         @agents.setDefault "heading", 0 # override promotion to random angle
@@ -37,23 +37,26 @@
         @agents.setDefault "penSize", 1 #Pen(1, true)
         @agents.setDefault "penDown", true #Pen(1, true)
       step: ->
+        console.log @anim.toString() if @anim.ticks % 100 is 0
         for a in @agents
           for a1 in @agents.other(a)
             k = Math.pow(10, @gravExp)*a1.mass/Math.max(Math.pow(a.distance(a1),3), .000001)
             a.vx += (a1.x-a.x)*k; a.vy += (a1.y-a.y)*k
-        for a in @agents when not (@sun and a.id is 0)
+        for a in @agents when not (@sun? and a.id is 0)
           # unless (@sun and a.id is 0)
           # scale opacity by distance to center
           opacityScale = (1-a.distance(@patches.patch(0,0))/@maxDistanceFromSun)
-          a.scaleOpacity a.color.slice(0,3), opacityScale
-          
+          # console.log opacityScale if a.id is 2
+          a.color = a.color
+          # a.scaleOpacity a.color.slice(0,3), opacityScale
+          #
           a.setXY u.clamp(a.x+a.vx, @patches.minX, @patches.maxX),
                   u.clamp(a.y+a.vy, @patches.minY, @patches.maxY)
           a.vx = u.sign(-a.x)*.001 if Math.abs(a.x) is @patches.maxX
           a.vy = u.sign(-a.y)*.001 if Math.abs(a.y) is @patches.maxY
-          # a.setXY 0,0 if @sun and a.id is 0
+          # # a.setXY 0,0 if @sun and a.id is 0
         null
-        
+
     # div, patchSize, minX, maxX, minY, maxY, isTorus, hasNeighbors
     #   Defaults: 13, -16, 16, -16, 16, false, true
     model = new MyModel {
@@ -67,7 +70,7 @@
     }
     model.debug() # Debug: Put Model vars in global name space
     model.start() # Run model immediately after startup initialization
-    
+
     </script>
   </head>
   <body>

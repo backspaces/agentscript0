@@ -100,7 +100,8 @@ Example:</p>
     u.mixin(@, <span class="hljs-keyword">new</span> Evented())
     <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span> divOrOpts <span class="hljs-keyword">is</span> <span class="hljs-string">'string'</span>
       div = divOrOpts
-      <span class="hljs-property">@setWorldDeprecated</span> size, minX, maxX, minY, maxY, isTorus, hasNeighbors, isHeadless
+      <span class="hljs-property">@setWorldDeprecated</span> size, minX, maxX, minY, maxY,
+        isTorus, hasNeighbors, isHeadless
     <span class="hljs-keyword">else</span>
       div = divOrOpts.div
       isHeadless = divOrOpts.isHeadless = divOrOpts.isHeadless <span class="hljs-keyword">or</span> <span class="hljs-keyword">not</span> div?
@@ -203,9 +204,9 @@ models run on a page.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="hljs-property">@Patches</span> = Patches; <span class="hljs-property">@Patch</span> = u.cloneClass(Patch)
-    <span class="hljs-property">@Agents</span> = Agents; <span class="hljs-property">@Agent</span> = u.cloneClass(Agent)
-    <span class="hljs-property">@Links</span> = Links; <span class="hljs-property">@Link</span> = u.cloneClass(Link)</pre></div></div>
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-property">@Patch</span> = u.cloneClass(Patch)
+    <span class="hljs-property">@Agent</span> = u.cloneClass(Agent)
+    <span class="hljs-property">@Link</span> = u.cloneClass(Link)</pre></div></div>
             
         </li>
         
@@ -220,9 +221,9 @@ models run on a page.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="hljs-property">@patches</span> = <span class="hljs-keyword">new</span> <span class="hljs-property">@Patches</span> @, <span class="hljs-property">@Patch</span>, <span class="hljs-string">"patches"</span>
-    <span class="hljs-property">@agents</span> = <span class="hljs-keyword">new</span> <span class="hljs-property">@Agents</span> @, <span class="hljs-property">@Agent</span>, <span class="hljs-string">"agents"</span>
-    <span class="hljs-property">@links</span> = <span class="hljs-keyword">new</span> <span class="hljs-property">@Links</span> @, <span class="hljs-property">@Link</span>, <span class="hljs-string">"links"</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-property">@patches</span> = <span class="hljs-keyword">new</span> Patches @, <span class="hljs-property">@Patch</span>, <span class="hljs-string">"patches"</span>
+    <span class="hljs-property">@agents</span> = <span class="hljs-keyword">new</span> Agents @, <span class="hljs-property">@Agent</span>, <span class="hljs-string">"agents"</span>
+    <span class="hljs-property">@links</span> = <span class="hljs-keyword">new</span> Links @, <span class="hljs-property">@Link</span>, <span class="hljs-string">"links"</span></pre></div></div>
             
         </li>
         
@@ -528,11 +529,11 @@ Will advance the ticks/draws counters.</p>
     <span class="hljs-built_in">console</span>.log <span class="hljs-string">"reset: contexts"</span> <span class="hljs-comment"># clear/resize canvas xfms b4 agentsets</span>
     (v.restore(); <span class="hljs-property">@setCtxTransform</span> v) <span class="hljs-keyword">for</span> k,v <span class="hljs-keyword">of</span> <span class="hljs-property">@contexts</span> <span class="hljs-keyword">when</span> v.canvas?
     <span class="hljs-built_in">console</span>.log <span class="hljs-string">"reset: patches"</span>
-    <span class="hljs-property">@patches</span> = <span class="hljs-keyword">new</span> <span class="hljs-property">@Patches</span> @, <span class="hljs-property">@Patch</span>, <span class="hljs-string">"patches"</span>
+    <span class="hljs-property">@patches</span> = <span class="hljs-keyword">new</span> Patches @, <span class="hljs-property">@Patch</span>, <span class="hljs-string">"patches"</span>
     <span class="hljs-built_in">console</span>.log <span class="hljs-string">"reset: agents"</span>
-    <span class="hljs-property">@agents</span> = <span class="hljs-keyword">new</span> <span class="hljs-property">@Agents</span> @, <span class="hljs-property">@Agent</span>, <span class="hljs-string">"agents"</span>
+    <span class="hljs-property">@agents</span> = <span class="hljs-keyword">new</span> Agents @, <span class="hljs-property">@Agent</span>, <span class="hljs-string">"agents"</span>
     <span class="hljs-built_in">console</span>.log <span class="hljs-string">"reset: links"</span>
-    <span class="hljs-property">@links</span> = <span class="hljs-keyword">new</span> <span class="hljs-property">@Links</span> @, <span class="hljs-property">@Link</span>, <span class="hljs-string">"links"</span>
+    <span class="hljs-property">@links</span> = <span class="hljs-keyword">new</span> Links @, <span class="hljs-property">@Link</span>, <span class="hljs-string">"links"</span>
     Shapes.spriteSheets.length = <span class="hljs-number">0</span> <span class="hljs-comment"># possibly null out entries?</span>
     <span class="hljs-built_in">console</span>.log <span class="hljs-string">"reset: setup"</span>
     <span class="hljs-property">@setupAndEmit</span>()
@@ -567,11 +568,11 @@ to avoid redrawing the same static scene. Called by animator.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">draw</span>: <span class="hljs-function"><span class="hljs-params">(force=<span class="hljs-property">@anim</span>.stopped)</span> -&gt;</span>
-    <span class="hljs-property">@patches</span>.draw <span class="hljs-property">@contexts</span>.patches  <span class="hljs-keyword">if</span> force <span class="hljs-keyword">or</span> <span class="hljs-property">@refreshPatches</span> <span class="hljs-keyword">or</span> <span class="hljs-property">@anim</span>.draws <span class="hljs-keyword">is</span> <span class="hljs-number">1</span>
-    <span class="hljs-property">@links</span>.draw   <span class="hljs-property">@contexts</span>.links    <span class="hljs-keyword">if</span> force <span class="hljs-keyword">or</span> <span class="hljs-property">@refreshLinks</span>   <span class="hljs-keyword">or</span> <span class="hljs-property">@anim</span>.draws <span class="hljs-keyword">is</span> <span class="hljs-number">1</span>
-    <span class="hljs-property">@agents</span>.draw  <span class="hljs-property">@contexts</span>.agents   <span class="hljs-keyword">if</span> force <span class="hljs-keyword">or</span> <span class="hljs-property">@refreshAgents</span>  <span class="hljs-keyword">or</span> <span class="hljs-property">@anim</span>.draws <span class="hljs-keyword">is</span> <span class="hljs-number">1</span>
-    <span class="hljs-property">@drawSpotlight</span> <span class="hljs-property">@spotlightAgent</span>, <span class="hljs-property">@contexts</span>.spotlight  <span class="hljs-keyword">if</span> <span class="hljs-property">@spotlightAgent</span>?
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">draw</span>: <span class="hljs-function"><span class="hljs-params">(force = <span class="hljs-property">@anim</span>.stopped <span class="hljs-keyword">or</span> <span class="hljs-property">@anim</span>.draws <span class="hljs-keyword">is</span> <span class="hljs-number">1</span>)</span> -&gt;</span>
+    <span class="hljs-property">@patches</span>.draw <span class="hljs-property">@contexts</span>.patches  <span class="hljs-keyword">if</span> force <span class="hljs-keyword">or</span> <span class="hljs-property">@refreshPatches</span>
+    <span class="hljs-property">@links</span>.draw   <span class="hljs-property">@contexts</span>.links    <span class="hljs-keyword">if</span> force <span class="hljs-keyword">or</span> <span class="hljs-property">@refreshLinks</span>
+    <span class="hljs-property">@agents</span>.draw  <span class="hljs-property">@contexts</span>.agents   <span class="hljs-keyword">if</span> force <span class="hljs-keyword">or</span> <span class="hljs-property">@refreshAgents</span>
+    <span class="hljs-property">@drawSpotlight</span> <span class="hljs-property">@spotlightAgent</span>, <span class="hljs-property">@contexts</span>.spotlight <span class="hljs-keyword">if</span> <span class="hljs-property">@spotlightAgent</span>?
     <span class="hljs-property">@emit</span>(<span class="hljs-string">'draw'</span>)</pre></div></div>
             
         </li>
@@ -616,7 +617,7 @@ Use:</p>
 
   <span class="hljs-attribute">drawSpotlight</span>: <span class="hljs-function"><span class="hljs-params">(agent, ctx)</span> -&gt;</span>
     u.clearCtx ctx
-    u.fillCtx ctx, [<span class="hljs-number">0</span>,<span class="hljs-number">0</span>,<span class="hljs-number">0</span>,<span class="hljs-number">0.6</span>]
+    u.fillCtx ctx, Color.typedColor(<span class="hljs-number">0</span>,<span class="hljs-number">0</span>,<span class="hljs-number">0</span>,<span class="hljs-number">.6</span>*<span class="hljs-number">255</span>)
     ctx.beginPath()
     ctx.arc agent.x, agent.y, <span class="hljs-number">3</span>, <span class="hljs-number">0</span>, <span class="hljs-number">2</span>*Math.PI, <span class="hljs-literal">false</span>
     ctx.fill()</pre></div></div>
@@ -664,17 +665,20 @@ not usable due to the patches being prebuilt.  Stay tuned.</p>
   <span class="hljs-attribute">createBreeds</span>: <span class="hljs-function"><span class="hljs-params">(breedNames, baseClass, baseSet)</span> -&gt;</span>
     breeds = []; breeds.classes = {}; breeds.sets = {}
     <span class="hljs-keyword">for</span> breedName <span class="hljs-keyword">in</span> breedNames.split(<span class="hljs-string">" "</span>)
-      className = breedName.charAt(<span class="hljs-number">0</span>).toUpperCase() + breedName.substr(<span class="hljs-number">1</span>)
-      breedClass = u.cloneClass baseClass, className <span class="hljs-comment"># breedClass = class Breed extends baseClass</span>
-      breed = @[breedName] = <span class="hljs-comment"># add @&lt;breed&gt; to local scope</span>
-        <span class="hljs-keyword">new</span> baseSet @, breedClass, breedName, <span class="hljs-attribute">baseClass</span>::breed <span class="hljs-comment"># create subset agentSet</span>
+      className = u.upperCamelCase breedName
+      breedClass = u.cloneClass baseClass, className
+      breed = @[breedName] =
+        <span class="hljs-keyword">new</span> baseSet @, breedClass, breedName, <span class="hljs-attribute">baseClass</span>::breed
       breeds.push breed
       breeds.sets[breedName] = breed
       breeds.classes[<span class="hljs-string">"<span class="hljs-subst">#{breedName}</span>Class"</span>] = breedClass
     breeds
-  <span class="hljs-attribute">patchBreeds</span>: <span class="hljs-function"><span class="hljs-params">(breedNames)</span> -&gt;</span> <span class="hljs-property">@patches</span>.breeds = <span class="hljs-property">@createBreeds</span> breedNames, <span class="hljs-property">@Patch</span>, <span class="hljs-property">@Patches</span>
-  <span class="hljs-attribute">agentBreeds</span>: <span class="hljs-function"><span class="hljs-params">(breedNames)</span> -&gt;</span> <span class="hljs-property">@agents</span>.breeds  = <span class="hljs-property">@createBreeds</span> breedNames, <span class="hljs-property">@Agent</span>, <span class="hljs-property">@Agents</span>
-  <span class="hljs-attribute">linkBreeds</span>:  <span class="hljs-function"><span class="hljs-params">(breedNames)</span> -&gt;</span> <span class="hljs-property">@links</span>.breeds   = <span class="hljs-property">@createBreeds</span> breedNames, <span class="hljs-property">@Link</span>,  <span class="hljs-property">@Links</span></pre></div></div>
+  <span class="hljs-attribute">patchBreeds</span>: <span class="hljs-function"><span class="hljs-params">(breedNames)</span> -&gt;</span>
+    <span class="hljs-property">@patches</span>.breeds = <span class="hljs-property">@createBreeds</span> breedNames, <span class="hljs-property">@Patch</span>, Patches
+  <span class="hljs-attribute">agentBreeds</span>: <span class="hljs-function"><span class="hljs-params">(breedNames)</span> -&gt;</span>
+    <span class="hljs-property">@agents</span>.breeds = <span class="hljs-property">@createBreeds</span> breedNames, <span class="hljs-property">@Agent</span>, Agents
+  <span class="hljs-attribute">linkBreeds</span>:  <span class="hljs-function"><span class="hljs-params">(breedNames)</span> -&gt;</span>
+    <span class="hljs-property">@links</span>.breeds = <span class="hljs-property">@createBreeds</span> breedNames, <span class="hljs-property">@Link</span>, Links</pre></div></div>
             
         </li>
         
@@ -711,17 +715,17 @@ See <a href="http://goo.gl/1i7bd">CoffeeConsole</a> Chrome extension too.</p>
             
             <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">debug</span>: <span class="hljs-function"><span class="hljs-params">(<span class="hljs-property">@debugging</span>=<span class="hljs-literal">true</span>)</span>-&gt;</span>u.waitOn (<span class="hljs-function">=&gt;</span><span class="hljs-property">@modelReady</span>),(<span class="hljs-function">=&gt;</span><span class="hljs-property">@setRootVars</span>()); @
   <span class="hljs-attribute">setRootVars</span>:<span class="hljs-function"> -&gt;</span>
-    <span class="hljs-built_in">window</span>.psc = <span class="hljs-property">@Patches</span>
+    <span class="hljs-built_in">window</span>.psc = Patches
+    <span class="hljs-built_in">window</span>.asc = Agents
+    <span class="hljs-built_in">window</span>.lsc = Links
     <span class="hljs-built_in">window</span>.pc  = <span class="hljs-property">@Patch</span>
-    <span class="hljs-built_in">window</span>.ps  = <span class="hljs-property">@patches</span>
-    <span class="hljs-built_in">window</span>.p0  = <span class="hljs-property">@patches</span>[<span class="hljs-number">0</span>]
-    <span class="hljs-built_in">window</span>.asc = <span class="hljs-property">@Agents</span>
     <span class="hljs-built_in">window</span>.ac  = <span class="hljs-property">@Agent</span>
-    <span class="hljs-built_in">window</span>.as  = <span class="hljs-property">@agents</span>
-    <span class="hljs-built_in">window</span>.a0  = <span class="hljs-property">@agents</span>[<span class="hljs-number">0</span>]
-    <span class="hljs-built_in">window</span>.lsc = <span class="hljs-property">@Links</span>
     <span class="hljs-built_in">window</span>.lc  = <span class="hljs-property">@Link</span>
+    <span class="hljs-built_in">window</span>.ps  = <span class="hljs-property">@patches</span>
+    <span class="hljs-built_in">window</span>.as  = <span class="hljs-property">@agents</span>
     <span class="hljs-built_in">window</span>.ls  = <span class="hljs-property">@links</span>
+    <span class="hljs-built_in">window</span>.p0  = <span class="hljs-property">@patches</span>[<span class="hljs-number">0</span>]
+    <span class="hljs-built_in">window</span>.a0  = <span class="hljs-property">@agents</span>[<span class="hljs-number">0</span>]
     <span class="hljs-built_in">window</span>.l0  = <span class="hljs-property">@links</span>[<span class="hljs-number">0</span>]
     <span class="hljs-built_in">window</span>.dr  = <span class="hljs-property">@drawing</span>
     <span class="hljs-built_in">window</span>.u   = Util
@@ -750,10 +754,12 @@ Thus @ABM is placed in the global scope.
             <div class="content"><div class='highlight'><pre>
 
 <span class="hljs-property">@ABM</span> = {
-  util    <span class="hljs-comment"># deprecated</span>
-  shapes  <span class="hljs-comment"># deprecated</span>
+  util    <span class="hljs-comment"># deprecated, Util</span>
+  shapes  <span class="hljs-comment"># deprecated, Shapes</span>
   Util
   Color
+  ColorMaps
+  colorMixin
   Shapes
   AgentSet
   Patch

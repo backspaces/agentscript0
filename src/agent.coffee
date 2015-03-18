@@ -1,3 +1,4 @@
+
 # Class Agent instances represent the dynamic, behavioral element of modeling.
 # Each agent knows the patch it is on, and interacts with that and other
 # patches, as well as other agents.
@@ -40,24 +41,29 @@ class Agent
   penSize: 1          # the pen thickness in pixels
   heading: null       # the direction I'm pointed in, in radians
   sprite: null        # an image of me for optimized drawing
+  useSprites: false   # should I use sprites?
   cacheLinks: false   # should I keep links to/from me in links array?.
   links: null         # array of links to/from me as an endpoint; init by ctor
   constructor: -> # called by agentSets create factory, not user
     @x = @y = 0
     @p = @model.patches.patch @x, @y
-    @color = u.randomColor() unless @color? # promote color if default not set
+    @color = u.randomColor() unless @color? # or @useSprites or @hidden
     @heading = u.randomFloat(Math.PI*2) unless @heading?
     @p.agents.push @ if @p.agents? # @model.patches.cacheAgentsHere
     @links = [] if @cacheLinks
 
   # Set agent color to `c` scaled by `s`. Usage: see patch.scaleColor
   scaleColor: (c, s) ->
-    @color = u.clone @color unless @hasOwnProperty "color" # promote color to inst var
-    u.scaleColor c, s, @color
+    u.deprecated "Agent.scaleColor: use ColorMaps ramps or closestColor"
+    @color = ColorMaps.scaleColor(c, s)
+    # @color = u.clone @color unless @hasOwnProperty "color" # promote color to inst var
+    # u.scaleColor c, s, @color
 
   scaleOpacity: (c, s) ->
-    @color = u.clone @color unless @hasOwnProperty "color"
-    u.scaleOpacity c, s, @color
+    u.deprecated "Agent.scaleOpacity: use ColorMaps ramps"
+    @color = u.scaleOpacity c, s, @color
+    # @color = u.clone @color unless @hasOwnProperty "color"
+    # u.scaleOpacity c, s, @color
 
   # Return a string representation of the agent.
   toString: -> "{id:#{@id} xy:#{u.aToFixed [@x,@y]} c:#{@color} h: #{h=@heading.toFixed 2}/#{Math.round(u.radToDeg(h))}}"
@@ -74,7 +80,7 @@ class Agent
       @p.agents.push @
     if @penDown
       drawing = @model.drawing
-      drawing.strokeStyle = u.colorStr @color
+      drawing.strokeStyle = @color.css # u.colorStr @color
       drawing.lineWidth = @model.patches.fromBits @penSize
       drawing.beginPath()
       drawing.moveTo x0, y0; drawing.lineTo x, y # REMIND: euclidean
@@ -98,22 +104,25 @@ class Agent
   draw: (ctx) ->
     shape = Shapes[@shape]
     rad = if shape.rotate then @heading else 0 # radians
-    if @sprite? or @breed.useSprites
+    if @sprite? or @useSprites # @breed.useSprites
       @setSprite() unless @sprite? # lazy evaluation of useSprites
       Shapes.drawSprite ctx, @sprite, @x, @y, @size, rad
     else
       Shapes.draw ctx, shape, @x, @y, @size, rad, @color, @strokeColor
     if @label?
       [x,y] = @model.patches.patchXYtoPixelXY @x, @y
-      u.ctxDrawText ctx, @label, x+@labelOffset[0], y+@labelOffset[1], @labelColor
+      u.ctxDrawText ctx, @label,
+        x+@labelOffset[0], y+@labelOffset[1], @labelColor
 
   # Set an individual agent's sprite, synching its color, shape, size
   setSprite: (sprite)->
     if (s=sprite)?
-      @sprite = s; @color = s.color; @strokeColor = s.strokeColor; @shape = s.shape; @size = s.size
+      @sprite = s; @color = s.color; @strokeColor = s.strokeColor
+      @shape = s.shape; @size = @model.patches.fromBits(s.size)
     else
-      @color = u.randomColor unless @color?
-      @sprite = Shapes.shapeToSprite @shape, @color, @model.patches.toBits(@size), @strokeColor
+      # @color = u.randomColor() unless @color? # not needed if lazy evaluation
+      @sprite = Shapes.shapeToSprite @shape, @color,
+        @model.patches.toBits(@size), @strokeColor
 
   # Draw the agent on the drawing layer, leaving permanent image.
   stamp: -> @draw @model.drawing
@@ -189,6 +198,10 @@ class Agent
   inCone: (aset, cone, radius, meToo=false) ->
     aset.inCone @p, @heading, cone, radius, meToo # REMIND: @p vs @?
 
+  # Return true if world coordinate falls on agent sprite
+  hitTest: (x, y) ->
+    @distanceXY(x, y) < @size
+
   # Return other end of link from me
   otherEnd: (l) -> if l.end1 is @ then l.end2 else l.end1
 
@@ -215,3 +228,8 @@ class Agent
   # Return other end of myOutinks
   outLinkNeighbors: ->
     l.end2 for l in @myLinks() when l.end1 is @
+
+# use colorMixin to setup colors
+colorMixin(Agent, "color", null)
+colorMixin(Agent, "strokeColor", null)
+colorMixin(Agent, "labelColor", "black")

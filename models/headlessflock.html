@@ -4,33 +4,33 @@
     <script src="../lib/agentscript.js"></script>
     <script src="../tools/coffee-script.js"></script>
     <script type="text/coffeescript">
-    
+
     u = ABM.Util # ABM.Util alias
     class MyModel extends ABM.Model
-      
+
       setVision: (@vision) -> @patches.cacheRect @vision, true
       setMaxTurn: (@maxTurn) -> @maxTurn = u.degToRad(@maxTurn)
       toggleConsole: () -> @useConsole = not @useConsole
-      
+
       setup: ->
         # u.randomSeed() # use for repeatable runs
-      
-        @refreshPatches = false # <3fps->4fps agents larger part of drawing 
+
+        @refreshPatches = false # <3fps->4fps agents larger part of drawing
         # No optimizations: 4fps
         # @patches.usePixels() # 4fps same as refresh off
         @patches.cacheAgentsHere() # 17fps, big help for inRadius
         # w/ refresh off and two optimizations, 22-23fps
-        @agents.setUseSprites() # 24 -> 36
-        
+        # @agents.setUseSprites() # 24 -> 36
+
         # Default is untimed, fastest for headless
         @anim.setRate 5, false # multistep
-        
+
         @useConsole = true
         @population = 300     # agents
         @setVision 3          # patches & set patch rect
         @minSeparation = 0.75 # patches
         @setMaxTurn(3.0)      # degrees -> radians
-      
+
         # defaults
         @agents.setDefault "size", 1.5
         # @agents.setDefault "color", [255,0,0] # slightly faster! ->38/39 ??
@@ -50,7 +50,7 @@
 
         @domElements = (newDomEl(agent) for agent in @agents)
 
-  
+
       step: ->
         if @useConsole and @anim.ticks % 25 is 0
           console.log @anim.toString(), "flock alignment: #{@reportFlockVectorSize()}"
@@ -87,7 +87,7 @@
         @turnTowards a, @averageHeading(flockmates)
       cohere: (a, flockmates) ->
         @turnTowards a, @averageHeadingTowards(a, flockmates)
-        
+
       turnTowards: (a, heading) ->
         turn = u.subtractRads heading, a.heading # angle from h to a
         turn = u.clamp turn, -@maxTurn, @maxTurn # limit the turn
@@ -101,7 +101,7 @@
         dy = (Math.cos f.towards a for f in flockmates).reduce (x,y) -> x+y
         @safeAtan dy, dx
       safeAtan: (x,y) -> Math.atan2 y, x # if x is 0 and y is 0 then 0 else Math.atan2 y, x # atan ok if x 0
-      
+
       reportFlockVectorSize: ->
         dx = (Math.sin a.heading for a in @agents).reduce (x,y) -> x+y
         dy = (Math.cos a.heading for a in @agents).reduce (x,y) -> x+y
