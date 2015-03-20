@@ -14,8 +14,8 @@ class Animator
   # Create initial animator for the model, specifying default rate (fps) and multiStep.
   # If multiStep, run the draw() and step() methods separately by draw() using
   # requestAnimationFrame and step() using setTimeout.
-  constructor: (@model, @rate=30, @multiStep=model.world.isHeadless) ->
-    @isHeadless = model.world.isHeadless; @reset()
+  constructor: (@model, @rate=30, @multiStep=@model.world.isHeadless) ->
+    @isHeadless = @model.world.isHeadless; @reset()
   # Adjust animator.  Call before model.start()
   # in setup() to change default settings
   setRate: (@rate, @multiStep=@isHeadless) -> @resetTimes() # Change rate while running?
