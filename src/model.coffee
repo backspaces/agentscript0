@@ -101,6 +101,7 @@ class Model
     @world = {size,minX,maxX,minY,maxY,minXcor,maxXcor,minYcor,maxYcor,
       numX,numY,pxWidth,pxHeight,isTorus,hasNeighbors,isHeadless}
   setWorldDeprecated: (size, minX, maxX, minY, maxY, isTorus, hasNeighbors, isHeadless) ->
+    u.deprecated "Model.setWorldDeprecated: ctor should use options object"
     numX = maxX-minX+1; numY = maxY-minY+1; pxWidth = numX*size; pxHeight = numY*size
     minXcor=minX-.5; maxXcor=maxX+.5; minYcor=minY-.5; maxYcor=maxY+.5
     @world = {size,minX,maxX,minY,maxY,minXcor,maxXcor,minYcor,maxYcor,
@@ -293,6 +294,24 @@ class Model
     window.gl  = @globals()
     window.dv  = @div
     window.app = @
+
+  # Debug aid: Fill a named div with the (last) sprite sheet
+  # Typically the div should be before the model div, float right:
+  #
+  #    <div id="sprites" style="float:right;"></div>
+  #
+  # If no divName given, use spriteSheet itself w/ float:right style
+  showSpriteSheet: (divName) ->
+    if Shapes.spriteSheets.length isnt 0
+      sheet = Util.last(Shapes.spriteSheets)
+      console.log sheet
+      if divName?
+        document.getElementById(divName).appendChild(sheet.canvas)
+      else
+        sheet.canvas.setAttribute "style", "float:right"
+        @div.parentElement.insertBefore(sheet.canvas, @div)
+    else
+      console.log "showSpriteSheet: no sprite sheet found"
 
 # Create the namespace **ABM** for our project.
 # Note here `this` or `@` == window due to coffeescript wrapper call.

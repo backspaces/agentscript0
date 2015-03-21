@@ -23,7 +23,7 @@
         # @patches.cacheAgentsHere() # 40fps; not needed, slight overhead
         # Deprecated:
         # @agents.setUseSprites() # 24 -> 36
-        @agents.setDefault "useSprites", true
+        @drivers.setDefault "useSprites", true
         # w/ refreshs off and 1 optimization 59/max-fps
         # @agents.cacheLinks() # no improvement, but tests a.links
 
@@ -60,6 +60,8 @@
 
       step: ->
         console.log @anim.toString() if @anim.ticks % 100 is 0
+        # Show the sprite sheet if there is one after first draw
+        @showSpriteSheet() if @anim.draws is 2
         for d in @drivers #for d in @drivers()
           d.face d.toNode
           d.forward Math.min d.v, d.distance d.toNode

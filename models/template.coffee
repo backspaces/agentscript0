@@ -106,11 +106,9 @@ class MyModel extends ABM.Model
       @setSpotlight null if @anim.ticks is 600
     else
       @refreshPatches = false
-    if @anim.draws is 2 # Show the sprite sheet if there is one after first draw
-      sheet = u.last(Shapes.spriteSheets) if Shapes.spriteSheets.length isnt 0
-      if sheet?
-        log sheet
-        document.getElementById("play").appendChild(sheet.canvas)
+    # Show the sprite sheet if there is one after first draw
+    @showSpriteSheet() if @anim.draws is 2
+    # Print out the animator stats every 100 steps
     log @anim.toString() if @anim.ticks % 100 is 0
     # Stop the animation at 1000. Restart by `ABM.model.start()` in console.
     if @anim.ticks is 1000

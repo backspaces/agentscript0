@@ -305,7 +305,10 @@ Util = util = u = # TODO: "util" deprecated in favor of Util
   # mixin() knows to copy prototype functions into the prototype
   mixin: (destObj, srcObject) ->
     destObj[key] = srcObject[key] for own key of srcObject
-    destObj.__proto__[key] = srcObject.__proto__[key] for own key of srcObject.__proto__
+    destProto = Object.getPrototypeOf destObj
+    srcProto = Object.getPrototypeOf srcObject
+    destProto[key] = srcProto[key] for own key of srcProto
+    # destObj.__proto__[key] = srcObject.__proto__[key] for own key of srcObject.__proto__
 
   # Parse a string to its JS value.
   # If s isn't a JS expression, return decoded string

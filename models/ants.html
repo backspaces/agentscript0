@@ -53,14 +53,10 @@
         @setupAgents()
       step: ->
         console.log @anim.toString() if @anim.ticks % 100 is 0
+        # Show the sprite sheet if there is one after first draw
+        @showSpriteSheet() if @anim.draws is 2
         @updateAgents()
         @updatePatches()
-        # Show the sprite sheet if there is one after first draw
-        if @anim.draws is 2 and Shapes.spriteSheets.length isnt 0
-          sheet = u.last(Shapes.spriteSheets)
-          if sheet?
-            console.log "Sprite Sheet:", sheet
-            document.getElementById("play").appendChild(sheet.canvas)
 
       setupPatches: ->
         for p in @patches
@@ -156,7 +152,6 @@
 
   </head>
   <body>
-    <div id="play" style="float:right;"></div>
     <div id="layers"></div>
   </body>
 </html>
