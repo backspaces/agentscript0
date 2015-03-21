@@ -219,7 +219,7 @@ Assume map is of correct colorType.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    proto[getterName] =<span class="hljs-function"> -&gt;</span> @[colorPropName]</pre></div></div>
+            <div class="content"><div class='highlight'><pre>    proto[getterName] = <span class="hljs-function">-&gt;</span> @[colorPropName]</pre></div></div>
             
         </li>
         
@@ -235,7 +235,7 @@ Assume map is of correct colorType.</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>  Object.defineProperty proto, colorName,
-    <span class="hljs-attribute">get</span>:<span class="hljs-function"> -&gt;</span> @[getterName]()
+    <span class="hljs-attribute">get</span>: <span class="hljs-function">-&gt;</span> @[getterName]()
     <span class="hljs-attribute">set</span>: <span class="hljs-function"><span class="hljs-params">(val)</span> -&gt;</span> @[setterName](val)</pre></div></div>
             
         </li>
@@ -252,7 +252,7 @@ Assume map is of correct colorType.</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>  Object.defineProperty proto, colorMapName,
-    <span class="hljs-attribute">get</span>:<span class="hljs-function"> -&gt;</span> colorMap
+    <span class="hljs-attribute">get</span>: <span class="hljs-function">-&gt;</span> colorMap
     <span class="hljs-attribute">set</span>: <span class="hljs-function"><span class="hljs-params">(val)</span> -&gt;</span> colorMap = val
   proto</pre></div></div>
             

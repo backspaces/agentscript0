@@ -73,13 +73,13 @@ more standard down/up enabling move events.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">start</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-comment"># Note: multiple calls safe</span>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">start</span>: <span class="hljs-function">-&gt;</span> <span class="hljs-comment"># Note: multiple calls safe</span>
     <span class="hljs-property">@div</span>.addEventListener(<span class="hljs-string">"mousedown"</span>, <span class="hljs-property">@handleMouseDown</span>, <span class="hljs-literal">false</span>)
     <span class="hljs-built_in">document</span>.body.addEventListener(<span class="hljs-string">"mouseup"</span>, <span class="hljs-property">@handleMouseUp</span>, <span class="hljs-literal">false</span>)
     <span class="hljs-property">@div</span>.addEventListener(<span class="hljs-string">"mousemove"</span>, <span class="hljs-property">@handleMouseMove</span>, <span class="hljs-literal">false</span>)
     <span class="hljs-property">@model</span>.<span class="hljs-literal">on</span>(<span class="hljs-string">'step'</span>, <span class="hljs-property">@handleStep</span>)
     <span class="hljs-property">@lastX</span>=<span class="hljs-property">@lastY</span>=<span class="hljs-property">@x</span>=<span class="hljs-property">@y</span>=<span class="hljs-property">@pixX</span>=<span class="hljs-property">@pixY</span>=NaN; <span class="hljs-property">@moved</span>=<span class="hljs-property">@down</span>=<span class="hljs-literal">false</span>
-  <span class="hljs-attribute">stop</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-comment"># Note: multiple calls safe</span>
+  <span class="hljs-attribute">stop</span>: <span class="hljs-function">-&gt;</span> <span class="hljs-comment"># Note: multiple calls safe</span>
     <span class="hljs-property">@div</span>.removeEventListener(<span class="hljs-string">"mousedown"</span>, <span class="hljs-property">@handleMouseDown</span>, <span class="hljs-literal">false</span>)
     <span class="hljs-built_in">document</span>.body.removeEventListener(<span class="hljs-string">"mouseup"</span>, <span class="hljs-property">@handleMouseUp</span>, <span class="hljs-literal">false</span>)
     <span class="hljs-property">@div</span>.removeEventListener(<span class="hljs-string">"mousemove"</span>, <span class="hljs-property">@handleMouseMove</span>, <span class="hljs-literal">false</span>)

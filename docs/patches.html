@@ -72,7 +72,7 @@ Patches are created from top-left to bottom-right to match data sets.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">constructor</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-comment"># model, agentClass, name, mainSet</span>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">constructor</span>: <span class="hljs-function">-&gt;</span> <span class="hljs-comment"># model, agentClass, name, mainSet</span>
     <span class="hljs-keyword">super</span> <span class="hljs-comment"># call super with all the args I was called with</span>
     <span class="hljs-property">@monochrome</span> = <span class="hljs-literal">false</span> <span class="hljs-comment"># set to true to optimize patches all default color</span>
     @[k] = v <span class="hljs-keyword">for</span> own k,v <span class="hljs-keyword">of</span> <span class="hljs-property">@model</span>.world <span class="hljs-comment"># add world items to patches</span>
@@ -93,7 +93,7 @@ patches are started up empty and filled by “create” calls.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">populate</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-comment"># TopLeft to BottomRight, exactly as canvas imagedata</span>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">populate</span>: <span class="hljs-function">-&gt;</span> <span class="hljs-comment"># TopLeft to BottomRight, exactly as canvas imagedata</span>
     <span class="hljs-keyword">for</span> y <span class="hljs-keyword">in</span> [<span class="hljs-property">@maxY</span>..<span class="hljs-property">@minY</span>] <span class="hljs-keyword">by</span> -<span class="hljs-number">1</span>
       <span class="hljs-keyword">for</span> x <span class="hljs-keyword">in</span> [<span class="hljs-property">@minX</span>..<span class="hljs-property">@maxX</span>] <span class="hljs-keyword">by</span> <span class="hljs-number">1</span>
         <span class="hljs-property">@add</span> <span class="hljs-keyword">new</span> <span class="hljs-property">@agentClass</span> x, y
@@ -115,7 +115,7 @@ Call before first agent is created.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">cacheAgentsHere</span>:<span class="hljs-function"> -&gt;</span> p.agents = [] <span class="hljs-keyword">for</span> p <span class="hljs-keyword">in</span> @; <span class="hljs-literal">null</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">cacheAgentsHere</span>: <span class="hljs-function">-&gt;</span> p.agents = [] <span class="hljs-keyword">for</span> p <span class="hljs-keyword">in</span> @; <span class="hljs-literal">null</span></pre></div></div>
             
         </li>
         
@@ -168,7 +168,7 @@ inCone, inRect, inRadius.  Ex: flock demo model’s vision rect.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">setNeighbors</span>:<span class="hljs-function"> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">setNeighbors</span>: <span class="hljs-function">-&gt;</span>
     <span class="hljs-keyword">for</span> p <span class="hljs-keyword">in</span> @
       p.n =  <span class="hljs-property">@patchRect</span> p, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>
       p.n4 = <span class="hljs-property">@asSet</span> (n <span class="hljs-keyword">for</span> n <span class="hljs-keyword">in</span> p.n <span class="hljs-keyword">when</span> n.x <span class="hljs-keyword">is</span> p.x <span class="hljs-keyword">or</span> n.y <span class="hljs-keyword">is</span> p.y)</pre></div></div>
@@ -186,7 +186,7 @@ inCone, inRect, inRadius.  Ex: flock demo model’s vision rect.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">setPixels</span>:<span class="hljs-function"> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">setPixels</span>: <span class="hljs-function">-&gt;</span>
     <span class="hljs-keyword">if</span> <span class="hljs-property">@size</span> <span class="hljs-keyword">is</span> <span class="hljs-number">1</span>
     <span class="hljs-keyword">then</span> <span class="hljs-property">@usePixels</span>(); <span class="hljs-property">@pixelsCtx</span> = <span class="hljs-property">@model</span>.contexts.patches
     <span class="hljs-keyword">else</span> <span class="hljs-property">@pixelsCtx</span> = u.createCtx <span class="hljs-property">@numX</span>, <span class="hljs-property">@numY</span>
@@ -356,7 +356,7 @@ using either clamp/wrap above according to isTorus topology.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">randomPt</span>:<span class="hljs-function"> -&gt;</span> [u.randomFloat2(<span class="hljs-property">@minXcor</span>,<span class="hljs-property">@maxXcor</span>), u.randomFloat2(<span class="hljs-property">@minYcor</span>,<span class="hljs-property">@maxYcor</span>)]</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">randomPt</span>: <span class="hljs-function">-&gt;</span> [u.randomFloat2(<span class="hljs-property">@minXcor</span>,<span class="hljs-property">@maxXcor</span>), u.randomFloat2(<span class="hljs-property">@minYcor</span>,<span class="hljs-property">@maxYcor</span>)]</pre></div></div>
             
         </li>
         

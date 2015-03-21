@@ -159,7 +159,7 @@ an empty dataset and having it filled by another function.</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">reset</span>: <span class="hljs-function"><span class="hljs-params">(<span class="hljs-property">@width</span>, <span class="hljs-property">@height</span>, <span class="hljs-property">@data</span>)</span> -&gt;</span>
-    <span class="hljs-keyword">if</span> data.length <span class="hljs-keyword">isnt</span> width*height
+    <span class="hljs-keyword">if</span> <span class="hljs-property">@data</span>.length <span class="hljs-keyword">isnt</span> <span class="hljs-property">@width</span>*<span class="hljs-property">@height</span>
       u.error <span class="hljs-string">"""DataSet: data array length error:
       data.length: <span class="hljs-subst">#{<span class="hljs-property">@data</span>.length}</span> width: <span class="hljs-subst">#{<span class="hljs-property">@width</span>}</span> height: <span class="hljs-subst">#{<span class="hljs-property">@height</span>}</span>
       """</span>
@@ -194,7 +194,7 @@ an empty dataset and having it filled by another function.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">setDefaults</span>:<span class="hljs-function"> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">setDefaults</span>: <span class="hljs-function">-&gt;</span>
     <span class="hljs-property">@useNearest</span>=<span class="hljs-literal">false</span>
     <span class="hljs-property">@crop</span>=<span class="hljs-literal">false</span>
     <span class="hljs-property">@normalizeImage</span>=<span class="hljs-literal">true</span>
@@ -395,8 +395,8 @@ If p &lt; 0, print data, otherwise use toFixed to truncate to p precision</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">toImage</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-property">@toContext</span>().canvas
-  <span class="hljs-attribute">toContext</span>:<span class="hljs-function"> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">toImage</span>: <span class="hljs-function">-&gt;</span> <span class="hljs-property">@toContext</span>().canvas
+  <span class="hljs-attribute">toContext</span>: <span class="hljs-function">-&gt;</span>
     ctx = u.createCtx <span class="hljs-property">@width</span>, <span class="hljs-property">@height</span>
     idata = ctx.getImageData(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-property">@width</span>, <span class="hljs-property">@height</span>); ta = idata.data
     <span class="hljs-keyword">if</span> <span class="hljs-property">@normalizeImage</span>
@@ -517,7 +517,7 @@ x,y is in topleft-bottomright box: [tlx,tly,tlx+w,tly-h]</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">normalize8</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-keyword">new</span> DataSet <span class="hljs-property">@width</span>, <span class="hljs-property">@height</span>, u.normalize8(<span class="hljs-property">@data</span>), <span class="hljs-property">@model</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">normalize8</span>: <span class="hljs-function">-&gt;</span> <span class="hljs-keyword">new</span> DataSet <span class="hljs-property">@width</span>, <span class="hljs-property">@height</span>, u.normalize8(<span class="hljs-property">@data</span>), <span class="hljs-property">@model</span></pre></div></div>
             
         </li>
         
@@ -604,10 +604,10 @@ See <a href="http://goo.gl/ubFiji">Convolution article</a></p>
             
             <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">dzdx</span>: <span class="hljs-function"><span class="hljs-params">(n=<span class="hljs-number">2</span>,factor=<span class="hljs-number">1</span>/<span class="hljs-number">8</span>)</span> -&gt;</span> <span class="hljs-property">@convolve</span>([-<span class="hljs-number">1</span>,<span class="hljs-number">0</span>,<span class="hljs-number">1</span>,-n,<span class="hljs-number">0</span>,n,-<span class="hljs-number">1</span>,<span class="hljs-number">0</span>,<span class="hljs-number">1</span>],factor)
   <span class="hljs-attribute">dzdy</span>: <span class="hljs-function"><span class="hljs-params">(n=<span class="hljs-number">2</span>,factor=<span class="hljs-number">1</span>/<span class="hljs-number">8</span>)</span> -&gt;</span> <span class="hljs-property">@convolve</span>([<span class="hljs-number">1</span>,n,<span class="hljs-number">1</span>,<span class="hljs-number">0</span>,<span class="hljs-number">0</span>,<span class="hljs-number">0</span>,-<span class="hljs-number">1</span>,-n,-<span class="hljs-number">1</span>],factor)
-  <span class="hljs-attribute">laplace8</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-property">@convolve</span>([-<span class="hljs-number">1</span>,-<span class="hljs-number">1</span>,-<span class="hljs-number">1</span>,-<span class="hljs-number">1</span>,<span class="hljs-number">8</span>,-<span class="hljs-number">1</span>,-<span class="hljs-number">1</span>,-<span class="hljs-number">1</span>,-<span class="hljs-number">1</span>])
-  <span class="hljs-attribute">laplace4</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-property">@convolve</span>([<span class="hljs-number">0</span>,-<span class="hljs-number">1</span>,<span class="hljs-number">0</span>,-<span class="hljs-number">1</span>,<span class="hljs-number">4</span>,-<span class="hljs-number">1</span>,<span class="hljs-number">0</span>,-<span class="hljs-number">1</span>,<span class="hljs-number">0</span>])
+  <span class="hljs-attribute">laplace8</span>: <span class="hljs-function">-&gt;</span> <span class="hljs-property">@convolve</span>([-<span class="hljs-number">1</span>,-<span class="hljs-number">1</span>,-<span class="hljs-number">1</span>,-<span class="hljs-number">1</span>,<span class="hljs-number">8</span>,-<span class="hljs-number">1</span>,-<span class="hljs-number">1</span>,-<span class="hljs-number">1</span>,-<span class="hljs-number">1</span>])
+  <span class="hljs-attribute">laplace4</span>: <span class="hljs-function">-&gt;</span> <span class="hljs-property">@convolve</span>([<span class="hljs-number">0</span>,-<span class="hljs-number">1</span>,<span class="hljs-number">0</span>,-<span class="hljs-number">1</span>,<span class="hljs-number">4</span>,-<span class="hljs-number">1</span>,<span class="hljs-number">0</span>,-<span class="hljs-number">1</span>,<span class="hljs-number">0</span>])
   <span class="hljs-attribute">blur</span>: <span class="hljs-function"><span class="hljs-params">(factor=<span class="hljs-number">0.0625</span>)</span> -&gt;</span> <span class="hljs-property">@convolve</span>([<span class="hljs-number">1</span>,<span class="hljs-number">2</span>,<span class="hljs-number">1</span>,<span class="hljs-number">2</span>,<span class="hljs-number">4</span>,<span class="hljs-number">2</span>,<span class="hljs-number">1</span>,<span class="hljs-number">2</span>,<span class="hljs-number">1</span>], factor) <span class="hljs-comment"># 1/16 = 0.0625</span>
-  <span class="hljs-attribute">edge</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-property">@convolve</span>([<span class="hljs-number">1</span>,<span class="hljs-number">1</span>,<span class="hljs-number">1</span>,<span class="hljs-number">1</span>,-<span class="hljs-number">7</span>,<span class="hljs-number">1</span>,<span class="hljs-number">1</span>,<span class="hljs-number">1</span>,<span class="hljs-number">1</span>])</pre></div></div>
+  <span class="hljs-attribute">edge</span>: <span class="hljs-function">-&gt;</span> <span class="hljs-property">@convolve</span>([<span class="hljs-number">1</span>,<span class="hljs-number">1</span>,<span class="hljs-number">1</span>,<span class="hljs-number">1</span>,-<span class="hljs-number">7</span>,<span class="hljs-number">1</span>,<span class="hljs-number">1</span>,<span class="hljs-number">1</span>,<span class="hljs-number">1</span>])</pre></div></div>
             
         </li>
         
@@ -764,7 +764,7 @@ is read via an xhr request.</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">parse</span>: <span class="hljs-function"><span class="hljs-params">(<span class="hljs-property">@str</span>)</span> -&gt;</span>
-    textData = str.split <span class="hljs-string">"\n"</span>; <span class="hljs-property">@header</span> = {}; <span class="hljs-comment">#gisData.data = []</span>
+    textData = <span class="hljs-property">@str</span>.split <span class="hljs-string">"\n"</span>; <span class="hljs-property">@header</span> = {}; <span class="hljs-comment">#gisData.data = []</span>
     <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> [<span class="hljs-number">0.</span><span class="hljs-number">.5</span>]
       keyVal = textData[i].split <span class="hljs-regexp">/\s+/</span>
       <span class="hljs-property">@header</span>[keyVal[<span class="hljs-number">0</span>].toLowerCase()] = parseFloat keyVal[<span class="hljs-number">1</span>]

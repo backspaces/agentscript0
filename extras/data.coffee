@@ -44,7 +44,7 @@ ABM.DataSet = class DataSet
   # Reset a dataset to have new width, height and data.  Allows creating
   # an empty dataset and having it filled by another function.
   reset: (@width, @height, @data) ->
-    if data.length isnt width*height
+    if @data.length isnt @width*@height
       u.error """DataSet: data array length error:
       data.length: #{@data.length} width: #{@width} height: #{@height}
       """
@@ -243,7 +243,7 @@ ABM.AscDataSet = class AscDataSet extends DataSet
   # Complete an initial, empty dataset object who's string
   # is read via an xhr request.
   parse: (@str) ->
-    textData = str.split "\n"; @header = {}; #gisData.data = []
+    textData = @str.split "\n"; @header = {}; #gisData.data = []
     for i in [0..5]
       keyVal = textData[i].split /\s+/
       @header[keyVal[0].toLowerCase()] = parseFloat keyVal[1]

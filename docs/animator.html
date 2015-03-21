@@ -71,8 +71,8 @@ requestAnimationFrame and step() using setTimeout.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">constructor</span>: <span class="hljs-function"><span class="hljs-params">(<span class="hljs-property">@model</span>, <span class="hljs-property">@rate</span>=<span class="hljs-number">30</span>, <span class="hljs-property">@multiStep</span>=model.world.isHeadless)</span> -&gt;</span>
-    <span class="hljs-property">@isHeadless</span> = model.world.isHeadless; <span class="hljs-property">@reset</span>()</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">constructor</span>: <span class="hljs-function"><span class="hljs-params">(<span class="hljs-property">@model</span>, <span class="hljs-property">@rate</span>=<span class="hljs-number">30</span>, <span class="hljs-property">@multiStep</span>=<span class="hljs-property">@model</span>.world.isHeadless)</span> -&gt;</span>
+    <span class="hljs-property">@isHeadless</span> = <span class="hljs-property">@model</span>.world.isHeadless; <span class="hljs-property">@reset</span>()</pre></div></div>
             
         </li>
         
@@ -103,12 +103,12 @@ in setup() to change default settings</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">start</span>:<span class="hljs-function"> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">start</span>: <span class="hljs-function">-&gt;</span>
     <span class="hljs-keyword">return</span> <span class="hljs-keyword">unless</span> <span class="hljs-property">@stopped</span> <span class="hljs-comment"># avoid multiple animates</span>
     <span class="hljs-property">@resetTimes</span>()
     <span class="hljs-property">@stopped</span> = <span class="hljs-literal">false</span>
     <span class="hljs-property">@animate</span>()
-  <span class="hljs-attribute">stop</span>:<span class="hljs-function"> -&gt;</span>
+  <span class="hljs-attribute">stop</span>: <span class="hljs-function">-&gt;</span>
     <span class="hljs-property">@stopped</span> = <span class="hljs-literal">true</span>
     <span class="hljs-keyword">if</span> <span class="hljs-property">@animHandle</span>? <span class="hljs-keyword">then</span> cancelAnimationFrame <span class="hljs-property">@animHandle</span>
     <span class="hljs-keyword">if</span> <span class="hljs-property">@timeoutHandle</span>? <span class="hljs-keyword">then</span> clearTimeout <span class="hljs-property">@timeoutHandle</span>
@@ -128,7 +128,7 @@ in setup() to change default settings</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">resetTimes</span>:<span class="hljs-function"> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">resetTimes</span>: <span class="hljs-function">-&gt;</span>
     <span class="hljs-property">@startMS</span> = <span class="hljs-property">@now</span>()
     <span class="hljs-property">@startTick</span> = <span class="hljs-property">@ticks</span>
     <span class="hljs-property">@startDraw</span> = <span class="hljs-property">@draws</span></pre></div></div>
@@ -146,7 +146,7 @@ in setup() to change default settings</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">reset</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-property">@stop</span>(); <span class="hljs-property">@ticks</span> = <span class="hljs-property">@draws</span> = <span class="hljs-number">0</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">reset</span>: <span class="hljs-function">-&gt;</span> <span class="hljs-property">@stop</span>(); <span class="hljs-property">@ticks</span> = <span class="hljs-property">@draws</span> = <span class="hljs-number">0</span></pre></div></div>
             
         </li>
         
@@ -161,8 +161,8 @@ in setup() to change default settings</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">step</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-property">@ticks</span>++; <span class="hljs-property">@model</span>.stepAndEmit()
-  <span class="hljs-attribute">draw</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-property">@draws</span>++; <span class="hljs-property">@model</span>.draw()</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">step</span>: <span class="hljs-function">-&gt;</span> <span class="hljs-property">@ticks</span>++; <span class="hljs-property">@model</span>.stepAndEmit()
+  <span class="hljs-attribute">draw</span>: <span class="hljs-function">-&gt;</span> <span class="hljs-property">@draws</span>++; <span class="hljs-property">@model</span>.draw()</pre></div></div>
             
         </li>
         
@@ -177,7 +177,7 @@ in setup() to change default settings</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">once</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-property">@step</span>(); <span class="hljs-property">@draw</span>()</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">once</span>: <span class="hljs-function">-&gt;</span> <span class="hljs-property">@step</span>(); <span class="hljs-property">@draw</span>()</pre></div></div>
             
         </li>
         
@@ -192,7 +192,7 @@ in setup() to change default settings</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">now</span>:<span class="hljs-function"> -&gt;</span> (performance ? Date).now()</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">now</span>: <span class="hljs-function">-&gt;</span> (performance ? Date).now()</pre></div></div>
             
         </li>
         
@@ -207,7 +207,7 @@ in setup() to change default settings</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">ms</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-property">@now</span>()-<span class="hljs-property">@startMS</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">ms</span>: <span class="hljs-function">-&gt;</span> <span class="hljs-property">@now</span>()-<span class="hljs-property">@startMS</span></pre></div></div>
             
         </li>
         
@@ -223,8 +223,8 @@ The “if” is to avoid from ms=0</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">ticksPerSec</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-keyword">if</span> (elapsed = <span class="hljs-property">@ticks</span>-<span class="hljs-property">@startTick</span>) <span class="hljs-keyword">is</span> <span class="hljs-number">0</span> <span class="hljs-keyword">then</span> <span class="hljs-number">0</span> <span class="hljs-keyword">else</span> Math.round elapsed*<span class="hljs-number">1000</span>/<span class="hljs-property">@ms</span>()
-  <span class="hljs-attribute">drawsPerSec</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-keyword">if</span> (elapsed = <span class="hljs-property">@draws</span>-<span class="hljs-property">@startDraw</span>) <span class="hljs-keyword">is</span> <span class="hljs-number">0</span> <span class="hljs-keyword">then</span> <span class="hljs-number">0</span> <span class="hljs-keyword">else</span> Math.round elapsed*<span class="hljs-number">1000</span>/<span class="hljs-property">@ms</span>()</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">ticksPerSec</span>: <span class="hljs-function">-&gt;</span> <span class="hljs-keyword">if</span> (elapsed = <span class="hljs-property">@ticks</span>-<span class="hljs-property">@startTick</span>) <span class="hljs-keyword">is</span> <span class="hljs-number">0</span> <span class="hljs-keyword">then</span> <span class="hljs-number">0</span> <span class="hljs-keyword">else</span> Math.round elapsed*<span class="hljs-number">1000</span>/<span class="hljs-property">@ms</span>()
+  <span class="hljs-attribute">drawsPerSec</span>: <span class="hljs-function">-&gt;</span> <span class="hljs-keyword">if</span> (elapsed = <span class="hljs-property">@draws</span>-<span class="hljs-property">@startDraw</span>) <span class="hljs-keyword">is</span> <span class="hljs-number">0</span> <span class="hljs-keyword">then</span> <span class="hljs-number">0</span> <span class="hljs-keyword">else</span> Math.round elapsed*<span class="hljs-number">1000</span>/<span class="hljs-property">@ms</span>()</pre></div></div>
             
         </li>
         
@@ -239,7 +239,7 @@ The “if” is to avoid from ms=0</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">toString</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-string">"ticks: <span class="hljs-subst">#{<span class="hljs-property">@ticks</span>}</span>, draws: <span class="hljs-subst">#{<span class="hljs-property">@draws</span>}</span>, rate: <span class="hljs-subst">#{<span class="hljs-property">@rate</span>}</span> tps/dps: <span class="hljs-subst">#{<span class="hljs-property">@ticksPerSec</span>()}</span>/<span class="hljs-subst">#{<span class="hljs-property">@drawsPerSec</span>()}</span>"</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">toString</span>: <span class="hljs-function">-&gt;</span> <span class="hljs-string">"ticks: <span class="hljs-subst">#{<span class="hljs-property">@ticks</span>}</span>, draws: <span class="hljs-subst">#{<span class="hljs-property">@draws</span>}</span>, rate: <span class="hljs-subst">#{<span class="hljs-property">@rate</span>}</span> tps/dps: <span class="hljs-subst">#{<span class="hljs-property">@ticksPerSec</span>()}</span>/<span class="hljs-subst">#{<span class="hljs-property">@drawsPerSec</span>()}</span>"</span></pre></div></div>
             
         </li>
         
@@ -254,17 +254,17 @@ The “if” is to avoid from ms=0</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">animateSteps</span>:<span class="hljs-function"> =&gt;</span>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">animateSteps</span>: <span class="hljs-function">=&gt;</span>
     <span class="hljs-property">@step</span>()
     <span class="hljs-property">@timeoutHandle</span> = setTimeout <span class="hljs-property">@animateSteps</span>, <span class="hljs-number">10</span> <span class="hljs-keyword">unless</span> <span class="hljs-property">@stopped</span>
-  <span class="hljs-attribute">animateDraws</span>:<span class="hljs-function"> =&gt;</span>
+  <span class="hljs-attribute">animateDraws</span>: <span class="hljs-function">=&gt;</span>
     <span class="hljs-keyword">if</span> <span class="hljs-property">@isHeadless</span> <span class="hljs-comment"># Use rAF when headless wants to be throttled.</span>
       <span class="hljs-property">@step</span>() <span class="hljs-keyword">if</span> <span class="hljs-property">@ticksPerSec</span>() &lt; <span class="hljs-property">@rate</span>
     <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> <span class="hljs-property">@drawsPerSec</span>() &lt; <span class="hljs-property">@rate</span> <span class="hljs-comment"># throttle drawing to @rate</span>
       <span class="hljs-property">@step</span>() <span class="hljs-keyword">unless</span> <span class="hljs-property">@multiStep</span>
       <span class="hljs-property">@draw</span>()
     <span class="hljs-property">@animHandle</span> = requestAnimationFrame <span class="hljs-property">@animateDraws</span> <span class="hljs-keyword">unless</span> <span class="hljs-property">@stopped</span>
-  <span class="hljs-attribute">animate</span>:<span class="hljs-function"> -&gt;</span>
+  <span class="hljs-attribute">animate</span>: <span class="hljs-function">-&gt;</span>
     <span class="hljs-property">@animateSteps</span>() <span class="hljs-keyword">if</span> <span class="hljs-property">@multiStep</span>
     <span class="hljs-property">@animateDraws</span>() <span class="hljs-keyword">unless</span> <span class="hljs-property">@isHeadless</span> <span class="hljs-keyword">and</span> <span class="hljs-property">@multiStep</span></pre></div></div>
             

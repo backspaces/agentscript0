@@ -33,7 +33,7 @@
             </div>
             
             <div class="content"><div class='highlight'><pre>
-shapes = Shapes = <span class="hljs-keyword">do</span><span class="hljs-function"> -&gt;</span> <span class="hljs-comment"># TODO: Shapes is external name</span></pre></div></div>
+shapes = Shapes = <span class="hljs-keyword">do</span> -&gt; <span class="hljs-comment"># TODO: Shapes is external name</span></pre></div></div>
             
         </li>
         
@@ -77,7 +77,7 @@ discription of drawing context.  It is used in adding a new shape above.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-function"><span class="hljs-title">poly</span> = <span class="hljs-params">(c, a)</span> -&gt;</span>
+            <div class="content"><div class='highlight'><pre><span class="hljs-function">  <span class="hljs-title">poly</span> = <span class="hljs-params">(c, a)</span> -&gt;</span>
     <span class="hljs-keyword">for</span> p, i <span class="hljs-keyword">in</span> a
       <span class="hljs-keyword">if</span> i <span class="hljs-keyword">is</span> <span class="hljs-number">0</span> <span class="hljs-keyword">then</span> c.moveTo p[<span class="hljs-number">0</span>], p[<span class="hljs-number">1</span>] <span class="hljs-keyword">else</span> c.lineTo p[<span class="hljs-number">0</span>], p[<span class="hljs-number">1</span>]
     <span class="hljs-literal">null</span></pre></div></div>
@@ -96,10 +96,10 @@ Useful for shortcuts</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-function"><span class="hljs-title">circ</span> = <span class="hljs-params">(c,x,y,s)</span>-&gt;</span>c.arc x,y,s/<span class="hljs-number">2</span>,<span class="hljs-number">0</span>,<span class="hljs-number">2</span>*Math.PI <span class="hljs-comment"># centered circle</span>
-  <span class="hljs-function"><span class="hljs-title">ccirc</span> = <span class="hljs-params">(c,x,y,s)</span>-&gt;</span>c.arc x,y,s/<span class="hljs-number">2</span>,<span class="hljs-number">0</span>,<span class="hljs-number">2</span>*Math.PI,<span class="hljs-literal">true</span> <span class="hljs-comment"># centered counter clockwise circle</span>
-  <span class="hljs-function"><span class="hljs-title">cimg</span> = <span class="hljs-params">(c,x,y,s,img)</span>-&gt;</span>c.scale <span class="hljs-number">1</span>,-<span class="hljs-number">1</span>;c.drawImage img,x-s/<span class="hljs-number">2</span>,y-s/<span class="hljs-number">2</span>,s,s;c.scale <span class="hljs-number">1</span>,-<span class="hljs-number">1</span> <span class="hljs-comment"># centered image</span>
-  <span class="hljs-function"><span class="hljs-title">csq</span> = <span class="hljs-params">(c,x,y,s)</span>-&gt;</span>c.fillRect x-s/<span class="hljs-number">2</span>, y-s/<span class="hljs-number">2</span>, s, s <span class="hljs-comment"># centered square</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre><span class="hljs-function">  <span class="hljs-title">circ</span> = <span class="hljs-params">(c,x,y,s)</span>-&gt;</span>c.arc x,y,s/<span class="hljs-number">2</span>,<span class="hljs-number">0</span>,<span class="hljs-number">2</span>*Math.PI <span class="hljs-comment"># centered circle</span>
+<span class="hljs-function">  <span class="hljs-title">ccirc</span> = <span class="hljs-params">(c,x,y,s)</span>-&gt;</span>c.arc x,y,s/<span class="hljs-number">2</span>,<span class="hljs-number">0</span>,<span class="hljs-number">2</span>*Math.PI,<span class="hljs-literal">true</span> <span class="hljs-comment"># centered counter clockwise circle</span>
+<span class="hljs-function">  <span class="hljs-title">cimg</span> = <span class="hljs-params">(c,x,y,s,img)</span>-&gt;</span>c.scale <span class="hljs-number">1</span>,-<span class="hljs-number">1</span>;c.drawImage img,x-s/<span class="hljs-number">2</span>,y-s/<span class="hljs-number">2</span>,s,s;c.scale <span class="hljs-number">1</span>,-<span class="hljs-number">1</span> <span class="hljs-comment"># centered image</span>
+<span class="hljs-function">  <span class="hljs-title">csq</span> = <span class="hljs-params">(c,x,y,s)</span>-&gt;</span>c.fillRect x-s/<span class="hljs-number">2</span>, y-s/<span class="hljs-number">2</span>, s, s <span class="hljs-comment"># centered square</span></pre></div></div>
             
         </li>
         
@@ -114,7 +114,7 @@ Useful for shortcuts</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-function"><span class="hljs-title">fillSlot</span> = <span class="hljs-params">(slot, img)</span> -&gt;</span>
+            <div class="content"><div class='highlight'><pre><span class="hljs-function">  <span class="hljs-title">fillSlot</span> = <span class="hljs-params">(slot, img)</span> -&gt;</span>
     slot.ctx.save(); slot.ctx.scale <span class="hljs-number">1</span>, -<span class="hljs-number">1</span>
     slot.ctx.drawImage img, slot.x, -(slot.y+slot.spriteSize), slot.spriteSize, slot.spriteSize
     slot.ctx.restore()</pre></div></div>
@@ -211,7 +211,7 @@ Useful for shortcuts</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">names</span>:<span class="hljs-function"> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">names</span>: <span class="hljs-function">-&gt;</span>
     (name <span class="hljs-keyword">for</span> own name, val <span class="hljs-keyword">of</span> @ <span class="hljs-keyword">when</span> val.rotate? <span class="hljs-keyword">and</span> val.draw?)</pre></div></div>
             
         </li>
@@ -233,10 +233,8 @@ Useful for shortcuts</p>
             <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">add</span>: <span class="hljs-function"><span class="hljs-params">(name, rotate, draw, shortcut)</span> -&gt;</span> <span class="hljs-comment"># draw can be an image, shortcut defaults to null</span>
     s = @[name] =
       <span class="hljs-keyword">if</span> u.isFunction draw <span class="hljs-keyword">then</span> {rotate,draw} <span class="hljs-keyword">else</span> {rotate,<span class="hljs-attribute">img</span>:draw,<span class="hljs-attribute">draw</span>:<span class="hljs-function"><span class="hljs-params">(c)</span>-&gt;</span>cimg c,<span class="hljs-number">.5</span>,<span class="hljs-number">.5</span>,<span class="hljs-number">1</span>,<span class="hljs-property">@img</span>}
-    <span class="hljs-function"><span class="hljs-params">(s.shortcut = (c,x,y,s) -&gt; cimg c,x,y,s,<span class="hljs-property">@img</span>)</span> <span class="hljs-title">if</span> <span class="hljs-title">s</span>.<span class="hljs-title">img</span>? <span class="hljs-title">and</span> <span class="hljs-title">not</span> <span class="hljs-title">s</span>.<span class="hljs-title">rotate</span>
-    <span class="hljs-title">s</span>.<span class="hljs-title">shortcut</span> = <span class="hljs-title">shortcut</span> <span class="hljs-title">if</span> <span class="hljs-title">shortcut</span>? # <span class="hljs-title">can</span> <span class="hljs-title">override</span> <span class="hljs-title">img</span> <span class="hljs-title">default</span> <span class="hljs-title">shortcut</span> <span class="hljs-title">if</span> <span class="hljs-title">needed</span>
-
-</span></pre></div></div>
+    (s.shortcut = <span class="hljs-function"><span class="hljs-params">(c,x,y,s)</span> -&gt;</span> cimg c,x,y,s,<span class="hljs-property">@img</span>) <span class="hljs-keyword">if</span> s.img? <span class="hljs-keyword">and</span> <span class="hljs-keyword">not</span> s.rotate
+    s.shortcut = shortcut <span class="hljs-keyword">if</span> shortcut? <span class="hljs-comment"># can override img default shortcut if needed</span></pre></div></div>
             
         </li>
         
@@ -422,7 +420,7 @@ the shape to fit it. Return existing sprite if duplicate.</p>
             
             <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">if</span> (img=shape.img)? <span class="hljs-comment"># is an image, not a path function</span>
       <span class="hljs-keyword">if</span> img.height <span class="hljs-keyword">isnt</span> <span class="hljs-number">0</span> <span class="hljs-keyword">then</span> fillSlot(slot, img)
-      <span class="hljs-keyword">else</span> img.<span class="hljs-function"><span class="hljs-title">onload</span> = -&gt;</span> fillSlot(slot, img)
+      <span class="hljs-keyword">else</span> img.onload = <span class="hljs-function">-&gt;</span> fillSlot(slot, img)
     <span class="hljs-keyword">else</span>
       ctx.save()
       ctx.translate (ctx.nextX+<span class="hljs-number">0.5</span>)*(slotSize), (ctx.nextY+<span class="hljs-number">0.5</span>)*(slotSize)

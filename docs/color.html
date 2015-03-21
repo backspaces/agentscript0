@@ -282,7 +282,7 @@ see why at <a href="http://goo.gl/qrHXwB">Stack Overflow</a></p>
             
             <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">sharedPixel</span>: <span class="hljs-literal">null</span>
   <span class="hljs-attribute">sharedUint8s</span>: <span class="hljs-literal">null</span>
-  <span class="hljs-attribute">initSharedPixel</span>:<span class="hljs-function"> -&gt;</span>
+  <span class="hljs-attribute">initSharedPixel</span>: <span class="hljs-function">-&gt;</span>
     <span class="hljs-property">@sharedPixel</span> = <span class="hljs-keyword">new</span> Uint32Array(<span class="hljs-number">1</span>)
     <span class="hljs-property">@sharedUint8s</span> = <span class="hljs-keyword">new</span> Uint8ClampedArray(<span class="hljs-property">@sharedPixel</span>.buffer)</pre></div></div>
             
@@ -351,7 +351,7 @@ or arrayToColor below</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">randomRgb</span>:<span class="hljs-function"> -&gt;</span> (u.randomInt(<span class="hljs-number">256</span>) <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> [<span class="hljs-number">0.</span><span class="hljs-number">.2</span>])</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">randomRgb</span>: <span class="hljs-function">-&gt;</span> (u.randomInt(<span class="hljs-number">256</span>) <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> [<span class="hljs-number">0.</span><span class="hljs-number">.2</span>])</pre></div></div>
             
         </li>
         
@@ -480,7 +480,7 @@ WebGL colors (4 rgba floats in 0-1), and in images.</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>
-  <span class="hljs-attribute">typedColor</span>: <span class="hljs-keyword">do</span> <span class="hljs-function"><span class="hljs-params">()</span> -&gt;</span> <span class="hljs-comment"># IIFE returns typedColor function.</span></pre></div></div>
+  <span class="hljs-attribute">typedColor</span>: <span class="hljs-keyword">do</span> () -&gt; <span class="hljs-comment"># IIFE returns typedColor function.</span></pre></div></div>
             
         </li>
         
@@ -499,7 +499,7 @@ If r is not a number but a TypedArray, use it for the typedColor.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="hljs-function"><span class="hljs-title">typedColor</span> = <span class="hljs-params">(r, g, b, a=<span class="hljs-number">255</span>, map, index)</span> -&gt;</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre><span class="hljs-function">    <span class="hljs-title">typedColor</span> = <span class="hljs-params">(r, g, b, a=<span class="hljs-number">255</span>, map, index)</span> -&gt;</span></pre></div></div>
             
         </li>
         
@@ -617,7 +617,7 @@ including Object.defineProperties without enlarging the typedColor.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>      <span class="hljs-attribute">getPixel</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-property">@pixelArray</span>[<span class="hljs-number">0</span>]</pre></div></div>
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-attribute">getPixel</span>: <span class="hljs-function">-&gt;</span> <span class="hljs-property">@pixelArray</span>[<span class="hljs-number">0</span>]</pre></div></div>
             
         </li>
         
@@ -690,7 +690,7 @@ thus shared and take no space in the color itself.</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>      <span class="hljs-attribute">pixel</span>:
-        <span class="hljs-attribute">get</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-property">@pixelArray</span>[<span class="hljs-number">0</span>]
+        <span class="hljs-attribute">get</span>: <span class="hljs-function">-&gt;</span> <span class="hljs-property">@pixelArray</span>[<span class="hljs-number">0</span>]
         <span class="hljs-attribute">set</span>: <span class="hljs-function"><span class="hljs-params">(val)</span> -&gt;</span> <span class="hljs-property">@setPixel</span>(val)
         <span class="hljs-attribute">enumerable</span>: <span class="hljs-literal">true</span> <span class="hljs-comment"># make visible in stack trace, remove after debugging</span></pre></div></div>
             
@@ -708,7 +708,7 @@ thus shared and take no space in the color itself.</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>      <span class="hljs-attribute">rgba</span>:
-        <span class="hljs-attribute">get</span>:<span class="hljs-function"> -&gt;</span> @ <span class="hljs-comment">#.. not needed, already array</span>
+        <span class="hljs-attribute">get</span>: <span class="hljs-function">-&gt;</span> @ <span class="hljs-comment">#.. not needed, already array</span>
         <span class="hljs-attribute">set</span>: <span class="hljs-function"><span class="hljs-params">(val)</span> -&gt;</span> <span class="hljs-property">@setColor</span>(val...) <span class="hljs-comment"># beware! array GC slows this down.</span>
         <span class="hljs-attribute">enumerable</span>: <span class="hljs-literal">true</span> <span class="hljs-comment"># make visible in stack trace, remove after debugging</span></pre></div></div>
             
@@ -726,7 +726,7 @@ thus shared and take no space in the color itself.</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>      <span class="hljs-attribute">css</span>:
-        <span class="hljs-attribute">get</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-property">@getString</span>()
+        <span class="hljs-attribute">get</span>: <span class="hljs-function">-&gt;</span> <span class="hljs-property">@getString</span>()
         <span class="hljs-attribute">set</span>: <span class="hljs-function"><span class="hljs-params">(val)</span> -&gt;</span> <span class="hljs-property">@setString</span>(val)
         <span class="hljs-attribute">enumerable</span>: <span class="hljs-literal">true</span> <span class="hljs-comment"># make visible in stack trace, remove after debugging</span></pre></div></div>
             
@@ -744,7 +744,7 @@ thus shared and take no space in the color itself.</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>      <span class="hljs-attribute">str</span>:
-        <span class="hljs-attribute">get</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-property">@getString</span>()
+        <span class="hljs-attribute">get</span>: <span class="hljs-function">-&gt;</span> <span class="hljs-property">@getString</span>()
         <span class="hljs-attribute">enumerable</span>: <span class="hljs-literal">true</span> <span class="hljs-comment"># make visible in stack trace, remove after debugging</span>
     typedColor</pre></div></div>
             

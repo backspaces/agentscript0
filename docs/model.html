@@ -96,7 +96,7 @@ Example:</p>
             <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">constructor</span>: (
     divOrOpts, size=<span class="hljs-number">13</span>, minX=-<span class="hljs-number">16</span>, maxX=<span class="hljs-number">16</span>, minY=-<span class="hljs-number">16</span>, maxY=<span class="hljs-number">16</span>,
     isTorus=<span class="hljs-literal">false</span>, hasNeighbors=<span class="hljs-literal">true</span>, isHeadless=<span class="hljs-literal">false</span>
-  )<span class="hljs-function"> -&gt;</span>
+  ) -&gt;
     u.mixin(@, <span class="hljs-keyword">new</span> Evented())
     <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span> divOrOpts <span class="hljs-keyword">is</span> <span class="hljs-string">'string'</span>
       div = divOrOpts
@@ -152,7 +152,7 @@ ctx.restore() <span class="hljs-comment"># restore patch coord system</span>
             </div>
             
             <div class="content"><div class='highlight'><pre>      <span class="hljs-property">@drawing</span> = <span class="hljs-property">@contexts</span>.drawing
-      <span class="hljs-property">@drawing</span>.<span class="hljs-function"><span class="hljs-title">clear</span> = =&gt;</span> u.clearCtx <span class="hljs-property">@drawing</span></pre></div></div>
+      <span class="hljs-property">@drawing</span>.clear = <span class="hljs-function">=&gt;</span> u.clearCtx <span class="hljs-property">@drawing</span></pre></div></div>
             
         </li>
         
@@ -243,7 +243,7 @@ models run on a page.</p>
     <span class="hljs-property">@globalNames</span> = <span class="hljs-literal">null</span>; <span class="hljs-property">@globalNames</span> = u.ownKeys @
     <span class="hljs-property">@globalNames</span>.set = <span class="hljs-literal">false</span>
     <span class="hljs-property">@startup</span>()
-    u.waitOnFiles<span class="hljs-function"> =&gt;</span> <span class="hljs-property">@modelReady</span>=<span class="hljs-literal">true</span>; <span class="hljs-property">@setupAndEmit</span>(); <span class="hljs-property">@globals</span>() <span class="hljs-keyword">unless</span> <span class="hljs-property">@globalNames</span>.set</pre></div></div>
+    u.waitOnFiles =&gt; <span class="hljs-property">@modelReady</span>=<span class="hljs-literal">true</span>; <span class="hljs-property">@setupAndEmit</span>(); <span class="hljs-property">@globals</span>() <span class="hljs-keyword">unless</span> <span class="hljs-property">@globalNames</span>.set</pre></div></div>
             
         </li>
         
@@ -268,6 +268,7 @@ models run on a page.</p>
     <span class="hljs-property">@world</span> = {size,minX,maxX,minY,maxY,minXcor,maxXcor,minYcor,maxYcor,
       numX,numY,pxWidth,pxHeight,isTorus,hasNeighbors,isHeadless}
   <span class="hljs-attribute">setWorldDeprecated</span>: <span class="hljs-function"><span class="hljs-params">(size, minX, maxX, minY, maxY, isTorus, hasNeighbors, isHeadless)</span> -&gt;</span>
+    u.deprecated <span class="hljs-string">"Model.setWorldDeprecated: ctor should use options object"</span>
     numX = maxX-minX+<span class="hljs-number">1</span>; numY = maxY-minY+<span class="hljs-number">1</span>; pxWidth = numX*size; pxHeight = numY*size
     minXcor=minX-<span class="hljs-number">.5</span>; maxXcor=maxX+<span class="hljs-number">.5</span>; minYcor=minY-<span class="hljs-number">.5</span>; maxYcor=maxY+<span class="hljs-number">.5</span>
     <span class="hljs-property">@world</span> = {size,minX,maxX,minY,maxY,minXcor,maxXcor,minYcor,maxYcor,
@@ -324,7 +325,7 @@ if browser does not support imageSmoothingEnabled or equivalent.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">setFastPatches</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-property">@patches</span>.usePixels()</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">setFastPatches</span>: <span class="hljs-function">-&gt;</span> <span class="hljs-property">@patches</span>.usePixels()</pre></div></div>
             
         </li>
         
@@ -340,7 +341,7 @@ Don’t use if patch breeds have different colors.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">setMonochromePatches</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-property">@patches</span>.monochrome = <span class="hljs-literal">true</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">setMonochromePatches</span>: <span class="hljs-function">-&gt;</span> <span class="hljs-property">@patches</span>.monochrome = <span class="hljs-literal">true</span></pre></div></div>
             
         </li>
         
@@ -356,7 +357,7 @@ Optimizes Patch p.agentsHere method</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">setCacheAgentsHere</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-property">@patches</span>.cacheAgentsHere()</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">setCacheAgentsHere</span>: <span class="hljs-function">-&gt;</span> <span class="hljs-property">@patches</span>.cacheAgentsHere()</pre></div></div>
             
         </li>
         
@@ -372,7 +373,7 @@ Optimizes Agent a.myLinks method</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">setCacheMyLinks</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-property">@agents</span>.cacheLinks()</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">setCacheMyLinks</span>: <span class="hljs-function">-&gt;</span> <span class="hljs-property">@agents</span>.cacheLinks()</pre></div></div>
             
         </li>
         
@@ -419,7 +420,7 @@ Uses util.waitOn so can be be async.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">startup</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-comment"># called by constructor</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">startup</span>: <span class="hljs-function">-&gt;</span> <span class="hljs-comment"># called by constructor</span></pre></div></div>
             
         </li>
         
@@ -435,7 +436,7 @@ If async used, make sure step/draw are aware of possible missing data.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">setup</span>:<span class="hljs-function"> -&gt;</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">setup</span>: <span class="hljs-function">-&gt;</span></pre></div></div>
             
         </li>
         
@@ -450,7 +451,7 @@ If async used, make sure step/draw are aware of possible missing data.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">step</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-comment"># called each step of the animation</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">step</span>: <span class="hljs-function">-&gt;</span> <span class="hljs-comment"># called each step of the animation</span></pre></div></div>
             
         </li>
         
@@ -491,8 +492,8 @@ If async used, make sure step/draw are aware of possible missing data.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">start</span>:<span class="hljs-function"> -&gt;</span> u.waitOn (<span class="hljs-function">=&gt;</span> <span class="hljs-property">@modelReady</span>), (<span class="hljs-function">=&gt;</span> <span class="hljs-property">@anim</span>.start()); @
-  <span class="hljs-attribute">stop</span>:<span class="hljs-function">  -&gt;</span> <span class="hljs-property">@anim</span>.stop()</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">start</span>: <span class="hljs-function">-&gt;</span> u.waitOn (<span class="hljs-function">=&gt;</span> <span class="hljs-property">@modelReady</span>), (<span class="hljs-function">=&gt;</span> <span class="hljs-property">@anim</span>.start()); @
+  <span class="hljs-attribute">stop</span>:  <span class="hljs-function">-&gt;</span> <span class="hljs-property">@anim</span>.stop()</pre></div></div>
             
         </li>
         
@@ -508,7 +509,7 @@ Will advance the ticks/draws counters.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">once</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-property">@stop</span>() <span class="hljs-keyword">unless</span> <span class="hljs-property">@anim</span>.stopped; <span class="hljs-property">@anim</span>.once()</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">once</span>: <span class="hljs-function">-&gt;</span> <span class="hljs-property">@stop</span>() <span class="hljs-keyword">unless</span> <span class="hljs-property">@anim</span>.stopped; <span class="hljs-property">@anim</span>.once()</pre></div></div>
             
         </li>
         
@@ -589,10 +590,10 @@ to avoid redrawing the same static scene. Called by animator.</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>
-  <span class="hljs-attribute">setupAndEmit</span>:<span class="hljs-function"> -&gt;</span>
+  <span class="hljs-attribute">setupAndEmit</span>: <span class="hljs-function">-&gt;</span>
     <span class="hljs-property">@setup</span>()
     <span class="hljs-property">@emit</span>(<span class="hljs-string">'setup'</span>)
-  <span class="hljs-attribute">stepAndEmit</span>:<span class="hljs-function"> -&gt;</span>
+  <span class="hljs-attribute">stepAndEmit</span>: <span class="hljs-function">-&gt;</span>
     <span class="hljs-property">@step</span>()
     <span class="hljs-property">@emit</span>(<span class="hljs-string">'step'</span>)</pre></div></div>
             
@@ -714,7 +715,7 @@ See <a href="http://goo.gl/1i7bd">CoffeeConsole</a> Chrome extension too.</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">debug</span>: <span class="hljs-function"><span class="hljs-params">(<span class="hljs-property">@debugging</span>=<span class="hljs-literal">true</span>)</span>-&gt;</span>u.waitOn (<span class="hljs-function">=&gt;</span><span class="hljs-property">@modelReady</span>),(<span class="hljs-function">=&gt;</span><span class="hljs-property">@setRootVars</span>()); @
-  <span class="hljs-attribute">setRootVars</span>:<span class="hljs-function"> -&gt;</span>
+  <span class="hljs-attribute">setRootVars</span>: <span class="hljs-function">-&gt;</span>
     <span class="hljs-built_in">window</span>.psc = Patches
     <span class="hljs-built_in">window</span>.asc = Agents
     <span class="hljs-built_in">window</span>.lsc = Links
@@ -743,6 +744,35 @@ See <a href="http://goo.gl/1i7bd">CoffeeConsole</a> Chrome extension too.</p>
               
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-37">&#182;</a>
+              </div>
+              <p>Debug aid: Fill a named div with the (last) sprite sheet
+Typically the div should be before the model div, float right:</p>
+   <div id="sprites" style="float:right;"></div>
+
+<p>If no divName given, use spriteSheet itself w/ float:right style</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">showSpriteSheet</span>: <span class="hljs-function"><span class="hljs-params">(divName)</span> -&gt;</span>
+    <span class="hljs-keyword">if</span> Shapes.spriteSheets.length <span class="hljs-keyword">isnt</span> <span class="hljs-number">0</span>
+      sheet = Util.last(Shapes.spriteSheets)
+      <span class="hljs-built_in">console</span>.log sheet
+      <span class="hljs-keyword">if</span> divName?
+        <span class="hljs-built_in">document</span>.getElementById(divName).appendChild(sheet.canvas)
+      <span class="hljs-keyword">else</span>
+        sheet.canvas.setAttribute <span class="hljs-string">"style"</span>, <span class="hljs-string">"float:right"</span>
+        <span class="hljs-property">@div</span>.parentElement.insertBefore(sheet.canvas, <span class="hljs-property">@div</span>)
+    <span class="hljs-keyword">else</span>
+      <span class="hljs-built_in">console</span>.log <span class="hljs-string">"showSpriteSheet: no sprite sheet found"</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-38">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-38">&#182;</a>
               </div>
               <p>Create the namespace <strong>ABM</strong> for our project.
 Note here <code>this</code> or <code>@</code> == window due to coffeescript wrapper call.
