@@ -24,7 +24,7 @@
     "all":   "gulp all",
     "build": "gulp build",
     "docs":  "gulp docs",
-    "watch": "gulp watch",
+    "watch": "gulp watch&",
 
     "git-pull": "git checkout gh-pages && git pull && git checkout master && git pull",
     "git-diff": "git diff Gulpfile.js LICENSE README.md package.json src extras models sketches",

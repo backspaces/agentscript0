@@ -320,7 +320,7 @@ Used by agentset methods creating new agentsets.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">asSet</span>: <span class="hljs-function"><span class="hljs-params">(a, setType = @)</span> -&gt;</span> AgentSet.asSet a, setType <span class="hljs-comment"># setType = AgentSet</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">asSet</span>: <span class="hljs-function"><span class="hljs-params">(a, setType = AgentSet)</span> -&gt;</span> AgentSet.asSet a, setType <span class="hljs-comment"># setType = AgentSet</span></pre></div></div>
             
         </li>
         
@@ -683,7 +683,9 @@ To show/hide an individual object, set its prototype: o.hidden = bool</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-37">&#182;</a>
               </div>
-              <p>For patches &amp; agents, which have x,y. See Util doc.</p>
+              <p>For patches &amp; agents, which have x,y. See Util doc.
+Typically a subclass uses a rect/quadtree array to minimize
+the size, then uses asSet(array) to call inRadius or inCone</p>
 <p>Return all agents in agentset within d distance from given object.
 By default excludes the given object. Uses linear/torus distance
 depending on patches.isTorus, and patches width/height if needed.</p>

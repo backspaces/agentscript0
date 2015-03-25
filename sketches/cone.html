@@ -1,0 +1,73 @@
+<html>
+  <head>
+    <title>Cones & Radius</title>
+    <script src="../lib/agentscript.js"></script>
+    <script src="../tools/coffee-script.js"></script>
+    <script type="text/coffeescript">
+class MyModel extends ABM.Model
+  u = ABM.util # static variables
+  ColorMaps = ABM.ColorMaps
+  setup: ->
+    @agents.own("coneColor")
+
+    @population = 25
+    @velocity = .5
+    @radius = 15
+    @angle = u.degToRad(90)
+
+    # for p in @patches
+    #   p.color = u.randomGray()
+
+    @agents.create @population, (a) => # fat arrow for @patches etc
+      a.size = 2
+      a.setXY @patches.randomPt()... # splat: pt to 2 args
+      a.coneColor = ColorMaps.randomColor()
+      console.log a.coneColor
+
+  step: -> # stop: just one tick
+    p.color = [100,100,100] for p in @patches
+    for a in @agents
+      # inRadius: (o, d, meToo=false)
+      # neighborhood = @agents.inRadius a, 25, false # exclude me
+      # neighborhood = @agents.inRadius a, 25, true # me too
+      # neighborhood = @patches.inRadius a.p, 10, false # exclude me
+      # neighborhood = @patches.inRadius a.p, 10, true # me too
+      # neighborhood = @patches.inRadius a, 10 # includes my patch, can't exclude a from ps
+      # # inCone: (o, heading, cone, radius, meToo=false)
+      # neighborhood = @patches.inCone a.p, a.heading, @angle, @radius, true # me too
+      neighborhood = a.inCone @patches, @angle, @radius, false # me too
+      # neighborhood = @agents.inCone a, a.heading, u.degToRad(30), 20, true # me too
+      # neighborhood = a.inCone a.p.n, u.degToRad(120), 2
+      # neighborhood = a.inCone a.p.n, u.degToRad(180), 1
+
+      # neighborhood = a.p.n.inCone a.p, a.heading, u.degToRad(90), 20, true # me too
+      # c = u.randomColor()
+      # console.log "a: #{a.toString()} n: #{neighborhood.length}"
+      for n in neighborhood
+        n.color = a.coneColor
+        # u.print "    n: #{n.toString()}"
+      # a.hidden = true
+      a.forward @velocity
+    # @stop()
+
+# div, patchSize, minX, maxX, minY, maxY, isTorus, hasNeighbors
+#   Defaults: 13, -16, 16, -16, 16, false, true, true
+# model = new MyModel "layers", 4, -64, 64, -64, 64, true
+model = new MyModel({
+  div: "layers",
+  size: 8,
+  minX: 1,
+  maxX: 60,
+  minY: 1,
+  maxY: 60,
+  isTorus: true
+})
+model.debug() # Debug: Put Model vars in global name space
+model.start() # Run model immediately after startup initialization
+    </script>
+
+  </head>
+  <body>
+    <div id="layers" style="padding:20"></div>
+  </body>
+</html>

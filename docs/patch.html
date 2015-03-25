@@ -226,7 +226,7 @@ u.scaleOpacity c, s, @color</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-12">&#182;</a>
               </div>
-              <p>Return an array of the agents on this patch.
+              <p>Return an array of the agents/breeds on this patch.
 If patches.cacheAgentsHere has created an @agents instance
 variable for the patches, agents will add/remove themselves
 as they move from patch to patch.</p>
@@ -234,7 +234,9 @@ as they move from patch to patch.</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">agentsHere</span>: <span class="hljs-function">-&gt;</span>
-    <span class="hljs-property">@agents</span> ? (a <span class="hljs-keyword">for</span> a <span class="hljs-keyword">in</span> <span class="hljs-property">@model</span>.agents <span class="hljs-keyword">when</span> a.p <span class="hljs-keyword">is</span> @)</pre></div></div>
+    <span class="hljs-property">@agents</span> ? (a <span class="hljs-keyword">for</span> a <span class="hljs-keyword">in</span> <span class="hljs-property">@model</span>.agents <span class="hljs-keyword">when</span> a.p <span class="hljs-keyword">is</span> @)
+  <span class="hljs-attribute">breedsHere</span>: <span class="hljs-function"><span class="hljs-params">(breed)</span> -&gt;</span>
+    (b <span class="hljs-keyword">for</span> b <span class="hljs-keyword">in</span> <span class="hljs-property">@agentsHere</span>() <span class="hljs-keyword">when</span> b <span class="hljs-keyword">is</span> breed)</pre></div></div>
             
         </li>
         

@@ -124,7 +124,7 @@ the mainSet, returns just the agents that are not subclassed breeds.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">in</span>: <span class="hljs-function"><span class="hljs-params">(array)</span> -&gt;</span> <span class="hljs-property">@asSet</span> (o <span class="hljs-keyword">for</span> o <span class="hljs-keyword">in</span> array <span class="hljs-keyword">when</span> o.breed <span class="hljs-keyword">is</span> @)</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">breedsIn</span>: <span class="hljs-function"><span class="hljs-params">(array)</span> -&gt;</span> <span class="hljs-property">@asSet</span> (o <span class="hljs-keyword">for</span> o <span class="hljs-keyword">in</span> array <span class="hljs-keyword">when</span> o.breed <span class="hljs-keyword">is</span> @)</pre></div></div>
             
         </li>
         
@@ -168,14 +168,13 @@ Note call in reverse order to optimize list restructuring.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-10">&#182;</a>
               </div>
-              <p>Return an agentset of agents within the patch array</p>
+              <p>Return an agentset of this breed within the patch array</p>
 
             </div>
             
             <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">inPatches</span>: <span class="hljs-function"><span class="hljs-params">(patches)</span> -&gt;</span>
     array = []
-    array.push p.agentsHere()... <span class="hljs-keyword">for</span> p <span class="hljs-keyword">in</span> patches <span class="hljs-comment"># concat measured slower</span>
-    <span class="hljs-keyword">if</span> <span class="hljs-property">@mainSet</span>? <span class="hljs-keyword">then</span> <span class="hljs-property">@in</span> array <span class="hljs-keyword">else</span> <span class="hljs-property">@asSet</span> array</pre></div></div>
+    array.push p.agentsHere()... <span class="hljs-keyword">for</span> p <span class="hljs-keyword">in</span> patches <span class="hljs-comment"># concat measured slower</span></pre></div></div>
             
         </li>
         
@@ -186,7 +185,22 @@ Note call in reverse order to optimize list restructuring.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-11">&#182;</a>
               </div>
-              <p>Return an agentset of agents within the patchRect</p>
+              <p>Possibly faster to filter by breed in p.breedsHere?</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">if</span> <span class="hljs-property">@mainSet</span>? <span class="hljs-keyword">then</span> <span class="hljs-property">@breedsIn</span> array <span class="hljs-keyword">else</span> <span class="hljs-property">@asSet</span> array</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-12">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-12">&#182;</a>
+              </div>
+              <p>Return an agentset of agents/breeds within the patchRect</p>
 
             </div>
             
@@ -199,24 +213,6 @@ Note call in reverse order to optimize list restructuring.</p>
         </li>
         
         
-        <li id="section-12">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-12">&#182;</a>
-              </div>
-              <p>Return the members of this agentset that are within radius distance
-from me, and within cone radians of my heading using patch topology</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">inCone</span>: <span class="hljs-function"><span class="hljs-params">(a, heading, cone, radius, meToo=<span class="hljs-literal">false</span>)</span> -&gt;</span> <span class="hljs-comment"># heading? .. so p ok?</span>
-    as = <span class="hljs-property">@inRect</span> a, radius, radius, <span class="hljs-literal">true</span>
-    <span class="hljs-keyword">super</span> a, heading, cone, radius, meToo <span class="hljs-comment">#as.inCone a, heading, cone, radius, meToo</span></pre></div></div>
-            
-        </li>
-        
-        
         <li id="section-13">
             <div class="annotation">
               
@@ -224,13 +220,59 @@ from me, and within cone radians of my heading using patch topology</p>
                 <a class="pilcrow" href="#section-13">&#182;</a>
               </div>
               <p>Return the members of this agentset that are within radius distance
+from me, and within cone radians of my heading using patch topology</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">inCone</span>: <span class="hljs-function"><span class="hljs-params">(a, heading, cone, radius, meToo=<span class="hljs-literal">false</span>)</span> -&gt;</span> <span class="hljs-comment"># heading? .. so p ok?</span>
+    as = <span class="hljs-property">@inRect</span> a, radius, radius, <span class="hljs-literal">true</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-14">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-14">&#182;</a>
+              </div>
+              <p>super a, heading, cone, radius, meToo</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    as.inCone a, heading, cone, radius, meToo</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-15">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-15">&#182;</a>
+              </div>
+              <p>Return the members of this agentset that are within radius distance
 from me, using patch topology</p>
 
             </div>
             
             <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">inRadius</span>: <span class="hljs-function"><span class="hljs-params">(a, radius, meToo=<span class="hljs-literal">false</span>)</span>-&gt;</span>
-    as = <span class="hljs-property">@inRect</span> a, radius, radius, <span class="hljs-literal">true</span>
-    <span class="hljs-keyword">super</span> a, radius, meToo <span class="hljs-comment"># as.inRadius a, radius, meToo</span>
+    as = <span class="hljs-property">@inRect</span> a, radius, radius, <span class="hljs-literal">true</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-16">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-16">&#182;</a>
+              </div>
+              <p>super a, radius, meToo</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    as.inRadius a, radius, meToo
 
   <span class="hljs-attribute">setDraggable</span>: <span class="hljs-function">-&gt;</span>
     <span class="hljs-property">@on</span> <span class="hljs-string">'dragstart'</span>, <span class="hljs-function"><span class="hljs-params">(mouseEvent)</span> =&gt;</span>

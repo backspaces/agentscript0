@@ -131,7 +131,7 @@ class AgentSet extends Array
 
   # The static `ABM.AgentSet.asSet` as a method.
   # Used by agentset methods creating new agentsets.
-  asSet: (a, setType = @) -> AgentSet.asSet a, setType # setType = AgentSet
+  asSet: (a, setType = AgentSet) -> AgentSet.asSet a, setType # setType = AgentSet
 
   # Similar to above but sorted via `id`.
   asOrderedSet: (a) -> @asSet(a).sortById()
@@ -252,6 +252,8 @@ class AgentSet extends Array
 # ### Topology
 
   # For patches & agents, which have x,y. See Util doc.
+  # Typically a subclass uses a rect/quadtree array to minimize
+  # the size, then uses asSet(array) to call inRadius or inCone
   #
   # Return all agents in agentset within d distance from given object.
   # By default excludes the given object. Uses linear/torus distance

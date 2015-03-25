@@ -5,30 +5,37 @@
     <script src="../lib/mouse.js"></script>
     <script src="../tools/coffee-script.js"></script>
     <script type="text/coffeescript">
-    
-    # From Jim Lyons posting on Netlogo Users, via Steve Guerin
-    u = ABM.Util # shortcut
 
-    class MyModel extends ABM.Model
-      setup: -> # called by Model constructor
-        @refreshPatches = @refreshAgents = false
-        @mouse = new ABM.Mouse @
-        
-        @agents.setDefault "shape", "circle"; @agents.setDefault "size", .5
-        p.sprout 1 for p in @patches.nOf 20
-        @links.create a, @agents.other(a).oneOf() for a in @agents
+# From Jim Lyons posting on Netlogo Users, via Steve Guerin
+u = ABM.Util # shortcut
 
-      step: ->
-        for l in @links
-          l.color = if @mouseOnLink l then [256,0,0] else [128,128,128]
+class MyModel extends ABM.Model
+  setup: -> # called by Model constructor
+    @refreshPatches = @refreshAgents = false
+    @mouse = new ABM.Mouse @
 
-      mouseOnLink: (l) ->
-        d = u.aSum (a.distanceXY @mouse.x, @mouse.y for a in l.bothEnds())
-        d - l.length() < 1 / @patches.size
+    @agents.setDefault "shape", "circle"; @agents.setDefault "size", .5
+    p.sprout 1 for p in @patches.nOf 20
+    @links.create a, @agents.other(a).oneOf() for a in @agents
 
-    model = new MyModel("layers", 25, -8, 8, -8, 8)
-      .debug() # Debug: Put Model vars in global name space
-      .start() # Run model immediately after startup initialization
+  step: ->
+    for l in @links
+      l.color = if @mouseOnLink l then [256,0,0] else [128,128,128]
+
+  mouseOnLink: (l) ->
+    d = u.aSum (a.distanceXY @mouse.x, @mouse.y for a in l.bothEnds())
+    d - l.length() < 1 / @patches.size
+
+model = new MyModel({
+  div: "layers",
+  size: 25,
+  minX: -8,
+  maxX: 8,
+  minY: -8,
+  maxY: 8
+})
+model.debug() # Debug: Put Model vars in global name space
+model.start() # Run model immediately after startup initialization
 
     </script>
   </head>
@@ -36,5 +43,3 @@
     <div id="layers"></div>
   </body>
 </html>
-
-

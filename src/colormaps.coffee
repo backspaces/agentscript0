@@ -294,7 +294,7 @@ ColorMaps  = {
     @NetLogoRamps = @netLogoColorMap 18, false
     @CssRamps     = @cssBasicColorMap 18, false
   randomGray: (min, max) -> @Gray.randomColor(min, max)
-  randomColor: -> @Rgb256.randomColor() # sharedRgb?
+  randomColor: () -> @Rgb.randomColor()
 
   # Legacy/Temporary: replace util/patch/agent scaleColor
   scaleColor: (color, number, min=0, max=1) ->

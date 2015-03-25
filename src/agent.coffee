@@ -66,7 +66,7 @@ class Agent
     # u.scaleOpacity c, s, @color
 
   # Return a string representation of the agent.
-  toString: -> "{id:#{@id} xy:#{u.aToFixed [@x,@y]} c:#{@color} h: #{h=@heading.toFixed 2}/#{Math.round(u.radToDeg(h))}}"
+  toString: -> "{id:#{@id} xy:#{u.aToFixed [@x,@y]} c:#{@color.css} h: #{h=@heading.toFixed 2}/#{Math.round(u.radToDeg(h))}}"
 
   # Place the agent at the given x,y (floats) in patch coords
   # using patch topology (isTorus)
@@ -192,6 +192,11 @@ class Agent
       a[k] = @[k] for k in breed.ownVariables when a[k] is null # hatched agent inherits parents' breed properties
       # possible alternative: a[k] = @[k] for k, v in a when v is null
       init(a); a # Important: init called after object inserted in agent set
+
+  # Return the members of the given agentset that are within radius distance
+  # from me, and within cone radians of my heading using patch topology
+  inRadius: (aset, radius, meToo=false) ->
+    aset.inRadius @p, radius, meToo # REMIND: @p vs @?
 
   # Return the members of the given agentset that are within radius distance
   # from me, and within cone radians of my heading using patch topology

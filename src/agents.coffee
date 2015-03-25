@@ -21,7 +21,7 @@ class Agents extends AgentSet
 
   # Filter to return all instances of this breed.  Note: if used by
   # the mainSet, returns just the agents that are not subclassed breeds.
-  in: (array) -> @asSet (o for o in array when o.breed is @)
+  breedsIn: (array) -> @asSet (o for o in array when o.breed is @)
 
   # Factory: create num new agents stored in this agentset.The optional init
   # proc is called on the new agent after inserting in its agentSet.
@@ -32,13 +32,14 @@ class Agents extends AgentSet
   # Note call in reverse order to optimize list restructuring.
   clear: -> @last().die() while @any(); null # tricky, each die modifies list
 
-  # Return an agentset of agents within the patch array
+  # Return an agentset of this breed within the patch array
   inPatches: (patches) ->
     array = []
     array.push p.agentsHere()... for p in patches # concat measured slower
-    if @mainSet? then @in array else @asSet array
+    # Possibly faster to filter by breed in p.breedsHere?
+    if @mainSet? then @breedsIn array else @asSet array
 
-  # Return an agentset of agents within the patchRect
+  # Return an agentset of agents/breeds within the patchRect
   inRect: (a, dx, dy, meToo=false) ->
     rect = @model.patches.patchRect a.p, dx, dy, true
     rect = @inPatches rect
@@ -49,13 +50,15 @@ class Agents extends AgentSet
   # from me, and within cone radians of my heading using patch topology
   inCone: (a, heading, cone, radius, meToo=false) -> # heading? .. so p ok?
     as = @inRect a, radius, radius, true
-    super a, heading, cone, radius, meToo #as.inCone a, heading, cone, radius, meToo
+    # super a, heading, cone, radius, meToo
+    as.inCone a, heading, cone, radius, meToo
 
   # Return the members of this agentset that are within radius distance
   # from me, using patch topology
   inRadius: (a, radius, meToo=false)->
     as = @inRect a, radius, radius, true
-    super a, radius, meToo # as.inRadius a, radius, meToo
+    # super a, radius, meToo
+    as.inRadius a, radius, meToo
 
   setDraggable: ->
     @on 'dragstart', (mouseEvent) =>

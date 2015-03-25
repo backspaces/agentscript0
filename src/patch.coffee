@@ -63,12 +63,14 @@ class Patch
       [x,y] = @breed.patchXYtoPixelXY @x, @y
       u.ctxDrawText ctx, @label, x+@labelOffset[0], y+@labelOffset[1], @labelColor
 
-  # Return an array of the agents on this patch.
+  # Return an array of the agents/breeds on this patch.
   # If patches.cacheAgentsHere has created an @agents instance
   # variable for the patches, agents will add/remove themselves
   # as they move from patch to patch.
   agentsHere: ->
     @agents ? (a for a in @model.agents when a.p is @)
+  breedsHere: (breed) ->
+    (b for b in @agentsHere() when b is breed)
 
   # Returns true if this patch is on the edge of the grid.
   isOnEdge: ->
