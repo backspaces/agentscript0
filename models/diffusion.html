@@ -12,6 +12,8 @@
         # No optimizations: 30fps
         @patches.usePixels() # 57+fps
         # @patches.cacheAgentsHere() # 28-9fps, not needed * overhead
+        console.log "cacheAgentsHere: ", @patches.agents?
+
         # two: 57+fps, fast patches get us to max
 
 
@@ -21,7 +23,7 @@
         @coolingRate = .10
         @speed = .5
 
-        @anim.setRate 30, true
+        @anim.setRate 20, true
 
         # defaults
         @agents.setDefault "size", 1.5

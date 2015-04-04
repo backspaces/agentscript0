@@ -50,7 +50,9 @@
         @flock(a) for a in @agents
 
       flock: (a) -> # a is agent
-        flockmates = @agents.inRadius a, @vision
+        # These two forms are identical
+        # flockmates = @agents.inRadius(a, @vision).other(a)
+        flockmates = a.inRadius(@agents, @vision).other(a)
         if flockmates.length isnt 0
           [nearestNeighbor, d] = u.minOneOf flockmates, ((f) -> f.distance a), true
           if d < @minSeparation

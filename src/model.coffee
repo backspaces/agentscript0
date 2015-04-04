@@ -139,8 +139,11 @@ class Model
   setCacheMyLinks: -> @agents.cacheLinks()
 
   # Have patches cache the given patchRect.
+  # Neighborhoods do not include the patch itself.
   # Optimizes patchRect, inRadius and inCone
-  setCachePatchRect:(radius,meToo=false)->@patches.cacheRect radius,meToo
+  # setCacheNeighborhood:(radius, meToo=false)->@patches.cacheRect radius, meToo
+  # setCachePatchRect:(radius, meToo=true)->@patches.cacheRect radius, meToo
+  # setCachePatchRect:(radius)->@patches.cacheRect radius
 
 #### User Model Creation
 # A user's model is made by subclassing Model and over-riding these

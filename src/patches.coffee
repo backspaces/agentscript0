@@ -48,14 +48,15 @@ class Patches extends AgentSet
   cacheRect: (radius, meToo=false) ->
     for p in @
       p.pRect = @patchRect p, radius, radius, meToo
-      p.pRect.radius = radius#; p.pRect.meToo = meToo
-    radius
+      p.pRect.radius = radius #; p.pRect.meToo = meToo
+    null # radius # avoid CS returning huge array!
 
   # Install neighborhoods in patches
   setNeighbors: ->
     for p in @
-      p.n =  @patchRect p, 1, 1
+      p.n =  @patchRect p, 1, 1, false
       p.n4 = @asSet (n for n in p.n when n.x is p.x or n.y is p.y)
+    null # radius # avoid CS returning huge array!
 
   # Setup pixels used for `drawScaledPixels` and `importColors`
   #
@@ -90,7 +91,7 @@ class Patches extends AgentSet
   clamp: (x,y) -> [u.clamp(x, @minXcor, @maxXcor), u.clamp(y, @minYcor, @maxYcor)]
 
   # Return x,y float values to be modulo min/max patch coord values.
-  wrap: (x,y)  -> [u.wrap(x, @minXcor, @maxXcor),  u.wrap(y, @minYcor, @maxYcor)]
+  wrap: (x,y) -> [u.wrap(x, @minXcor, @maxXcor), u.wrap(y, @minYcor, @maxYcor)]
 
   # Return x,y float values to be between min/max patch values
   # using either clamp/wrap above according to isTorus topology.
@@ -118,30 +119,85 @@ class Patches extends AgentSet
 
 # #### Patch utilities
 
-  # Return an array of patches in a rectangle centered on the given
-  # patch `p`, dx, dy units to the right/left and up/down.
-  # Exclude `p` unless meToo is true, default false.
-  patchRect: (p, dx, dy, meToo=false) ->
-    return p.pRect if p.pRect? and p.pRect.radius is dx # and p.pRect.radius is dy
+  # Return an array of agentset items in a rectangle centered on the given
+  # agent's patch - dx, dy units to the right/left and up/down, integers.
+  # The agent will be in the results if in the agentSet and rectangle.
+  agentRect: (agentSet, agent, dx, dy=dx) -> #, meToo = false) ->
+    p =  agent.p ? agent
+    rect = [];
+    # Note: we do not "clip" the min/max/X/Y to be within the patches.
+    # For non-torus, this is OK: the x,y test is still valid.
+    # For torus, it allows us to adjust the x,y to be wrapped appropriately.
+    minX = p.x-dx; maxX = p.x+dx
+    minY = p.y-dy; maxY = p.y+dy
+    # Is the p,dx,dy entirely inside the patches?
+    inside = (minX >= @minX) and (maxX <= @maxX) and
+             (minY >= @minY) and (maxY <= @maxY)
+    checkTorus = @isTorus and not inside
+    for a in agentSet
+      # x,y values are patch integer x,y
+      if a.p? then x = a.p.x; y = a.p.y else x = a.x; y = a.y
+      # Adjust torus x,y if appropriate
+      if checkTorus
+        # x += @numX if x < minX; x -= @numX if x > maxX
+        # y += @numY if y < minY; y -= @numY if y > maxY
+        if x < minX then x += @numX else if x > maxX then x -= @numX
+        if y < minY then y += @numY else if y > maxY then y -= @numY
+      # Test x,y inside rect
+      rect.push a if (minX <= x <= maxX and minY <= y <= maxY)
+    @asSet rect
+  # Return a rectangle of patches centered on p, with dx,dy to the right/left
+  # of p, integers. Default to square.
+  # Exclude p from results if meToo is false.
+  # Performance: If the rect is in the pRect cache for this patch, return it.
+  # See cacheRect()
+  patchRect: (p, dx, dy=dx, meToo=true) ->
+    return p.pRect if p.pRect? and (p.pRect.radius is dx) and (dx is dy)
     rect = []; # REMIND: optimize if no wrapping, rect inside patch boundaries
     for y in [p.y-dy..p.y+dy] by 1 # by 1: perf: avoid bidir JS for loop
       for x in [p.x-dx..p.x+dx] by 1
         if @isTorus or (@minX<=x<=@maxX and @minY<=y<=@maxY)
           if @isTorus
-            x+=@numX if x<@minX; x-=@numX if x>@maxX
-            y+=@numY if y<@minY; y-=@numY if y>@maxY
+            if x < @minX then x += @numX else if x > @maxX then x -= @numX
+            if y < @minY then y += @numY else if y > @maxY then y -= @numY
           pnext = @patchXY x, y # much faster than coord()
-          unless pnext?
-            u.error "patchRect: x,y out of bounds, see console.log"
-            console.log "x #{x} y #{y} p.x #{p.x} p.y #{p.y} dx #{dx} dy #{dy}"
           rect.push pnext if (meToo or p isnt pnext)
     @asSet rect
+  # Return all the agents contained in the patchRect.
+  agentsOnRect: (p, dx, dy=dx) -> #, meToo=false) ->
+    @agentsOnPatches @patchRect(p, dx, dy, true)
+  agentsOnPatches: (patches) -> #, meToo=false) ->
+    array = []
+    if patches.length isnt 0
+      u.error "agentsInPatches: no cached agents." if not patches[0].agents?
+      # Use push.apply, not concat, see:
+      # [jsPerf](http://jsperf.com/apply-push-vs-concat-array)
+      Array.prototype.push.apply(array, p.agents) for p in patches
+    @asSet array
+  # Return all the unique patches the agentset or agent is on.
+  patchesOf: (aset) ->
+    return @asSet([aset.p ? aset]) unless aset.length?
+    @asSet( ((a.p ? a) for a in aset) ).sortById().uniq()
+  agentsOf: (aset) -> @agentsOnPatches(@patchesOf(aset))
+
+
+  # patchCircle: (p0, radius) -> #, meToo = false) ->
+  #   rect = @patchRect p0, radius, radius, meToo
+  #   r2 = radius * radius; x = p0.x; y = p0.y
+  #   if @isTorus
+  #     w = @numX; h = @numY
+  #     @asSet (p for p in rect when \
+  #       u.torusSqDistance(x, y, p.x, p.y, w, h) <= r2 and (meToo or p isnt p0))
+  #   else
+  #     @asSet (p for p in rect when \
+  #       u.sqDistance(x, y, p.x, p.y) <= r2 and (meToo or p isnt p0))
 
   # Draws, or "imports" an image URL into the drawing layer.
   # The image is scaled to fit the drawing layer.
   #
   # This is an async load, see this
-  # [new Image()](http://javascript.mfields.org/2011/creating-an-image-in-javascript/)
+  # [new Image()]
+  # (http://javascript.mfields.org/2011/creating-an-image-in-javascript/)
   # tutorial.  We draw the image into the drawing layer as
   # soon as the onload callback executes.
   importDrawing: (imageSrc, f) ->

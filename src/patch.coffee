@@ -63,14 +63,38 @@ class Patch
       [x,y] = @breed.patchXYtoPixelXY @x, @y
       u.ctxDrawText ctx, @label, x+@labelOffset[0], y+@labelOffset[1], @labelColor
 
+  inRadius: (agentSet, radius) -> #, meToo=false) -> # for any objects w/ x,y
+    agentSet.inRadius @, radius
+    # pRect = @breed.patchRect @, radius # , meToo
+    # if @breed.isTorus
+    #   w=@breed.numX; h=@breed.numY
+    #   (a for a in agentSet when \
+    #     u.torusSqDistance(x,y,a.x,a.y,w,h)<=r2) # and (meToo or a isnt o))
+    # else
+    #   (a for a in agentSet when \
+    #     u.sqDistance(x,y,a.x,a.y)<=r2) # and (meToo or a isnt o))
+
+
+  # inRadius: (agentSet, radius, meToo=false) -> # for any objects w/ x,y
+  #   r2 = radius*radius; x=@x; y=@y
+  #   pRect = @breed.patchRect @, radius, radius, metoo
+  #   if @breed.isTorus
+  #     w=@breed.numX; h=@breed.numY
+  #     (a for a in agentSet when \
+  #       u.torusSqDistance(x,y,a.x,a.y,w,h)<=r2 and (meToo or a isnt o))
+  #   else
+  #     (a for a in agentSet when \
+  #       u.sqDistance(x,y,a.x,a.y)<=r2 and (meToo or a isnt o))
+
   # Return an array of the agents/breeds on this patch.
   # If patches.cacheAgentsHere has created an @agents instance
   # variable for the patches, agents will add/remove themselves
   # as they move from patch to patch.
   agentsHere: ->
+    u.deprecated "Patch.agentsHere: make caching default" unless @agents
     @agents ? (a for a in @model.agents when a.p is @)
   breedsHere: (breed) ->
-    (b for b in @agentsHere() when b is breed)
+    (a for a in @agentsHere() when a.breed is breed)
 
   # Returns true if this patch is on the edge of the grid.
   isOnEdge: ->

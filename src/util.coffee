@@ -356,10 +356,10 @@ Util = util = u = # TODO: "util" deprecated in favor of Util
   # True if item is in array. Binary search if f isnt null.
   contains: (array, item, f) -> @indexOf(array, item, f) >= 0
   # Remove an item from an array. Binary search if f isnt null.
-  # Error if item not in array.
+  # Return array. OK if item not found.
   removeItem: (array, item, f) ->
-    unless (i = @indexOf array, item, f) < 0 then array.splice i, 1
-    else @error "removeItem: item not found" #; array
+    array.splice i, 1 unless (i = @indexOf array, item, f) < 0
+    array
   # Remove elements in items from an array. Binary search if f isnt null.
   # Error if an item not in array.
   removeItems: (array, items, f) -> @removeItem(array,i,f) for i in items; array
@@ -428,8 +428,11 @@ Util = util = u = # TODO: "util" deprecated in favor of Util
   #     sortBy array, "i"
   #     # array now is [{i:-1},{i:1},{i:2},{i:2},{i:5}]
   sortBy: (array, f) ->
-   f = @propFcn f if @isString f # use item[f] if f is string
-   array.sort (a,b) -> f(a) - f(b)
+  #  f = @propFcn f if @isString f # use item[f] if f is string
+  #  array.sort (a,b) -> f(a) - f(b)
+    if @isString f
+    then array.sort (a,b) -> a[f] - b[f]
+    else array.sort (a,b) -> f(a) - f(b)
 
   # Numeric sort, default to ascending. Mutator, see clone above.
   # Works with TypedArrays too
@@ -578,13 +581,25 @@ Util = util = u = # TODO: "util" deprecated in favor of Util
   # Return angle in [-pi,pi] radians from x1,y1 to x2,y2
   # [See: Math.atan2](http://goo.gl/JS8DF)
   radsToward: (x1, y1, x2, y2) -> Math.atan2 y2-y1, x2-x1
+  # Return true if x,y is in rect bounded by min/max X/Y
+  inRect: (x, y, minX, minY, maxX, maxY) ->
+    (minX <= x <= maxX) and (minY <= y <= maxY)
+  # Return true if x,y is in rect defined by x0,y0,dx,dy
+  # (dx/dy half width/height)
+  inCenteredRect: (x, y, x0, y0, dx, dy) ->
+    (x0-dx <= x <= x0+dx and y0-dy <= y <= y0+dy)
+
   # Return true if x2,y2 is in cone radians around heading radians from x1,x2
   # and within distance radius from x1,x2.
   # I.e. is p2 in cone/heading/radius from p1?
-  inCone: (heading, cone, radius, x1, y1, x2, y2) ->
+  # inCone: (heading, cone, radius, x1, y1, x2, y2) ->
+  inCone: (radius, angle, heading, x1, y1, x2, y2) ->
     if radius < @distance x1, y1, x2, y2 then return false
     angle12 = @radsToward x1, y1, x2, y2 # angle from 1 to 2
-    cone/2 >=Math.abs @subtractRads(heading, angle12)
+    angle/2 >=Math.abs @subtractRads(heading, angle12)
+  # inHeading: (heading, x1, y1, x2, y2) ->
+  #   angle12 = @radsToward x1, y1, x2, y2 # angle from 1 to 2
+  #   cone/2 >=Math.abs @subtractRads(heading, angle12)
   # Return the Euclidean distance and distance squared between x1,y1, x2,y2.
   # The squared distance is used for comparisons to avoid the Math.sqrt fcn.
   distance: (x1, y1, x2, y2) -> dx = x1-x2; dy = y1-y2; Math.sqrt dx*dx + dy*dy
@@ -640,16 +655,21 @@ Util = util = u = # TODO: "util" deprecated in favor of Util
     x = if Math.abs(x2r-x1) < Math.abs(x2-x1) then x2r else x2
     y = if Math.abs(y2r-y1) < Math.abs(y2-y1) then y2r else y2
     [x,y]
-  # Return the angle from x1,y1 to x2.y2 on torus using shortest reflection.
+  # Return the angle from x1,y1 to x2,y2 on torus using shortest reflection.
   torusRadsToward: (x1, y1, x2, y2, w, h) ->
     [x2,y2] = @torusPt x1, y1, x2, y2, w, h
     @radsToward x1, y1, x2, y2
   # Return true if x2,y2 is in cone radians around heading radians from x1,x2
   # and within distance radius from x1,x2 considering all torus reflections.
-  inTorusCone: (heading, cone, radius, x1, y1, x2, y2, w, h) ->
+  # inTorusCone: (heading, cone, radius, x1, y1, x2, y2, w, h) ->
+  inTorusCone: (radius, angle, heading, x1, y1, x2, y2, w, h) ->
     for p in @torus4Pts x1, y1, x2, y2, w, h
-      return true if @inCone heading, cone, radius, x1, y1, p[0], p[1]
+      return true if @inCone radius, angle, heading, x1, y1, p[0], p[1]
     false
+  inTorusRect: (x, y, minX, minY, maxX, maxY, w, h) ->
+    if x < minX then x += w else if x > maxX then x -= w
+    if y < minY then y += h else if y > maxY then y -= h
+    (minX <= x <= maxX) and (minY <= y <= maxY)
 
 # ### File I/O
 

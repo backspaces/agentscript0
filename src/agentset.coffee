@@ -36,7 +36,7 @@ class AgentSet extends Array
   #     randomEven = evens.oneOf()
   @asSet: (a, setType = AgentSet) -> #(a, setType = ABM.AgentSet)
     a.__proto__ = setType.prototype ? setType.constructor.prototype # setType.__proto__
-    a.model=a[0].model if a[0]?
+    a.model=a[0].model if a[0]? # do we need this?
     a
 
 
@@ -115,9 +115,9 @@ class AgentSet extends Array
   # Return all agents that are not of the given breeds argument.
   # Breeds is a string of space separated names:
   #   @patches.exclude "roads houses"
-  exclude: (breeds) ->
-    breeds = breeds.split(" ")
-    @asSet (o for o in @ when o.breed.name not in breeds)
+  # exclude: (breeds) -> # Not used??
+  #   breeds = breeds.split(" ")
+  #   @asSet (o for o in @ when o.breed.name not in breeds)
 
   # Remove adjacent duplicates, by reference, in a sorted agentset.
   # Use `sortById` first if agentset not sorted.
@@ -132,6 +132,20 @@ class AgentSet extends Array
   # The static `ABM.AgentSet.asSet` as a method.
   # Used by agentset methods creating new agentsets.
   asSet: (a, setType = AgentSet) -> AgentSet.asSet a, setType # setType = AgentSet
+
+  # Is the given array an agentset of the given type?
+  # It does not use the prototype chain, so
+  #
+  #     isSet(agents, "AgentSet")
+  #
+  # is false. Current names: AgentSet, Agents, Patches, Links.
+  # Default name is "AgentSet", good test for derived sets using asSet()
+  isSet: (name = "AgentSet") ->  @constructor.name is name
+  # Similar for above but includes breeds of Agents, Patches, Links too
+  # isBreed("Agents") returns true for an agent that isn't a breed
+  isBreed: (name) ->
+    # @isSet(name) or (@agentClass?.name is name)
+    if @agentClass? then (@agentClass.name is name) else @isSet(name)
 
   # Similar to above but sorted via `id`.
   asOrderedSet: (a) -> @asSet(a).sortById()
@@ -214,7 +228,13 @@ class AgentSet extends Array
   #
   #     as = AS.clone().other(AS[0])
   #     as.getProp "id"  # [1, 2, 3, 4]
-  other: (a) -> @asSet (o for o in @ when o isnt a) # could clone & remove
+  other: (a) ->
+    # If simple agentset derived by functions returning agentsets, use
+    # remove. Otherwise iterate over myself.
+    if @isSet()
+      u.removeItem @, a
+    else
+      @asSet (o for o in @ when o isnt a)
 
   # Return random agent in agentset
   #
@@ -244,10 +264,10 @@ class AgentSet extends Array
   draw: (ctx) ->
     u.clearCtx(ctx); o.draw(ctx) for o in @ when not o.hidden; null
 
-  # Show/Hide all of an agentset or breed.
+  # Show/Hide all of an agentset or breed. Does not redraw.
   # To show/hide an individual object, set its prototype: o.hidden = bool
-  show: -> o.hidden = false for o in @; @draw(@model.contexts[@name])
-  hide: -> o.hidden = true for o in @; @draw(@model.contexts[@name])
+  show: -> o.hidden = false for o in @ # ; @draw(@model.contexts[@name])
+  hide: -> o.hidden = true for o in @ #; @draw(@model.contexts[@name])
 
 # ### Topology
 
@@ -255,30 +275,50 @@ class AgentSet extends Array
   # Typically a subclass uses a rect/quadtree array to minimize
   # the size, then uses asSet(array) to call inRadius or inCone
   #
+  inRect: (o, radius) -> #, meToo=false) ->
+    rect = [];
+    minX = o.x - radius; maxX = o.x + radius
+    minY = o.y - radius; maxY = o.y + radius
+    patches = @model.patches
+    # Is the o +/- radius entirely inside the patches?
+    outside = (minX < patches.minX) or (maxX > patches.maxX) or
+              (minY < patches.minY) or (maxY > patches.maxY)
+    checkTorus = patches.isTorus and outside
+    for a in @
+      x = a.x; y = a.y  # agent's x,y
+      if checkTorus  # Adjust torus x,y if appropriate
+        if x<minX then x += patches.numX else if x>maxX then x -= patches.numX
+        if y<minY then y += patches.numY else if y>maxY then y -= patches.numY
+      # Test x,y inside rect
+      rect.push a if (minX <= x <= maxX and minY <= y <= maxY)
+    @asSet rect
+
   # Return all agents in agentset within d distance from given object.
   # By default excludes the given object. Uses linear/torus distance
   # depending on patches.isTorus, and patches width/height if needed.
-  inRadius: (o, d, meToo=false) -> # for any objects w/ x,y
-    d2 = d*d; x=o.x; y=o.y
+  inRadius: (o, radius) -> #, meToo=false) -> # for any objects w/ x,y
+    d2 = radius * radius; x = o.x; y = o.y
     if @model.patches.isTorus
-      w=@model.patches.numX; h=@model.patches.numY
+      w = @model.patches.numX; h = @model.patches.numY
       @asSet (a for a in @ when \
-        u.torusSqDistance(x,y,a.x,a.y,w,h)<=d2 and (meToo or a isnt o))
+        u.torusSqDistance(x, y, a.x, a.y, w, h) <= d2 ) # and (meToo or a isnt o))
     else
       @asSet (a for a in @ when \
-        u.sqDistance(x,y,a.x,a.y)<=d2 and (meToo or a isnt o))
-  # As above, but also limited to the angle `cone` around
+        u.sqDistance(x, y, a.x, a.y) <= d2) # and (meToo or a isnt o))
+
+  # As above, but also limited to the angle `angle` around
   # a `heading` from object `o`.
-  inCone: (o, heading, cone, radius, meToo=false) ->
-    rSet = @inRadius o, radius, meToo
-    x=o.x; y=o.y
+  inCone: (o, radius, angle, heading) -> #, meToo=false) ->
+    x = o.x; y = o.y
     if @model.patches.isTorus
-      w=@model.patches.numX; h=@model.patches.numY
-      @asSet (a for a in rSet when \
-        (a is o and meToo) or u.inTorusCone(heading,cone,radius,x,y,a.x,a.y,w,h))
+      w = @model.patches.numX; h = @model.patches.numY
+      @asSet (a for a in @ when \
+        # (a is o and meToo) or
+        u.inTorusCone(radius, angle, heading, x, y, a.x, a.y, w, h))
     else
-      @asSet (a for a in rSet when \
-        (a is o and meToo) or u.inCone(heading,cone,radius,x,y,a.x,a.y))
+      @asSet (a for a in @ when \
+        # (a is o and meToo) or
+        u.inCone(radius, angle, heading, x, y, a.x, a.y))
 
 # ### Debugging
 

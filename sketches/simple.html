@@ -4,26 +4,35 @@
     <script src="../lib/agentscript.js"></script>
     <script src="../tools/coffee-script.js"></script>
     <script type="text/coffeescript">
-    
+
     u = ABM.Util # shortcut for ABM.Util
     class MyModel extends ABM.Model
       setup: -> # called by Model constructor
-        @refreshPatches = false
-        @agents.create 25
+        # @refreshPatches = false
+        @population = 200
+        @patches.usePixels()
+        @patches.cacheAgentsHere()
+
+
+        @anim.setRate 20, true
+        @agents.create @population
         for a in @agents
-          a.size = 3
-          a.shape = u.oneOf ABM.shapes.names()
+          a.size = 1
+          # a.shape = u.oneOf ABM.shapes.names()
         for p in @patches
           p.color = u.randomGray()
-          p.color = [255,0,0] if p.x is 0
-          p.color = [255,255,0] if p.y is 0
+          p.color = "red" if p.x is 0
+          p.color = "green" if p.y is 0
       step: ->
         for a in @agents
           a.rotate u.randomCentered(u.degToRad(40))
           a.forward 1
+        console.log @anim.toString() if @anim.ticks % 100 is 0
+        # @stop() if @anim.ticks is 200
 
     # div, size, minX, maxX, minY, maxY, torus=true, neighbors=true
-    model = new MyModel("layers", 10, -25, 25, -20, 20, true)
+    # model = new MyModel("layers", 10, -25, 25, -20, 20, true)
+    model = new MyModel("layers", 10, 0, 49, 0, 39, true)
       .debug() # Debug: Put Model vars in global name space
       .start() # Run model immediately after startup initialization
 
@@ -33,5 +42,3 @@
     <div id="layers"></div>
   </body>
 </html>
-
-

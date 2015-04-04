@@ -12,7 +12,7 @@ class MyModel extends ABM.Model
 
     @population = 25
     @velocity = .5
-    @radius = 15
+    @radius = 5
     @angle = u.degToRad(90)
 
     # for p in @patches
@@ -22,7 +22,7 @@ class MyModel extends ABM.Model
       a.size = 2
       a.setXY @patches.randomPt()... # splat: pt to 2 args
       a.coneColor = ColorMaps.randomColor()
-      console.log a.coneColor
+      # console.log a.coneColor
 
   step: -> # stop: just one tick
     p.color = [100,100,100] for p in @patches
@@ -36,6 +36,7 @@ class MyModel extends ABM.Model
       # # inCone: (o, heading, cone, radius, meToo=false)
       # neighborhood = @patches.inCone a.p, a.heading, @angle, @radius, true # me too
       neighborhood = a.inCone @patches, @angle, @radius, false # me too
+      # neighborhood = @patches.patchCircle a.p, @radius, false # me too
       # neighborhood = @agents.inCone a, a.heading, u.degToRad(30), 20, true # me too
       # neighborhood = a.inCone a.p.n, u.degToRad(120), 2
       # neighborhood = a.inCone a.p.n, u.degToRad(180), 1

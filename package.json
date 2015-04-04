@@ -21,6 +21,7 @@
     "url": "https://github.com/backspaces/agentscript/issues"
   },
   "scripts": {
+    "gulp":  "gulp",
     "all":   "gulp all",
     "build": "gulp build",
     "docs":  "gulp docs",
