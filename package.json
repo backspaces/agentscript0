@@ -34,13 +34,13 @@
     "git-pages": "git checkout gh-pages && git merge master && git push origin gh-pages && git checkout master"
   },
   "devDependencies": {
-    "gulp": "^3.8.5",
-    "gulp-coffee": "^2.0.1",
-    "gulp-concat": "^2.3.0",
+    "gulp": "~3.8.11",
+    "gulp-coffee": "~2.3.1",
+    "gulp-concat": "~2.5.2",
     "gulp-docco": "0.0.4",
-    "gulp-rename": "^1.2.0",
-    "gulp-task-listing": "^0.3.0",
-    "gulp-uglify": "^0.3.1",
-    "lazypipe": "^0.2.1"
+    "gulp-rename": "~1.2.0",
+    "gulp-task-listing": "0.3.0",
+    "gulp-uglify": "0.3.2",
+    "lazypipe": "0.2.2"
   }
 }
