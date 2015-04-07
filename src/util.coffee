@@ -428,8 +428,6 @@ Util = util = u = # TODO: "util" deprecated in favor of Util
   #     sortBy array, "i"
   #     # array now is [{i:-1},{i:1},{i:2},{i:2},{i:5}]
   sortBy: (array, f) ->
-  #  f = @propFcn f if @isString f # use item[f] if f is string
-  #  array.sort (a,b) -> f(a) - f(b)
     if @isString f
     then array.sort (a,b) -> a[f] - b[f]
     else array.sort (a,b) -> f(a) - f(b)

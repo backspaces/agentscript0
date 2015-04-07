@@ -52,8 +52,8 @@
 
 
       step: ->
-        if @useConsole and @anim.ticks % 25 is 0
-          console.log @anim.toString(), "flock alignment: #{@reportFlockVectorSize()}"
+        if @useConsole and @anim.ticks % 100 is 0
+          console.log "flock alignment: #{@reportFlockVectorSize()}"
         @flock(a) for a in @agents
         if @anim.draws is 2 # Show the sprite sheet if there is one after first draw
           sheet = u.last(Shapes.spriteSheets) if Shapes.spriteSheets.length isnt 0

@@ -37,7 +37,7 @@
         @agents.setDefault "penSize", 1 #Pen(1, true)
         @agents.setDefault "penDown", true #Pen(1, true)
       step: ->
-        console.log @anim.toString() if @anim.ticks % 100 is 0
+        # console.log @anim.toString() if @anim.ticks % 100 is 0
         for a in @agents
           for a1 in @agents.other(a)
             k = Math.pow(10, @gravExp)*a1.mass/Math.max(Math.pow(a.distance(a1),3), .000001)
@@ -47,7 +47,7 @@
           # scale opacity by distance to center
           opacityScale = (1-a.distance(@patches.patch(0,0))/@maxDistanceFromSun)
           # console.log opacityScale if a.id is 2
-          a.color = a.color
+          # a.color = a.color
           # a.scaleOpacity a.color.slice(0,3), opacityScale
           #
           a.setXY u.clamp(a.x+a.vx, @patches.minX, @patches.maxX),

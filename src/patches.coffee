@@ -45,11 +45,11 @@ class Patches extends AgentSet
 
   # Optimization: Cache a single set by modeler for use by patchRect,
   # inCone, inRect, inRadius.  Ex: flock demo model's vision rect.
-  cacheRect: (radius, meToo=false) ->
+  cacheRect: (radius, meToo=true) ->
     for p in @
       p.pRect = @patchRect p, radius, radius, meToo
-      p.pRect.radius = radius #; p.pRect.meToo = meToo
-    null # radius # avoid CS returning huge array!
+      p.pRect.radius = radius
+    null # avoid CS returning huge array!
 
   # Install neighborhoods in patches
   setNeighbors: ->
@@ -122,7 +122,7 @@ class Patches extends AgentSet
   # Return an array of agentset items in a rectangle centered on the given
   # agent's patch - dx, dy units to the right/left and up/down, integers.
   # The agent will be in the results if in the agentSet and rectangle.
-  agentRect: (agentSet, agent, dx, dy=dx) -> #, meToo = false) ->
+  agentRect: (agentSet, agent, dx, dy=dx) ->
     p =  agent.p ? agent
     rect = [];
     # Note: we do not "clip" the min/max/X/Y to be within the patches.
@@ -139,8 +139,6 @@ class Patches extends AgentSet
       if a.p? then x = a.p.x; y = a.p.y else x = a.x; y = a.y
       # Adjust torus x,y if appropriate
       if checkTorus
-        # x += @numX if x < minX; x -= @numX if x > maxX
-        # y += @numY if y < minY; y -= @numY if y > maxY
         if x < minX then x += @numX else if x > maxX then x -= @numX
         if y < minY then y += @numY else if y > maxY then y -= @numY
       # Test x,y inside rect
@@ -164,9 +162,9 @@ class Patches extends AgentSet
           rect.push pnext if (meToo or p isnt pnext)
     @asSet rect
   # Return all the agents contained in the patchRect.
-  agentsOnRect: (p, dx, dy=dx) -> #, meToo=false) ->
+  agentsOnRect: (p, dx, dy=dx) ->
     @agentsOnPatches @patchRect(p, dx, dy, true)
-  agentsOnPatches: (patches) -> #, meToo=false) ->
+  agentsOnPatches: (patches) ->
     array = []
     if patches.length isnt 0
       u.error "agentsInPatches: no cached agents." if not patches[0].agents?
@@ -179,18 +177,6 @@ class Patches extends AgentSet
     return @asSet([aset.p ? aset]) unless aset.length?
     @asSet( ((a.p ? a) for a in aset) ).sortById().uniq()
   agentsOf: (aset) -> @agentsOnPatches(@patchesOf(aset))
-
-
-  # patchCircle: (p0, radius) -> #, meToo = false) ->
-  #   rect = @patchRect p0, radius, radius, meToo
-  #   r2 = radius * radius; x = p0.x; y = p0.y
-  #   if @isTorus
-  #     w = @numX; h = @numY
-  #     @asSet (p for p in rect when \
-  #       u.torusSqDistance(x, y, p.x, p.y, w, h) <= r2 and (meToo or p isnt p0))
-  #   else
-  #     @asSet (p for p in rect when \
-  #       u.sqDistance(x, y, p.x, p.y) <= r2 and (meToo or p isnt p0))
 
   # Draws, or "imports" an image URL into the drawing layer.
   # The image is scaled to fit the drawing layer.

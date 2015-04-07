@@ -36,7 +36,7 @@ class AgentSet extends Array
   #     randomEven = evens.oneOf()
   @asSet: (a, setType = AgentSet) -> #(a, setType = ABM.AgentSet)
     a.__proto__ = setType.prototype ? setType.constructor.prototype # setType.__proto__
-    a.model=a[0].model if a[0]? # do we need this?
+    a.model=a[0].model if a[0]? # Used by geometric methods
     a
 
 
@@ -115,9 +115,9 @@ class AgentSet extends Array
   # Return all agents that are not of the given breeds argument.
   # Breeds is a string of space separated names:
   #   @patches.exclude "roads houses"
-  # exclude: (breeds) -> # Not used??
-  #   breeds = breeds.split(" ")
-  #   @asSet (o for o in @ when o.breed.name not in breeds)
+  exclude: (breeds) -> # Not used, remove??
+    breeds = breeds.split(" ")
+    @asSet (o for o in @ when o.breed.name not in breeds)
 
   # Remove adjacent duplicates, by reference, in a sorted agentset.
   # Use `sortById` first if agentset not sorted.
@@ -266,8 +266,8 @@ class AgentSet extends Array
 
   # Show/Hide all of an agentset or breed. Does not redraw.
   # To show/hide an individual object, set its prototype: o.hidden = bool
-  show: -> o.hidden = false for o in @ # ; @draw(@model.contexts[@name])
-  hide: -> o.hidden = true for o in @ #; @draw(@model.contexts[@name])
+  show: -> o.hidden = false for o in @
+  hide: -> o.hidden = true for o in @
 
 # ### Topology
 
@@ -275,7 +275,7 @@ class AgentSet extends Array
   # Typically a subclass uses a rect/quadtree array to minimize
   # the size, then uses asSet(array) to call inRadius or inCone
   #
-  inRect: (o, radius) -> #, meToo=false) ->
+  inRect: (o, radius) ->
     rect = [];
     minX = o.x - radius; maxX = o.x + radius
     minY = o.y - radius; maxY = o.y + radius
@@ -296,28 +296,26 @@ class AgentSet extends Array
   # Return all agents in agentset within d distance from given object.
   # By default excludes the given object. Uses linear/torus distance
   # depending on patches.isTorus, and patches width/height if needed.
-  inRadius: (o, radius) -> #, meToo=false) -> # for any objects w/ x,y
+  inRadius: (o, radius) ->
     d2 = radius * radius; x = o.x; y = o.y
     if @model.patches.isTorus
       w = @model.patches.numX; h = @model.patches.numY
       @asSet (a for a in @ when \
-        u.torusSqDistance(x, y, a.x, a.y, w, h) <= d2 ) # and (meToo or a isnt o))
+        u.torusSqDistance(x, y, a.x, a.y, w, h) <= d2 )
     else
       @asSet (a for a in @ when \
-        u.sqDistance(x, y, a.x, a.y) <= d2) # and (meToo or a isnt o))
+        u.sqDistance(x, y, a.x, a.y) <= d2)
 
   # As above, but also limited to the angle `angle` around
   # a `heading` from object `o`.
-  inCone: (o, radius, angle, heading) -> #, meToo=false) ->
+  inCone: (o, radius, angle, heading) ->
     x = o.x; y = o.y
     if @model.patches.isTorus
       w = @model.patches.numX; h = @model.patches.numY
       @asSet (a for a in @ when \
-        # (a is o and meToo) or
         u.inTorusCone(radius, angle, heading, x, y, a.x, a.y, w, h))
     else
       @asSet (a for a in @ when \
-        # (a is o and meToo) or
         u.inCone(radius, angle, heading, x, y, a.x, a.y))
 
 # ### Debugging

@@ -99,9 +99,6 @@
       if (this.anim.draws === 2) {
         this.showSpriteSheet();
       }
-      if (this.anim.ticks % 100 === 0) {
-        log(this.anim.toString());
-      }
       if (this.anim.ticks === 1000) {
         log("..stopping, restart by app.start()");
         return this.stop();

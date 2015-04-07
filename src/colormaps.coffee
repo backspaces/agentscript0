@@ -293,6 +293,14 @@ ColorMaps  = {
     # Ramps.yellow is thus a ramp from black to brightest NetLogo yellow hue
     @NetLogoRamps = @netLogoColorMap 18, false
     @CssRamps     = @cssBasicColorMap 18, false
+
+  # Return random gray/color from a shared map.
+  # Colormap colors are immutable, so if you don't want
+  # a shared gray/color but one who's color you will change
+  # via color.setColor(..), then use clone:
+  #
+  #     color = ColorMaps.randomColor().clone()
+  #     color = ColorMaps.Jet.scaleColor(.5).clone()
   randomGray: (min, max) -> @Gray.randomColor(min, max)
   randomColor: () -> @Rgb.randomColor()
 

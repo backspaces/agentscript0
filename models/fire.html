@@ -54,7 +54,7 @@
             a.p.draw @contexts.patches
             a.die()
       step: ->
-        console.log @anim.toString() if @anim.ticks % 100 is 0
+        # console.log @anim.toString() if @anim.ticks % 100 is 0
         unless @agents.any()
           console.log "..stopping, fire done at tick: #{@anim.ticks}"
           @stop()

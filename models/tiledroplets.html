@@ -9,7 +9,7 @@
 
     <script src="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.js"></script>
     <script src="../tools/dat.gui.min.js"></script>
-    
+
     <script src="../lib/agentscript.js"></script>
     <script src="../lib/mouse.js"></script>
     <script src="../lib/data.js"></script>
@@ -61,12 +61,12 @@
             // model
             ABM.Model.prototype.setup = function() {
                 this.refreshPatches = this.refreshLinks = false;
-                
+
                 this.patches.own("elevation slope aspect");
-                
+
                 this.vision = 1; // try range in 1-5 or so
                 this.speed = .25;
-                
+
                 this.agents.setDefault("shape", "square");
                 this.agents.setDefault("size", .5);
                 this.agents.setDefault("color", [60, 157, 255]);
@@ -112,7 +112,7 @@
                 }
 
                 if (this.anim.ticks % 100 == 0) {
-                    console.log(this.anim.toString(), "moved:", moved);  
+                    console.log("moved:", moved);
                 }
             }
 
@@ -160,7 +160,7 @@
             // and restart the model
             tileSet.on('tilesready', function() {
                 model.stop();
-                
+
                 console.log('importing elevation data');
                 tileSet.importTileData();
                 tileSet.toPatchVar('elevation');

@@ -5,7 +5,7 @@
     <script src="../lib/mouse.js"></script>
     <script src="../tools/coffee-script.js"></script>
     <script type="text/coffeescript">
-    
+
     u = ABM.Util # ABM.Util alias
     class MyModel extends ABM.Model
       setup: ->
@@ -13,7 +13,7 @@
         @nodes.setDefault "shape", "circle"
         @nodes.setDefault "size", .3
         @drivers.setDefault "size", 1.5
-        
+
         # 40-44fps->58+fps
         @refreshPatches = false # 56fps
         @refreshLinks = true # 40-49fps
@@ -22,32 +22,32 @@
         @agents.setUseSprites() # 24 -> 36
         # w/ refreshs off and 1 optimization 59/max-fps
         # @agents.cacheLinks() # no improvement, but tests a.links
-        
+
         @anim.setRate 30, true # almost 3:1 steps/draws!
         # @anim.setRate 60, false # for optimization studies & profiling
-        
+
         # globals
         @numNodes = 30
         @numDrivers = 100
         @layoutCircle = true
         @baseVelocity = 0.1 # patchs
         @velocityDelta = 0.1 # patches
-        
+
         @links.setDefault "labelColor", [255,0,0]
-        
+
         p.color = u.randomGray 10, 50 for p in @patches
         for p in @patches.nOf @numNodes
-          p.sprout 1, @nodes, (a) => 
+          p.sprout 1, @nodes, (a) =>
             if @nodes.length > 1 # if @nodes().length > 1
               @links.create a, @nodes.other(a).oneOf() # @links.create a, @nodes().other(a).oneOf()
-        
+
         if @layoutCircle then @links.layoutCircle @nodes, @patches.maxX - 1
-        
+
         # Test labels
         # l.label = l.length().toFixed(0) for l in @links
-        
+
         # no defaults, hatch copies its values to new agent
-        
+
         for i in [1..@numDrivers]
           n = @nodes.oneOf() # n = @nodes().oneOf()
           n.hatch 1, @drivers, (a) =>
@@ -55,7 +55,7 @@
             a.face a.toNode
             a.v = @baseVelocity + u.randomFloat @velocityDelta
         null # avoid returning "for" results above
-        
+
         new ABM.Mouse(@)
 
         @agents.on 'mouseover', (mouseEvent) =>
@@ -84,7 +84,7 @@
         @drivers.setDraggable()
 
       step: ->
-        console.log @anim.toString() if @anim.ticks % 100 is 0
+        # console.log @anim.toString() if @anim.ticks % 100 is 0
         for d in @drivers when not d.dragging
           d.face d.toNode
           d.forward Math.min d.v, d.distance d.toNode

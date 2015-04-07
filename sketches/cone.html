@@ -9,11 +9,20 @@ class MyModel extends ABM.Model
   ColorMaps = ABM.ColorMaps
   setup: ->
     @agents.own("coneColor")
+    # little difference even tho ps/pRect=3600/121! (all p.agents.length = 0/1)
+    @patches.cacheAgentsHere()
+    # @patches.usePixels() #faster (7->11)
+
 
     @population = 25
     @velocity = .5
     @radius = 5
-    @angle = u.degToRad(90)
+    @angle = u.degToRad(45)
+    @useInRadius = true
+    @useOther = true
+
+    @patches.cacheRect @radius
+
 
     # for p in @patches
     #   p.color = u.randomGray()
@@ -22,9 +31,9 @@ class MyModel extends ABM.Model
       a.size = 2
       a.setXY @patches.randomPt()... # splat: pt to 2 args
       a.coneColor = ColorMaps.randomColor()
-      # console.log a.coneColor
 
   step: -> # stop: just one tick
+    # console.log @anim.toString() if @anim.ticks % 25 is 0
     p.color = [100,100,100] for p in @patches
     for a in @agents
       # inRadius: (o, d, meToo=false)
@@ -35,7 +44,10 @@ class MyModel extends ABM.Model
       # neighborhood = @patches.inRadius a, 10 # includes my patch, can't exclude a from ps
       # # inCone: (o, heading, cone, radius, meToo=false)
       # neighborhood = @patches.inCone a.p, a.heading, @angle, @radius, true # me too
-      neighborhood = a.inCone @patches, @angle, @radius, false # me too
+      if @useInRadius
+      then neighborhood = a.inRadius @patches, @radius
+      else neighborhood = a.inCone @patches, @radius, @angle
+      neighborhood = neighborhood.other(a.p) if @useOther
       # neighborhood = @patches.patchCircle a.p, @radius, false # me too
       # neighborhood = @agents.inCone a, a.heading, u.degToRad(30), 20, true # me too
       # neighborhood = a.inCone a.p.n, u.degToRad(120), 2

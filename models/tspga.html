@@ -63,7 +63,7 @@
         a.tourLength = @lengthFromNodes a.tourNodes
 
       step: ->
-        console.log @anim.toString() if @anim.ticks % 100 is 0
+        # console.log @anim.toString() if @anim.ticks % 100 is 0
         @makeTour a for a in @travelers #()
         @installBestTour()
         if (@anim.ticks - @bestTourTick) is @stopTickDifference

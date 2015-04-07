@@ -39,27 +39,21 @@ class Agents extends AgentSet
     if @mainSet? then @breedsIn array else @asSet array
 
   # Return an agentset of agents/breeds within the patchRect
-  inRect: (p, dx, dy=dx) -> #, meToo=false) ->
+  inRect: (p, dx, dy=dx) ->
     rect = @model.patches.patchRect p, dx, dy #, true
     @inPatches rect
-    # rect = @model.patches.patchRect a.p, dx, dy #, true
-    # rect = @inPatches rect
-    # u.removeItem rect, a unless meToo
-    # rect
 
   # Return the members of this agentset that are within radius distance
   # from me, and within cone radians of my heading using patch topology
-  # inCone: (a, radius, angle) -> #, meToo=false) -> # heading? .. so p ok?
-  #   as = @inRect a, radius, radius #, true
-  #   # super a, heading, cone, radius, meToo
-  #   as.inCone a, radius, a.heading, angle # , meToo
+  inCone: (a, radius, angle) ->
+    as = @inRect a, radius, radius #, true
+    as.inCone a, radius, angle, a.heading
   #
   # Return the members of this agentset that are within radius distance
   # from me, using patch topology
-  inRadius: (a, radius) -> #, meToo=false)->
-    as = @inRect a.p, radius #, radius #, true
-    # super a, radius, meToo
-    as.inRadius a, radius # , meToo
+  inRadius: (a, radius) ->
+    as = @inRect a.p, radius
+    as.inRadius a, radius
 
   setDraggable: ->
     @on 'dragstart', (mouseEvent) =>

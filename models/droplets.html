@@ -21,24 +21,24 @@
           { @slope, @aspect } = @elevation.slopeAndAspect()
           # { @aspect, @slope } = @elevation.slopeAndAspect() # switched order fine
           # [ @slope, @aspect ] = @elevation.slopeAndAspect()
-        
+
       setup: ->
         console.log "setup"
         @refreshPatches = @refreshLinks = false
-        
+
         @patches.own "elevation slope aspect"
         # @globals "elevation slope aspect vision speed" # fix: problem with removeItem
-        
+
         @vision = 1 # try range in 1-5 or so
         @speed = .25
         @useAspect = true # model uses aspect/slope or elevation.
         @lastMoved = @patches.length
-        
+
         @agents.setDefault "shape", "square"
         @agents.setDefault "size", .5
         @agents.setDefault "color", [100,100,150]
         @patches.cacheRect @vision, false # cache inRadius @vision
-        
+
         # Install startup globals into patches/drawing
         # img = @elevation.toDrawing()
         # @patches.installColors img
@@ -49,10 +49,10 @@
         @elevation.toPatchVar("elevation")
         @slope.toPatchVar("slope")
         @aspect.toPatchVar("aspect")
-        
+
         p.sprout 1 for p in @patches
-        console.log "patches: #{@patches.length}, agents: #{@agents.length}"      
-      
+        console.log "patches: #{@patches.length}, agents: #{@agents.length}"
+
 
       step: ->
         moved = 0
@@ -63,16 +63,17 @@
             if @useAspect
               a.heading = a.p.aspect
             else
-              a.face n            
+              a.face n
             a.forward @speed
             moved += 1
         if moved is 0 or (@useAspect and @lastMoved is moved)
           console.log "done, ticks: #{@anim.ticks}"
           @stop()
         if @anim.ticks % 100 is 0
-          console.log @anim.toString(), "moved: #{moved}"
+          # console.log @anim.toString(), "moved: #{moved}"
+          console.log "moved: #{moved}"
           @lastMoved = moved
-    
+
     # div, patchSize, minX, maxX, minY, maxY, isTorus, hasNeighbors
     #   Defaults: 13, -16, 16, -16, 16, false, true
     model = new MyModel({
@@ -85,7 +86,7 @@
     })
     .debug() # Debug: Put Model vars in global name space
     .start() # Run model immediately after startup initialization
-    
+
     </script>
   </head>
   <body>

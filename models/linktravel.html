@@ -59,7 +59,7 @@
         null # avoid returning "for" results above
 
       step: ->
-        console.log @anim.toString() if @anim.ticks % 100 is 0
+        # console.log @anim.toString() if @anim.ticks % 100 is 0
         # Show the sprite sheet if there is one after first draw
         @showSpriteSheet() if @anim.draws is 2
         for d in @drivers #for d in @drivers()

@@ -170,13 +170,13 @@ Color = {
     # the pixel value as it is a view onto the same buffer, and vice versa.
     # See Mozilla [TypedArray Docs](http://goo.gl/3OOQzy).
     # If r is not a number but a TypedArray, use it for the typedColor.
-    typedColor = (r, g, b, a=255, map, index) ->
+    typedColor = (r, g, b, a=255) -> #, map, index) ->
       # Experimental: The map & index are for possible colormap use.
-      if map # assume Uint8ClampedArray rgba array
-        ua = map.subarray index*4, index*4 + 4
-        ua.set [r,g,b,a]
-      else
-        ua = if r.buffer then r else new Uint8ClampedArray([r,g,b,a])
+      # if map # assume Uint8ClampedArray rgba array
+      #   ua = map.subarray index*4, index*4 + 4
+      #   ua.set [r,g,b,a]
+      # else
+      ua = if r.buffer then r else new Uint8ClampedArray([r,g,b,a])
       ua.pixelArray = new Uint32Array(ua.buffer, ua.byteOffset, 1)
       # Make this an instance of TypedColorProto
       ua.__proto__ = TypedColorProto
@@ -190,12 +190,14 @@ Color = {
       __proto__: Uint8ClampedArray.prototype
       # Set the TypedArray; no need for getColor, it *is* the typed Uint8 array
       setColor: (r,g,b,a=255) ->
-        @string = null if @string # will be lazy evaluated via getString.
+        # @string = null if @string # will be lazy evaluated via getString.
+        @checkColorChange()
         @[0]=r; @[1]=g; @[2]=b; @[3]=a
         @
       # Set the pixel view, changing the shared array (Uint8) view too
       setPixel: (pixel)->
-        @string = null if @string # will be lazy evaluated via getString.
+        # @string = null if @string # will be lazy evaluated via getString.
+        @checkColorChange()
         @pixelArray[0]=pixel
       # Get the pixel value
       getPixel: -> @pixelArray[0]
@@ -210,9 +212,17 @@ Color = {
       setString: (string) ->
         @setColor(Color.stringToUint8s(string)...)
       # Return the triString for this typedColor, cached in the @string value
-      getString: () ->
+      getString: ->
         @string = Color.triString(@...) unless @string?
         @string
+      # Housekeeping when a color is modified.
+      checkColorChange: ->
+        # Check for immutable colormap color.
+        u.error "ColorMap.typedColor: cannot modify ColorMap color." if @map
+        # Reset string on color change.
+        @string = null if @string # will be lazy evaluated via getString.
+      # Create duplicate of myself.
+      clone: -> typeColor @...
     }
     # Experiment: Sugar for converting getter/setters into properties.
     # Frequent rgba property setter very poor performance due to GC overhead.

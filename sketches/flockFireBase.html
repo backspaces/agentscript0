@@ -76,7 +76,7 @@
       step: ->
         if @useConsole and @anim.ticks % 25 is 0
           vec=@reportFlockVectorSize()
-          console.log @anim.toString(), "flock alignment: #{vec}" if @useConsole
+          console.log "flock alignment: #{vec}" if @useConsole
           @ui.setUIValue "log", {alignment: vec, step: @anim.ticks}, true
         @flock(a) for a in @agents
         if @anim.draws is 2 # Show the sprite sheet if there is one after first draw

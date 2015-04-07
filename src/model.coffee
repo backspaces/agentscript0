@@ -138,13 +138,6 @@ class Model
   # Optimizes Agent a.myLinks method
   setCacheMyLinks: -> @agents.cacheLinks()
 
-  # Have patches cache the given patchRect.
-  # Neighborhoods do not include the patch itself.
-  # Optimizes patchRect, inRadius and inCone
-  # setCacheNeighborhood:(radius, meToo=false)->@patches.cacheRect radius, meToo
-  # setCachePatchRect:(radius, meToo=true)->@patches.cacheRect radius, meToo
-  # setCachePatchRect:(radius)->@patches.cacheRect radius
-
 #### User Model Creation
 # A user's model is made by subclassing Model and over-riding these
 # two abstract methods. `super` need not be called.
@@ -193,6 +186,9 @@ class Model
 # their "refresh" flags are set.  The latter are simple optimizations
 # to avoid redrawing the same static scene. Called by animator.
   draw: (force = @anim.stopped or @anim.draws is 1) ->
+    if @debugging
+      console.log @anim.toString() if @anim.draws % 100 is 0
+
     @patches.draw @contexts.patches  if force or @refreshPatches
     @links.draw   @contexts.links    if force or @refreshLinks
     @agents.draw  @contexts.agents   if force or @refreshAgents
