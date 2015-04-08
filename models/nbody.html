@@ -15,7 +15,8 @@
         @sun = true
         @v0max = 1
         @gravExp = -2
-        @maxDistanceFromSun = Math.sqrt(Math.pow(@world.maxY,2)+Math.pow(@world.maxX,2))
+        # use maxX/Ycor: agent coords extend to +/-.5 further than maxX/Y.
+        @maxDistanceFromSun = Math.sqrt(Math.pow(@world.maxYcor,2)+Math.pow(@world.maxXcor,2))
 
         # defaults
         @agents.setDefault "shape", "circle"
@@ -46,6 +47,14 @@
           # unless (@sun and a.id is 0)
           # scale opacity by distance to center
           opacityScale = (1-a.distance(@patches.patch(0,0))/@maxDistanceFromSun)
+          # Lots of ways to scale opacity:
+          # - Build an opacity gradient (ColorMaps) for each planet
+          # - Create a new color w/ the new opacity/alpha
+          # - Set the color's r,g,b,a via setter or property name
+          [r, g, b] = a.color # first, get my r,g,b,a values
+          # safe to add 10, will clip when expression > 255
+          # a.color = [r, g, b, (10+opacityScale*255)]
+          a.setColor r, g, b, (10+opacityScale*255) # way less GC
           # console.log opacityScale if a.id is 2
           # a.color = a.color
           # a.scaleOpacity a.color.slice(0,3), opacityScale

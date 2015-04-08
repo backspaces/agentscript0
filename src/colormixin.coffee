@@ -18,22 +18,21 @@ colorMixin = (obj, colorName, colorDefault, colorType="typed") ->
   # Add names to proto.
   proto[colorPropName] =
     if colorDefault then Color.convertColor colorDefault, colorType else null
+  # Add setter if not already there:
   unless proto[setterName]?
     proto[setterName] = (r,g,b,a=255) ->
       # Setter: If a single argument given, convert to a valid color
       if g is undefined
         color = Color.convertColor r, colorType # type check/conversion
-      else
-        # If own, non colormap color, use setter
-        if @hasOwnProperty(colorPropName) and \
-        colorType is "typed" and \
+      # If own, non colormap color, use setter
+      else if @hasOwnProperty(colorPropName) and
+        colorType is "typed" and
         not (color = @[colorPropName]).map?
-          # If a typed color already created, use it
-          # color = @[colorPropName]
           color.setColor r,g,b,a
-        else
-          # .. otherwise create a new one
-          color = Color.rgbaToColor r, g, b, a, colorType
+      # .. otherwise create a new color
+      else
+        console.log "new color"
+        color = Color.rgbaToColor r, g, b, a, colorType
       @[colorPropName] = color
   unless proto[getterName]?
     # Getter: return the colorPropName's value
