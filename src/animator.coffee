@@ -14,10 +14,11 @@ class Animator
   # Create initial animator for the model, specifying default rate (fps) and multiStep.
   # If multiStep, run the draw() and step() methods separately by draw() using
   # requestAnimationFrame and step() using setTimeout.
-  constructor: (@model, @rate=30, @multiStep=false) -> @reset()
+  # Mainly debug: noRAF (no requestAnimationFrame) use setTimeout for drawing.
+  constructor: (@model, @rate=30, @multiStep=false, @noRAF=false) -> @reset()
   # Adjust animator.  Call before model.start()
   # in setup() to change default settings
-  setRate: (@rate, @multiStep=false) -> @resetTimes() # Change rate while running?
+  setRate: (@rate, @multiStep=false, @noRAF=false) -> @resetTimes() # Change rate while running?
   # start/stop model, often used for debugging and resetting model
   start: ->
     return unless @stopped # avoid multiple animates
@@ -26,7 +27,9 @@ class Animator
     @animate()
   stop: ->
     @stopped = true
-    if @animHandle? then cancelAnimationFrame @animHandle
+    # if @animHandle? then cancelAnimationFrame @animHandle
+    if @animHandle? and not @noRAF then cancelAnimationFrame @animHandle
+    if @animHandle? and @noRAF then clearTimeout @animHandle
     if @timeoutHandle? then clearTimeout @timeoutHandle
     if @intervalHandle? then clearInterval @intervalHandle
     @animHandle = @timerHandle = @intervalHandle = null
@@ -59,12 +62,16 @@ class Animator
   # Animation via setTimeout and requestAnimationFrame
   animateSteps: =>
     @step()
-    @timeoutHandle = setTimeout @animateSteps, 10 unless @stopped
+    @timeoutHandle = setTimeout @animateSteps, 2 unless @stopped
   animateDraws: =>
     if @drawsPerSec() < @rate # throttle drawing to @rate
       @step() unless @multiStep
       @draw()
-    @animHandle = requestAnimationFrame @animateDraws unless @stopped
+    if @noRAF
+      @animHandle = setTimeout @animateDraws, 2 unless @stopped
+      u.deprecated "avoiding rAF"
+    else
+      @animHandle = requestAnimationFrame @animateDraws unless @stopped
   animate: ->
     @animateSteps() if @multiStep
     @animateDraws() # unless @isHeadless and @multiStep
