@@ -9,7 +9,8 @@ shapes = Shapes = do -> # TODO: Shapes is external name
   # and a transform such that the shape should be drawn in a -.5 to .5 square
   #
   #     ctx.save()
-  #     ctx.fillStyle = u.colorStr color
+  #     ctx.fillStyle = color.css
+  #     ctx.strokeStyle = strokeStyle.css if strokeStyle
   #     ctx.translate x, y; ctx.scale size, size;
   #     ctx.rotate heading if shape.rotate
   #     ctx.beginPath(); shape.draw(ctx); ctx.closePath()
@@ -31,17 +32,24 @@ shapes = Shapes = do -> # TODO: Shapes is external name
 
   # Centered drawing primitives: centered on x,y with a given width/height size.
   # Useful for shortcuts
-  circ = (c,x,y,s)->c.arc x,y,s/2,0,2*Math.PI # centered circle
-  ccirc = (c,x,y,s)->c.arc x,y,s/2,0,2*Math.PI,true # centered counter clockwise circle
-  cimg = (c,x,y,s,img)->c.scale 1,-1;c.drawImage img,x-s/2,y-s/2,s,s;c.scale 1,-1 # centered image
-  csq = (c,x,y,s)->c.fillRect x-s/2, y-s/2, s, s # centered square
+  circ = (c, x, y, s) ->  # centered circle
+    c.arc x, y, s/2, 0, 2*Math.PI
+  ccirc = (c, x, y, s) -> # counter clockwise circ
+    c.arc x, y, s/2, 0, 2*Math.PI, true
+  cimg = (c, x, y, s, img)-> # Image, flippd for cartesian, y-up.
+    c.scale 1, -1
+    c.drawImage img, x-s/2, y-s/2, s, s
+    c.scale 1, -1
+  csq = (c, x, y, s) -> # centered square
+    c.fillRect x-s/2, y-s/2, s, s
 
   # An async utility for delayed drawing of images into sprite slots
   fillSlot = (slot, img) ->
-    slot.ctx.save(); slot.ctx.scale 1, -1
+    slot.ctx.save()
+    slot.ctx.scale 1, -1
     slot.ctx.drawImage img, slot.x, -(slot.y+slot.spriteSize), slot.spriteSize, slot.spriteSize
     slot.ctx.restore()
-  # The spritesheet data, indexed by slotSize
+  # The spritesheet data, indexed by sprite size
   spriteSheets = []
 
   # The module returns the following object:
@@ -57,8 +65,8 @@ shapes = Shapes = do -> # TODO: Shapes is external name
   bug:
     rotate: true
     draw: (c) ->
-      c.strokeStyle = c.fillStyle; c.lineWidth = .05
-      poly c, [[.4,.225],[.2,0],[.4,-.225]]; c.stroke()
+      c.strokeStyle = c.fillStyle if c.strokeStyle is "#000000"
+      c.lineWidth = .05; poly c, [[.4,.225],[.2,0],[.4,-.225]]; c.stroke()
       c.beginPath(); circ c,.12,0,.26; circ c,-.05,0,.26; circ c,-.27,0,.4
   pyramid:
     rotate: false
@@ -117,8 +125,7 @@ shapes = Shapes = do -> # TODO: Shapes is external name
   # Two draw procedures, one for shapes, the other for sprites made from shapes.
   draw: (ctx, shape, x, y, size, rad, color, strokeColor) ->
     if shape.shortcut?
-      unless shape.img?
-        ctx.fillStyle = color.css # u.colorStr color
+      ctx.fillStyle = color.css unless shape.img? # u.colorStr color
       shape.shortcut ctx,x,y,size
     else
       ctx.save()
@@ -129,15 +136,15 @@ shapes = Shapes = do -> # TODO: Shapes is external name
         shape.draw ctx
       else
         ctx.fillStyle = color.css # u.colorStr color
-        if strokeColor
-          ctx.strokeStyle = strokeColor.css # u.colorStr strokeColor
-          ctx.lineWidth = 0.05
-        ctx.save()
+        ctx.strokeStyle = strokeColor.css if strokeColor # u.colorStr color
+        # if strokeColor
+        #   ctx.strokeStyle = strokeColor.css # u.colorStr strokeColor
+        #   ctx.lineWidth = 0.05
+        # ctx.save()
         ctx.beginPath(); shape.draw ctx; ctx.closePath()
-        ctx.restore()
+        # ctx.restore()
         ctx.fill()
-        ctx.stroke() if strokeColor
-
+        # ctx.stroke() if strokeColor
       ctx.restore()
     shape
   drawSprite: (ctx, s, x, y, size, rad) ->
@@ -153,28 +160,30 @@ shapes = Shapes = do -> # TODO: Shapes is external name
   # Convert a shape to a sprite by allocating a sprite sheet "slot" and drawing
   # the shape to fit it. Return existing sprite if duplicate.
   shapeToSprite: (name, color, size, strokeColor) ->
-    colorCss = Color.convertColor color, "css"
-    strokeCss = Color.convertColor strokeColor, "css" if strokeColor?
+    color = Color.convertColor color, "css" # if we're called directly by pgmr
+    strokeColor = Color.convertColor strokeColor, "css" if strokeColor?
     spriteSize = Math.ceil size
-    strokePadding = 4
-    slotSize = spriteSize + strokePadding
+    # slotSize = spriteSize
+    # strokePadding = 0
+    # slotSize = spriteSize + strokePadding
     shape = @[name]
-    # index = if shape.img? then name else "#{name}-#{u.colorStr(color)}"
-    index = if shape.img? then name else "#{name}-#{colorCss}"
-    ctx = spriteSheets[slotSize]
+    index = if shape.img? then name else "#{name}-#{color}"
+    ctx = spriteSheets[spriteSize]
     # Create sheet for this bit size if it does not yet exist
     unless ctx?
-      spriteSheets[slotSize] = ctx = u.createCtx slotSize*10, slotSize
+      spriteSheets[spriteSize] = ctx = u.createCtx spriteSize*10, spriteSize
       ctx.nextX = 0; ctx.nextY = 0; ctx.index = {}
     # Return matching sprite if index match found
     return foundSlot if (foundSlot = ctx.index[index])?
     # Extend the sheet if we're out of space
-    if (slotSize)*ctx.nextX is ctx.canvas.width
-      u.resizeCtx ctx, ctx.canvas.width, ctx.canvas.height+slotSize
+    if spriteSize*ctx.nextX is ctx.canvas.width
+      u.resizeCtx ctx, ctx.canvas.width, ctx.canvas.height+spriteSize
       ctx.nextX = 0; ctx.nextY++
     # Create the sprite "slot" object and install in index object
-    x = (slotSize)*ctx.nextX+strokePadding/2; y = (slotSize)*ctx.nextY+strokePadding/2
-    slot = {ctx, x, y, size, spriteSize, name, color, strokeColor, index}
+    # x = (slotSize)*ctx.nextX+strokePadding/2; y = (slotSize)*ctx.nextY+strokePadding/2
+    x = spriteSize*ctx.nextX; y = spriteSize*ctx.nextY
+    # slot = {ctx, x, y, size, spriteSize, name, color, strokeColor, index}
+    slot = {ctx, x, y, spriteSize, name, color, strokeColor, index}
     ctx.index[index] = slot
     # Draw the shape into the sprite slot
     if (img=shape.img)? # is an image, not a path function
@@ -182,16 +191,13 @@ shapes = Shapes = do -> # TODO: Shapes is external name
       else img.onload = -> fillSlot(slot, img)
     else
       ctx.save()
-      ctx.translate (ctx.nextX+0.5)*(slotSize), (ctx.nextY+0.5)*(slotSize)
+      # ctx.translate (ctx.nextX+0.5)*(slotSize), (ctx.nextY+0.5)*(slotSize)
       ctx.scale spriteSize, spriteSize
-      ctx.fillStyle = colorCss # u.colorStr color
-      if strokeColor
-        ctx.strokeStyle = strokeCss # u.colorStr strokeColor
-        ctx.lineWidth = 0.05
-      ctx.save()
+      ctx.translate ctx.nextX+.5, ctx.nextY+.5
+      ctx.fillStyle = color # u.colorStr color
+      ctx.strokeStyle = strokeColor if strokeColor
       ctx.beginPath(); shape.draw ctx; ctx.closePath()
-      ctx.restore()
       ctx.fill()
-      ctx.stroke() if strokeColor
       ctx.restore()
-    ctx.nextX++; slot
+    ctx.nextX++
+    slot # return the sprite (slot)

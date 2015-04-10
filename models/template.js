@@ -29,15 +29,16 @@
         console.log("This prevents two user defined image shapes from loading!");
         return console.log("Use http:// protocol to enable image shapes.");
       } else {
-        Shapes.add("cc", true, u.importImage("data/coffee.png"));
-        return Shapes.add("redfish", false, u.importImage("data/redfish64t.png"));
+        Shapes.add("cup", true, u.importImage("data/coffee.png"));
+        Shapes.add("redfish", false, u.importImage("data/redfish64t.png"));
+        return Shapes.add("twitter", false, u.importImage("data/twitter.png"));
       }
     };
 
     MyModel.prototype.setup = function() {
       var a, i, j, k, len, len1, len2, num, p, ref, ref1, ref2, s;
       this.population = 100;
-      this.size = 1.5;
+      this.size = 2.0;
       this.speed = .5;
       this.wiggle = u.degToRad(30);
       this.startCircle = true;

@@ -23,8 +23,8 @@
         @anim.setRate 60, false # speed test
 
         # globals
-        @nestColor = [255, 255, 0]  # yellow
-        @foodColor = [0, 0, 255]    # blue
+        @nestColor = "yellow" # [255, 255, 0]  # yellow
+        @foodColor = "lightblue" # [0, 0, 255]    # blue
 
         # New color model: use maps for diffusion colors
         @nestColorMap = ABM.ColorMaps.NetLogo.yellow
@@ -46,8 +46,8 @@
 
         if @agents.getDefault "useSprites"
           bitSize = @patches.toBits @agents.getDefault("size") #bugSize
-          @nestSprite = Shapes.shapeToSprite "bug", @nestColor, bitSize
-          @foodSprite = Shapes.shapeToSprite "bug", @foodColor, bitSize
+          @nestSprite = Shapes.shapeToSprite "bug", @nestColor, bitSize, "red"
+          @foodSprite = Shapes.shapeToSprite "bug", @foodColor, bitSize, "blue"
 
         @setupPatches()
         @setupAgents()

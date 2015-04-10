@@ -15,6 +15,7 @@ class Animator
   # If multiStep, run the draw() and step() methods separately by draw() using
   # requestAnimationFrame and step() using setTimeout.
   # Mainly debug: noRAF (no requestAnimationFrame) use setTimeout for drawing.
+  # May remove after next performance review. Chrome: http://goo.gl/4yKnhR
   constructor: (@model, @rate=30, @multiStep=false, @noRAF=false) -> @reset()
   # Adjust animator.  Call before model.start()
   # in setup() to change default settings
@@ -27,7 +28,7 @@ class Animator
     @animate()
   stop: ->
     @stopped = true
-    # if @animHandle? then cancelAnimationFrame @animHandle
+    # May return to: if @animHandle? then cancelAnimationFrame @animHandle
     if @animHandle? and not @noRAF then cancelAnimationFrame @animHandle
     if @animHandle? and @noRAF then clearTimeout @animHandle
     if @timeoutHandle? then clearTimeout @timeoutHandle
