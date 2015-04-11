@@ -1,16 +1,22 @@
 # A *very* simple shapes module for drawing
 # [NetLogo-like](http://ccl.northwestern.edu/netlogo/docs/) agents.
 
-shapes = Shapes = do -> # TODO: Shapes is external name
+shapes = Shapes = do ->
   # Each shape is a named object with two members:
   # a boolean rotate and a draw procedure and two optional
-  # properties: img for images, and shortcut for a transform-less version of draw.
+  # properties: img for images, and shortcut for a transform-less
+  # version of draw.
+  #
   # The shape is used in the following context with a color set
   # and a transform such that the shape should be drawn in a -.5 to .5 square
+  # The draw procedure has an optional strokeColor which can be used,
+  # if specified, see "bug" for example ("#000000" is the un-set color value).
+  # Also see "filledRing" which uses the strokeColor as an outer fillStyle.
+  # The shape doesn't call "fill" which is called by the shape user.
   #
   #     ctx.save()
   #     ctx.fillStyle = color.css
-  #     ctx.strokeStyle = strokeStyle.css if strokeStyle
+  #     ctx.strokeStyle = strokeColor.css if strokeColor
   #     ctx.translate x, y; ctx.scale size, size;
   #     ctx.rotate heading if shape.rotate
   #     ctx.beginPath(); shape.draw(ctx); ctx.closePath()
@@ -19,10 +25,10 @@ shapes = Shapes = do -> # TODO: Shapes is external name
   #
   # The list of current shapes, via `ABM.Shapes.names()` below, is:
   #
-  #     ["default", "triangle", "arrow", "bug", "pyramid",
-  #      "circle", "square", "pentagon", "ring", "cup", "person"]
+  #     ["default", "triangle", "arrow", "bug", "pyramid", "circle",
+  #      "square", "pentagon", "ring", "filledRing", "person"]
 
-  # A simple polygon utility:  c is the 2D context, and a is an array of 2D points.
+  # A polygon utility: c is the 2D context, and a is an array of 2D points.
   # c.closePath() and c.fill() will be called by the calling agent, see initial
   # discription of drawing context.  It is used in adding a new shape above.
   poly = (c, a) ->
@@ -119,8 +125,8 @@ shapes = Shapes = do -> # TODO: Shapes is external name
     s.shortcut = shortcut if shortcut? # can override img default shortcut if needed
 
   # Add local private objects for use by add() and debugging
-  poly:poly, circ:circ, ccirc:ccirc, cimg:cimg, csq:csq # export utils for use by add
-  spriteSheets:spriteSheets # export spriteSheets for debugging, showing in DOM
+  poly:poly, circ:circ, ccirc:ccirc, cimg:cimg, csq:csq
+  spriteSheets:spriteSheets # export spriteSheets for debugging, showing in html
 
   # Two draw procedures, one for shapes, the other for sprites made from shapes.
   draw: (ctx, shape, x, y, size, rad, color, strokeColor) ->
@@ -137,24 +143,23 @@ shapes = Shapes = do -> # TODO: Shapes is external name
       else
         ctx.fillStyle = color.css # u.colorStr color
         ctx.strokeStyle = strokeColor.css if strokeColor # u.colorStr color
-        # if strokeColor
-        #   ctx.strokeStyle = strokeColor.css # u.colorStr strokeColor
-        #   ctx.lineWidth = 0.05
-        # ctx.save()
         ctx.beginPath(); shape.draw ctx; ctx.closePath()
-        # ctx.restore()
         ctx.fill()
-        # ctx.stroke() if strokeColor
       ctx.restore()
     shape
+  # Draw a sprite, called by agents. The world transform is in effect.
+  # see [this post](http://goo.gl/VUlhY) for drawing centered rotated images
+  # The sprite (s) properties are in pixels, x,y,size in world coordinates.
   drawSprite: (ctx, s, x, y, size, rad) ->
     if rad is 0
-      ctx.drawImage s.ctx.canvas, s.x, s.y, s.spriteSize, s.spriteSize, x-size/2, y-size/2, size, size
+      ctx.drawImage s.ctx.canvas, s.x, s.y, s.spriteSize, s.spriteSize,
+        x-size/2, y-size/2, size, size
     else
       ctx.save()
-      ctx.translate x, y # see http://goo.gl/VUlhY for drawing centered rotated images
+      ctx.translate x, y
       ctx.rotate rad
-      ctx.drawImage s.ctx.canvas, s.x, s.y, s.spriteSize, s.spriteSize, -size/2,-size/2, size, size
+      ctx.drawImage s.ctx.canvas, s.x, s.y, s.spriteSize, s.spriteSize,
+        -size/2,-size/2, size, size
       ctx.restore()
     s
   # Convert a shape to a sprite by allocating a sprite sheet "slot" and drawing
@@ -163,9 +168,6 @@ shapes = Shapes = do -> # TODO: Shapes is external name
     color = Color.convertColor color, "css" # if we're called directly by pgmr
     strokeColor = Color.convertColor strokeColor, "css" if strokeColor?
     spriteSize = Math.ceil size
-    # slotSize = spriteSize
-    # strokePadding = 0
-    # slotSize = spriteSize + strokePadding
     shape = @[name]
     index = if shape.img? then name else "#{name}-#{color}"
     ctx = spriteSheets[spriteSize]
@@ -180,9 +182,7 @@ shapes = Shapes = do -> # TODO: Shapes is external name
       u.resizeCtx ctx, ctx.canvas.width, ctx.canvas.height+spriteSize
       ctx.nextX = 0; ctx.nextY++
     # Create the sprite "slot" object and install in index object
-    # x = (slotSize)*ctx.nextX+strokePadding/2; y = (slotSize)*ctx.nextY+strokePadding/2
     x = spriteSize*ctx.nextX; y = spriteSize*ctx.nextY
-    # slot = {ctx, x, y, size, spriteSize, name, color, strokeColor, index}
     slot = {ctx, x, y, spriteSize, name, color, strokeColor, index}
     ctx.index[index] = slot
     # Draw the shape into the sprite slot
@@ -191,7 +191,6 @@ shapes = Shapes = do -> # TODO: Shapes is external name
       else img.onload = -> fillSlot(slot, img)
     else
       ctx.save()
-      # ctx.translate (ctx.nextX+0.5)*(slotSize), (ctx.nextY+0.5)*(slotSize)
       ctx.scale spriteSize, spriteSize
       ctx.translate ctx.nextX+.5, ctx.nextY+.5
       ctx.fillStyle = color # u.colorStr color
