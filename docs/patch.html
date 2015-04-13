@@ -215,7 +215,9 @@ u.scaleOpacity c, s, @color</p>
     ctx.fillRect <span class="hljs-property">@x</span>-<span class="hljs-number">.5</span>, <span class="hljs-property">@y</span>-<span class="hljs-number">.5</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>
     <span class="hljs-keyword">if</span> <span class="hljs-property">@label</span>? <span class="hljs-comment"># REMIND: should be 2nd pass.</span>
       [x,y] = <span class="hljs-property">@breed</span>.patchXYtoPixelXY <span class="hljs-property">@x</span>, <span class="hljs-property">@y</span>
-      u.ctxDrawText ctx, <span class="hljs-property">@label</span>, x+<span class="hljs-property">@labelOffset</span>[<span class="hljs-number">0</span>], y+<span class="hljs-property">@labelOffset</span>[<span class="hljs-number">1</span>], <span class="hljs-property">@labelColor</span></pre></div></div>
+      u.ctxDrawText ctx, <span class="hljs-property">@label</span>, x+<span class="hljs-property">@labelOffset</span>[<span class="hljs-number">0</span>], y+<span class="hljs-property">@labelOffset</span>[<span class="hljs-number">1</span>], <span class="hljs-property">@labelColor</span>
+
+  <span class="hljs-attribute">inRadius</span>: <span class="hljs-function"><span class="hljs-params">(agentSet, radius)</span> -&gt;</span> agentSet.inRadius @, radius</pre></div></div>
             
         </li>
         
@@ -234,9 +236,10 @@ as they move from patch to patch.</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">agentsHere</span>: <span class="hljs-function">-&gt;</span>
+    u.deprecated <span class="hljs-string">"Patch.agentsHere: make caching default"</span> <span class="hljs-keyword">unless</span> <span class="hljs-property">@agents</span>
     <span class="hljs-property">@agents</span> ? (a <span class="hljs-keyword">for</span> a <span class="hljs-keyword">in</span> <span class="hljs-property">@model</span>.agents <span class="hljs-keyword">when</span> a.p <span class="hljs-keyword">is</span> @)
   <span class="hljs-attribute">breedsHere</span>: <span class="hljs-function"><span class="hljs-params">(breed)</span> -&gt;</span>
-    (b <span class="hljs-keyword">for</span> b <span class="hljs-keyword">in</span> <span class="hljs-property">@agentsHere</span>() <span class="hljs-keyword">when</span> b <span class="hljs-keyword">is</span> breed)</pre></div></div>
+    (a <span class="hljs-keyword">for</span> a <span class="hljs-keyword">in</span> <span class="hljs-property">@agentsHere</span>() <span class="hljs-keyword">when</span> a.breed <span class="hljs-keyword">is</span> breed)</pre></div></div>
             
         </li>
         

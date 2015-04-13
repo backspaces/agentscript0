@@ -112,8 +112,9 @@ like to add custom images.</p>
       <span class="hljs-built_in">console</span>.log <span class="hljs-string">"This prevents two user defined image shapes from loading!"</span>
       <span class="hljs-built_in">console</span>.log <span class="hljs-string">"Use http:// protocol to enable image shapes."</span>
     <span class="hljs-keyword">else</span>
-      Shapes.add <span class="hljs-string">"cc"</span>, <span class="hljs-literal">true</span>, u.importImage(<span class="hljs-string">"data/coffee.png"</span>)
-      Shapes.add <span class="hljs-string">"redfish"</span>, <span class="hljs-literal">false</span>, u.importImage(<span class="hljs-string">"data/redfish64t.png"</span>)</pre></div></div>
+      Shapes.add <span class="hljs-string">"cup"</span>, <span class="hljs-literal">true</span>, u.importImage(<span class="hljs-string">"data/coffee.png"</span>)
+      Shapes.add <span class="hljs-string">"redfish"</span>, <span class="hljs-literal">false</span>, u.importImage(<span class="hljs-string">"data/redfish64t.png"</span>)
+      Shapes.add <span class="hljs-string">"twitter"</span>, <span class="hljs-literal">false</span>, u.importImage(<span class="hljs-string">"data/twitter.png"</span>)</pre></div></div>
             
         </li>
         
@@ -149,7 +150,7 @@ an external UI to setup for us.</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>    <span class="hljs-property">@population</span> = <span class="hljs-number">100</span>
-    <span class="hljs-property">@size</span> = <span class="hljs-number">1.5</span>   <span class="hljs-comment"># size in patch coords</span>
+    <span class="hljs-property">@size</span> = <span class="hljs-number">2.0</span>   <span class="hljs-comment"># size in patch coords</span>
     <span class="hljs-property">@speed</span> = <span class="hljs-number">.5</span>   <span class="hljs-comment"># move forward this amount in patch coords</span>
     <span class="hljs-property">@wiggle</span> = u.degToRad(<span class="hljs-number">30</span>) <span class="hljs-comment"># degrees/radians to wiggle</span>
     <span class="hljs-property">@startCircle</span> = <span class="hljs-literal">true</span>  <span class="hljs-comment"># initialize agents randomly or in circle</span></pre></div></div>
@@ -384,22 +385,9 @@ the patches. Otherwise don’t refresh.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-21">&#182;</a>
               </div>
-              <p>Print out the animator stats every 100 steps</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>    log <span class="hljs-property">@anim</span>.toString() <span class="hljs-keyword">if</span> <span class="hljs-property">@anim</span>.ticks % <span class="hljs-number">100</span> <span class="hljs-keyword">is</span> <span class="hljs-number">0</span></pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-22">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-22">&#182;</a>
-              </div>
-              <p>Stop the animation at 1000. Restart by <code>ABM.model.start()</code> in console.</p>
+              <p>Print out the animator stats every 100 steps
+log @anim.toString() if @anim.ticks % 100 is 0
+Stop the animation at 1000. Restart by <code>ABM.model.start()</code> in console.</p>
 
             </div>
             
@@ -410,11 +398,11 @@ the patches. Otherwise don’t refresh.</p>
         </li>
         
         
-        <li id="section-23">
+        <li id="section-22">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-23">&#182;</a>
+                <a class="pilcrow" href="#section-22">&#182;</a>
               </div>
               <p>Three of our own methods to manage agents &amp; patches
 and report model state.</p>
@@ -426,11 +414,11 @@ and report model state.</p>
         </li>
         
         
-        <li id="section-24">
+        <li id="section-23">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-24">&#182;</a>
+                <a class="pilcrow" href="#section-23">&#182;</a>
               </div>
               <p>Have our agent “wiggle” by changing
 our heading by +/- <code>wiggle/2</code> radians</p>
@@ -442,11 +430,11 @@ our heading by +/- <code>wiggle/2</code> radians</p>
         </li>
         
         
-        <li id="section-25">
+        <li id="section-24">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-25">&#182;</a>
+                <a class="pilcrow" href="#section-24">&#182;</a>
               </div>
               <p>Then move forward by our speed.</p>
 
@@ -458,11 +446,11 @@ our heading by +/- <code>wiggle/2</code> radians</p>
         </li>
         
         
-        <li id="section-26">
+        <li id="section-25">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-26">&#182;</a>
+                <a class="pilcrow" href="#section-25">&#182;</a>
               </div>
               <p>Update patch colors to be a random gray.
 u.randomGray(p.color) if p.x isnt 0 and p.y isnt 0 # aviod GC, reuse color
@@ -476,11 +464,11 @@ Avoid Garbage collection by using a colormap</p>
         </li>
         
         
-        <li id="section-27">
+        <li id="section-26">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-27">&#182;</a>
+                <a class="pilcrow" href="#section-26">&#182;</a>
               </div>
               <p>Report the average heading, in radians and degrees</p>
 
@@ -493,11 +481,11 @@ Avoid Garbage collection by using a colormap</p>
         </li>
         
         
-        <li id="section-28">
+        <li id="section-27">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-28">&#182;</a>
+                <a class="pilcrow" href="#section-27">&#182;</a>
               </div>
               <p>Note: multiline strings. block strings also available.</p>
 
@@ -511,11 +499,11 @@ average heading of agents:
         </li>
         
         
-        <li id="section-29">
+        <li id="section-28">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-29">&#182;</a>
+                <a class="pilcrow" href="#section-28">&#182;</a>
               </div>
               <p>Now that we’ve build our class, we call it with Model’s
 constructor arguments:</p>

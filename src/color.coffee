@@ -21,6 +21,10 @@ Color = {
   # * Hex, short and long form: #0f0, #ff10a0
   # * RGB: rgb(255, 0, 0), rgba(255, 0, 0, 0.5)
   # * HSL: hsl(120, 100%, 50%), hsla(120, 100%, 50%, 0.8)
+  #
+  # See [this wikipedia article]
+  # (http://en.wikipedia.org/wiki/HSL_and_HSV#Swatches)
+  # on differences between HSL and HSB/HSV.
 
   # Convert 4 r,g,b,a ints in [0-255] to a css color string.
   # Alpha "a" is int in [0-255], not float in 0-1

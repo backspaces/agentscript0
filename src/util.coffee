@@ -43,6 +43,7 @@ Util = util = u = # TODO: "util" deprecated in favor of Util
   isString: (obj) -> typeof obj is 'string' || obj instanceof String
   isInteger: Number.isInteger or # like isArray
     (num) -> Math.floor(num) is num
+  isObject: (obj) -> toString.call(obj) is '[object Object]'
 
 # ### Numeric Operations
 

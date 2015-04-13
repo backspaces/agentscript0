@@ -17,6 +17,21 @@ class Model
     agents:    {z:40, ctx:"2d"}
     spotlight: {z:50, ctx:"2d"}
   }
+
+  # Static method: return defaulted Model options object.
+  # Access by (ABM.)Model.defaultOptions() etc
+  @nonWorldOptions = ["div"]
+  @defaultOptions: ->
+    div: null
+    size: 13
+    minX: -16
+    maxX: 16
+    minY: -16
+    maxY: 16
+    isTorus: false
+    hasNeighbors: true
+    # isHeadless: false
+
   # Constructor:
   #
   # * create agentsets, install them and ourselves in ABM global namespace
@@ -24,28 +39,31 @@ class Model
   # * setup patch coord transforms for each layer context
   # * intialize various instance variables
   # * call `setup` abstract method
-  constructor: (
-    divOrOpts, size=13, minX=-16, maxX=16, minY=-16, maxY=16,
-    isTorus=false, hasNeighbors=true, isHeadless=false
-  ) ->
+  constructor: (args) ->
+    # Setup and error check args
+    options = Model.defaultOptions()
+    unless u.isObject args # remove after a while
+      console.log "option defaults:", options
+      u.error "Model constructor: use options object; see console for defaults."
+    u.deprecated "Model: isHeadless no longer used" if args.isHeadless?
+
+    # Merge args into options. Insures newer options/defaults included
+    for k,v of args when k isnt "isHeadless" # Remove headless test shortly
+      u.error "Bad Model arg: #{k}: #{v}" if options[k] is undefined
+      options[k] = v
+    @setWorld options
+
     u.mixin(@, new Evented())
-    if typeof divOrOpts is 'string'
-      div = divOrOpts
-      @setWorldDeprecated size, minX, maxX, minY, maxY,
-        isTorus, hasNeighbors, isHeadless
-    else
-      div = divOrOpts.div
-      isHeadless = divOrOpts.isHeadless = divOrOpts.isHeadless or not div?
-      @setWorld divOrOpts
+
     @contexts = {}
-    unless isHeadless
-      (@div=document.getElementById(div)).setAttribute 'style',
+    if options.div?
+      (@div=document.getElementById(options.div)).setAttribute 'style',
         "position:relative; width:#{@world.pxWidth}px; height:#{@world.pxHeight}px"
 
       # * Create 2D canvas contexts layered on top of each other.
       # * Initialize a patch coord transform for each layer.
       #
-      # Note: this transform is permanent .. there isn't the usual ctx.restore().
+      # Note: The transform is permanent .. there isn't the usual ctx.restore().
       # To use the original canvas 2D transform temporarily:
       #
       #     u.setIdentity ctx
@@ -90,22 +108,15 @@ class Model
     @startup()
     u.waitOnFiles => @modelReady=true; @setupAndEmit(); @globals() unless @globalNames.set
 
-  # Initialize/reset world parameters.
+  # Initialize/reset world parameters by expanding options.
   setWorld: (opts) ->
-    w = defaults = { size: 13, minX: -16, maxX: 16, minY: -16, maxY: 16, isTorus: false, hasNeighbors: true, isHeadless: false }
-    for own k,v of opts
-      w[k] = v
-    {size, minX, maxX, minY, maxY, isTorus, hasNeighbors, isHeadless} = w
-    numX = maxX-minX+1; numY = maxY-minY+1; pxWidth = numX*size; pxHeight = numY*size
-    minXcor=minX-.5; maxXcor=maxX+.5; minYcor=minY-.5; maxYcor=maxY+.5
-    @world = {size,minX,maxX,minY,maxY,minXcor,maxXcor,minYcor,maxYcor,
-      numX,numY,pxWidth,pxHeight,isTorus,hasNeighbors,isHeadless}
-  setWorldDeprecated: (size, minX, maxX, minY, maxY, isTorus, hasNeighbors, isHeadless) ->
-    u.deprecated "Model.setWorldDeprecated: ctor should use options object"
-    numX = maxX-minX+1; numY = maxY-minY+1; pxWidth = numX*size; pxHeight = numY*size
-    minXcor=minX-.5; maxXcor=maxX+.5; minYcor=minY-.5; maxYcor=maxY+.5
-    @world = {size,minX,maxX,minY,maxY,minXcor,maxXcor,minYcor,maxYcor,
-      numX,numY,pxWidth,pxHeight,isTorus,hasNeighbors,isHeadless}
+    w = {}; w[k] = v for own k,v of opts when k not in Model.nonWorldOptions
+    w.numX    = w.maxX-w.minX+1;  w.numY    = w.maxY-w.minY+1
+    w.pxWidth = w.numX*w.size;    w.pxHeight= w.numY*w.size
+    w.minXcor = w.minX-.5;        w.maxXcor = w.maxX+.5
+    w.minYcor = w.minY-.5;        w.maxYcor = w.maxY+.5
+    @world = w
+
   setCtxTransform: (ctx) ->
     ctx.canvas.width = @world.pxWidth; ctx.canvas.height = @world.pxHeight
     ctx.save()
@@ -241,8 +252,8 @@ class Model
 #
 #     @embers.setDefault "color", [255,0,0]
 #
-# ..will set the default color for just the embers. Note: patch breeds are currently
-# not usable due to the patches being prebuilt.  Stay tuned.
+# ..will set the default color for just the embers. Note: patch breeds are
+# experimental, using setBreed, due to the patches being prebuilt.
 
   createBreeds: (breedNames, baseClass, baseSet) ->
     breeds = []; breeds.classes = {}; breeds.sets = {}
@@ -315,8 +326,6 @@ class Model
 # Create the namespace **ABM** for our project.
 # Note here `this` or `@` == window due to coffeescript wrapper call.
 # Thus @ABM is placed in the global scope.
-# @ABM={}
-
 
 @ABM = {
   util    # deprecated, Util

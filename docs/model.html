@@ -82,6 +82,44 @@ Example:</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-4">&#182;</a>
               </div>
+              <p>Static method: return defaulted Model options object.
+Access by (ABM.)Model.defaultOptions() etc</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-property">@nonWorldOptions</span> = [<span class="hljs-string">"div"</span>]
+  <span class="hljs-property">@defaultOptions</span>: <span class="hljs-function">-&gt;</span>
+    <span class="hljs-attribute">div</span>: <span class="hljs-literal">null</span>
+    <span class="hljs-attribute">size</span>: <span class="hljs-number">13</span>
+    <span class="hljs-attribute">minX</span>: -<span class="hljs-number">16</span>
+    <span class="hljs-attribute">maxX</span>: <span class="hljs-number">16</span>
+    <span class="hljs-attribute">minY</span>: -<span class="hljs-number">16</span>
+    <span class="hljs-attribute">maxY</span>: <span class="hljs-number">16</span>
+    <span class="hljs-attribute">isTorus</span>: <span class="hljs-literal">false</span>
+    <span class="hljs-attribute">hasNeighbors</span>: <span class="hljs-literal">true</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>isHeadless: false</p>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
               <p>Constructor:</p>
 <ul>
 <li>create agentsets, install them and ourselves in ABM global namespace</li>
@@ -93,38 +131,66 @@ Example:</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">constructor</span>: (
-    divOrOpts, size=<span class="hljs-number">13</span>, minX=-<span class="hljs-number">16</span>, maxX=<span class="hljs-number">16</span>, minY=-<span class="hljs-number">16</span>, maxY=<span class="hljs-number">16</span>,
-    isTorus=<span class="hljs-literal">false</span>, hasNeighbors=<span class="hljs-literal">true</span>, isHeadless=<span class="hljs-literal">false</span>
-  ) -&gt;
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">constructor</span>: <span class="hljs-function"><span class="hljs-params">(args)</span> -&gt;</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <p>Setup and error check args</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    options = Model.defaultOptions()
+    <span class="hljs-keyword">unless</span> u.isObject args <span class="hljs-comment"># remove after a while</span>
+      <span class="hljs-built_in">console</span>.log <span class="hljs-string">"option defaults:"</span>, options
+      u.error <span class="hljs-string">"Model constructor: use options object; see console for defaults."</span>
+    u.deprecated <span class="hljs-string">"Model: isHeadless no longer used"</span> <span class="hljs-keyword">if</span> args.isHeadless?</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              <p>Merge args into options. Insures newer options/defaults included</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">for</span> k,v <span class="hljs-keyword">of</span> args <span class="hljs-keyword">when</span> k <span class="hljs-keyword">isnt</span> <span class="hljs-string">"isHeadless"</span> <span class="hljs-comment"># Remove headless test shortly</span>
+      u.error <span class="hljs-string">"Bad Model arg: <span class="hljs-subst">#{k}</span>: <span class="hljs-subst">#{v}</span>"</span> <span class="hljs-keyword">if</span> options[k] <span class="hljs-keyword">is</span> <span class="hljs-literal">undefined</span>
+      options[k] = v
+    <span class="hljs-property">@setWorld</span> options
+
     u.mixin(@, <span class="hljs-keyword">new</span> Evented())
-    <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span> divOrOpts <span class="hljs-keyword">is</span> <span class="hljs-string">'string'</span>
-      div = divOrOpts
-      <span class="hljs-property">@setWorldDeprecated</span> size, minX, maxX, minY, maxY,
-        isTorus, hasNeighbors, isHeadless
-    <span class="hljs-keyword">else</span>
-      div = divOrOpts.div
-      isHeadless = divOrOpts.isHeadless = divOrOpts.isHeadless <span class="hljs-keyword">or</span> <span class="hljs-keyword">not</span> div?
-      <span class="hljs-property">@setWorld</span> divOrOpts
+
     <span class="hljs-property">@contexts</span> = {}
-    <span class="hljs-keyword">unless</span> isHeadless
-      (<span class="hljs-property">@div</span>=<span class="hljs-built_in">document</span>.getElementById(div)).setAttribute <span class="hljs-string">'style'</span>,
+    <span class="hljs-keyword">if</span> options.div?
+      (<span class="hljs-property">@div</span>=<span class="hljs-built_in">document</span>.getElementById(options.div)).setAttribute <span class="hljs-string">'style'</span>,
         <span class="hljs-string">"position:relative; width:<span class="hljs-subst">#{<span class="hljs-property">@world</span>.pxWidth}</span>px; height:<span class="hljs-subst">#{<span class="hljs-property">@world</span>.pxHeight}</span>px"</span></pre></div></div>
             
         </li>
         
         
-        <li id="section-5">
+        <li id="section-9">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-5">&#182;</a>
+                <a class="pilcrow" href="#section-9">&#182;</a>
               </div>
               <ul>
 <li>Create 2D canvas contexts layered on top of each other.</li>
 <li>Initialize a patch coord transform for each layer.</li>
 </ul>
-<p>Note: this transform is permanent .. there isn’t the usual ctx.restore().
+<p>Note: The transform is permanent .. there isn’t the usual ctx.restore().
 To use the original canvas 2D transform temporarily:</p>
 <pre><code>u.setIdentity ctx
   &lt;draw <span class="hljs-keyword">in</span> <span class="hljs-reserved">native</span> coord system&gt;
@@ -141,11 +207,11 @@ ctx.restore() <span class="hljs-comment"># restore patch coord system</span>
         </li>
         
         
-        <li id="section-6">
+        <li id="section-10">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-6">&#182;</a>
+                <a class="pilcrow" href="#section-10">&#182;</a>
               </div>
               <p>One of the layers is used for drawing only, not an agentset:</p>
 
@@ -157,11 +223,11 @@ ctx.restore() <span class="hljs-comment"># restore patch coord system</span>
         </li>
         
         
-        <li id="section-7">
+        <li id="section-11">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-7">&#182;</a>
+                <a class="pilcrow" href="#section-11">&#182;</a>
               </div>
               <p>Setup spotlight layer, also not an agentset:</p>
 
@@ -174,11 +240,11 @@ ctx.restore() <span class="hljs-comment"># restore patch coord system</span>
         </li>
         
         
-        <li id="section-8">
+        <li id="section-12">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-8">&#182;</a>
+                <a class="pilcrow" href="#section-12">&#182;</a>
               </div>
               <p>Set drawing controls.  Default to drawing each agentset.
 Optimization: If any of these is set to false, the associated
@@ -191,11 +257,11 @@ agentset is drawn only once, remaining static after that.</p>
         </li>
         
         
-        <li id="section-9">
+        <li id="section-13">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-9">&#182;</a>
+                <a class="pilcrow" href="#section-13">&#182;</a>
               </div>
               <p>Create model-local versions of AgentSets and their
 agent class.  Clone the agent classes so that they
@@ -211,11 +277,11 @@ models run on a page.</p>
         </li>
         
         
-        <li id="section-10">
+        <li id="section-14">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-10">&#182;</a>
+                <a class="pilcrow" href="#section-14">&#182;</a>
               </div>
               <p>Initialize agentsets.</p>
 
@@ -228,11 +294,11 @@ models run on a page.</p>
         </li>
         
         
-        <li id="section-11">
+        <li id="section-15">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-11">&#182;</a>
+                <a class="pilcrow" href="#section-15">&#182;</a>
               </div>
               <p>Initialize model global resources</p>
 
@@ -248,31 +314,24 @@ models run on a page.</p>
         </li>
         
         
-        <li id="section-12">
+        <li id="section-16">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-12">&#182;</a>
+                <a class="pilcrow" href="#section-16">&#182;</a>
               </div>
-              <p>Initialize/reset world parameters.</p>
+              <p>Initialize/reset world parameters by expanding options.</p>
 
             </div>
             
             <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">setWorld</span>: <span class="hljs-function"><span class="hljs-params">(opts)</span> -&gt;</span>
-    w = defaults = { <span class="hljs-attribute">size</span>: <span class="hljs-number">13</span>, <span class="hljs-attribute">minX</span>: -<span class="hljs-number">16</span>, <span class="hljs-attribute">maxX</span>: <span class="hljs-number">16</span>, <span class="hljs-attribute">minY</span>: -<span class="hljs-number">16</span>, <span class="hljs-attribute">maxY</span>: <span class="hljs-number">16</span>, <span class="hljs-attribute">isTorus</span>: <span class="hljs-literal">false</span>, <span class="hljs-attribute">hasNeighbors</span>: <span class="hljs-literal">true</span>, <span class="hljs-attribute">isHeadless</span>: <span class="hljs-literal">false</span> }
-    <span class="hljs-keyword">for</span> own k,v <span class="hljs-keyword">of</span> opts
-      w[k] = v
-    {size, minX, maxX, minY, maxY, isTorus, hasNeighbors, isHeadless} = w
-    numX = maxX-minX+<span class="hljs-number">1</span>; numY = maxY-minY+<span class="hljs-number">1</span>; pxWidth = numX*size; pxHeight = numY*size
-    minXcor=minX-<span class="hljs-number">.5</span>; maxXcor=maxX+<span class="hljs-number">.5</span>; minYcor=minY-<span class="hljs-number">.5</span>; maxYcor=maxY+<span class="hljs-number">.5</span>
-    <span class="hljs-property">@world</span> = {size,minX,maxX,minY,maxY,minXcor,maxXcor,minYcor,maxYcor,
-      numX,numY,pxWidth,pxHeight,isTorus,hasNeighbors,isHeadless}
-  <span class="hljs-attribute">setWorldDeprecated</span>: <span class="hljs-function"><span class="hljs-params">(size, minX, maxX, minY, maxY, isTorus, hasNeighbors, isHeadless)</span> -&gt;</span>
-    u.deprecated <span class="hljs-string">"Model.setWorldDeprecated: ctor should use options object"</span>
-    numX = maxX-minX+<span class="hljs-number">1</span>; numY = maxY-minY+<span class="hljs-number">1</span>; pxWidth = numX*size; pxHeight = numY*size
-    minXcor=minX-<span class="hljs-number">.5</span>; maxXcor=maxX+<span class="hljs-number">.5</span>; minYcor=minY-<span class="hljs-number">.5</span>; maxYcor=maxY+<span class="hljs-number">.5</span>
-    <span class="hljs-property">@world</span> = {size,minX,maxX,minY,maxY,minXcor,maxXcor,minYcor,maxYcor,
-      numX,numY,pxWidth,pxHeight,isTorus,hasNeighbors,isHeadless}
+    w = {}; w[k] = v <span class="hljs-keyword">for</span> own k,v <span class="hljs-keyword">of</span> opts <span class="hljs-keyword">when</span> k <span class="hljs-keyword">not</span> <span class="hljs-keyword">in</span> Model.nonWorldOptions
+    w.numX    = w.maxX-w.minX+<span class="hljs-number">1</span>;  w.numY    = w.maxY-w.minY+<span class="hljs-number">1</span>
+    w.pxWidth = w.numX*w.size;    w.pxHeight= w.numY*w.size
+    w.minXcor = w.minX-<span class="hljs-number">.5</span>;        w.maxXcor = w.maxX+<span class="hljs-number">.5</span>
+    w.minYcor = w.minY-<span class="hljs-number">.5</span>;        w.maxYcor = w.maxY+<span class="hljs-number">.5</span>
+    <span class="hljs-property">@world</span> = w
+
   <span class="hljs-attribute">setCtxTransform</span>: <span class="hljs-function"><span class="hljs-params">(ctx)</span> -&gt;</span>
     ctx.canvas.width = <span class="hljs-property">@world</span>.pxWidth; ctx.canvas.height = <span class="hljs-property">@world</span>.pxHeight
     ctx.save()
@@ -286,11 +345,11 @@ models run on a page.</p>
         </li>
         
         
-        <li id="section-13">
+        <li id="section-17">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-13">&#182;</a>
+                <a class="pilcrow" href="#section-17">&#182;</a>
               </div>
               <h3 id="optimizations-">Optimizations:</h3>
 
@@ -299,11 +358,11 @@ models run on a page.</p>
         </li>
         
         
-        <li id="section-14">
+        <li id="section-18">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-14">&#182;</a>
+                <a class="pilcrow" href="#section-18">&#182;</a>
               </div>
               <p>Modelers “tune” their model by adjusting flags:<br>
 <code>@refreshLinks, @refreshAgents, @refreshPatches</code><br>
@@ -314,11 +373,11 @@ and by the following helper methods:</p>
         </li>
         
         
-        <li id="section-15">
+        <li id="section-19">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-15">&#182;</a>
+                <a class="pilcrow" href="#section-19">&#182;</a>
               </div>
               <p>Draw patches using scaled image of colors. Note anti-aliasing may occur
 if browser does not support imageSmoothingEnabled or equivalent.</p>
@@ -330,11 +389,11 @@ if browser does not support imageSmoothingEnabled or equivalent.</p>
         </li>
         
         
-        <li id="section-16">
+        <li id="section-20">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-16">&#182;</a>
+                <a class="pilcrow" href="#section-20">&#182;</a>
               </div>
               <p>Patches are all the same static default color, just “clear” entire canvas.
 Don’t use if patch breeds have different colors.</p>
@@ -346,11 +405,11 @@ Don’t use if patch breeds have different colors.</p>
         </li>
         
         
-        <li id="section-17">
+        <li id="section-21">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-17">&#182;</a>
+                <a class="pilcrow" href="#section-21">&#182;</a>
               </div>
               <p>Have patches cache the agents currently on them.
 Optimizes Patch p.agentsHere method</p>
@@ -362,11 +421,11 @@ Optimizes Patch p.agentsHere method</p>
         </li>
         
         
-        <li id="section-18">
+        <li id="section-22">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-18">&#182;</a>
+                <a class="pilcrow" href="#section-22">&#182;</a>
               </div>
               <p>Have agents cache the links with them as a node.
 Optimizes Agent a.myLinks method</p>
@@ -378,27 +437,11 @@ Optimizes Agent a.myLinks method</p>
         </li>
         
         
-        <li id="section-19">
+        <li id="section-23">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-19">&#182;</a>
-              </div>
-              <p>Have patches cache the given patchRect.
-Optimizes patchRect, inRadius and inCone</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">setCachePatchRect</span>:<span class="hljs-function"><span class="hljs-params">(radius,meToo=<span class="hljs-literal">false</span>)</span>-&gt;</span><span class="hljs-property">@patches</span>.cacheRect radius,meToo</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-20">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-20">&#182;</a>
+                <a class="pilcrow" href="#section-23">&#182;</a>
               </div>
               <h3 id="user-model-creation">User Model Creation</h3>
 <p>A user’s model is made by subclassing Model and over-riding these
@@ -409,11 +452,11 @@ two abstract methods. <code>super</code> need not be called.</p>
         </li>
         
         
-        <li id="section-21">
+        <li id="section-24">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-21">&#182;</a>
+                <a class="pilcrow" href="#section-24">&#182;</a>
               </div>
               <p>Initialize model resources (images, files) here.
 Uses util.waitOn so can be be async.</p>
@@ -425,11 +468,11 @@ Uses util.waitOn so can be be async.</p>
         </li>
         
         
-        <li id="section-22">
+        <li id="section-25">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-22">&#182;</a>
+                <a class="pilcrow" href="#section-25">&#182;</a>
               </div>
               <p>Initialize your model variables and defaults here.
 If async used, make sure step/draw are aware of possible missing data.</p>
@@ -441,11 +484,11 @@ If async used, make sure step/draw are aware of possible missing data.</p>
         </li>
         
         
-        <li id="section-23">
+        <li id="section-26">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-23">&#182;</a>
+                <a class="pilcrow" href="#section-26">&#182;</a>
               </div>
               <p>Update/step your model here</p>
 
@@ -456,11 +499,11 @@ If async used, make sure step/draw are aware of possible missing data.</p>
         </li>
         
         
-        <li id="section-24">
+        <li id="section-27">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-24">&#182;</a>
+                <a class="pilcrow" href="#section-27">&#182;</a>
               </div>
               <h3 id="animation-and-reset-methods">Animation and Reset methods</h3>
 
@@ -469,11 +512,11 @@ If async used, make sure step/draw are aware of possible missing data.</p>
         </li>
         
         
-        <li id="section-25">
+        <li id="section-28">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-25">&#182;</a>
+                <a class="pilcrow" href="#section-28">&#182;</a>
               </div>
               <p>Convenience access to animator:</p>
 
@@ -482,11 +525,11 @@ If async used, make sure step/draw are aware of possible missing data.</p>
         </li>
         
         
-        <li id="section-26">
+        <li id="section-29">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-26">&#182;</a>
+                <a class="pilcrow" href="#section-29">&#182;</a>
               </div>
               <p>Start/stop the animation</p>
 
@@ -498,11 +541,11 @@ If async used, make sure step/draw are aware of possible missing data.</p>
         </li>
         
         
-        <li id="section-27">
+        <li id="section-30">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-27">&#182;</a>
+                <a class="pilcrow" href="#section-30">&#182;</a>
               </div>
               <p>Animate once by <code>step(); draw()</code>. For UI and debugging from console.
 Will advance the ticks/draws counters.</p>
@@ -514,11 +557,11 @@ Will advance the ticks/draws counters.</p>
         </li>
         
         
-        <li id="section-28">
+        <li id="section-31">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-28">&#182;</a>
+                <a class="pilcrow" href="#section-31">&#182;</a>
               </div>
               <p>Stop and reset the model, restarting if restart is true</p>
 
@@ -544,11 +587,11 @@ Will advance the ticks/draws counters.</p>
         </li>
         
         
-        <li id="section-29">
+        <li id="section-32">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-29">&#182;</a>
+                <a class="pilcrow" href="#section-32">&#182;</a>
               </div>
               <h3 id="animation-">Animation.</h3>
 
@@ -557,11 +600,11 @@ Will advance the ticks/draws counters.</p>
         </li>
         
         
-        <li id="section-30">
+        <li id="section-33">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-30">&#182;</a>
+                <a class="pilcrow" href="#section-33">&#182;</a>
               </div>
               <p>Call the agentset draw methods if either the first draw call or
 their “refresh” flags are set.  The latter are simple optimizations
@@ -570,6 +613,9 @@ to avoid redrawing the same static scene. Called by animator.</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">draw</span>: <span class="hljs-function"><span class="hljs-params">(force = <span class="hljs-property">@anim</span>.stopped <span class="hljs-keyword">or</span> <span class="hljs-property">@anim</span>.draws <span class="hljs-keyword">is</span> <span class="hljs-number">1</span>)</span> -&gt;</span>
+    <span class="hljs-keyword">if</span> <span class="hljs-property">@debugging</span>
+      <span class="hljs-built_in">console</span>.log <span class="hljs-property">@anim</span>.toString() <span class="hljs-keyword">if</span> <span class="hljs-property">@anim</span>.draws % <span class="hljs-number">100</span> <span class="hljs-keyword">is</span> <span class="hljs-number">0</span>
+
     <span class="hljs-property">@patches</span>.draw <span class="hljs-property">@contexts</span>.patches  <span class="hljs-keyword">if</span> force <span class="hljs-keyword">or</span> <span class="hljs-property">@refreshPatches</span>
     <span class="hljs-property">@links</span>.draw   <span class="hljs-property">@contexts</span>.links    <span class="hljs-keyword">if</span> force <span class="hljs-keyword">or</span> <span class="hljs-property">@refreshLinks</span>
     <span class="hljs-property">@agents</span>.draw  <span class="hljs-property">@contexts</span>.agents   <span class="hljs-keyword">if</span> force <span class="hljs-keyword">or</span> <span class="hljs-property">@refreshAgents</span>
@@ -579,11 +625,11 @@ to avoid redrawing the same static scene. Called by animator.</p>
         </li>
         
         
-        <li id="section-31">
+        <li id="section-34">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-31">&#182;</a>
+                <a class="pilcrow" href="#section-34">&#182;</a>
               </div>
               <h3 id="wrappers-around-user-implemented-methods">Wrappers around user-implemented methods</h3>
 
@@ -600,11 +646,11 @@ to avoid redrawing the same static scene. Called by animator.</p>
         </li>
         
         
-        <li id="section-32">
+        <li id="section-35">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-32">&#182;</a>
+                <a class="pilcrow" href="#section-35">&#182;</a>
               </div>
               <p>Creates a spotlight effect on an agent, so we can follow it throughout the model.
 Use:</p>
@@ -626,11 +672,11 @@ Use:</p>
         </li>
         
         
-        <li id="section-33">
+        <li id="section-36">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-33">&#182;</a>
+                <a class="pilcrow" href="#section-36">&#182;</a>
               </div>
               <h3 id="breeds">Breeds</h3>
 
@@ -639,11 +685,11 @@ Use:</p>
         </li>
         
         
-        <li id="section-34">
+        <li id="section-37">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-34">&#182;</a>
+                <a class="pilcrow" href="#section-37">&#182;</a>
               </div>
               <p>Three versions of NL’s <code>breed</code> commands.</p>
 <pre><code><span class="hljs-property">@patchBreeds</span> <span class="hljs-string">"streets buildings"</span>
@@ -657,8 +703,8 @@ Use:</p>
 Use of <breed>.setDefault methods work as for agents/links, creating default
 values for the breed set:</p>
 <pre><code><span class="hljs-property">@embers</span>.setDefault <span class="hljs-string">"color"</span>, [<span class="hljs-number">255</span>,<span class="hljs-number">0</span>,<span class="hljs-number">0</span>]
-</code></pre><p>..will set the default color for just the embers. Note: patch breeds are currently
-not usable due to the patches being prebuilt.  Stay tuned.</p>
+</code></pre><p>..will set the default color for just the embers. Note: patch breeds are
+experimental, using setBreed, due to the patches being prebuilt.</p>
 
             </div>
             
@@ -684,11 +730,11 @@ not usable due to the patches being prebuilt.  Stay tuned.</p>
         </li>
         
         
-        <li id="section-35">
+        <li id="section-38">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-35">&#182;</a>
+                <a class="pilcrow" href="#section-38">&#182;</a>
               </div>
               <p>Utility for models to create agentsets from arrays.  Ex:</p>
 <pre><code>even = <span class="hljs-property">@asSet</span> (a <span class="hljs-keyword">for</span> a <span class="hljs-keyword">in</span> <span class="hljs-property">@agents</span> <span class="hljs-keyword">when</span> a.id % <span class="hljs-number">2</span> <span class="hljs-keyword">is</span> <span class="hljs-number">0</span>)
@@ -701,11 +747,11 @@ even.shuffle().getProp(<span class="hljs-string">"id"</span>) <span class="hljs-
         </li>
         
         
-        <li id="section-36">
+        <li id="section-39">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-36">&#182;</a>
+                <a class="pilcrow" href="#section-39">&#182;</a>
               </div>
               <p>A simple debug aid which places short names in the global name space.
 Note we avoid using the actual name, such as “patches” because this
@@ -739,11 +785,11 @@ See <a href="http://goo.gl/1i7bd">CoffeeConsole</a> Chrome extension too.</p>
         </li>
         
         
-        <li id="section-37">
+        <li id="section-40">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-37">&#182;</a>
+                <a class="pilcrow" href="#section-40">&#182;</a>
               </div>
               <p>Debug aid: Fill a named div with the (last) sprite sheet
 Typically the div should be before the model div, float right:</p>
@@ -768,21 +814,19 @@ Typically the div should be before the model div, float right:</p>
         </li>
         
         
-        <li id="section-38">
+        <li id="section-41">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-38">&#182;</a>
+                <a class="pilcrow" href="#section-41">&#182;</a>
               </div>
               <p>Create the namespace <strong>ABM</strong> for our project.
 Note here <code>this</code> or <code>@</code> == window due to coffeescript wrapper call.
-Thus @ABM is placed in the global scope.
-@ABM={}</p>
+Thus @ABM is placed in the global scope.</p>
 
             </div>
             
             <div class="content"><div class='highlight'><pre>
-
 <span class="hljs-property">@ABM</span> = {
   util    <span class="hljs-comment"># deprecated, Util</span>
   shapes  <span class="hljs-comment"># deprecated, Shapes</span>

@@ -119,22 +119,6 @@ Optimizes Agent a.myLinks method. Call before any agents created.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-7">&#182;</a>
               </div>
-              <p>Filter to return all instances of this breed.  Note: if used by
-the mainSet, returns just the agents that are not subclassed breeds.</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">breedsIn</span>: <span class="hljs-function"><span class="hljs-params">(array)</span> -&gt;</span> <span class="hljs-property">@asSet</span> (o <span class="hljs-keyword">for</span> o <span class="hljs-keyword">in</span> array <span class="hljs-keyword">when</span> o.breed <span class="hljs-keyword">is</span> @)</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-8">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-8">&#182;</a>
-              </div>
               <p>Factory: create num new agents stored in this agentset.The optional init
 proc is called on the new agent after inserting in its agentSet.</p>
 
@@ -146,11 +130,11 @@ proc is called on the new agent after inserting in its agentSet.</p>
         </li>
         
         
-        <li id="section-9">
+        <li id="section-8">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-9">&#182;</a>
+                <a class="pilcrow" href="#section-8">&#182;</a>
               </div>
               <p>Remove all agents from set via agent.die()
 Note call in reverse order to optimize list restructuring.</p>
@@ -158,6 +142,22 @@ Note call in reverse order to optimize list restructuring.</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">clear</span>: <span class="hljs-function">-&gt;</span> <span class="hljs-property">@last</span>().die() <span class="hljs-keyword">while</span> <span class="hljs-property">@any</span>(); <span class="hljs-literal">null</span> <span class="hljs-comment"># tricky, each die modifies list</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-9">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-9">&#182;</a>
+              </div>
+              <p>Filter to return all instances of this breed.  Note: if used by
+the mainSet, returns just the agents that are not subclassed breeds.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">breedsIn</span>: <span class="hljs-function"><span class="hljs-params">(array)</span> -&gt;</span> <span class="hljs-property">@asSet</span> (o <span class="hljs-keyword">for</span> o <span class="hljs-keyword">in</span> array <span class="hljs-keyword">when</span> o.breed <span class="hljs-keyword">is</span> @)</pre></div></div>
             
         </li>
         
@@ -204,11 +204,9 @@ Note call in reverse order to optimize list restructuring.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">inRect</span>: <span class="hljs-function"><span class="hljs-params">(a, dx, dy, meToo=<span class="hljs-literal">false</span>)</span> -&gt;</span>
-    rect = <span class="hljs-property">@model</span>.patches.patchRect a.p, dx, dy, <span class="hljs-literal">true</span>
-    rect = <span class="hljs-property">@inPatches</span> rect
-    u.removeItem rect, a <span class="hljs-keyword">unless</span> meToo
-    rect</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">inRect</span>: <span class="hljs-function"><span class="hljs-params">(p, dx, dy=dx)</span> -&gt;</span>
+    rect = <span class="hljs-property">@model</span>.patches.patchRect p, dx, dy <span class="hljs-comment">#, true</span>
+    <span class="hljs-property">@inPatches</span> rect</pre></div></div>
             
         </li>
         
@@ -224,8 +222,9 @@ from me, and within cone radians of my heading using patch topology</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">inCone</span>: <span class="hljs-function"><span class="hljs-params">(a, heading, cone, radius, meToo=<span class="hljs-literal">false</span>)</span> -&gt;</span> <span class="hljs-comment"># heading? .. so p ok?</span>
-    as = <span class="hljs-property">@inRect</span> a, radius, radius, <span class="hljs-literal">true</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">inCone</span>: <span class="hljs-function"><span class="hljs-params">(a, radius, angle)</span> -&gt;</span>
+    as = <span class="hljs-property">@inRect</span> a, radius, radius <span class="hljs-comment">#, true</span>
+    as.inCone a, radius, angle, a.heading</pre></div></div>
             
         </li>
         
@@ -236,43 +235,14 @@ from me, and within cone radians of my heading using patch topology</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-14">&#182;</a>
               </div>
-              <p>super a, heading, cone, radius, meToo</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>    as.inCone a, heading, cone, radius, meToo</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-15">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-15">&#182;</a>
-              </div>
               <p>Return the members of this agentset that are within radius distance
 from me, using patch topology</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">inRadius</span>: <span class="hljs-function"><span class="hljs-params">(a, radius, meToo=<span class="hljs-literal">false</span>)</span>-&gt;</span>
-    as = <span class="hljs-property">@inRect</span> a, radius, radius, <span class="hljs-literal">true</span></pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-16">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-16">&#182;</a>
-              </div>
-              <p>super a, radius, meToo</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>    as.inRadius a, radius, meToo
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">inRadius</span>: <span class="hljs-function"><span class="hljs-params">(a, radius)</span> -&gt;</span>
+    as = <span class="hljs-property">@inRect</span> a.p, radius
+    as.inRadius a, radius
 
   <span class="hljs-attribute">setDraggable</span>: <span class="hljs-function">-&gt;</span>
     <span class="hljs-property">@on</span> <span class="hljs-string">'dragstart'</span>, <span class="hljs-function"><span class="hljs-params">(mouseEvent)</span> =&gt;</span>

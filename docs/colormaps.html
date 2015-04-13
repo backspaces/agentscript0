@@ -943,9 +943,7 @@ Ramps.yellow is thus a ramp from black to brightest NetLogo yellow hue</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>    <span class="hljs-property">@NetLogoRamps</span> = <span class="hljs-property">@netLogoColorMap</span> <span class="hljs-number">18</span>, <span class="hljs-literal">false</span>
-    <span class="hljs-property">@CssRamps</span>     = <span class="hljs-property">@cssBasicColorMap</span> <span class="hljs-number">18</span>, <span class="hljs-literal">false</span>
-  <span class="hljs-attribute">randomGray</span>: <span class="hljs-function"><span class="hljs-params">(min, max)</span> -&gt;</span> <span class="hljs-property">@Gray</span>.randomColor(min, max)
-  <span class="hljs-attribute">randomColor</span>: <span class="hljs-function"><span class="hljs-params">()</span> -&gt;</span> <span class="hljs-property">@Rgb</span>.randomColor()</pre></div></div>
+    <span class="hljs-property">@CssRamps</span>     = <span class="hljs-property">@cssBasicColorMap</span> <span class="hljs-number">18</span>, <span class="hljs-literal">false</span></pre></div></div>
             
         </li>
         
@@ -955,6 +953,27 @@ Ramps.yellow is thus a ramp from black to brightest NetLogo yellow hue</p>
               
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-53">&#182;</a>
+              </div>
+              <p>Return random gray/color from a shared map.
+Colormap colors are immutable, so if you don’t want
+a shared gray/color but one who’s color you will change
+via color.setColor(..), then use clone:</p>
+<pre><code>color = ColorMaps.randomColor().clone()
+color = ColorMaps.Jet.scaleColor(<span class="hljs-number">.5</span>).clone()
+</code></pre>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">randomGray</span>: <span class="hljs-function"><span class="hljs-params">(min, max)</span> -&gt;</span> <span class="hljs-property">@Gray</span>.randomColor(min, max)
+  <span class="hljs-attribute">randomColor</span>: <span class="hljs-function"><span class="hljs-params">()</span> -&gt;</span> <span class="hljs-property">@Rgb</span>.randomColor()</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-54">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-54">&#182;</a>
               </div>
               <p>Legacy/Temporary: replace util/patch/agent scaleColor</p>
 

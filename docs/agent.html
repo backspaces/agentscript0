@@ -538,12 +538,12 @@ proc is called on the new agent after inserting in its agentSet.</p>
                 <a class="pilcrow" href="#section-27">&#182;</a>
               </div>
               <p>Return the members of the given agentset that are within radius distance
-from me, and within cone radians of my heading using patch topology</p>
+from me, using patch topology</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">inRadius</span>: <span class="hljs-function"><span class="hljs-params">(aset, radius, meToo=<span class="hljs-literal">false</span>)</span> -&gt;</span>
-    aset.inRadius <span class="hljs-property">@p</span>, radius, meToo <span class="hljs-comment"># REMIND: @p vs @?</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">inRadius</span>: <span class="hljs-function"><span class="hljs-params">(aset, radius)</span> -&gt;</span>
+    aset.inRadius(@, radius)</pre></div></div>
             
         </li>
         
@@ -554,13 +554,13 @@ from me, and within cone radians of my heading using patch topology</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-28">&#182;</a>
               </div>
-              <p>Return the members of the given agentset that are within radius distance
-from me, and within cone radians of my heading using patch topology</p>
+              <p>Return the members of the given agentset that are within distance
+from me, and within angle radians of my heading using patch topology</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">inCone</span>: <span class="hljs-function"><span class="hljs-params">(aset, cone, radius, meToo=<span class="hljs-literal">false</span>)</span> -&gt;</span>
-    aset.inCone <span class="hljs-property">@p</span>, <span class="hljs-property">@heading</span>, cone, radius, meToo <span class="hljs-comment"># REMIND: @p vs @?</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">inCone</span>: <span class="hljs-function"><span class="hljs-params">(aset, distance, angle)</span> -&gt;</span>
+    aset.inCone @, distance, angle, <span class="hljs-property">@heading</span></pre></div></div>
             
         </li>
         

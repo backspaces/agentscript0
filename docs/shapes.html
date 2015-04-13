@@ -33,7 +33,7 @@
             </div>
             
             <div class="content"><div class='highlight'><pre>
-shapes = Shapes = <span class="hljs-keyword">do</span> -&gt; <span class="hljs-comment"># TODO: Shapes is external name</span></pre></div></div>
+shapes = Shapes = <span class="hljs-keyword">do</span> -&gt;</pre></div></div>
             
         </li>
         
@@ -46,19 +46,25 @@ shapes = Shapes = <span class="hljs-keyword">do</span> -&gt; <span class="hljs-c
               </div>
               <p>Each shape is a named object with two members:
 a boolean rotate and a draw procedure and two optional
-properties: img for images, and shortcut for a transform-less version of draw.
-The shape is used in the following context with a color set
-and a transform such that the shape should be drawn in a -.5 to .5 square</p>
+properties: img for images, and shortcut for a transform-less
+version of draw.</p>
+<p>The shape is used in the following context with a color set
+and a transform such that the shape should be drawn in a -.5 to .5 square
+The draw procedure has an optional strokeColor which can be used,
+if specified, see “bug” for example (“#000000” is the un-set color value).
+Also see “filledRing” which uses the strokeColor as an outer fillStyle.
+The shape doesn’t call “fill” which is called by the shape user.</p>
 <pre><code>ctx.save()
-ctx.fillStyle = u.colorStr color
+ctx.fillStyle = color.css
+ctx.strokeStyle = strokeColor.css <span class="hljs-keyword">if</span> strokeColor
 ctx.translate x, y; ctx.scale size, size;
 ctx.rotate heading <span class="hljs-keyword">if</span> shape.rotate
 ctx.beginPath(); shape.draw(ctx); ctx.closePath()
 ctx.fill()
 ctx.restore()
 </code></pre><p>The list of current shapes, via <code>ABM.Shapes.names()</code> below, is:</p>
-<pre><code>[<span class="hljs-string">"default"</span>, <span class="hljs-string">"triangle"</span>, <span class="hljs-string">"arrow"</span>, <span class="hljs-string">"bug"</span>, <span class="hljs-string">"pyramid"</span>,
- <span class="hljs-string">"circle"</span>, <span class="hljs-string">"square"</span>, <span class="hljs-string">"pentagon"</span>, <span class="hljs-string">"ring"</span>, <span class="hljs-string">"cup"</span>, <span class="hljs-string">"person"</span>]
+<pre><code>[<span class="hljs-string">"default"</span>, <span class="hljs-string">"triangle"</span>, <span class="hljs-string">"arrow"</span>, <span class="hljs-string">"bug"</span>, <span class="hljs-string">"pyramid"</span>, <span class="hljs-string">"circle"</span>,
+ <span class="hljs-string">"square"</span>, <span class="hljs-string">"pentagon"</span>, <span class="hljs-string">"ring"</span>, <span class="hljs-string">"filledRing"</span>, <span class="hljs-string">"person"</span>]
 </code></pre>
             </div>
             
@@ -71,7 +77,7 @@ ctx.restore()
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-3">&#182;</a>
               </div>
-              <p>A simple polygon utility:  c is the 2D context, and a is an array of 2D points.
+              <p>A polygon utility: c is the 2D context, and a is an array of 2D points.
 c.closePath() and c.fill() will be called by the calling agent, see initial
 discription of drawing context.  It is used in adding a new shape above.</p>
 
@@ -96,10 +102,16 @@ Useful for shortcuts</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre><span class="hljs-function">  <span class="hljs-title">circ</span> = <span class="hljs-params">(c,x,y,s)</span>-&gt;</span>c.arc x,y,s/<span class="hljs-number">2</span>,<span class="hljs-number">0</span>,<span class="hljs-number">2</span>*Math.PI <span class="hljs-comment"># centered circle</span>
-<span class="hljs-function">  <span class="hljs-title">ccirc</span> = <span class="hljs-params">(c,x,y,s)</span>-&gt;</span>c.arc x,y,s/<span class="hljs-number">2</span>,<span class="hljs-number">0</span>,<span class="hljs-number">2</span>*Math.PI,<span class="hljs-literal">true</span> <span class="hljs-comment"># centered counter clockwise circle</span>
-<span class="hljs-function">  <span class="hljs-title">cimg</span> = <span class="hljs-params">(c,x,y,s,img)</span>-&gt;</span>c.scale <span class="hljs-number">1</span>,-<span class="hljs-number">1</span>;c.drawImage img,x-s/<span class="hljs-number">2</span>,y-s/<span class="hljs-number">2</span>,s,s;c.scale <span class="hljs-number">1</span>,-<span class="hljs-number">1</span> <span class="hljs-comment"># centered image</span>
-<span class="hljs-function">  <span class="hljs-title">csq</span> = <span class="hljs-params">(c,x,y,s)</span>-&gt;</span>c.fillRect x-s/<span class="hljs-number">2</span>, y-s/<span class="hljs-number">2</span>, s, s <span class="hljs-comment"># centered square</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre><span class="hljs-function">  <span class="hljs-title">circ</span> = <span class="hljs-params">(c, x, y, s)</span> -&gt;</span>  <span class="hljs-comment"># centered circle</span>
+    c.arc x, y, s/<span class="hljs-number">2</span>, <span class="hljs-number">0</span>, <span class="hljs-number">2</span>*Math.PI
+<span class="hljs-function">  <span class="hljs-title">ccirc</span> = <span class="hljs-params">(c, x, y, s)</span> -&gt;</span> <span class="hljs-comment"># counter clockwise circ</span>
+    c.arc x, y, s/<span class="hljs-number">2</span>, <span class="hljs-number">0</span>, <span class="hljs-number">2</span>*Math.PI, <span class="hljs-literal">true</span>
+<span class="hljs-function">  <span class="hljs-title">cimg</span> = <span class="hljs-params">(c, x, y, s, img)</span>-&gt;</span> <span class="hljs-comment"># Image, flippd for cartesian, y-up.</span>
+    c.scale <span class="hljs-number">1</span>, -<span class="hljs-number">1</span>
+    c.drawImage img, x-s/<span class="hljs-number">2</span>, y-s/<span class="hljs-number">2</span>, s, s
+    c.scale <span class="hljs-number">1</span>, -<span class="hljs-number">1</span>
+<span class="hljs-function">  <span class="hljs-title">csq</span> = <span class="hljs-params">(c, x, y, s)</span> -&gt;</span> <span class="hljs-comment"># centered square</span>
+    c.fillRect x-s/<span class="hljs-number">2</span>, y-s/<span class="hljs-number">2</span>, s, s</pre></div></div>
             
         </li>
         
@@ -115,7 +127,8 @@ Useful for shortcuts</p>
             </div>
             
             <div class="content"><div class='highlight'><pre><span class="hljs-function">  <span class="hljs-title">fillSlot</span> = <span class="hljs-params">(slot, img)</span> -&gt;</span>
-    slot.ctx.save(); slot.ctx.scale <span class="hljs-number">1</span>, -<span class="hljs-number">1</span>
+    slot.ctx.save()
+    slot.ctx.scale <span class="hljs-number">1</span>, -<span class="hljs-number">1</span>
     slot.ctx.drawImage img, slot.x, -(slot.y+slot.spriteSize), slot.spriteSize, slot.spriteSize
     slot.ctx.restore()</pre></div></div>
             
@@ -128,7 +141,7 @@ Useful for shortcuts</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-6">&#182;</a>
               </div>
-              <p>The spritesheet data, indexed by slotSize</p>
+              <p>The spritesheet data, indexed by sprite size</p>
 
             </div>
             
@@ -159,8 +172,8 @@ Useful for shortcuts</p>
   <span class="hljs-attribute">bug</span>:
     <span class="hljs-attribute">rotate</span>: <span class="hljs-literal">true</span>
     <span class="hljs-attribute">draw</span>: <span class="hljs-function"><span class="hljs-params">(c)</span> -&gt;</span>
-      c.strokeStyle = c.fillStyle; c.lineWidth = <span class="hljs-number">.05</span>
-      poly c, [[<span class="hljs-number">.4</span>,<span class="hljs-number">.225</span>],[<span class="hljs-number">.2</span>,<span class="hljs-number">0</span>],[<span class="hljs-number">.4</span>,-<span class="hljs-number">.225</span>]]; c.stroke()
+      c.strokeStyle = c.fillStyle <span class="hljs-keyword">if</span> c.strokeStyle <span class="hljs-keyword">is</span> <span class="hljs-string">"#000000"</span>
+      c.lineWidth = <span class="hljs-number">.05</span>; poly c, [[<span class="hljs-number">.4</span>,<span class="hljs-number">.225</span>],[<span class="hljs-number">.2</span>,<span class="hljs-number">0</span>],[<span class="hljs-number">.4</span>,-<span class="hljs-number">.225</span>]]; c.stroke()
       c.beginPath(); circ c,<span class="hljs-number">.12</span>,<span class="hljs-number">0</span>,<span class="hljs-number">.26</span>; circ c,-<span class="hljs-number">.05</span>,<span class="hljs-number">0</span>,<span class="hljs-number">.26</span>; circ c,-<span class="hljs-number">.27</span>,<span class="hljs-number">0</span>,<span class="hljs-number">.4</span>
   <span class="hljs-attribute">pyramid</span>:
     <span class="hljs-attribute">rotate</span>: <span class="hljs-literal">false</span>
@@ -249,8 +262,8 @@ Useful for shortcuts</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">poly</span>:poly, <span class="hljs-attribute">circ</span>:circ, <span class="hljs-attribute">ccirc</span>:ccirc, <span class="hljs-attribute">cimg</span>:cimg, <span class="hljs-attribute">csq</span>:csq <span class="hljs-comment"># export utils for use by add</span>
-  <span class="hljs-attribute">spriteSheets</span>:spriteSheets <span class="hljs-comment"># export spriteSheets for debugging, showing in DOM</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">poly</span>:poly, <span class="hljs-attribute">circ</span>:circ, <span class="hljs-attribute">ccirc</span>:ccirc, <span class="hljs-attribute">cimg</span>:cimg, <span class="hljs-attribute">csq</span>:csq
+  <span class="hljs-attribute">spriteSheets</span>:spriteSheets <span class="hljs-comment"># export spriteSheets for debugging, showing in html</span></pre></div></div>
             
         </li>
         
@@ -267,8 +280,7 @@ Useful for shortcuts</p>
             
             <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">draw</span>: <span class="hljs-function"><span class="hljs-params">(ctx, shape, x, y, size, rad, color, strokeColor)</span> -&gt;</span>
     <span class="hljs-keyword">if</span> shape.shortcut?
-      <span class="hljs-keyword">unless</span> shape.img?
-        ctx.fillStyle = color.css <span class="hljs-comment"># u.colorStr color</span>
+      ctx.fillStyle = color.css <span class="hljs-keyword">unless</span> shape.img? <span class="hljs-comment"># u.colorStr color</span>
       shape.shortcut ctx,x,y,size
     <span class="hljs-keyword">else</span>
       ctx.save()
@@ -279,27 +291,11 @@ Useful for shortcuts</p>
         shape.draw ctx
       <span class="hljs-keyword">else</span>
         ctx.fillStyle = color.css <span class="hljs-comment"># u.colorStr color</span>
-        <span class="hljs-keyword">if</span> strokeColor
-          ctx.strokeStyle = strokeColor.css <span class="hljs-comment"># u.colorStr strokeColor</span>
-          ctx.lineWidth = <span class="hljs-number">0.05</span>
-        ctx.save()
+        ctx.strokeStyle = strokeColor.css <span class="hljs-keyword">if</span> strokeColor <span class="hljs-comment"># u.colorStr color</span>
         ctx.beginPath(); shape.draw ctx; ctx.closePath()
-        ctx.restore()
         ctx.fill()
-        ctx.stroke() <span class="hljs-keyword">if</span> strokeColor
-
       ctx.restore()
-    shape
-  <span class="hljs-attribute">drawSprite</span>: <span class="hljs-function"><span class="hljs-params">(ctx, s, x, y, size, rad)</span> -&gt;</span>
-    <span class="hljs-keyword">if</span> rad <span class="hljs-keyword">is</span> <span class="hljs-number">0</span>
-      ctx.drawImage s.ctx.canvas, s.x, s.y, s.spriteSize, s.spriteSize, x-size/<span class="hljs-number">2</span>, y-size/<span class="hljs-number">2</span>, size, size
-    <span class="hljs-keyword">else</span>
-      ctx.save()
-      ctx.translate x, y <span class="hljs-comment"># see http://goo.gl/VUlhY for drawing centered rotated images</span>
-      ctx.rotate rad
-      ctx.drawImage s.ctx.canvas, s.x, s.y, s.spriteSize, s.spriteSize, -size/<span class="hljs-number">2</span>,-size/<span class="hljs-number">2</span>, size, size
-      ctx.restore()
-    s</pre></div></div>
+    shape</pre></div></div>
             
         </li>
         
@@ -310,18 +306,24 @@ Useful for shortcuts</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-12">&#182;</a>
               </div>
-              <p>Convert a shape to a sprite by allocating a sprite sheet “slot” and drawing
-the shape to fit it. Return existing sprite if duplicate.</p>
+              <p>Draw a sprite, called by agents. The world transform is in effect.
+see <a href="http://goo.gl/VUlhY">this post</a> for drawing centered rotated images
+The sprite (s) properties are in pixels, x,y,size in world coordinates.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">shapeToSprite</span>: <span class="hljs-function"><span class="hljs-params">(name, color, size, strokeColor)</span> -&gt;</span>
-    colorCss = Color.convertColor color, <span class="hljs-string">"css"</span>
-    strokeCss = Color.convertColor strokeColor, <span class="hljs-string">"css"</span> <span class="hljs-keyword">if</span> strokeColor?
-    spriteSize = Math.ceil size
-    strokePadding = <span class="hljs-number">4</span>
-    slotSize = spriteSize + strokePadding
-    shape = @[name]</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">drawSprite</span>: <span class="hljs-function"><span class="hljs-params">(ctx, s, x, y, size, rad)</span> -&gt;</span>
+    <span class="hljs-keyword">if</span> rad <span class="hljs-keyword">is</span> <span class="hljs-number">0</span>
+      ctx.drawImage s.ctx.canvas, s.x, s.y, s.spriteSize, s.spriteSize,
+        x-size/<span class="hljs-number">2</span>, y-size/<span class="hljs-number">2</span>, size, size
+    <span class="hljs-keyword">else</span>
+      ctx.save()
+      ctx.translate x, y
+      ctx.rotate rad
+      ctx.drawImage s.ctx.canvas, s.x, s.y, s.spriteSize, s.spriteSize,
+        -size/<span class="hljs-number">2</span>,-size/<span class="hljs-number">2</span>, size, size
+      ctx.restore()
+    s</pre></div></div>
             
         </li>
         
@@ -332,12 +334,18 @@ the shape to fit it. Return existing sprite if duplicate.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-13">&#182;</a>
               </div>
-              <p>index = if shape.img? then name else “#{name}-#{u.colorStr(color)}”</p>
+              <p>Convert a shape to a sprite by allocating a sprite sheet “slot” and drawing
+the shape to fit it. Return existing sprite if duplicate.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    index = <span class="hljs-keyword">if</span> shape.img? <span class="hljs-keyword">then</span> name <span class="hljs-keyword">else</span> <span class="hljs-string">"<span class="hljs-subst">#{name}</span>-<span class="hljs-subst">#{colorCss}</span>"</span>
-    ctx = spriteSheets[slotSize]</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">shapeToSprite</span>: <span class="hljs-function"><span class="hljs-params">(name, color, size, strokeColor)</span> -&gt;</span>
+    color = Color.convertColor color, <span class="hljs-string">"css"</span> <span class="hljs-comment"># if we're called directly by pgmr</span>
+    strokeColor = Color.convertColor strokeColor, <span class="hljs-string">"css"</span> <span class="hljs-keyword">if</span> strokeColor?
+    spriteSize = Math.ceil size
+    shape = @[name]
+    index = <span class="hljs-keyword">if</span> shape.img? <span class="hljs-keyword">then</span> name <span class="hljs-keyword">else</span> <span class="hljs-string">"<span class="hljs-subst">#{name}</span>-<span class="hljs-subst">#{color}</span>"</span>
+    ctx = spriteSheets[spriteSize]</pre></div></div>
             
         </li>
         
@@ -353,7 +361,7 @@ the shape to fit it. Return existing sprite if duplicate.</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">unless</span> ctx?
-      spriteSheets[slotSize] = ctx = u.createCtx slotSize*<span class="hljs-number">10</span>, slotSize
+      spriteSheets[spriteSize] = ctx = u.createCtx spriteSize*<span class="hljs-number">10</span>, spriteSize
       ctx.nextX = <span class="hljs-number">0</span>; ctx.nextY = <span class="hljs-number">0</span>; ctx.index = {}</pre></div></div>
             
         </li>
@@ -384,8 +392,8 @@ the shape to fit it. Return existing sprite if duplicate.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">if</span> (slotSize)*ctx.nextX <span class="hljs-keyword">is</span> ctx.canvas.width
-      u.resizeCtx ctx, ctx.canvas.width, ctx.canvas.height+slotSize
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">if</span> spriteSize*ctx.nextX <span class="hljs-keyword">is</span> ctx.canvas.width
+      u.resizeCtx ctx, ctx.canvas.width, ctx.canvas.height+spriteSize
       ctx.nextX = <span class="hljs-number">0</span>; ctx.nextY++</pre></div></div>
             
         </li>
@@ -401,8 +409,8 @@ the shape to fit it. Return existing sprite if duplicate.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    x = (slotSize)*ctx.nextX+strokePadding/<span class="hljs-number">2</span>; y = (slotSize)*ctx.nextY+strokePadding/<span class="hljs-number">2</span>
-    slot = {ctx, x, y, size, spriteSize, name, color, strokeColor, index}
+            <div class="content"><div class='highlight'><pre>    x = spriteSize*ctx.nextX; y = spriteSize*ctx.nextY
+    slot = {ctx, x, y, spriteSize, name, color, strokeColor, index}
     ctx.index[index] = slot</pre></div></div>
             
         </li>
@@ -423,19 +431,15 @@ the shape to fit it. Return existing sprite if duplicate.</p>
       <span class="hljs-keyword">else</span> img.onload = <span class="hljs-function">-&gt;</span> fillSlot(slot, img)
     <span class="hljs-keyword">else</span>
       ctx.save()
-      ctx.translate (ctx.nextX+<span class="hljs-number">0.5</span>)*(slotSize), (ctx.nextY+<span class="hljs-number">0.5</span>)*(slotSize)
       ctx.scale spriteSize, spriteSize
-      ctx.fillStyle = colorCss <span class="hljs-comment"># u.colorStr color</span>
-      <span class="hljs-keyword">if</span> strokeColor
-        ctx.strokeStyle = strokeCss <span class="hljs-comment"># u.colorStr strokeColor</span>
-        ctx.lineWidth = <span class="hljs-number">0.05</span>
-      ctx.save()
+      ctx.translate ctx.nextX+<span class="hljs-number">.5</span>, ctx.nextY+<span class="hljs-number">.5</span>
+      ctx.fillStyle = color <span class="hljs-comment"># u.colorStr color</span>
+      ctx.strokeStyle = strokeColor <span class="hljs-keyword">if</span> strokeColor
       ctx.beginPath(); shape.draw ctx; ctx.closePath()
-      ctx.restore()
       ctx.fill()
-      ctx.stroke() <span class="hljs-keyword">if</span> strokeColor
       ctx.restore()
-    ctx.nextX++; slot</pre></div></div>
+    ctx.nextX++
+    slot <span class="hljs-comment"># return the sprite (slot)</span></pre></div></div>
             
         </li>
         

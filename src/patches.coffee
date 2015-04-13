@@ -30,7 +30,7 @@ class Patches extends AgentSet
       for x in [@minX..@maxX] by 1
         @add new @agentClass x, y
     @setNeighbors() if @hasNeighbors
-    @setPixels() unless @isHeadless # setup off-page canvas for pixel ops
+    @setPixels() if @model.div? # setup off-page canvas for pixel ops
 
   # Have patches cache the agents currently on them.
   # Optimizes p.agentsHere method.

@@ -156,7 +156,8 @@ See <a href="http://underscorejs.org/docs/underscore.html">underscore docs</a></
             
             <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">isString</span>: <span class="hljs-function"><span class="hljs-params">(obj)</span> -&gt;</span> <span class="hljs-keyword">typeof</span> obj <span class="hljs-keyword">is</span> <span class="hljs-string">'string'</span> || obj <span class="hljs-keyword">instanceof</span> String
   <span class="hljs-attribute">isInteger</span>: Number.isInteger <span class="hljs-keyword">or</span> <span class="hljs-comment"># like isArray</span>
-    (num) -&gt; Math.floor(num) <span class="hljs-keyword">is</span> num</pre></div></div>
+    (num) -&gt; Math.floor(num) <span class="hljs-keyword">is</span> num
+  <span class="hljs-attribute">isObject</span>: <span class="hljs-function"><span class="hljs-params">(obj)</span> -&gt;</span> toString.call(obj) <span class="hljs-keyword">is</span> <span class="hljs-string">'[object Object]'</span></pre></div></div>
             
         </li>
         
@@ -1192,13 +1193,13 @@ Note: array elements presumed unique, i.e. objects or distinct primitives</p>
                 <a class="pilcrow" href="#section-66">&#182;</a>
               </div>
               <p>Remove an item from an array. Binary search if f isnt null.
-Error if item not in array.</p>
+Return array. OK if item not found.</p>
 
             </div>
             
             <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">removeItem</span>: <span class="hljs-function"><span class="hljs-params">(array, item, f)</span> -&gt;</span>
-    <span class="hljs-keyword">unless</span> (i = <span class="hljs-property">@indexOf</span> array, item, f) &lt; <span class="hljs-number">0</span> <span class="hljs-keyword">then</span> array.splice i, <span class="hljs-number">1</span>
-    <span class="hljs-keyword">else</span> <span class="hljs-property">@error</span> <span class="hljs-string">"removeItem: item not found"</span> <span class="hljs-comment">#; array</span></pre></div></div>
+    array.splice i, <span class="hljs-number">1</span> <span class="hljs-keyword">unless</span> (i = <span class="hljs-property">@indexOf</span> array, item, f) &lt; <span class="hljs-number">0</span>
+    array</pre></div></div>
             
         </li>
         
@@ -1337,8 +1338,9 @@ sortBy array, <span class="hljs-string">"i"</span>
             </div>
             
             <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">sortBy</span>: <span class="hljs-function"><span class="hljs-params">(array, f)</span> -&gt;</span>
-   f = <span class="hljs-property">@propFcn</span> f <span class="hljs-keyword">if</span> <span class="hljs-property">@isString</span> f <span class="hljs-comment"># use item[f] if f is string</span>
-   array.sort (a,b) -&gt; f(a) - f(b)</pre></div></div>
+    <span class="hljs-keyword">if</span> <span class="hljs-property">@isString</span> f
+    <span class="hljs-keyword">then</span> array.sort (a,b) -&gt; a[f] - b[f]
+    <span class="hljs-keyword">else</span> array.sort (a,b) -&gt; f(a) - f(b)</pre></div></div>
             
         </li>
         
@@ -1799,16 +1801,12 @@ Property can be string or function. If property is “”, use identity default.
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-98">&#182;</a>
               </div>
-              <p>Return true if x2,y2 is in cone radians around heading radians from x1,x2
-and within distance radius from x1,x2.
-I.e. is p2 in cone/heading/radius from p1?</p>
+              <p>Return true if x,y is in rect bounded by min/max X/Y</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">inCone</span>: <span class="hljs-function"><span class="hljs-params">(heading, cone, radius, x1, y1, x2, y2)</span> -&gt;</span>
-    <span class="hljs-keyword">if</span> radius &lt; <span class="hljs-property">@distance</span> x1, y1, x2, y2 <span class="hljs-keyword">then</span> <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>
-    angle12 = <span class="hljs-property">@radsToward</span> x1, y1, x2, y2 <span class="hljs-comment"># angle from 1 to 2</span>
-    cone/<span class="hljs-number">2</span> &gt;=Math.abs <span class="hljs-property">@subtractRads</span>(heading, angle12)</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">inRect</span>: <span class="hljs-function"><span class="hljs-params">(x, y, minX, minY, maxX, maxY)</span> -&gt;</span>
+    (minX &lt;= x &lt;= maxX) <span class="hljs-keyword">and</span> (minY &lt;= y &lt;= maxY)</pre></div></div>
             
         </li>
         
@@ -1819,7 +1817,48 @@ I.e. is p2 in cone/heading/radius from p1?</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-99">&#182;</a>
               </div>
-              <p>Return the Euclidean distance and distance squared between x1,y1, x2,y2.
+              <p>Return true if x,y is in rect defined by x0,y0,dx,dy
+(dx/dy half width/height)</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">inCenteredRect</span>: <span class="hljs-function"><span class="hljs-params">(x, y, x0, y0, dx, dy)</span> -&gt;</span>
+    (x0-dx &lt;= x &lt;= x0+dx <span class="hljs-keyword">and</span> y0-dy &lt;= y &lt;= y0+dy)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-100">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-100">&#182;</a>
+              </div>
+              <p>Return true if x2,y2 is in cone radians around heading radians from x1,x2
+and within distance radius from x1,x2.
+I.e. is p2 in cone/heading/radius from p1?
+inCone: (heading, cone, radius, x1, y1, x2, y2) -&gt;</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">inCone</span>: <span class="hljs-function"><span class="hljs-params">(radius, angle, heading, x1, y1, x2, y2)</span> -&gt;</span>
+    <span class="hljs-keyword">if</span> radius &lt; <span class="hljs-property">@distance</span> x1, y1, x2, y2 <span class="hljs-keyword">then</span> <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>
+    angle12 = <span class="hljs-property">@radsToward</span> x1, y1, x2, y2 <span class="hljs-comment"># angle from 1 to 2</span>
+    angle/<span class="hljs-number">2</span> &gt;=Math.abs <span class="hljs-property">@subtractRads</span>(heading, angle12)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-101">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-101">&#182;</a>
+              </div>
+              <p>inHeading: (heading, x1, y1, x2, y2) -&gt;
+  angle12 = @radsToward x1, y1, x2, y2 # angle from 1 to 2
+  cone/2 &gt;=Math.abs @subtractRads(heading, angle12)
+Return the Euclidean distance and distance squared between x1,y1, x2,y2.
 The squared distance is used for comparisons to avoid the Math.sqrt fcn.</p>
 
             </div>
@@ -1830,11 +1869,11 @@ The squared distance is used for comparisons to avoid the Math.sqrt fcn.</p>
         </li>
         
         
-        <li id="section-100">
+        <li id="section-102">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-100">&#182;</a>
+                <a class="pilcrow" href="#section-102">&#182;</a>
               </div>
               <p>Convert polar r,theta, theta in radians, to cartesian x,y.
 Default to 0,0 origin, optional x,y origin.</p>
@@ -1846,11 +1885,11 @@ Default to 0,0 origin, optional x,y origin.</p>
         </li>
         
         
-        <li id="section-101">
+        <li id="section-103">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-101">&#182;</a>
+                <a class="pilcrow" href="#section-103">&#182;</a>
               </div>
               <p>Return the <a href="http://goo.gl/PgJ5N">torus distance</a> and distance squared
 between two points A(x1,y1) and B(x2,y2):</p>
@@ -1885,11 +1924,11 @@ A and B must also include the towards-reflections around A, thus 4 points.</p>
         </li>
         
         
-        <li id="section-102">
+        <li id="section-104">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-102">&#182;</a>
+                <a class="pilcrow" href="#section-104">&#182;</a>
               </div>
               <p>Return true if closest path between x1,y1 &amp; x2,y2 wraps around the torus.</p>
 
@@ -1902,11 +1941,11 @@ A and B must also include the towards-reflections around A, thus 4 points.</p>
         </li>
         
         
-        <li id="section-103">
+        <li id="section-105">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-103">&#182;</a>
+                <a class="pilcrow" href="#section-105">&#182;</a>
               </div>
               <p>Return 4 torus point reflections of x2,y2 around x1,y1</p>
 
@@ -1920,11 +1959,11 @@ A and B must also include the towards-reflections around A, thus 4 points.</p>
         </li>
         
         
-        <li id="section-104">
+        <li id="section-106">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-104">&#182;</a>
+                <a class="pilcrow" href="#section-106">&#182;</a>
               </div>
               <p>Return closest of 4 torus pts from A to B</p>
 
@@ -1940,13 +1979,13 @@ A and B must also include the towards-reflections around A, thus 4 points.</p>
         </li>
         
         
-        <li id="section-105">
+        <li id="section-107">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-105">&#182;</a>
+                <a class="pilcrow" href="#section-107">&#182;</a>
               </div>
-              <p>Return the angle from x1,y1 to x2.y2 on torus using shortest reflection.</p>
+              <p>Return the angle from x1,y1 to x2,y2 on torus using shortest reflection.</p>
 
             </div>
             
@@ -1957,30 +1996,35 @@ A and B must also include the towards-reflections around A, thus 4 points.</p>
         </li>
         
         
-        <li id="section-106">
+        <li id="section-108">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-106">&#182;</a>
+                <a class="pilcrow" href="#section-108">&#182;</a>
               </div>
               <p>Return true if x2,y2 is in cone radians around heading radians from x1,x2
-and within distance radius from x1,x2 considering all torus reflections.</p>
+and within distance radius from x1,x2 considering all torus reflections.
+inTorusCone: (heading, cone, radius, x1, y1, x2, y2, w, h) -&gt;</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">inTorusCone</span>: <span class="hljs-function"><span class="hljs-params">(heading, cone, radius, x1, y1, x2, y2, w, h)</span> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">inTorusCone</span>: <span class="hljs-function"><span class="hljs-params">(radius, angle, heading, x1, y1, x2, y2, w, h)</span> -&gt;</span>
     <span class="hljs-keyword">for</span> p <span class="hljs-keyword">in</span> <span class="hljs-property">@torus4Pts</span> x1, y1, x2, y2, w, h
-      <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span> <span class="hljs-keyword">if</span> <span class="hljs-property">@inCone</span> heading, cone, radius, x1, y1, p[<span class="hljs-number">0</span>], p[<span class="hljs-number">1</span>]
-    <span class="hljs-literal">false</span></pre></div></div>
+      <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span> <span class="hljs-keyword">if</span> <span class="hljs-property">@inCone</span> radius, angle, heading, x1, y1, p[<span class="hljs-number">0</span>], p[<span class="hljs-number">1</span>]
+    <span class="hljs-literal">false</span>
+  <span class="hljs-attribute">inTorusRect</span>: <span class="hljs-function"><span class="hljs-params">(x, y, minX, minY, maxX, maxY, w, h)</span> -&gt;</span>
+    <span class="hljs-keyword">if</span> x &lt; minX <span class="hljs-keyword">then</span> x += w <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> x &gt; maxX <span class="hljs-keyword">then</span> x -= w
+    <span class="hljs-keyword">if</span> y &lt; minY <span class="hljs-keyword">then</span> y += h <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> y &gt; maxY <span class="hljs-keyword">then</span> y -= h
+    (minX &lt;= x &lt;= maxX) <span class="hljs-keyword">and</span> (minY &lt;= y &lt;= maxY)</pre></div></div>
             
         </li>
         
         
-        <li id="section-107">
+        <li id="section-109">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-107">&#182;</a>
+                <a class="pilcrow" href="#section-109">&#182;</a>
               </div>
               <h3 id="file-i-o">File I/O</h3>
 
@@ -1989,11 +2033,11 @@ and within distance radius from x1,x2 considering all torus reflections.</p>
         </li>
         
         
-        <li id="section-108">
+        <li id="section-110">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-108">&#182;</a>
+                <a class="pilcrow" href="#section-110">&#182;</a>
               </div>
               <p>Cache of file names used by file imports below</p>
 
@@ -2004,11 +2048,11 @@ and within distance radius from x1,x2 considering all torus reflections.</p>
         </li>
         
         
-        <li id="section-109">
+        <li id="section-111">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-109">&#182;</a>
+                <a class="pilcrow" href="#section-111">&#182;</a>
               </div>
               <p>Import an image, executing (async) optional function f(img) on completion</p>
 
@@ -2028,11 +2072,11 @@ and within distance radius from x1,x2 considering all torus reflections.</p>
         </li>
         
         
-        <li id="section-110">
+        <li id="section-112">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-110">&#182;</a>
+                <a class="pilcrow" href="#section-112">&#182;</a>
               </div>
               <p>Use XMLHttpRequest to fetch data of several types. Data Types: text,
 arraybuffer, blob, json, document, <a href="http://goo.gl/y3r3h">See specification</a>.
@@ -2055,11 +2099,11 @@ method is “GET” or “POST”. f is function to call onload, default to no-o
         </li>
         
         
-        <li id="section-111">
+        <li id="section-113">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-111">&#182;</a>
+                <a class="pilcrow" href="#section-113">&#182;</a>
               </div>
               <p>Return true if all files are loaded.</p>
 
@@ -2072,11 +2116,11 @@ method is “GET” or “POST”. f is function to call onload, default to no-o
         </li>
         
         
-        <li id="section-112">
+        <li id="section-114">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-112">&#182;</a>
+                <a class="pilcrow" href="#section-114">&#182;</a>
               </div>
               <p>Wait for files to be loaded before executing callback f</p>
 
@@ -2087,11 +2131,11 @@ method is “GET” or “POST”. f is function to call onload, default to no-o
         </li>
         
         
-        <li id="section-113">
+        <li id="section-115">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-113">&#182;</a>
+                <a class="pilcrow" href="#section-115">&#182;</a>
               </div>
               <p>Wait for function done() to return true before calling callback f</p>
 
@@ -2103,11 +2147,11 @@ method is “GET” or “POST”. f is function to call onload, default to no-o
         </li>
         
         
-        <li id="section-114">
+        <li id="section-116">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-114">&#182;</a>
+                <a class="pilcrow" href="#section-116">&#182;</a>
               </div>
               <h3 id="image-data-operations">Image Data Operations</h3>
 <p>Make a copy of an image.
@@ -2121,11 +2165,11 @@ Should be sync</p>
         </li>
         
         
-        <li id="section-115">
+        <li id="section-117">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-115">&#182;</a>
+                <a class="pilcrow" href="#section-117">&#182;</a>
               </div>
               <p>Create a data array from an image’s imageData
 img may be a canvas.
@@ -2149,11 +2193,11 @@ The function f = f(imageData, rgbIndex) -&gt; number</p>
         </li>
         
         
-        <li id="section-116">
+        <li id="section-118">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-116">&#182;</a>
+                <a class="pilcrow" href="#section-118">&#182;</a>
               </div>
               <p>Two utilities for Image data extraction.
 They return a fcn in a closure which “sees” the args and variables</p>
@@ -2169,11 +2213,11 @@ They return a fcn in a closure which “sees” the args and variables</p>
         </li>
         
         
-        <li id="section-117">
+        <li id="section-119">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-117">&#182;</a>
+                <a class="pilcrow" href="#section-119">&#182;</a>
               </div>
               <h3 id="canvas-context-operations">Canvas/Context Operations</h3>
 
@@ -2182,11 +2226,11 @@ They return a fcn in a closure which “sees” the args and variables</p>
         </li>
         
         
-        <li id="section-118">
+        <li id="section-120">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-118">&#182;</a>
+                <a class="pilcrow" href="#section-120">&#182;</a>
               </div>
               <p>Create a new canvas of given width/height</p>
 
@@ -2200,11 +2244,11 @@ They return a fcn in a closure which “sees” the args and variables</p>
         </li>
         
         
-        <li id="section-119">
+        <li id="section-121">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-119">&#182;</a>
+                <a class="pilcrow" href="#section-121">&#182;</a>
               </div>
               <p>As above, but returing the context object.
 Note ctx.canvas is the canvas for the ctx, and can be use as an image.</p>
@@ -2220,11 +2264,11 @@ Note ctx.canvas is the canvas for the ctx, and can be use as an image.</p>
         </li>
         
         
-        <li id="section-120">
+        <li id="section-122">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-120">&#182;</a>
+                <a class="pilcrow" href="#section-122">&#182;</a>
               </div>
               <p>Return a “layer” 2D/3D rendering context within the specified HTML <code>&lt;div&gt;</code>,
 with the given width/height positioned absolutely at top/left within the div,
@@ -2249,11 +2293,11 @@ and with the z-index of z.</p>
         </li>
         
         
-        <li id="section-121">
+        <li id="section-123">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-121">&#182;</a>
+                <a class="pilcrow" href="#section-123">&#182;</a>
               </div>
               <p>Don’cha love standards!</p>
 
@@ -2266,11 +2310,11 @@ and with the z-index of z.</p>
         </li>
         
         
-        <li id="section-122">
+        <li id="section-124">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-122">&#182;</a>
+                <a class="pilcrow" href="#section-124">&#182;</a>
               </div>
               <p>ctx.imageSmoothingEnabled = smoothing
 ctx.mozImageSmoothingEnabled = smoothing
@@ -2282,11 +2326,11 @@ ctx.webkitImageSmoothingEnabled = smoothing</p>
         </li>
         
         
-        <li id="section-123">
+        <li id="section-125">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-123">&#182;</a>
+                <a class="pilcrow" href="#section-125">&#182;</a>
               </div>
               <p>Install identity transform.  Call ctx.restore() to revert to previous transform</p>
 
@@ -2299,11 +2343,11 @@ ctx.webkitImageSmoothingEnabled = smoothing</p>
         </li>
         
         
-        <li id="section-124">
+        <li id="section-126">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-124">&#182;</a>
+                <a class="pilcrow" href="#section-126">&#182;</a>
               </div>
               <p>Clear the 2D/3D layer to be transparent. Note this <a href="http://goo.gl/qekXS">discussion</a>.</p>
 
@@ -2321,11 +2365,11 @@ ctx.webkitImageSmoothingEnabled = smoothing</p>
         </li>
         
         
-        <li id="section-125">
+        <li id="section-127">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-125">&#182;</a>
+                <a class="pilcrow" href="#section-127">&#182;</a>
               </div>
               <p>Fill the 2D/3D layer with the given color</p>
 
@@ -2344,11 +2388,11 @@ ctx.webkitImageSmoothingEnabled = smoothing</p>
         </li>
         
         
-        <li id="section-126">
+        <li id="section-128">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-126">&#182;</a>
+                <a class="pilcrow" href="#section-128">&#182;</a>
               </div>
               <p>Draw string of the given color at the xy location, in ctx pixel coords.
 Use setIdentity .. reset if a transform is being used by caller.</p>
@@ -2364,11 +2408,11 @@ Use setIdentity .. reset if a transform is being used by caller.</p>
         </li>
         
         
-        <li id="section-127">
+        <li id="section-129">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-127">&#182;</a>
+                <a class="pilcrow" href="#section-129">&#182;</a>
               </div>
               <p>Set the element text align and baseline drawing parameters</p>
 <ul>
@@ -2389,11 +2433,11 @@ Use setIdentity .. reset if a transform is being used by caller.</p>
         </li>
         
         
-        <li id="section-128">
+        <li id="section-130">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-128">&#182;</a>
+                <a class="pilcrow" href="#section-130">&#182;</a>
               </div>
               <p>Convert an image to a context. ctx.canvas gives the created canvas.
 If w, h provided, scale to that size. img may be a canvas
@@ -2436,11 +2480,11 @@ Note: to convert a ctx to an “image” (drawImage) use ctx.canvas</p>
         </li>
         
         
-        <li id="section-129">
+        <li id="section-131">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-129">&#182;</a>
+                <a class="pilcrow" href="#section-131">&#182;</a>
               </div>
               <p>Convert a canvas to an image, executing fcn f on completion.
 Generally can skip callback but see <a href="http://goo.gl/kIk2U">stackoverflow</a>
@@ -2459,11 +2503,11 @@ Fix: use ctx.canvas for programatic imaging.</p>
         </li>
         
         
-        <li id="section-130">
+        <li id="section-132">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-130">&#182;</a>
+                <a class="pilcrow" href="#section-132">&#182;</a>
               </div>
               <p>Convert a ctx to an imageData object</p>
 
@@ -2475,11 +2519,11 @@ Fix: use ctx.canvas for programatic imaging.</p>
         </li>
         
         
-        <li id="section-131">
+        <li id="section-133">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-131">&#182;</a>
+                <a class="pilcrow" href="#section-133">&#182;</a>
               </div>
               <p>Canvas versions of above
 canvasToImage: (canvas) -&gt; ctxToImage(canvas.getContext “2d”)
@@ -2491,11 +2535,11 @@ imageToCanvas: (image) -&gt; imageToCtx(image).canvas</p>
         </li>
         
         
-        <li id="section-132">
+        <li id="section-134">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-132">&#182;</a>
+                <a class="pilcrow" href="#section-134">&#182;</a>
               </div>
               <p>Draw an image centered at x, y w/ image size dx, dy.
 See <a href="http://goo.gl/VUlhY">this tutorial</a>.</p>
@@ -2510,11 +2554,11 @@ See <a href="http://goo.gl/VUlhY">this tutorial</a>.</p>
         </li>
         
         
-        <li id="section-133">
+        <li id="section-135">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-133">&#182;</a>
+                <a class="pilcrow" href="#section-135">&#182;</a>
               </div>
               <p>Duplicate a ctx’s image.  Returns the new ctx, use ctx.canvas for canvas.</p>
 
@@ -2528,11 +2572,11 @@ See <a href="http://goo.gl/VUlhY">this tutorial</a>.</p>
         </li>
         
         
-        <li id="section-134">
+        <li id="section-136">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-134">&#182;</a>
+                <a class="pilcrow" href="#section-136">&#182;</a>
               </div>
               <p>Resize a ctx/canvas and preserve data.</p>
 
