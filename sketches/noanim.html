@@ -31,8 +31,15 @@
         d - l.length() < 1 / @patches.size
 
     # Note: do not call start()
-    window.model = new MyModel("layers", 25, -8, 8, -8, 8)
-      .debug() # Debug: Put Model vars in global name space
+    window.model = new MyModel {
+      div: "layers",
+      size: 25,
+      minX: -8,
+      maxX: 8,
+      minY: -8,
+      maxY: 8
+    }
+    .debug() # Debug: Put Model vars in global name space
     </script>
   </head>
   <body onload="model.once()">

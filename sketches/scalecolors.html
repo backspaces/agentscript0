@@ -39,9 +39,15 @@
         # @hsbList = @hsbMap()
         null
 
-    # div, patchSize, minX, maxX, minY, maxY, isTorus, hasNeighbors
-    #   Defaults: 13, -16, 16, -16, 16, false, true
-    model = new MyModel "layers", 5, 0,120, 0,40, true
+    model = new MyModel {
+      div: "layers",
+      size: 5,
+      minX: 0,
+      maxX: 120,
+      minY: 0,
+      maxY: 40,
+      isTorus: true
+    }
     model.debug() # Debug: Put Model vars in global name space
     model.start() # Run model immediately after startup initialization
 

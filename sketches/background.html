@@ -36,10 +36,17 @@
 
     # MyModel::contextsInit.patches.z += 1 # make sure patches.z > 0
     # MyModel.contextsInit.myCtx = {z:0,  ctx:"2d"}
-    # div, size, minX, maxX, minY, maxY, torus=true, neighbors=true
-    model = new MyModel("layers", 10, -25, 25, -25, 25, true)
-      .debug() # Debug: Put Model vars in global name space
-      .start() # Run model immediately after startup initialization
+    model = new MyModel {
+      div: "layers",
+      size: 10,
+      minX: -25,
+      maxX: 25,
+      minY: -25,
+      maxY: 25,
+      isTorus: true
+    }
+    .debug() # Debug: Put Model vars in global name space
+    .start() # Run model immediately after startup initialization
 
     </script>
   </head>

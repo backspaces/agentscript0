@@ -122,11 +122,18 @@
         dy = (Math.cos a.heading for a in @agents).reduce (x,y) -> x+y
         Math.sqrt(dx*dx + dy*dy)/@population
 
-    # div, patchSize, minX, maxX, minY, maxY, isTorus, hasNeighbors
-    #   Defaults: 13, -16, 16, -16, 16, false, true
     # Don't start, let UI start/stop model
-    model = new MyModel("layers", 15, -16, 16, -16, 16, true, false)
-      .debug() # Debug: Put Model vars in global name space
+    model = new MyModel {
+      div: "layers",
+      size: 15,
+      minX: -16,
+      maxX: 16,
+      minY: -16,
+      maxY: 16,
+      isTorus: true,
+      hasNeighbors: false
+    }
+    .debug() # Debug: Put Model vars in global name space
 
     </script>
   </head>
