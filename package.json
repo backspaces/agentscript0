@@ -27,11 +27,10 @@
     "docs":  "gulp docs",
     "watch": "gulp watch&",
 
-    "git-pull": "git checkout gh-pages && git pull && git checkout master && git pull",
     "git-diff": "git diff Gulpfile.js LICENSE README.md package.json src extras models sketches",
     "git-prep": "git checkout master && gulp all && git add . && git status",
     "git-commit": "git checkout master && git commit -v && git push origin master",
-    "git-pages": "git checkout gh-pages && git merge master && git push origin gh-pages && git checkout master"
+    "gh-pages": "git checkout gh-pages && git merge master && git push origin gh-pages && git checkout master"
   },
   "devDependencies": {
     "gulp": "~3.8.11",

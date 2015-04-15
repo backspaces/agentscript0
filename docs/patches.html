@@ -98,7 +98,7 @@ patches are started up empty and filled by “create” calls.</p>
       <span class="hljs-keyword">for</span> x <span class="hljs-keyword">in</span> [<span class="hljs-property">@minX</span>..<span class="hljs-property">@maxX</span>] <span class="hljs-keyword">by</span> <span class="hljs-number">1</span>
         <span class="hljs-property">@add</span> <span class="hljs-keyword">new</span> <span class="hljs-property">@agentClass</span> x, y
     <span class="hljs-property">@setNeighbors</span>() <span class="hljs-keyword">if</span> <span class="hljs-property">@hasNeighbors</span>
-    <span class="hljs-property">@setPixels</span>() <span class="hljs-keyword">unless</span> <span class="hljs-property">@isHeadless</span> <span class="hljs-comment"># setup off-page canvas for pixel ops</span></pre></div></div>
+    <span class="hljs-property">@setPixels</span>() <span class="hljs-keyword">if</span> <span class="hljs-property">@model</span>.div? <span class="hljs-comment"># setup off-page canvas for pixel ops</span></pre></div></div>
             
         </li>
         

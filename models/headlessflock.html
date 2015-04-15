@@ -56,10 +56,7 @@
           console.log "flock alignment: #{@reportFlockVectorSize()}"
         @flock(a) for a in @agents
         if @anim.draws is 2 # Show the sprite sheet if there is one after first draw
-          sheet = u.last(Shapes.spriteSheets) if Shapes.spriteSheets.length isnt 0
-          if sheet?
-            console.log sheet if @useConsole
-            document.getElementById("play").appendChild(sheet.canvas)
+          @showSpriteSheet()
         @stop() if @anim.ticks is 400
 
         @renderInDOM(a) for a in @agents

@@ -614,12 +614,12 @@ to avoid redrawing the same static scene. Called by animator.</p>
             
             <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">draw</span>: <span class="hljs-function"><span class="hljs-params">(force = <span class="hljs-property">@anim</span>.stopped <span class="hljs-keyword">or</span> <span class="hljs-property">@anim</span>.draws <span class="hljs-keyword">is</span> <span class="hljs-number">1</span>)</span> -&gt;</span>
     <span class="hljs-keyword">if</span> <span class="hljs-property">@debugging</span>
-      <span class="hljs-built_in">console</span>.log <span class="hljs-property">@anim</span>.toString() <span class="hljs-keyword">if</span> <span class="hljs-property">@anim</span>.draws % <span class="hljs-number">100</span> <span class="hljs-keyword">is</span> <span class="hljs-number">0</span>
-
-    <span class="hljs-property">@patches</span>.draw <span class="hljs-property">@contexts</span>.patches  <span class="hljs-keyword">if</span> force <span class="hljs-keyword">or</span> <span class="hljs-property">@refreshPatches</span>
-    <span class="hljs-property">@links</span>.draw   <span class="hljs-property">@contexts</span>.links    <span class="hljs-keyword">if</span> force <span class="hljs-keyword">or</span> <span class="hljs-property">@refreshLinks</span>
-    <span class="hljs-property">@agents</span>.draw  <span class="hljs-property">@contexts</span>.agents   <span class="hljs-keyword">if</span> force <span class="hljs-keyword">or</span> <span class="hljs-property">@refreshAgents</span>
-    <span class="hljs-property">@drawSpotlight</span> <span class="hljs-property">@spotlightAgent</span>, <span class="hljs-property">@contexts</span>.spotlight <span class="hljs-keyword">if</span> <span class="hljs-property">@spotlightAgent</span>?
+      <span class="hljs-built_in">console</span>.log <span class="hljs-property">@anim</span>.toString()  <span class="hljs-keyword">if</span> <span class="hljs-property">@anim</span>.draws % <span class="hljs-number">100</span> <span class="hljs-keyword">is</span> <span class="hljs-number">0</span>
+    <span class="hljs-keyword">if</span> <span class="hljs-property">@div</span>?
+      <span class="hljs-property">@patches</span>.draw <span class="hljs-property">@contexts</span>.patches  <span class="hljs-keyword">if</span> force <span class="hljs-keyword">or</span> <span class="hljs-property">@refreshPatches</span>
+      <span class="hljs-property">@links</span>.draw   <span class="hljs-property">@contexts</span>.links    <span class="hljs-keyword">if</span> force <span class="hljs-keyword">or</span> <span class="hljs-property">@refreshLinks</span>
+      <span class="hljs-property">@agents</span>.draw  <span class="hljs-property">@contexts</span>.agents   <span class="hljs-keyword">if</span> force <span class="hljs-keyword">or</span> <span class="hljs-property">@refreshAgents</span>
+      <span class="hljs-property">@drawSpotlight</span> <span class="hljs-property">@spotlightAgent</span>, <span class="hljs-property">@contexts</span>.spotlight <span class="hljs-keyword">if</span> <span class="hljs-property">@spotlightAgent</span>?
     <span class="hljs-property">@emit</span>(<span class="hljs-string">'draw'</span>)</pre></div></div>
             
         </li>
@@ -802,7 +802,6 @@ Typically the div should be before the model div, float right:</p>
             <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">showSpriteSheet</span>: <span class="hljs-function"><span class="hljs-params">(divName)</span> -&gt;</span>
     <span class="hljs-keyword">if</span> Shapes.spriteSheets.length <span class="hljs-keyword">isnt</span> <span class="hljs-number">0</span>
       sheet = Util.last(Shapes.spriteSheets)
-      <span class="hljs-built_in">console</span>.log sheet
       <span class="hljs-keyword">if</span> divName?
         <span class="hljs-built_in">document</span>.getElementById(divName).appendChild(sheet.canvas)
       <span class="hljs-keyword">else</span>

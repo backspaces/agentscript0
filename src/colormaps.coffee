@@ -302,7 +302,7 @@ ColorMaps  = {
   #     color = ColorMaps.randomColor().clone()
   #     color = ColorMaps.Jet.scaleColor(.5).clone()
   randomGray: (min, max) -> @Gray.randomColor(min, max)
-  randomColor: () -> @Rgb.randomColor()
+  randomColor: () -> @Rgb256.randomColor()
 
   # Legacy/Temporary: replace util/patch/agent scaleColor
   scaleColor: (color, number, min=0, max=1) ->

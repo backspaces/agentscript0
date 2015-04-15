@@ -198,12 +198,12 @@ class Model
 # to avoid redrawing the same static scene. Called by animator.
   draw: (force = @anim.stopped or @anim.draws is 1) ->
     if @debugging
-      console.log @anim.toString() if @anim.draws % 100 is 0
-
-    @patches.draw @contexts.patches  if force or @refreshPatches
-    @links.draw   @contexts.links    if force or @refreshLinks
-    @agents.draw  @contexts.agents   if force or @refreshAgents
-    @drawSpotlight @spotlightAgent, @contexts.spotlight if @spotlightAgent?
+      console.log @anim.toString()  if @anim.draws % 100 is 0
+    if @div?
+      @patches.draw @contexts.patches  if force or @refreshPatches
+      @links.draw   @contexts.links    if force or @refreshLinks
+      @agents.draw  @contexts.agents   if force or @refreshAgents
+      @drawSpotlight @spotlightAgent, @contexts.spotlight if @spotlightAgent?
     @emit('draw')
 
 #### Wrappers around user-implemented methods
@@ -314,7 +314,6 @@ class Model
   showSpriteSheet: (divName) ->
     if Shapes.spriteSheets.length isnt 0
       sheet = Util.last(Shapes.spriteSheets)
-      console.log sheet
       if divName?
         document.getElementById(divName).appendChild(sheet.canvas)
       else

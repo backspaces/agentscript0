@@ -24,9 +24,9 @@
         # w/ refresh off and two optimizations, 22-23fps
         # Deprecated:
         # @agents.setUseSprites() # 24 -> 36
-        @agents.setDefault "useSprites", true
 
-        @anim.setRate 15, true, false # multistep, noRAF
+        @agents.setDefault "useSprites", true
+        @anim.setRate 15, false, false # multistep, noRAF
 
         @useConsole = true
         @population = 500     # agents
