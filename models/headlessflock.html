@@ -15,32 +15,32 @@
       setup: ->
         # u.randomSeed() # use for repeatable runs
 
-        @refreshPatches = false # <3fps->4fps agents larger part of drawing
+        @refreshPatches = false # <3fps->4fps turtles larger part of drawing
         # No optimizations: 4fps
         # @patches.usePixels() # 4fps same as refresh off
-        @patches.cacheAgentsHere() # 17fps, big help for inRadius
+        @patches.cacheTurtlesHere() # 17fps, big help for inRadius
         # w/ refresh off and two optimizations, 22-23fps
-        # @agents.setUseSprites() # 24 -> 36
+        # @turtles.setUseSprites() # 24 -> 36
 
         # Default is untimed, fastest for headless
         @anim.setRate 5, false # multistep
 
         @useConsole = true
-        @population = 300     # agents
+        @population = 300     # turtles
         @setVision 3          # patches & set patch rect
         @minSeparation = 0.75 # patches
         @setMaxTurn(3.0)      # degrees -> radians
 
         # defaults
-        @agents.setDefault "size", 1.5
-        # @agents.setDefault "color", [255,0,0] # slightly faster! ->38/39 ??
+        @turtles.setDefault "size", 1.5
+        # @turtles.setDefault "color", [255,0,0] # slightly faster! ->38/39 ??
 
         p.color = u.randomGray 0, 100 for p in @patches
         p.sprout 1 for p in @patches.nOf(@population)
-        a.color = u.randomMapColor() for a in @agents
+        a.color = u.randomMapColor() for a in @turtles
 
-        newDomEl = (agent) =>
-          coords = @patches.patchXYtoPixelXY(agent.x, agent.y)
+        newDomEl = (turtle) =>
+          coords = @patches.patchXYtoPixelXY(turtle.x, turtle.y)
           el = document.body.appendChild(document.createElement("div"))
           el.innerHTML = 'bird'
           el.style.position = 'absolute'
@@ -48,27 +48,27 @@
           el.style.MozTransform = 'translate('+coords[0]+'px, '+coords[1]+'px)'
           return el
 
-        @domElements = (newDomEl(agent) for agent in @agents)
+        @domElements = (newDomEl(turtle) for turtle in @turtles)
 
 
       step: ->
         if @useConsole and @anim.ticks % 100 is 0
           console.log "flock alignment: #{@reportFlockVectorSize()}"
-        @flock(a) for a in @agents
+        @flock(a) for a in @turtles
         if @anim.draws is 2 # Show the sprite sheet if there is one after first draw
           @showSpriteSheet()
         @stop() if @anim.ticks is 400
 
-        @renderInDOM(a) for a in @agents
+        @renderInDOM(a) for a in @turtles
 
-      renderInDOM: (agent) ->
-        coords = @patches.patchXYtoPixelXY(agent.x, agent.y)
-        el = @domElements[agent.id]
+      renderInDOM: (turtle) ->
+        coords = @patches.patchXYtoPixelXY(turtle.x, turtle.y)
+        el = @domElements[turtle.id]
         el.style.webkitTransform = 'translate('+coords[0]+'px, '+coords[1]+'px)'
         el.style.MozTransform = 'translate('+coords[0]+'px, '+coords[1]+'px)'
 
-      flock: (a) -> # a is agent
-        flockmates = @agents.inRadius a, @vision
+      flock: (a) -> # a is turtle
+        flockmates = @turtles.inRadius a, @vision
         if flockmates.length isnt 0
           [nearestNeighbor, d] = u.minOneOf flockmates, ((f) -> f.distance a), true
           if d < @minSeparation
@@ -100,8 +100,8 @@
       safeAtan: (x,y) -> Math.atan2 y, x # if x is 0 and y is 0 then 0 else Math.atan2 y, x # atan ok if x 0
 
       reportFlockVectorSize: ->
-        dx = (Math.sin a.heading for a in @agents).reduce (x,y) -> x+y
-        dy = (Math.cos a.heading for a in @agents).reduce (x,y) -> x+y
+        dx = (Math.sin a.heading for a in @turtles).reduce (x,y) -> x+y
+        dy = (Math.cos a.heading for a in @turtles).reduce (x,y) -> x+y
         Math.sqrt(dx*dx + dy*dy)/@population
 
     # div, patchSize, minX, maxX, minY, maxY, isTorus, hasNeighbors, isHeadless
