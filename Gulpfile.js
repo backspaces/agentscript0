@@ -9,7 +9,7 @@ var taskList= require('gulp-task-listing');
 var exec    = require('child_process').exec;
 
 
-var ASNames = 'util evented color colormaps colormixin shapes agentset patch patches agent agents link links model animator'.split(' ');
+var ASNames = 'util evented color colormaps colormixin shapes agentset patch patches turtle turtles link links model animator'.split(' ');
 var ASPaths = ASNames.map(function(n){return 'src/'+n+'.coffee';});
 
 // Create "macro" pipes.  Note 'pipe(name,args)' not 'pipe(name(args))'
