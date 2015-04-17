@@ -14,21 +14,21 @@ Currently the documentation is hosted directly on our [GitHub Pages](http://back
 
 [**colormixin.coffee**](docs/colormixin.html) Utility to automatically add a new color to a class or object.
 
-[**shapes.coffee**](docs/shapes.html) A simple agent shapes module containing the default shapes and a few functions for getting at named shapes and adding your own shapes.
+[**shapes.coffee**](docs/shapes.html) A simple turtle shapes module containing the default shapes and a few functions for getting at named shapes and adding your own shapes.
 
 [**evented.coffee**](docs/evented.html) Our tiny and elegant Pub/Sub event module.
 
-[**agentset.coffee**](docs/agentset.html) The core Array subclass used by Patches, Agents, and Links.
+[**agentset.coffee**](docs/agentset.html) The core Array subclass used by Patches, Turtles, and Links.
 
 [**patch.coffee**](docs/patch.html) The Patch class. Patches represent autonomous regions of space that other agents can read/write to. Patches are commonly treated as grid cells in cellular automata models.
 
 [**patches.coffee**](docs/patches.html) The Agentset subclass for class Patches.
 
-[**agent.coffee**](docs/agent.html) The Agent class. Agents are autonomous, often mobile entities. In many models, they are the main interacting unit.
+[**turtle.coffee**](docs/turtle.html) The Turtle class. Turtles are autonomous, often mobile entities. In many models, they are the main interacting unit.
 
-[**agents.coffee**](docs/agents.html) The Agentset subclass for class Agents.
+[**turtles.coffee**](docs/turtles.html) The Agentset subclass for class Turtles.
 
-[**link.coffee**](docs/link.html) The Link class. Links are connections between Agents. They are often used to build models with graph or network structures.
+[**link.coffee**](docs/link.html) The Link class. Links are connections between agents. They are often used to build models with graph or network structures.
 
 [**links.coffee**](docs/links.html) The Agentset subclass for class Links.
 
@@ -60,17 +60,17 @@ The models/ directory contains tiny models used both as unit tests and as exampl
 
 [**buttons.html**](models/buttons.html) Stuart Kauffman's example of randomly connecting pairs of buttons in a pile resulting in a tipping point.
 
-[**diffusion.html**](models/diffusion.html) Agents randomly flying on a patch grid dropping a color which is diffused over the grid.
+[**diffusion.html**](models/diffusion.html) Turtles randomly flying on a patch grid dropping a color which is diffused over the grid.
 
 [**fire.html**](models/fire.html) A CA (cellular automata) based model of fire spreading and burn behavior.
 
-[**flock.html**](models/flock.html) The classic "boids" model where agents each follow three simple rules resulting in realistic flocking. This example uses the as.dat.gui.js extra.
+[**flock.html**](models/flock.html) The classic "boids" model where turtles each follow three simple rules resulting in realistic flocking. This example uses the as.dat.gui.js extra.
 
-[**headlessflock.html**](models/headlessflock.html) The same classic "boids" model as above, only this time agents are rendered as DOM elements instead of being drawn to a canvas.
+[**headlessflock.html**](models/headlessflock.html) The same classic "boids" model as above, only this time turtles are rendered as DOM elements instead of being drawn to a canvas.
 
 [**gridpath.html**](models/gridpath.html) One of Knuth's great puzzles on the probability of all Manhattan traversals diagonally traversing a grid.
 
-[**linktravel.html**](models/linktravel.html) Agents traversing a graph of nodes and links.
+[**linktravel.html**](models/linktravel.html) Turtles traversing a graph of nodes and links.
 
 [**nbody.html**](models/nbody.html) A simulation of the nonlinear gravitation of n bodies.
 
@@ -78,13 +78,13 @@ The models/ directory contains tiny models used both as unit tests and as exampl
 
 [**tspga.html**](models/tspga.html) A Traveling Sales Person solution via a Genetic Algorithm showing the rapid conversion of stochastic methods.
 
-[**droplets.html**](models/droplets.html) A simple GIS model based on an ESRI asc elevation file where droplet agents seek low-elevation patches. This example uses the data.js extra.
+[**droplets.html**](models/droplets.html) A simple GIS model based on an ESRI asc elevation file where droplet turtles seek low-elevation patches. This example uses the data.js extra.
 
 [**tiledroplets.html**](models/tiledroplets.html) A model similar to the above droplets.html, but here the droplets move on top of a Leaflet map, and elevation data is loaded from a tileserver as the map is panned. This example uses the data.js, data.tile.js, and as.dat.gui.js extras.
 
 [**life.html**](models/life.html) An implementation of [Conway's Game of Life](http://en.wikipedia.org/wiki/Conway's_Game_of_Life) with a twist. This example demonstrates running multiple models on the same page and uses a small as.dat.gui.js interface.
 
-[**wallfollower.html**](models/wallfollower.html) An interesting wall following model from NetLogo. A set of "buildings" are created on the patches, and agents find them then follow the wall, half of them to the right, the others to the left.
+[**wallfollower.html**](models/wallfollower.html) An interesting wall following model from NetLogo. A set of "buildings" are created on the patches. Turtles find them, then follow the wall, half of them to the right, the others to the left.
 
 #### Sample Models Format
 
