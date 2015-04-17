@@ -202,7 +202,10 @@ Util = util = u = # TODO: "util" deprecated in favor of Util
       when b then h = (r - g) / d + 4
     [Math.round(255*h/6), Math.round(255*s), Math.round(255*v)]
   hsbToRgb: (c) ->
-    @deprecated "Util.hsbToRgb: use Color.hslToRgb"
+    @deprecated "Util.hsbToRgb: use Color/ColorMaps HSL functions"
+    # Could use ths but very slow.
+    #
+    #     Color.hslToRgb c[0]*360/255, c[1]*100/255, c[2]*50/255 # very slow
     h=c[0]/255; s=c[1]/255; v=c[2]/255; i = Math.floor(h*6)
     f = h * 6 - i;        p = v * (1 - s)
     q = v * (1 - f * s);  t = v * (1 - (1 - f) * s)

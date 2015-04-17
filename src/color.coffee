@@ -173,13 +173,9 @@ Color = {
     # Any change to the typedColor r,g,b,a elements will dynamically change
     # the pixel value as it is a view onto the same buffer, and vice versa.
     # See Mozilla [TypedArray Docs](http://goo.gl/3OOQzy).
-    # If r is not a number but a TypedArray, use it for the typedColor.
-    typedColor = (r, g, b, a=255) -> #, map, index) ->
-      # Experimental: The map & index are for possible colormap use.
-      # if map # assume Uint8ClampedArray rgba array
-      #   ua = map.subarray index*4, index*4 + 4
-      #   ua.set [r,g,b,a]
-      # else
+    # If r is not a number but a TypedArray, use it for the typedColor,
+    # mainly used by colormaps.
+    typedColor = (r, g, b, a=255) ->
       ua = if r.buffer then r else new Uint8ClampedArray([r,g,b,a])
       ua.pixelArray = new Uint32Array(ua.buffer, ua.byteOffset, 1)
       # Make this an instance of TypedColorProto

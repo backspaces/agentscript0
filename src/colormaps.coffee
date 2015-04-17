@@ -276,7 +276,7 @@ ColorMaps  = {
     @colorMap @arrayToColors(array, type), indexToo
 
   # Create shared maps and utilities
-  createSharedMaps: (whiteToo = true) ->
+  createSharedMaps: ->
     # A map of all 256 gray colors
     @Gray    = @grayColorMap()
     # A popular rgb map of the best 256 colors
@@ -290,7 +290,8 @@ ColorMaps  = {
     # The netlogo map. NetLogo.yellow etc are individual netlogo hue ramps
     @NetLogo = @netLogoColorMap 10
     # Like above but largest < 256 map (252). Does not diminish to white.
-    # Ramps.yellow is thus a ramp from black to brightest NetLogo yellow hue
+    # NetLogoRamps.yellow is thus a ramp from black to brightest NetLogo
+    # yellow hue while CssRamps.yellow is black to Css "yellow"
     @NetLogoRamps = @netLogoColorMap 18, false
     @CssRamps     = @cssBasicColorMap 18, false
 
