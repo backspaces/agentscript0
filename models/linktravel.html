@@ -20,12 +20,12 @@
         @refreshPatches = false # 56fps
         @refreshLinks = false # 40-49fps
         # @patches.usePixels() # 58+fps same as refresh off
-        # @patches.cacheAgentsHere() # 40fps; not needed, slight overhead
+        # @patches.cacheTurtlesHere() # 40fps; not needed, slight overhead
         # Deprecated:
-        # @agents.setUseSprites() # 24 -> 36
+        # @turtles.setUseSprites() # 24 -> 36
         @drivers.setDefault "useSprites", true
         # w/ refreshs off and 1 optimization 59/max-fps
-        # @agents.cacheLinks() # no improvement, but tests a.links
+        # @turtles.cacheLinks() # no improvement, but tests a.links
 
         @anim.setRate 30, true # almost 3:1 steps/draws!
         # @anim.setRate 60, false # for optimization studies & profiling
@@ -48,7 +48,7 @@
         # Test labels
         # l.label = l.length().toFixed(0) for l in @roads
 
-        # no defaults, hatch copies its values to new agent
+        # no defaults, hatch copies its values to new turtle
 
         for i in [1..@numDrivers]
           n = @nodes.oneOf() # n = @nodes().oneOf()

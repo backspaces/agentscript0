@@ -1,25 +1,25 @@
 
-# Class Agent instances represent the dynamic, behavioral element of modeling.
-# Each agent knows the patch it is on, and interacts with that and other
-# patches, as well as other agents.
-class Agent
+# Class Turtle instances represent the dynamic, behavioral element of modeling.
+# Each turtle knows the patch it is on, and interacts with that and other
+# patches, as well as other turtles.
+class Turtle
   # Constructor & Class Variables:
   #
   # * id:         unique identifier, promoted by agentset create() factory method
-  # * breed:      the agentset this agent belongs to
+  # * breed:      the agentset this turtle belongs to
   # * x,y:        position on the patch grid, in patch coordinates, default: 0,0
-  # * size:       size of agent, in patch coords, default: 1
-  # * color:      the color of the agent, default: randomColor
-  # * shape:      the shape name of the agent, default: "default"
+  # * size:       size of turtle, in patch coords, default: 1
+  # * color:      the color of the turtle, default: randomColor
+  # * shape:      the shape name of the turtle, default: "default"
   # * label:      a text label drawn on my instances
   # * labelColor: the color of my label text
   # * labelOffset:the x,y offset of my label from my x,y location
-  # * heading:    direction of the agent, in radians, from x-axis
-  # * hidden:     whether or not to draw this agent
+  # * heading:    direction of the turtle, in radians, from x-axis
+  # * hidden:     whether or not to draw this turtle
   # * p:          patch at current x,y location
-  # * penDown:    true if agent pen is drawing
+  # * penDown:    true if turtle pen is drawing
   # * penSize:    size in pixels of the pen, default: 1 pixel
-  # * sprite:     an image of the agent if non null
+  # * sprite:     an image of the turtle if non null
   # * cacheLinks: if true, keep array of links in/out of me
   # * links:      array of links in/out of me.  Only used if @cacheLinks is true
   #
@@ -31,7 +31,7 @@ class Agent
   x: 0; y:0; p: null  # my location and the patch I'm on
   size: 1             # my size in patch coords
   color: null         # default color, overrides random color if set
-  strokeColor: null   # color of the border of an agent
+  strokeColor: null   # color of the border of an turtle
   shape: "default"    # my shape
   hidden: false       # draw me?
   label: null         # my text
@@ -49,35 +49,35 @@ class Agent
     @p = @model.patches.patch @x, @y
     @color = u.randomColor() unless @color? # or @useSprites or @hidden
     @heading = u.randomFloat(Math.PI*2) unless @heading?
-    @p.agents.push @ if @p.agents? # @model.patches.cacheAgentsHere
+    @p.turtles.push @ if @p.turtles? # @model.patches.cacheTurtlesHere
     @links = [] if @cacheLinks
 
-  # Set agent color to `c` scaled by `s`. Usage: see patch.scaleColor
+  # Set turtle color to `c` scaled by `s`. Usage: see patch.scaleColor
   scaleColor: (c, s) ->
-    u.deprecated "Agent.scaleColor: use ColorMaps ramps or closestColor"
+    u.deprecated "Turtle.scaleColor: use ColorMaps ramps or closestColor"
     @color = ColorMaps.scaleColor(c, s)
     # @color = u.clone @color unless @hasOwnProperty "color" # promote color to inst var
     # u.scaleColor c, s, @color
 
   scaleOpacity: (c, s) ->
-    u.deprecated "Agent.scaleOpacity: use ColorMaps ramps"
+    u.deprecated "Turtle.scaleOpacity: use ColorMaps ramps"
     @color = u.scaleOpacity c, s, @color
     # @color = u.clone @color unless @hasOwnProperty "color"
     # u.scaleOpacity c, s, @color
 
-  # Return a string representation of the agent.
+  # Return a string representation of the turtle.
   toString: -> "{id:#{@id} xy:#{u.aToFixed [@x,@y]} c:#{@color.css} h: #{h=@heading.toFixed 2}/#{Math.round(u.radToDeg(h))}}"
 
-  # Place the agent at the given x,y (floats) in patch coords
+  # Place the turtle at the given x,y (floats) in patch coords
   # using patch topology (isTorus)
   setXY: (x, y) -> # REMIND GC problem, 2 arrays
     [x0, y0] = [@x, @y] if @penDown
     [@x, @y] = @model.patches.coord x, y
     p = @p
     @p = @model.patches.patch @x, @y
-    if p.agents? and p isnt @p # @model.patches.cacheAgentsHere
-      u.removeItem p.agents, @
-      @p.agents.push @
+    if p.turtles? and p isnt @p # @model.patches.cacheTurtlesHere
+      u.removeItem p.turtles, @
+      @p.turtles.push @
     if @penDown
       drawing = @model.drawing
       drawing.strokeStyle = @color.css # u.colorStr @color
@@ -86,7 +86,7 @@ class Agent
       drawing.moveTo x0, y0; drawing.lineTo x, y # REMIND: euclidean
       drawing.stroke()
 
-  # Place the agent at the given patch/agent location
+  # Place the turtle at the given patch/turtle location
   moveTo: (a) -> @setXY a.x, a.y
 
   # Move forward (along heading) d units (patch coords),
@@ -100,7 +100,7 @@ class Agent
   right: (rad) -> @rotate -rad
   left: (rad) -> @rotate rad
 
-  # Draw the agent, instanciating a sprite if required
+  # Draw the turtle, instanciating a sprite if required
   draw: (ctx) ->
     shape = Shapes[@shape]
     rad = if shape.rotate then @heading else 0 # radians
@@ -114,7 +114,7 @@ class Agent
       u.ctxDrawText ctx, @label,
         x+@labelOffset[0], y+@labelOffset[1], @labelColor
 
-  # Set an individual agent's sprite, synching its color, shape, size
+  # Set an individual turtle's sprite, synching its color, shape, size
   setSprite: (sprite)->
     if (s=sprite)?
       @sprite = s; @color = s.color; @strokeColor = s.strokeColor
@@ -124,7 +124,7 @@ class Agent
       @sprite = Shapes.shapeToSprite @shape, @color,
         @model.patches.toBits(@size), @strokeColor
 
-  # Draw the agent on the drawing layer, leaving permanent image.
+  # Draw the turtle on the drawing layer, leaving permanent image.
   stamp: -> @draw @model.drawing
 
   # Return distance in patch coords from me to x,y
@@ -134,22 +134,22 @@ class Agent
     then u.torusDistance @x, @y, x, y, @model.patches.numX, @model.patches.numY
     else u.distance @x, @y, x, y
 
-  # Return distance in patch coords from me to given agent/patch using patch topology.
-  distance: (o) -> # o any object w/ x,y, patch or agent
+  # Return distance in patch coords from me to given turtle/patch using patch topology.
+  distance: (o) -> # o any object w/ x,y, patch or turtle
     @distanceXY o.x, o.y
 
   # Return the closest torus topology point of given x,y relative to myself.
-  # Used internally to determine how to draw links between two agents.
+  # Used internally to determine how to draw links between two turtles.
   # See util.torusPt.
   torusPtXY: (x, y) ->
     u.torusPt @x, @y, x, y, @model.patches.numX, @model.patches.numY
 
-  # Return the closest torus topology point of given agent/patch
+  # Return the closest torus topology point of given turtle/patch
   # relative to myself. See util.torusPt.
   torusPt: (o) ->
     @torusPtXY o.x, o.y
 
-  # Set my heading towards given agent/patch using patch topology.
+  # Set my heading towards given turtle/patch using patch topology.
   face: (o) -> @heading = @towards o
 
   # Return heading towards x,y using patch topology.
@@ -158,7 +158,7 @@ class Agent
     then u.torusRadsToward @x, @y, x, y, ps.numX, ps.numY
     else u.radsToward @x, @y, x, y
 
-  # Return heading towards given agent/patch using patch topology.
+  # Return heading towards given turtle/patch using patch topology.
   towards: (o) -> @towardsXY o.x, o.y
 
   # Return patch ahead of me by given distance and heading.
@@ -175,23 +175,23 @@ class Agent
     x=@x+dx; y=@y+dy
     if (ps=@model.patches).isOnWorld x,y then ps.patch x,y else null
 
-  # Remove myself from the model.  Includes removing myself from the agents
-  # agentset and removing any links I may have.
+  # Remove myself from the model.  Includes removing myself from my
+  # agentset(s) and removing any links I may have.
   die: ->
     @breed.remove @
     l.die() for l in @myLinks() by -1
-    u.removeItem @p.agents, @ if @p.agents?
+    u.removeItem @p.turtles, @ if @p.turtles?
     null
 
-  # Factory: create num new agents at this agents location. The optional init
-  # proc is called on the new agent after inserting in its agentSet.
+  # Factory: create num new turtles at this turtle's location. The optional init
+  # proc is called on the new turtle after inserting in its agentSet.
   hatch: (num = 1, breed = @breed, init = ->) ->
-    breed.create num, (a) => # fat arrow so that @ = this agent
-      a.setXY @x, @y # for side effects like patches.agentsHere
+    breed.create num, (a) => # fat arrow so that @ = this turtle
+      a.setXY @x, @y # for side effects like patches.turtlesHere
       a.color = @color
-      a[k] = @[k] for k in breed.ownVariables when a[k] is null # hatched agent inherits parents' breed properties
+      a[k] = @[k] for k in breed.ownVariables when a[k] is null # hatched turtle inherits parents' breed properties
       # possible alternative: a[k] = @[k] for k, v in a when v is null
-      init(a); a # Important: init called after object inserted in agent set
+      init(a); a # Important: init called after object inserted in agentset
 
   # Return the members of the given agentset that are within radius distance
   # from me, using patch topology
@@ -203,7 +203,7 @@ class Agent
   inCone: (aset, distance, angle) ->
     aset.inCone @, distance, angle, @heading
 
-  # Return true if world coordinate falls on agent sprite
+  # Return true if world coordinate falls on turtle sprite
   hitTest: (x, y) ->
     @distanceXY(x, y) < @size
 
@@ -214,8 +214,8 @@ class Agent
   myLinks: ->
     @links ? (l for l in @model.links when (l.end1 is @) or (l.end2 is @))
 
-  # Return all agents linked to me.
-  linkNeighbors: -> # return all agents linked to me
+  # Return all agents linked to me
+  linkNeighbors: ->
     @otherEnd l for l in @myLinks()
 
   # Return links where I am the "to" agent in links.create
@@ -235,6 +235,6 @@ class Agent
     l.end2 for l in @myLinks() when l.end1 is @
 
 # use colorMixin to setup colors
-colorMixin(Agent, "color", null)
-colorMixin(Agent, "strokeColor", null)
-colorMixin(Agent, "labelColor", "black")
+colorMixin(Turtle, "color", null)
+colorMixin(Turtle, "strokeColor", null)
+colorMixin(Turtle, "labelColor", "black")

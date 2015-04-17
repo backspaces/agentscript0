@@ -15,12 +15,12 @@
 
     class MyModel extends ABM.Model
       setup: -> # called by Model constructor
-        @refreshPatches = @refreshAgents = false
+        @refreshPatches = @refreshTurtles = false
         @mouse = new ABM.Mouse @, => @once()
         
-        @agents.setDefault "shape", "circle"; @agents.setDefault "size", .5
+        @turtles.setDefault "shape", "circle"; @turtles.setDefault "size", .5
         p.sprout 1 for p in @patches.nOf 20
-        @links.create a, @agents.other(a).oneOf() for a in @agents
+        @links.create a, @turtles.other(a).oneOf() for a in @turtles
 
       step: ->
         for l in @links

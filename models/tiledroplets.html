@@ -67,16 +67,16 @@
                 this.vision = 1; // try range in 1-5 or so
                 this.speed = .25;
 
-                this.agents.setDefault("shape", "square");
-                this.agents.setDefault("size", .5);
-                this.agents.setDefault("color", [60, 157, 255]);
+                this.turtles.setDefault("shape", "square");
+                this.turtles.setDefault("size", .5);
+                this.turtles.setDefault("color", [60, 157, 255]);
                 this.patches.cacheRect(this.vision, false);
 
                 new ABM.Mouse(this);
 
                 this.patches.on ('mousemove', function(mouseEvent) {
-                    agent = mouseEvent.target;
-                    var pats = this.patches.patchRect(agent, 7, 7);
+                    turtle = mouseEvent.target;
+                    var pats = this.patches.patchRect(turtle, 7, 7);
                     pats.forEach(function(patch) {
                         patch.sprout(1);
                     });
@@ -85,7 +85,7 @@
 
             ABM.Model.prototype.rain = function() {
                 var density = 0.3;
-                this.agents.clear();
+                this.turtles.clear();
                 this.patches.forEach(function(p) {
                     if (Math.random() < density) {
                         p.sprout(1);
@@ -96,7 +96,7 @@
             ABM.Model.prototype.step = function() {
                 var moved = 0;
 
-                this.agents.forEach(function(a) {
+                this.turtles.forEach(function(a) {
                     var n = a.p.pRect;
                     n = n.minOneOf("elevation");
                     if (a.p.elevation > n.elevation) {

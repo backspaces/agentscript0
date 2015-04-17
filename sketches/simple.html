@@ -11,12 +11,12 @@
         # @refreshPatches = false
         @population = 200
         @patches.usePixels()
-        @patches.cacheAgentsHere()
+        @patches.cacheTurtlesHere()
 
 
         @anim.setRate 20, true
-        @agents.create @population
-        for a in @agents
+        @turtles.create @population
+        for a in @turtles
           a.size = 1
           # a.shape = u.oneOf ABM.shapes.names()
         for p in @patches
@@ -24,7 +24,7 @@
           p.color = "red" if p.x is 0
           p.color = "green" if p.y is 0
       step: ->
-        for a in @agents
+        for a in @turtles
           a.rotate u.randomCentered(u.degToRad(40))
           a.forward 1
         # console.log @anim.toString() if @anim.ticks % 100 is 0

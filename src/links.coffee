@@ -32,10 +32,10 @@ class Links extends AgentSet
   nodes: -> # allEnds without dups
     @allEnds().sortById().uniq()
 
-  # Circle Layout: position the agents in the list in an equally
-  # spaced circle of the given radius, with the initial agent
+  # Circle Layout: position the turtles in the list in an equally
+  # spaced circle of the given radius, with the initial turtle
   # at the given start angle (default to pi/2 or "up") and in the
-  # +1 or -1 direction (counder clockwise or clockwise)
+  # +1 or -1 direction (counter clockwise or clockwise)
   # defaulting to -1 (clockwise).
   layoutCircle: (list, radius, startAngle = Math.PI/2, direction = -1) ->
     dTheta = 2*Math.PI/list.length

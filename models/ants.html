@@ -13,13 +13,13 @@
 
         # No optimizations: 10fps
         @patches.usePixels() # 24fps
-        # @patches.cacheAgentsHere() # 9-10fps, not needed & modest overhead
+        # @patches.cacheTurtlesHere() # 9-10fps, not needed & modest overhead
         # two: 27fps, now static colors larger percent of faster patches.
 
-        # Deprecated: @agents.setUseSprites() # 24->46-48fps!
-        @agents.setDefault "useSprites", true
+        # Deprecated: @turtles.setUseSprites() # 24->46-48fps!
+        @turtles.setDefault "useSprites", true
 
-        # @anim.setRate 25, true # normal: let agents step faster than drawing
+        # @anim.setRate 25, true # normal: let turtles step faster than drawing
         @anim.setRate 60, false # speed test
 
         # globals
@@ -32,10 +32,10 @@
 
 
         # defaults
-        @agents.setDefault "shape", "bug"
-        @agents.setDefault "color", @foodColor # so default sprite not random color
+        @turtles.setDefault "shape", "bug"
+        @turtles.setDefault "color", @foodColor # so default sprite not random color
         # bugSize = 3
-        @agents.setDefault "size", 3 # bugSize
+        @turtles.setDefault "size", 3 # bugSize
 
         # UI globals:
         @population = 255
@@ -44,48 +44,48 @@
         @evaporationRate = .01
         @wiggleAngle = u.degToRad(30) # radians
 
-        if @agents.getDefault "useSprites"
-          bitSize = @patches.toBits @agents.getDefault("size") #bugSize
+        if @turtles.getDefault "useSprites"
+          bitSize = @patches.toBits @turtles.getDefault("size") #bugSize
           @nestSprite = Shapes.shapeToSprite "bug", @nestColor, bitSize, "red"
           @foodSprite = Shapes.shapeToSprite "bug", @foodColor, bitSize, "blue"
 
         @setupPatches()
-        @setupAgents()
+        @setupTurtles()
       step: ->
         # console.log @anim.toString() if @anim.ticks % 100 is 0
         # Show the sprite sheet if there is one after first draw
         @showSpriteSheet() if @anim.draws is 2
-        @updateAgents()
+        @updateTurtles()
         @updatePatches()
 
       setupPatches: ->
         for p in @patches
           p.isNest = false ; p.isFood = false
-          # REMIND: agentsOwn etc; NL defaults to 0
+          # REMIND: turtlesOwn etc; NL defaults to 0
           p.foodPheromone = 0; p.nestPheromone = 0
         for p in @patchRect(@patches.maxX-6, 0, 3, 3)
           p.isNest=true; p.color=@nestColor
         for p in @patchRect(@patches.minX+6, 0, 3, 3)
           p.isFood=true; p.color=@foodColor
         null
-      setupAgents: -> # a is agent
-        @agents.create @population, (a) => # fat arrow for @patches etc
+      setupTurtles: -> # a is turtle
+        @turtles.create @population, (a) => # fat arrow for @patches etc
           #a.shape = "bug"
           #a.size = 3
           a.setXY @patches.maxX-6, 0
-          @resetAgent(a, false) # sets a.pheromone to max
-      resetAgent: (a, withFood) ->
+          @resetTurtle(a, false) # sets a.pheromone to max
+      resetTurtle: (a, withFood) ->
         a.carryingFood = withFood
         if a.sprite?
           a.sprite = if withFood then @nestSprite else @foodSprite
           # a.setSprite (if withFood then @nestSprite else @foodSprite)
         else
           a.color = if withFood then @nestColor else @foodColor
-          # a.colorStr = u.colorStr a.color if @agents.staticColors
+          # a.colorStr = u.colorStr a.color if @turtles.staticColors
         a.pheromone = @maxPheromone
 
-      updateAgents: ->
-        for a in @agents when a.id < @anim.ticks # gradually leave nest
+      updateTurtles: ->
+        for a in @turtles when a.id < @anim.ticks # gradually leave nest
           @wiggleUphill a
           @dropPheromone a
         null # needed to avoid returning an absurd comprehension
@@ -109,7 +109,7 @@
         if a.carryingFood then p.nestPheromone else p.foodPheromone
       dropPheromone: (a) ->
         if (not a.carryingFood and a.p.isFood) or (a.carryingFood and a.p.isNest)
-          @resetAgent a, not a.carryingFood
+          @resetTurtle a, not a.carryingFood
         if a.carryingFood
         then a.p.foodPheromone += 0.1*a.pheromone
         else a.p.nestPheromone += 0.1*a.pheromone

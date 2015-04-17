@@ -251,7 +251,7 @@ ColorMaps  = {
       map = map.concat ramps[name]
     map = @basicColorMap map
     map[k] = v for k, v of ramps
-    # Hack: will remove; helps migration of agent/patch.scaleColor
+    # Hack: will remove; helps migration of turtle/patch.scaleColor
     map[Color.convertColor k, "css"] = v for k, v of ramps
     map
 
@@ -304,7 +304,7 @@ ColorMaps  = {
   randomGray: (min, max) -> @Gray.randomColor(min, max)
   randomColor: () -> @Rgb256.randomColor()
 
-  # Legacy/Temporary: replace util/patch/agent scaleColor
+  # Legacy/Temporary: replace util/patch/turtle scaleColor
   scaleColor: (color, number, min=0, max=1) ->
     if color.scaleColor? # colormap ramp
       return color.scaleColor number, min, max

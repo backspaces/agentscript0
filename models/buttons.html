@@ -16,13 +16,13 @@
         @cluster = 0
 
         # defaults
-        @agents.setDefault "shape", "circle"
-        @agents.setDefault "size", 1.5
-        @agents.setDefault "heading", 0 # override promotion to random angle
+        @turtles.setDefault "shape", "circle"
+        @turtles.setDefault "size", 1.5
+        @turtles.setDefault "heading", 0 # override promotion to random angle
         @links.setDefault "thickness", .5 # 2.5
 
 
-        @agents.create @buttons, (a) => # fat arrow for @patches etc
+        @turtles.create @buttons, (a) => # fat arrow for @patches etc
           # a.size = 1.5
           # a.shape = "circle"
           a.setXY @patches.randomPt()...
@@ -30,8 +30,8 @@
       step: ->
         # console.log @anim.toString() if @anim.ticks % 100 is 0
 
-        b1 = @agents.oneOf()
-        b2 = @agents.other(b1).oneOf()
+        b1 = @turtles.oneOf()
+        b2 = @turtles.other(b1).oneOf()
 
         @links.create b1, b2, (l) =>
           l.draw @contexts.links
@@ -48,9 +48,9 @@
           @stop()
 
       graphOf: (node) ->
-        a.marked = false for a in @agents
+        a.marked = false for a in @turtles
         @markNeighbors node
-        a for a in @agents when a.marked
+        a for a in @turtles when a.marked
       markNeighbors: (node) ->
         node.marked = true
         unMarked = (n for n in node.linkNeighbors() when not n.marked)

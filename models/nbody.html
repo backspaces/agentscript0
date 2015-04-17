@@ -15,16 +15,16 @@
         @sun = true
         @v0max = 1
         @gravExp = -2
-        # use maxX/Ycor: agent coords extend to +/-.5 further than maxX/Y.
+        # use maxX/Ycor: turtle coords extend to +/-.5 further than maxX/Y.
         @maxDistanceFromSun = Math.sqrt(Math.pow(@world.maxYcor,2)+Math.pow(@world.maxXcor,2))
 
         # defaults
-        @agents.setDefault "shape", "circle"
-        @agents.setDefault "heading", 0 # override promotion to random angle
+        @turtles.setDefault "shape", "circle"
+        @turtles.setDefault "heading", 0 # override promotion to random angle
 
         # window.foo = @patches.nOf(@population)
         for p in @patches.nOf(@population)
-          p.sprout 1, @agents, (a) =>
+          p.sprout 1, @turtles, (a) =>
             if @sun and a.id is 0
               a.mass = 10000; a.setXY 0,0; a.vx = a.vy = 0
             else
@@ -34,16 +34,16 @@
               # a.penDown = true
             a.size = 3 * u.log10(a.mass)
 
-        # @agents.setDefaultPen(1, true)
-        @agents.setDefault "penSize", 1 #Pen(1, true)
-        @agents.setDefault "penDown", true #Pen(1, true)
+        # @turtles.setDefaultPen(1, true)
+        @turtles.setDefault "penSize", 1 #Pen(1, true)
+        @turtles.setDefault "penDown", true #Pen(1, true)
       step: ->
         # console.log @anim.toString() if @anim.ticks % 100 is 0
-        for a in @agents
-          for a1 in @agents.other(a)
+        for a in @turtles
+          for a1 in @turtles.other(a)
             k = Math.pow(10, @gravExp)*a1.mass/Math.max(Math.pow(a.distance(a1),3), .000001)
             a.vx += (a1.x-a.x)*k; a.vy += (a1.y-a.y)*k
-        for a in @agents when not (@sun? and a.id is 0)
+        for a in @turtles when not (@sun? and a.id is 0)
           # unless (@sun and a.id is 0)
           # scale opacity by distance to center
           opacityScale = (1-a.distance(@patches.patch(0,0))/@maxDistanceFromSun)

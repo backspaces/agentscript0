@@ -16,7 +16,7 @@
 # * Make sure you are alwas on a patch center
 #
 # Similarly for left-hand wall followers w/ obvious changes, managed
-# by a +/-1 direction agent variable.
+# by a +/-1 direction turtle variable.
 
 u = ABM.Util # static variables
 Color = ABM.Color
@@ -25,11 +25,11 @@ class MyModel extends ABM.Model
   startup: ->
   setup: ->
     @refreshPatches = false
-    @agents.setDefault "size", 2
-    @agents.setDefault "penSize", 2
+    @turtles.setDefault "size", 2
+    @turtles.setDefault "penSize", 2
 
     # direction: +1 follow right hand wall, -1 left hand
-    @agents.own "direction"
+    @turtles.own "direction"
 
     # Old: Four shared colors, so @acolor === @bcolor works
     @black = @patches[0].color # patch default
@@ -41,7 +41,7 @@ class MyModel extends ABM.Model
     @blue = [0, 0, 255]
     @population = 40
 
-    # Make some random walls for the agents to follow
+    # Make some random walls for the turtles to follow
     p.color = @brown for p in @patches when u.randomFloat(1) < 0.04
     # Old Color model
     #for p in (p for p in @patches when p.color is @brown)
@@ -50,9 +50,9 @@ class MyModel extends ABM.Model
     p.color = @brown for p in @patches when \
       (n for n in p.n4 when n.color is @brown).length is 4
 
-    # Make some agents. "sprout" puts them on patch center.
+    # Make some turtles. "sprout" puts them on patch center.
     for p in u.nOf (p for p in @patches when p.color is @black), @population
-      p.sprout 1, @agents, (a) => # fat arrow, this name space
+      p.sprout 1, @turtles, (a) => # fat arrow, this name space
         a.penDown = true
         if (p for p in a.p.n4 when p.color is @brown).length is 4
           a.die()
@@ -62,31 +62,31 @@ class MyModel extends ABM.Model
             a.direction = 1; a.color = @blue
           else
             a.direction = -1; a.color = @green
-    console.log "patches: #{@patches.length} agents: #{@agents.length}"
+    console.log "patches: #{@patches.length} turtles: #{@turtles.length}"
 
   step: ->
-    @walk a for a in @agents
+    @walk a for a in @turtles
     # console.log @anim.toString() if @anim.ticks % 100 is 0
 
-  walk: (agent) ->
-    direction = agent.direction
+  walk: (turtle) ->
+    direction = turtle.direction
     # Turn right if right/left is black and trailing patch is brown.
     # Keeps me on the wall when drifting off
-    if (not @wall(agent, 90*direction)) and @wall(agent, 135*direction)
-      agent.right u.degToRad(90 * direction)
+    if (not @wall(turtle, 90*direction)) and @wall(turtle, 135*direction)
+      turtle.right u.degToRad(90 * direction)
 
     # Turn left/right if wall is ahead
-    while @wall(agent, 0)
-      agent.left u.degToRad (90 * direction)
+    while @wall(turtle, 0)
+      turtle.left u.degToRad (90 * direction)
     # After all that, move forward, still on patch centers.
-    agent.forward 1
+    turtle.forward 1
 
-  wall: (agent, angle) ->
+  wall: (turtle, angle) ->
     # Note that angle may be positive or negative.  if angle is
-    # positive, the agent looks right, if negative, left.
+    # positive, the turtle looks right, if negative, left.
     # Return true if wall is ahead.
     angle = u.degToRad angle
-    p=agent.patchRightAndAhead(angle, 1)
+    p=turtle.patchRightAndAhead(angle, 1)
     # Old color model:
     # p.color is @brown
     Color.colorsEqual p.color, @brown
