@@ -8,7 +8,7 @@
     u = ABM.Util # ABM.Util alias
     class MyModel extends ABM.Model
       setup: ->
-        @refreshAgents = false # for static agents
+        @refreshTurtles = false # for static turtles
         
         # globals
         @prob = 1
@@ -20,11 +20,11 @@
         @patches.setDefault "labelOffset", [offset, offset]
         u.ctxTextParams @contexts.patches, "10px sans-serif", "right", "bottom"
         # u.elementTextParams @contexts.patches, "10px sans-serif", "right", "bottom"
-        @agents.setDefault "shape", "circle"
-        @agents.setDefault "color", ([210,0,0])
-        @agents.setDefault "size", .4
-        @agents.setDefault "hidden", 2.5
-        @agents.setDefault "heading",  0 # override promotion to random angle
+        @turtles.setDefault "shape", "circle"
+        @turtles.setDefault "color", ([210,0,0])
+        @turtles.setDefault "size", .4
+        @turtles.setDefault "hidden", 2.5
+        @turtles.setDefault "heading",  0 # override promotion to random angle
 
         @anim.setRate 10
 
@@ -32,7 +32,7 @@
           p.color = u.randomGray 160, 190
           p.occupied = false
         @drawGrid [0,0,0]
-        @walker = @agents.create(1)[0]
+        @walker = @turtles.create(1)[0]
         p0 = @patches[0]
         @walker.setXY p0.x, p0.y
         @walker.penDown = true
@@ -61,7 +61,7 @@
       done: -> @patches.last().occupied
       
       drawGrid: (c) ->
-        a = @agents.create(1)[0]
+        a = @turtles.create(1)[0]
         a.color = c 
         a.penSize *= .4
         a.heading = Math.PI/2

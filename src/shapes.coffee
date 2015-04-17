@@ -29,7 +29,7 @@ shapes = Shapes = do ->
   #      "square", "pentagon", "ring", "filledRing", "person"]
 
   # A polygon utility: c is the 2D context, and a is an array of 2D points.
-  # c.closePath() and c.fill() will be called by the calling agent, see initial
+  # c.closePath() and c.fill() will be called by the calling turtle, see initial
   # discription of drawing context.  It is used in adding a new shape above.
   poly = (c, a) ->
     for p, i in a
@@ -147,7 +147,7 @@ shapes = Shapes = do ->
         ctx.fill()
       ctx.restore()
     shape
-  # Draw a sprite, called by agents. The world transform is in effect.
+  # Draw a sprite, called by turtles. The world transform is in effect.
   # see [this post](http://goo.gl/VUlhY) for drawing centered rotated images
   # The sprite (s) properties are in pixels, x,y,size in world coordinates.
   drawSprite: (ctx, s, x, y, size, rad) ->

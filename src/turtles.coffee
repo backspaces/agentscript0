@@ -1,44 +1,44 @@
-# ### Agents
+# ### Turtles
 
-# Class Agents is a subclass of AgentSet which stores instances of Agent or
-# Breeds, which are subclasses of Agent
-class Agents extends AgentSet
+# Class Turtles is a subclass of AgentSet which stores instances of Turtle or
+# Breeds, which are subclasses of Turtle
+class Turtles extends AgentSet
   # Constructor creates the empty AgentSet instance and installs
-  # the agentClass (breed) variable shared by all the Agents in this set.
+  # the agentClass (breed) variable shared by all the turtles in this set.
   constructor: -> # model, agentClass, name, mainSet
     super # call super with all the args I was called with
     #@useSprites = false
 
-  # Have agents cache the links with them as a node.
-  # Optimizes Agent a.myLinks method. Call before any agents created.
-  cacheLinks: -> @agentClass::cacheLinks = true # all agents, not individual breeds
+  # Have turtles cache the links with them as a node.
+  # Optimizes Turtle a.myLinks method. Call before any turtles created.
+  cacheLinks: -> @agentClass::cacheLinks = true # all turtles, not individual breeds
 
   # Use sprites rather than drawing
   setUseSprites: (useSprites=true) ->
-    u.deprecated 'Agents.setUseSprites: use agents.setDefault("useSprites",bool)'
+    u.deprecated 'Turtles.setUseSprites: use turtles.setDefault("useSprites",bool)'
     @setDefault("useSprites", useSprites)
 
-  # Factory: create num new agents stored in this agentset.The optional init
-  # proc is called on the new agent after inserting in its agentSet.
-  create: (num, init = ->) -> # returns array of new agents too
+  # Factory: create num new turtles stored in this agentset. The optional init
+  # function is called on the new turtle after inserting in its agentset.
+  create: (num, init = ->) -> # returns array of new turtles too
     ((o) -> init(o); o) @add new @agentClass for i in [1..num] by 1 # too tricky?
 
-  # Remove all agents from set via agent.die()
+  # Remove all turtles from set via turtle.die()
   # Note call in reverse order to optimize list restructuring.
   clear: -> @last().die() while @any(); null # tricky, each die modifies list
 
   # Filter to return all instances of this breed.  Note: if used by
-  # the mainSet, returns just the agents that are not subclassed breeds.
+  # the mainSet, returns just the turtles that are not subclassed breeds.
   breedsIn: (array) -> @asSet (o for o in array when o.breed is @)
 
   # Return an agentset of this breed within the patch array
   inPatches: (patches) ->
     array = []
-    array.push p.agentsHere()... for p in patches # concat measured slower
+    array.push p.turtlesHere()... for p in patches # concat measured slower
     # Possibly faster to filter by breed in p.breedsHere?
     if @mainSet? then @breedsIn array else @asSet array
 
-  # Return an agentset of agents/breeds within the patchRect
+  # Return an agentset of turtles/breeds within the patchRect
   inRect: (p, dx, dy=dx) ->
     rect = @model.patches.patchRect p, dx, dy #, true
     @inPatches rect

@@ -8,9 +8,9 @@ class MyModel extends ABM.Model
   u = ABM.util # static variables
   ColorMaps = ABM.ColorMaps
   setup: ->
-    @agents.own("coneColor")
-    # little difference even tho ps/pRect=3600/121! (all p.agents.length = 0/1)
-    @patches.cacheAgentsHere()
+    @turtles.own("coneColor")
+    # little difference even tho ps/pRect=3600/121! (all p.turtles.length = 0/1)
+    @patches.cacheTurtlesHere()
     # @patches.usePixels() #faster (7->11)
 
 
@@ -27,7 +27,7 @@ class MyModel extends ABM.Model
     # for p in @patches
     #   p.color = u.randomGray()
 
-    @agents.create @population, (a) => # fat arrow for @patches etc
+    @turtles.create @population, (a) => # fat arrow for @patches etc
       a.size = 2
       a.setXY @patches.randomPt()... # splat: pt to 2 args
       a.coneColor = ColorMaps.randomColor()
@@ -35,10 +35,10 @@ class MyModel extends ABM.Model
   step: -> # stop: just one tick
     # console.log @anim.toString() if @anim.ticks % 25 is 0
     p.color = [100,100,100] for p in @patches
-    for a in @agents
+    for a in @turtles
       # inRadius: (o, d, meToo=false)
-      # neighborhood = @agents.inRadius a, 25, false # exclude me
-      # neighborhood = @agents.inRadius a, 25, true # me too
+      # neighborhood = @turtles.inRadius a, 25, false # exclude me
+      # neighborhood = @turtles.inRadius a, 25, true # me too
       # neighborhood = @patches.inRadius a.p, 10, false # exclude me
       # neighborhood = @patches.inRadius a.p, 10, true # me too
       # neighborhood = @patches.inRadius a, 10 # includes my patch, can't exclude a from ps
@@ -49,7 +49,7 @@ class MyModel extends ABM.Model
       else neighborhood = a.inCone @patches, @radius, @angle
       neighborhood = neighborhood.other(a.p) if @useOther
       # neighborhood = @patches.patchCircle a.p, @radius, false # me too
-      # neighborhood = @agents.inCone a, a.heading, u.degToRad(30), 20, true # me too
+      # neighborhood = @turtles.inCone a, a.heading, u.degToRad(30), 20, true # me too
       # neighborhood = a.inCone a.p.n, u.degToRad(120), 2
       # neighborhood = a.inCone a.p.n, u.degToRad(180), 1
 

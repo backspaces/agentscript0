@@ -20,7 +20,7 @@
         @img = u.importImage "data/redfish512t.png"
       setup: -> # called by Model constructor and reset()
         @refreshPatches = false
-        @agents.create 25, (a)->a.size = 3
+        @turtles.create 25, (a)->a.size = 3
         # patches transparent except for red axes
         @patches.setDefault "color", [0,0,0,0]
         p.color = [255,0,0] for p in @patches when p.x is 0 or p.y is 0
@@ -30,7 +30,7 @@
         else
           @patches.installDrawing @img, @contexts.myCtx
       step: ->
-        for a in @agents
+        for a in @turtles
           a.rotate u.randomCentered(u.degToRad(40))
           a.forward 1
 

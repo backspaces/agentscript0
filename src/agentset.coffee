@@ -3,19 +3,19 @@
 # by the `create` factory method of an AgentSet.
 #
 # It is a subclass of `Array` and is the base class for
-# `Patches`, `Agents`, and `Links`. An AgentSet keeps track of all
+# `Patches`, `Turtles`, and `Links`. An AgentSet keeps track of all
 # its created instances.  It also provides, much like the **Util**
 # module, many methods shared by all subclasses of AgentSet.
 #
 # A model contains three agentsets:
 #
 # * `patches`: the model's "world" grid
-# * `agents`: the model's agents living on the patches
+# * `turtles`: the model's turtles living on the patches
 # * `links`: the network links connecting agent pairs
 #
 # See NetLogo [documentation](http://ccl.northwestern.edu/netlogo/docs/)
 # for explanation of the overall semantics of Agent Based Modeling
-# used by AgentSets as well as Patches, Agents, and Links.
+# used by AgentSets as well as Patches, Turtles, and Links.
 #
 # Note: subclassing `Array` can be dangerous and we may have to convert
 # to a different style. See Trevor Burnham's [comments](http://goo.gl/Lca8g)
@@ -31,7 +31,7 @@ class AgentSet extends Array
   # It is primarily used to turn a comprehension into an AgentSet instance
   # which then gains access to all the methods below.  Ex:
   #
-  #     evens = (a for a in @model.agents when a.id % 2 is 0)
+  #     evens = (a for a in @model.turtles when a.id % 2 is 0)
   #     ABM.AgentSet.asSet(evens)
   #     randomEven = evens.oneOf()
   @asSet: (a, setType = AgentSet) -> #(a, setType = ABM.AgentSet)
@@ -70,7 +70,7 @@ class AgentSet extends Array
   # the `id` property to all agents. Increment `ID`.
   # Returns the object for chaining. The set will be sorted by `id`.
   #
-  # By "agent" we mean an instance of `Patch`, `Agent` and `Link` and their breeds
+  # By "agent" we mean an instance of `Patch`, `Turtle` and `Link` and their breeds
   add: (o) ->
     if @mainSet? then @mainSet.add o else o.id = @ID++
     @push o; o
@@ -136,13 +136,13 @@ class AgentSet extends Array
   # Is the given array an agentset of the given type?
   # It does not use the prototype chain, so
   #
-  #     isSet(agents, "AgentSet")
+  #     isSet(turtles, "AgentSet")
   #
-  # is false. Current names: AgentSet, Agents, Patches, Links.
+  # is false. Current names: AgentSet, Turtles, Patches, Links.
   # Default name is "AgentSet", good test for derived sets using asSet()
   isSet: (name = "AgentSet") ->  @constructor.name is name
-  # Similar for above but includes breeds of Agents, Patches, Links too
-  # isBreed("Agents") returns true for an agent that isn't a breed
+  # Similar for above but includes breeds of Turtles, Patches, Links too
+  # isBreed("Turtles") returns true for an agent that isn't a breed
   isBreed: (name) ->
     # @isSet(name) or (@agentClass?.name is name)
     if @agentClass? then (@agentClass.name is name) else @isSet(name)
@@ -258,7 +258,7 @@ class AgentSet extends Array
 
 # ### Drawing
 
-  # For agentsets who's agents have a `draw` method.
+  # For agentsets whose agents have a `draw` method.
   # Clears the graphics context (transparent), then
   # calls each agent's draw(ctx) method.
   draw: (ctx) ->
@@ -271,7 +271,7 @@ class AgentSet extends Array
 
 # ### Topology
 
-  # For patches & agents, which have x,y. See Util doc.
+  # For patches & turtles, which have x,y. See Util doc.
   # Typically a subclass uses a rect/quadtree array to minimize
   # the size, then uses asSet(array) to call inRadius or inCone
   #
@@ -330,7 +330,7 @@ class AgentSet extends Array
   #     AS.with("o.x<5").ask("o.x=o.x+1")
   #     AS.getProp("x") # [2, 8, 6, 3, 3]
   #
-  #     myModel.agents.with("o.id<100").ask("o.color=[255,0,0]")
+  #     myModel.turtles.with("o.id<100").ask("o.color=[255,0,0]")
   ask: (f) ->
     eval("f=function(o){return "+f+";}") if u.isString f
     f(o) for o in @; @

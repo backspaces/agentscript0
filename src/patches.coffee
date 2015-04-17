@@ -32,10 +32,10 @@ class Patches extends AgentSet
     @setNeighbors() if @hasNeighbors
     @setPixels() if @model.div? # setup off-page canvas for pixel ops
 
-  # Have patches cache the agents currently on them.
-  # Optimizes p.agentsHere method.
-  # Call before first agent is created.
-  cacheAgentsHere: -> p.agents = [] for p in @; null
+  # Have patches cache the turtles currently on them.
+  # Optimizes p.turtlesHere method.
+  # Call before first turtle is created.
+  cacheTurtlesHere: -> p.turtles = [] for p in @; null
 
   # Draw patches using scaled image of colors. Note anti-aliasing may occur
   # if browser does not support smoothing flags.
@@ -165,22 +165,22 @@ class Patches extends AgentSet
           pnext = @patchXY x, y # much faster than coord()
           rect.push pnext if (meToo or p isnt pnext)
     @asSet rect
-  # Return all the agents contained in the patchRect.
-  agentsOnRect: (p, dx, dy=dx) ->
-    @agentsOnPatches @patchRect(p, dx, dy, true)
-  agentsOnPatches: (patches) ->
+  # Return all the turtles contained in the patchRect.
+  turtlesOnRect: (p, dx, dy=dx) ->
+    @turtlesOnPatches @patchRect(p, dx, dy, true)
+  turtlesOnPatches: (patches) ->
     array = []
     if patches.length isnt 0
-      u.error "agentsInPatches: no cached agents." if not patches[0].agents?
+      u.error "agentsInPatches: no cached turtles." if not patches[0].turtles?
       # Use push.apply, not concat, see:
       # [jsPerf](http://jsperf.com/apply-push-vs-concat-array)
-      Array.prototype.push.apply(array, p.agents) for p in patches
+      Array.prototype.push.apply(array, p.turtles) for p in patches
     @asSet array
-  # Return all the unique patches the agentset or agent is on.
+  # Return all the unique patches the agentset or turtle is on.
   patchesOf: (aset) ->
     return @asSet([aset.p ? aset]) unless aset.length?
     @asSet( ((a.p ? a) for a in aset) ).sortById().uniq()
-  agentsOf: (aset) -> @agentsOnPatches(@patchesOf(aset))
+  turtlesOf: (aset) -> @turtlesOnPatches(@patchesOf(aset))
 
   # Draws, or "imports" an image URL into the drawing layer.
   # The image is scaled to fit the drawing layer.

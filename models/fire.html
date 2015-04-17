@@ -9,14 +9,14 @@
     class MyModel extends ABM.Model
       setup: ->
         @agentBreeds "embers fires"
-        @agents.setDefault "shape", "square"
-        @agents.setDefault "color", [255,0,0]
-        @agents.setDefault "heading", 0 # override promotion to random angle
+        @turtles.setDefault "shape", "square"
+        @turtles.setDefault "color", [255,0,0]
+        @turtles.setDefault "heading", 0 # override promotion to random angle
 
         @refreshPatches = false # <1fps->50-55fps, no surprise, app optimized for this
         # No optimizations: 50-55fps
         # @patches.usePixels() # 50-55fps .. not used, refresh off
-        # @patches.cacheAgentsHere() # 50-55fps, not needed * overhead
+        # @patches.cacheTurtlesHere() # 50-55fps, not needed * overhead
         # None of the optimizations particularly useful, other than refresh
         # If refresh on, fastPatches is in the 50+fps range.
 
@@ -34,12 +34,12 @@
           p.color = [0, 255, 0] # override default, set per patch color
         @ignite p for p in @patches when p.x is @patches.minX
         @initialTrees = (p for p in @patches when u.colorsEqual p.color, [0, 255, 0]).length
-        console.log "patches: #{@patches.length}, agents #{@agents.length}"
+        console.log "patches: #{@patches.length}, turtles #{@turtles.length}"
         console.log "initialTrees: #{@initialTrees}, burnedTrees #{@burnedTrees}"
         @burnedTrees = 0 # reset from initial ignites
         # console.log "embers: ", @embers; window.embers = @embers
         # console.log "fires: ", @fires; window.fires = @fires
-        # console.log "agents:", @agents
+        # console.log "turtles:", @turtles
       ignite: (p) ->
         p.sprout 1, @fires, (a) ->
           #a.breed = "fires"
@@ -55,7 +55,7 @@
             a.die()
       step: ->
         # console.log @anim.toString() if @anim.ticks % 100 is 0
-        unless @agents.any()
+        unless @turtles.any()
           console.log "..stopping, fire done at tick: #{@anim.ticks}"
           @stop()
         for a in @fires by -1 # -1: allow setBreed() in loop

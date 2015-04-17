@@ -34,9 +34,9 @@
         @useAspect = true # model uses aspect/slope or elevation.
         @lastMoved = @patches.length
 
-        @agents.setDefault "shape", "square"
-        @agents.setDefault "size", .5
-        @agents.setDefault "color", [100,100,150]
+        @turtles.setDefault "shape", "square"
+        @turtles.setDefault "size", .5
+        @turtles.setDefault "color", [100,100,150]
         @patches.cacheRect @vision, false # cache inRadius @vision
 
         # Install startup globals into patches/drawing
@@ -51,12 +51,12 @@
         @aspect.toPatchVar("aspect")
 
         p.sprout 1 for p in @patches
-        console.log "patches: #{@patches.length}, agents: #{@agents.length}"
+        console.log "patches: #{@patches.length}, turtles: #{@turtles.length}"
 
 
       step: ->
         moved = 0
-        for a in @agents
+        for a in @turtles
           n = if @useAspect then a.p.n else a.p.pRect
           n = n.minOneOf "elevation"
           if a.p.elevation > n.elevation #or a.p.slope < .0001

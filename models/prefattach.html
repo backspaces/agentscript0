@@ -16,20 +16,20 @@
         @stopTick = 400
         
         # defaults
-        @agents.setDefault "shape", "circle"
+        @turtles.setDefault "shape", "circle"
         @links.setDefault "thickness", .75 # Easier to see thiner link
         
-        @agents.create 1; @makeNode @agents[0]
+        @turtles.create 1; @makeNode @turtles[0]
       step: ->
         @makeNode @findPartner()
-        a.size = Math.sqrt a.linkNeighbors().length for a in @agents
-        @links.layoutCircle @agents, @patches.maxX * 0.9
-        @hist = u.histOf @agents, 1, (a) -> a.linkNeighbors().length
+        a.size = Math.sqrt a.linkNeighbors().length for a in @turtles
+        @links.layoutCircle @turtles, @patches.maxX * 0.9
+        @hist = u.histOf @turtles, 1, (a) -> a.linkNeighbors().length
         console.log "Tick: #{@anim.ticks} Histogram: [#{@hist}]" if @anim.ticks % 25 is 0
         (console.log "Stopping at stopTick: #{@anim.ticks}"; @stop()) if @anim.ticks is @stopTick
 
       makeNode: (toNode) ->
-        @agents.create 1, (a) =>
+        @turtles.create 1, (a) =>
           @links.create a, toNode
           a.moveTo toNode; a.forward 8
       findPartner: ->

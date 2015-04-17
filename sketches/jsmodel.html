@@ -12,23 +12,23 @@
       ABM.Model.prototype.setup = function () {
         console.log("setup");
         this.refreshPatches = this.refreshLinks = false;
-        this.agents.setUseSprites();
+        this.turtles.setUseSprites();
         this.population = 100;
         this.speed = .5;
         this.wiggle = u.degToRad(30);
         for (var i=0; i < this.patches.length; i++) {
           this.patches[i].color = u.randomGray();
         }
-        this.agents.create(this.population);
-        for (var i=0; i < this.agents.length; i++) {
+        this.turtles.create(this.population);
+        for (var i=0; i < this.turtles.length; i++) {
           var pt = this.patches.randomPt();
-          this.agents[i].setXY(pt[0],pt[1]);
+          this.turtles[i].setXY(pt[0],pt[1]);
         }
-        console.log("patches: " + this.patches.length + " agents: " + this.agents.length);
+        console.log("patches: " + this.patches.length + " turtles: " + this.turtles.length);
       };
       ABM.Model.prototype.step = function () {
-        for (var i=0; i < this.agents.length; i++) {
-          var a = this.agents[i];
+        for (var i=0; i < this.turtles.length; i++) {
+          var a = this.turtles[i];
           a.rotate(u.randomCentered(this.wiggle));
           a.forward(this.speed);
         }

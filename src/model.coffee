@@ -1,4 +1,4 @@
-# Class Model is the control center for our AgentSets: Patches, Agents and Links.
+# Class Model is the control center for our AgentSets: Patches, Turtles and Links.
 # Creating new models is done by subclassing class Model and overriding two
 # virtual/abstract methods: `setup()` and `step()`
 
@@ -14,7 +14,7 @@ class Model
     patches:   {z:10, ctx:"2d"}
     drawing:   {z:20, ctx:"2d"}
     links:     {z:30, ctx:"2d"}
-    agents:    {z:40, ctx:"2d"}
+    turtles:    {z:40, ctx:"2d"}
     spotlight: {z:50, ctx:"2d"}
   }
 
@@ -85,19 +85,19 @@ class Model
     # Set drawing controls.  Default to drawing each agentset.
     # Optimization: If any of these is set to false, the associated
     # agentset is drawn only once, remaining static after that.
-    @refreshLinks = @refreshAgents = @refreshPatches = true
+    @refreshLinks = @refreshTurtles = @refreshPatches = true
 
     # Create model-local versions of AgentSets and their
     # agent class.  Clone the agent classes so that they
     # can use "defaults" in isolation when multiple
     # models run on a page.
     @Patch = u.cloneClass(Patch)
-    @Agent = u.cloneClass(Agent)
+    @Turtle = u.cloneClass(Turtle)
     @Link = u.cloneClass(Link)
 
     # Initialize agentsets.
     @patches = new Patches @, @Patch, "patches"
-    @agents = new Agents @, @Agent, "agents"
+    @turtles = new Turtles @, @Turtle, "turtles"
     @links = new Links @, @Link, "links"
 
     # Initialize model global resources
@@ -130,7 +130,7 @@ class Model
 #### Optimizations:
 
   # Modelers "tune" their model by adjusting flags:<br>
-  # `@refreshLinks, @refreshAgents, @refreshPatches`<br>
+  # `@refreshLinks, @refreshTurtles, @refreshPatches`<br>
   # and by the following helper methods:
 
   # Draw patches using scaled image of colors. Note anti-aliasing may occur
@@ -141,13 +141,13 @@ class Model
   # Don't use if patch breeds have different colors.
   setMonochromePatches: -> @patches.monochrome = true
 
-  # Have patches cache the agents currently on them.
-  # Optimizes Patch p.agentsHere method
-  setCacheAgentsHere: -> @patches.cacheAgentsHere()
+  # Have patches cache the turtles currently on them.
+  # Optimizes Patch p.turtlesHere method
+  setCacheTurtlesHere: -> @patches.cacheTurtlesHere()
 
-  # Have agents cache the links with them as a node.
-  # Optimizes Agent a.myLinks method
-  setCacheMyLinks: -> @agents.cacheLinks()
+  # Have turtles cache the links with them as a node.
+  # Optimizes Turtle a.myLinks method
+  setCacheMyLinks: -> @turtles.cacheLinks()
 
 #### User Model Creation
 # A user's model is made by subclassing Model and over-riding these
@@ -181,8 +181,8 @@ class Model
     (v.restore(); @setCtxTransform v) for k,v of @contexts when v.canvas?
     console.log "reset: patches"
     @patches = new Patches @, @Patch, "patches"
-    console.log "reset: agents"
-    @agents = new Agents @, @Agent, "agents"
+    console.log "reset: turtles"
+    @turtles = new Turtles @, @Turtle, "turtles"
     console.log "reset: links"
     @links = new Links @, @Link, "links"
     Shapes.spriteSheets.length = 0 # possibly null out entries?
@@ -202,8 +202,8 @@ class Model
     if @div?
       @patches.draw @contexts.patches  if force or @refreshPatches
       @links.draw   @contexts.links    if force or @refreshLinks
-      @agents.draw  @contexts.agents   if force or @refreshAgents
-      @drawSpotlight @spotlightAgent, @contexts.spotlight if @spotlightAgent?
+      @turtles.draw  @contexts.turtles   if force or @refreshTurtles
+      @drawSpotlight @spotlightTurtle, @contexts.spotlight if @spotlightTurtle?
     @emit('draw')
 
 #### Wrappers around user-implemented methods
@@ -215,20 +215,20 @@ class Model
     @step()
     @emit('step')
 
-# Creates a spotlight effect on an agent, so we can follow it throughout the model.
+# Creates a spotlight effect on a turtle, so we can follow it throughout the model.
 # Use:
 #
-#     @setSpotliight breed.oneOf()
+#     @setSpotlight breed.oneOf()
 #
 # to draw one of a random breed. Remove spotlight by passing `null`
-  setSpotlight: (@spotlightAgent) ->
-    u.clearCtx @contexts.spotlight unless @spotlightAgent?
+  setSpotlight: (@spotlightTurtle) ->
+    u.clearCtx @contexts.spotlight unless @spotlightTurtle?
 
-  drawSpotlight: (agent, ctx) ->
+  drawSpotlight: (turtle, ctx) ->
     u.clearCtx ctx
     u.fillCtx ctx, Color.typedColor(0,0,0,.6*255)
     ctx.beginPath()
-    ctx.arc agent.x, agent.y, 3, 0, 2*Math.PI, false
+    ctx.arc turtle.x, turtle.y, 3, 0, 2*Math.PI, false
     ctx.fill()
 
 
@@ -246,8 +246,8 @@ class Model
 #     @embers and @fires
 #     @spokes and @rims
 #
-# These agentsets' `create` methods create subclasses of Agent/Link.
-# Use of <breed>.setDefault methods work as for agents/links, creating default
+# These agentsets' `create` methods create subclasses of Turtle/Link.
+# Use of <breed>.setDefault methods work as for turtles/links, creating default
 # values for the breed set:
 #
 #     @embers.setDefault "color", [255,0,0]
@@ -269,13 +269,13 @@ class Model
   patchBreeds: (breedNames) ->
     @patches.breeds = @createBreeds breedNames, @Patch, Patches
   agentBreeds: (breedNames) ->
-    @agents.breeds = @createBreeds breedNames, @Agent, Agents
+    @turtles.breeds = @createBreeds breedNames, @Turtle, Turtles
   linkBreeds:  (breedNames) ->
     @links.breeds = @createBreeds breedNames, @Link, Links
 
   # Utility for models to create agentsets from arrays.  Ex:
   #
-  #     even = @asSet (a for a in @agents when a.id % 2 is 0)
+  #     even = @asSet (a for a in @turtles when a.id % 2 is 0)
   #     even.shuffle().getProp("id") # [6, 0, 4, 2, 8]
   asSet: (a, setType = AgentSet) -> AgentSet.asSet a, setType
 
@@ -286,16 +286,16 @@ class Model
   debug: (@debugging=true)->u.waitOn (=>@modelReady),(=>@setRootVars()); @
   setRootVars: ->
     window.psc = Patches
-    window.asc = Agents
+    window.asc = Turtles
     window.lsc = Links
     window.pc  = @Patch
-    window.ac  = @Agent
+    window.ac  = @Turtle
     window.lc  = @Link
     window.ps  = @patches
-    window.as  = @agents
+    window.as  = @turtles
     window.ls  = @links
     window.p0  = @patches[0]
-    window.a0  = @agents[0]
+    window.a0  = @turtles[0]
     window.l0  = @links[0]
     window.dr  = @drawing
     window.u   = Util
@@ -337,8 +337,8 @@ class Model
   AgentSet
   Patch
   Patches
-  Agent
-  Agents
+  Turtle
+  Turtles
   Link
   Links
   Animator

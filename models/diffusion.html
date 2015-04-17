@@ -11,8 +11,8 @@
 
         # No optimizations: 30fps
         @patches.usePixels() # 57+fps
-        # @patches.cacheAgentsHere() # 28-9fps, not needed * overhead
-        console.log "cacheAgentsHere: ", @patches.agents?
+        # @patches.cacheTurtlesHere() # 28-9fps, not needed * overhead
+        console.log "cacheTurtlesHere: ", @patches.turtles?
 
         # two: 57+fps, fast patches get us to max
 
@@ -26,11 +26,11 @@
         @anim.setRate 30 #, true
 
         # defaults
-        @agents.setDefault "size", 1.5
-        @agents.setDefault "useSprites", true
+        @turtles.setDefault "size", 1.5
+        @turtles.setDefault "useSprites", true
 
-        @agents.create @population
-        # @agents.create @population, (a) => # fat arrow for @patches etc
+        @turtles.create @population
+        # @turtles.create @population, (a) => # fat arrow for @patches etc
         #   a.size = 1.5
         for p in @patches
           p.heat = 0
@@ -40,7 +40,7 @@
         @showSpriteSheet() if @anim.draws is 2
         for p in @patches
           p.heat *= (1-@coolingRate)
-        for a in @agents
+        for a in @turtles
           a.rotate u.randomCentered(u.degToRad(40))
           a.forward @speed
           a.p.heat = 1

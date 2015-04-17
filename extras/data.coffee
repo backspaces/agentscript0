@@ -127,7 +127,7 @@ ABM.DataSet = class DataSet
   toPatchColors: (model = @model) -> model.patches.installColors(img=@toImage()); img
   # Resample dataset to patch width/height and set named patch variable.
   # Note this "insets" the dataset so the variable is sampled the center of the patch.
-  # The dataset can be sampled directly to its edges .. i.e. in agent coords.
+  # The dataset can be sampled directly to its edges .. i.e. in turtle coords.
   toPatchVar: (name, model = @model) ->
     if (ps=model.patches).length is @data.length
     then p[name] = @data[i] for p,i in ps
