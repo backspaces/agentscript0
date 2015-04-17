@@ -92,7 +92,7 @@ class ABM.Mouse
     return eventTypes
 
   delegateEventsToAllAgents: (types, e) ->
-    delegatedAgent = @delegateEventsToAgentsAtPoint(types, @x, @y, e)
+    delegatedAgent = @delegateEventsToTurtlesAtPoint(types, @x, @y, e)
     if not delegatedAgent
       delegatedAgent = @delegateEventsToLinksAtPoint(types, @x, @y, e)
     if not delegatedAgent
@@ -104,15 +104,15 @@ class ABM.Mouse
     curPatch = @model.patches.patch(x, y)
     @emitAgentEvent(type, curPatch, @mouseEvent(curPatch, e)) for type in eventTypes
 
-  delegateEventsToAgentsAtPoint: (eventTypes, x, y, e) ->
+  delegateEventsToTurtlesAtPoint: (eventTypes, x, y, e) ->
     curPatch = @model.patches.patch(x, y)
 
-    # iterate through all agents in this patch and its neighbors
+    # iterate through all turtles in this patch and its neighbors
     for patch in curPatch.n.concat(curPatch)
-      for agent in patch.agentsHere()
-        if agent.hitTest(x, y)
-          @emitAgentEvent(type, agent, @mouseEvent(agent, e)) for type in eventTypes
-          return agent
+      for turtle in patch.turtlesHere()
+        if turtle.hitTest(x, y)
+          @emitAgentEvent(type, turtle, @mouseEvent(turtle, e)) for type in eventTypes
+          return turtle
 
   delegateEventsToLinksAtPoint: (eventTypes, x, y, e) ->
     for link in @model.links
@@ -144,7 +144,7 @@ class ABM.Mouse
     
     agents = u.clone(@model.links)
     for patch in curPatch.n.concat(curPatch)
-      agents = agents.concat(patch.agentsHere())
+      agents = agents.concat(patch.turtlesHere())
 
     # mouseover
     for agent in agents
