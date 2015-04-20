@@ -8,23 +8,27 @@
     u = ABM.Util # ABM.Util alias
     class MyModel extends ABM.Model
       setup: ->
-        @refreshTurtles = false # for static turtles
-        
+        # This model is unusual in that all its drawing is done
+        # by the single turtle stamping its image and label
+        # and drawing a path via its pen being down.
+        @refreshPatches = false # for static patches
+        @refreshTurtles = false # for static turtles, use drawing layer
+        @refreshLinks   = false # not need, no links .. emphasize drawing-only
+        # Create a no-op shape, only used for label:
+        ABM.Shapes.add "empty", false, (c) ->
+        # Set font, use default textAlign, textBaseline (centered)
+        u.ctxTextParams @contexts.drawing, "12px sans-serif"
+
         # globals
         @prob = 1
-        
+
         # defaults
-        @patches.setDefault "labelColor", [255,255,255]
-        offset=Math.floor @world.size*.45
-        # @patches.setDefault "labelOffset", [12,14]
-        @patches.setDefault "labelOffset", [offset, offset]
-        u.ctxTextParams @contexts.patches, "10px sans-serif", "right", "bottom"
-        # u.elementTextParams @contexts.patches, "10px sans-serif", "right", "bottom"
+        @turtles.setDefault "labelColor", [255,255,255]
         @turtles.setDefault "shape", "circle"
         @turtles.setDefault "color", ([210,0,0])
-        @turtles.setDefault "size", .4
-        @turtles.setDefault "hidden", 2.5
-        @turtles.setDefault "heading",  0 # override promotion to random angle
+        @turtles.setDefault "size", .5
+        @turtles.setDefault "hidden", true # We're using drawing ctx & stamp()
+        #@turtles.setDefault "heading", 0 # override promotion to random angle
 
         @anim.setRate 10
 
@@ -32,46 +36,48 @@
           p.color = u.randomGray 160, 190
           p.occupied = false
         @drawGrid [0,0,0]
-        @walker = @turtles.create(1)[0]
+        [@walker, @printer] = @turtles.create(2)
+        @printer.shape = "empty"
         p0 = @patches[0]
-        @walker.setXY p0.x, p0.y
+        @walker.moveTo p0
         @walker.penDown = true
-        # @walker.color = [210,0,0]
-        # @walker.shape = "circle"
-        # @walker.size = .4
-        # @walker.setXY 0, 0 # needed? should start at 0,0
-        @walker.stamp()
+        @walker.penSize = 2.5
+        @printer.moveTo p0
         @walker.p.occupied = true
-        # @walker.penDown = true
-        # @walker.penSize *= 2.5
-        # @setTextParams @patches, "9px sans-serif", "right", "bottom"
-        # @setLabelParams @patches, [255,255,255], [12,12]
       step: ->
         @floodFill()
-        # p = @asSet (n for n in @walker.p.n4 when n.ok)
-        p = @patches.asSet (n for n in @walker.p.n4 when n.ok)
-        @drawNum p.length
-        @walker.moveTo p.oneOf()
+        p = @okNeighbors() # @asSet (n for n in @walker.p.n4 when n.ok)
+        n = p.length
+        @prob /= n
         @walker.stamp()
+        @walker.moveTo p.oneOf()
         @walker.p.occupied = true
-        (@stop(); console.log "prob: #{@prob}") if @done()
-      
-      # drawNum: (n) -> @walker.label = ""+n; @prob /= n
-      drawNum: (n) -> @walker.p.label = ""+n; @prob /= n
+        @printer.label = n #""+ n
+        @printer.stamp()
+        @printer.moveTo @walker# unless @done()
+        if @done()
+          @walker.stamp()
+          @printer.label = @okNeighbors().length;
+          @printer.stamp()
+          console.log "prob: #{@prob}"
+          @stop()
+
+      okNeighbors: -> @asSet (n for n in @walker.p.n4 when n.ok)
       done: -> @patches.last().occupied
-      
+
       drawGrid: (c) ->
         a = @turtles.create(1)[0]
-        a.color = c 
+        a.color = c
         a.penSize *= .4
         a.heading = Math.PI/2
-        for x in [0..@patches.maxX]
-          a.setXY(x,0); a.penDown = true; a.forward @patches.maxY; a.penDown = false
+        maxX = @patches.maxX; maxY = @patches.maxY
+        for x in [0..maxX]
+          a.setXY(x,0); a.penDown = true; a.forward maxY; a.penDown = false
         a.heading = 0
-        for y in [0..@patches.maxY]
-          a.setXY(0,y); a.penDown = true; a.forward @patches.maxX; a.penDown = false
+        for y in [0..maxY]
+          a.setXY(0,y); a.penDown = true; a.forward maxX; a.penDown = false
         a.die()
-      
+
       floodFill: ->
         p.ok = false for p in @patches
         pset = [@patches.last()]
@@ -89,11 +95,11 @@
     # model.start() # Run model immediately after startup initialization
     new MyModel({
       div: "layers",
-      size: 30,
+      size: 50,
       minX: 0,
-      maxX: 10,
+      maxX: 9,
       minY: 0,
-      maxY: 10
+      maxY: 9
     })
     .start()
     .debug()

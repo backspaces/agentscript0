@@ -123,36 +123,6 @@ class Patches extends AgentSet
 
 # #### Patch utilities
 
-  # Return an array of agentset items in a rectangle centered on the given
-  # agent's patch - dx, dy units to the right/left and up/down, integers.
-  # The agent will be in the results if in the agentSet and rectangle.
-  agentRect: (agentSet, agent, dx, dy=dx) ->
-    p =  agent.p ? agent
-    rect = [];
-    # Note: we do not "clip" the min/max/X/Y to be within the patches.
-    # For non-torus, this is OK: the x,y test is still valid.
-    # For torus, it allows us to adjust the x,y to be wrapped appropriately.
-    minX = p.x-dx; maxX = p.x+dx
-    minY = p.y-dy; maxY = p.y+dy
-    # Is the p,dx,dy entirely inside the patches?
-    inside = (minX >= @minX) and (maxX <= @maxX) and
-             (minY >= @minY) and (maxY <= @maxY)
-    checkTorus = @isTorus and not inside
-    for a in agentSet
-      # x,y values are patch integer x,y
-      if a.p? then x = a.p.x; y = a.p.y else x = a.x; y = a.y
-      # Adjust torus x,y if appropriate
-      if checkTorus
-        if x < minX then x += @numX else if x > maxX then x -= @numX
-        if y < minY then y += @numY else if y > maxY then y -= @numY
-      # Test x,y inside rect
-      rect.push a if (minX <= x <= maxX and minY <= y <= maxY)
-    @asSet rect
-  # Return a rectangle of patches centered on p, with dx,dy to the right/left
-  # of p, integers. Default to square.
-  # Exclude p from results if meToo is false.
-  # Performance: If the rect is in the pRect cache for this patch, return it.
-  # See cacheRect()
   patchRect: (p, dx, dy=dx, meToo=true) ->
     return p.pRect if p.pRect? and (p.pRect.radius is dx) and (dx is dy)
     rect = []; # REMIND: optimize if no wrapping, rect inside patch boundaries
@@ -165,17 +135,27 @@ class Patches extends AgentSet
           pnext = @patchXY x, y # much faster than coord()
           rect.push pnext if (meToo or p isnt pnext)
     @asSet rect
+
+  # Return patches within radius of the given agent (patch or turtle)
+  inRadius: (agent, radius) -> #agentSet.inRadius @, radius
+    pset = @patchRect( (agent.p ? agent), Math.ceil(radius) )
+    pset.inRadius agent, radius
+  inCone: (agent, radius, angle, heading) ->
+    pset = @patchRect( (agent.p ? agent), Math.ceil(radius) )
+    pset.inRadius agent, radius, angle, heading
+
   # Return all the turtles contained in the patchRect.
   turtlesOnRect: (p, dx, dy=dx) ->
     @turtlesOnPatches @patchRect(p, dx, dy, true)
   turtlesOnPatches: (patches) ->
     array = []
     if patches.length isnt 0
-      u.error "agentsInPatches: no cached turtles." if not patches[0].turtles?
+      u.error "turtlesOnPatches: no cached turtles." if not patches[0].turtles?
       # Use push.apply, not concat, see:
       # [jsPerf](http://jsperf.com/apply-push-vs-concat-array)
       Array.prototype.push.apply(array, p.turtles) for p in patches
     @asSet array
+
   # Return all the unique patches the agentset or turtle is on.
   patchesOf: (aset) ->
     return @asSet([aset.p ? aset]) unless aset.length?

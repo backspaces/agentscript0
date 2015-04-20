@@ -38,22 +38,23 @@ class Turtles extends AgentSet
     # Possibly faster to filter by breed in p.breedsHere?
     if @mainSet? then @breedsIn array else @asSet array
 
-  # Return an agentset of turtles/breeds within the patchRect
+  # Return an agentset of turtles/breeds within the patchRect, dx/y integers
   inRect: (p, dx, dy=dx) ->
     rect = @model.patches.patchRect p, dx, dy #, true
     @inPatches rect
 
   # Return the members of this agentset that are within radius distance
-  # from me, and within cone radians of my heading using patch topology
-  inCone: (a, radius, angle) ->
-    as = @inRect a, radius, radius #, true
-    as.inCone a, radius, angle, a.heading
-  #
-  # Return the members of this agentset that are within radius distance
   # from me, using patch topology
-  inRadius: (a, radius) ->
-    as = @inRect a.p, radius
-    as.inRadius a, radius
+  inRadius: (agent, radius) ->
+    as = @inRect( (agent.p ? agent), Math.ceil(radius) )
+    as.inRadius agent, radius
+
+  # Return the members of this agentset that are within radius distance
+  # from agent, and within cone of angle, heading from agent
+  # using patch topology
+  inCone: (agent, radius, angle, heading) ->
+    as = @inRect( (agent.p ? agent), Math.ceil(radius) )
+    as.inCone agent, radius, angle, heading
 
   setDraggable: ->
     @on 'dragstart', (mouseEvent) =>

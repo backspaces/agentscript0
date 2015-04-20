@@ -57,12 +57,15 @@ class Patch
 
   # Draw the patch and its text label if there is one.
   draw: (ctx) ->
+    u.deprecated "Patch.draw not used, Patches.draw uses pixels"
     ctx.fillStyle = @color.css # u.colorStr @color
     ctx.fillRect @x-.5, @y-.5, 1, 1
     if @label? # REMIND: should be 2nd pass.
       [x,y] = @breed.patchXYtoPixelXY @x, @y
-      u.ctxDrawText ctx, @label, x+@labelOffset[0], y+@labelOffset[1], @labelColor
+      u.ctxDrawText ctx, @label,
+        x+@labelOffset[0], y+@labelOffset[1], @labelColor.css
 
+  # Return the members of the agentset within radius of me
   inRadius: (agentSet, radius) -> agentSet.inRadius @, radius
 
   # Return an array of the turtles/breeds on this patch.

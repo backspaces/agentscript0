@@ -200,9 +200,9 @@ class Model
     if @debugging
       console.log @anim.toString()  if @anim.draws % 100 is 0
     if @div?
-      @patches.draw @contexts.patches  if force or @refreshPatches
-      @links.draw   @contexts.links    if force or @refreshLinks
-      @turtles.draw  @contexts.turtles   if force or @refreshTurtles
+      @patches.draw  @contexts.patches  if force or @refreshPatches
+      @links.draw    @contexts.links    if force or @refreshLinks
+      @turtles.draw  @contexts.turtles  if force or @refreshTurtles
       @drawSpotlight @spotlightTurtle, @contexts.spotlight if @spotlightTurtle?
     @emit('draw')
 
