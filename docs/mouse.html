@@ -176,7 +176,7 @@ previously used e.offsetX, e.offsetY, which was less robust
     <span class="hljs-keyword">return</span> eventTypes
 
   <span class="hljs-attribute">delegateEventsToAllAgents</span>: <span class="hljs-function"><span class="hljs-params">(types, e)</span> -&gt;</span>
-    delegatedAgent = <span class="hljs-property">@delegateEventsToAgentsAtPoint</span>(types, <span class="hljs-property">@x</span>, <span class="hljs-property">@y</span>, e)
+    delegatedAgent = <span class="hljs-property">@delegateEventsToTurtlesAtPoint</span>(types, <span class="hljs-property">@x</span>, <span class="hljs-property">@y</span>, e)
     <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> delegatedAgent
       delegatedAgent = <span class="hljs-property">@delegateEventsToLinksAtPoint</span>(types, <span class="hljs-property">@x</span>, <span class="hljs-property">@y</span>, e)
     <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> delegatedAgent
@@ -188,7 +188,7 @@ previously used e.offsetX, e.offsetY, which was less robust
     curPatch = <span class="hljs-property">@model</span>.patches.patch(x, y)
     <span class="hljs-property">@emitAgentEvent</span>(type, curPatch, <span class="hljs-property">@mouseEvent</span>(curPatch, e)) <span class="hljs-keyword">for</span> type <span class="hljs-keyword">in</span> eventTypes
 
-  <span class="hljs-attribute">delegateEventsToAgentsAtPoint</span>: <span class="hljs-function"><span class="hljs-params">(eventTypes, x, y, e)</span> -&gt;</span>
+  <span class="hljs-attribute">delegateEventsToTurtlesAtPoint</span>: <span class="hljs-function"><span class="hljs-params">(eventTypes, x, y, e)</span> -&gt;</span>
     curPatch = <span class="hljs-property">@model</span>.patches.patch(x, y)</pre></div></div>
             
         </li>
@@ -200,15 +200,15 @@ previously used e.offsetX, e.offsetY, which was less robust
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-6">&#182;</a>
               </div>
-              <p>iterate through all agents in this patch and its neighbors</p>
+              <p>iterate through all turtles in this patch and its neighbors</p>
 
             </div>
             
             <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">for</span> patch <span class="hljs-keyword">in</span> curPatch.n.concat(curPatch)
-      <span class="hljs-keyword">for</span> agent <span class="hljs-keyword">in</span> patch.agentsHere()
-        <span class="hljs-keyword">if</span> agent.hitTest(x, y)
-          <span class="hljs-property">@emitAgentEvent</span>(type, agent, <span class="hljs-property">@mouseEvent</span>(agent, e)) <span class="hljs-keyword">for</span> type <span class="hljs-keyword">in</span> eventTypes
-          <span class="hljs-keyword">return</span> agent
+      <span class="hljs-keyword">for</span> turtle <span class="hljs-keyword">in</span> patch.turtlesHere()
+        <span class="hljs-keyword">if</span> turtle.hitTest(x, y)
+          <span class="hljs-property">@emitAgentEvent</span>(type, turtle, <span class="hljs-property">@mouseEvent</span>(turtle, e)) <span class="hljs-keyword">for</span> type <span class="hljs-keyword">in</span> eventTypes
+          <span class="hljs-keyword">return</span> turtle
 
   <span class="hljs-attribute">delegateEventsToLinksAtPoint</span>: <span class="hljs-function"><span class="hljs-params">(eventTypes, x, y, e)</span> -&gt;</span>
     <span class="hljs-keyword">for</span> link <span class="hljs-keyword">in</span> <span class="hljs-property">@model</span>.links
@@ -240,7 +240,7 @@ previously used e.offsetX, e.offsetY, which was less robust
     
     agents = u.clone(<span class="hljs-property">@model</span>.links)
     <span class="hljs-keyword">for</span> patch <span class="hljs-keyword">in</span> curPatch.n.concat(curPatch)
-      agents = agents.concat(patch.agentsHere())</pre></div></div>
+      agents = agents.concat(patch.turtlesHere())</pre></div></div>
             
         </li>
         

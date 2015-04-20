@@ -64,7 +64,9 @@ The models/ directory contains tiny models used both as unit tests and as exampl
 
 [**fire.html**](models/fire.html) A CA (cellular automata) based model of fire spreading and burn behavior.
 
-[**flock.html**](models/flock.html) The classic "boids" model where turtles each follow three simple rules resulting in realistic flocking. This example uses the as.dat.gui.js extra.
+[**flock.html**](models/flock.html) The classic "boids" model where turtles each follow three simple rules resulting in realistic flocking.
+
+[**flockui.html**](models/flockui.html) The flock model with the as.dat.gui.js extra.
 
 [**headlessflock.html**](models/headlessflock.html) The same classic "boids" model as above, only this time turtles are rendered as DOM elements instead of being drawn to a canvas.
 

@@ -41,8 +41,8 @@
                 <a class="pilcrow" href="#section-2">&#182;</a>
               </div>
               <p>Class Patch instances represent a rectangle on a grid.  They hold variables
-that are in the patches the agents live on.  The set of all patches (@model.patches)
-is the world on which the agents live and the model runs.</p>
+that are in the patches the turtles live on.  The set of all patches (@model.patches)
+is the world on which the turtles live and the model runs.</p>
 
             </div>
             
@@ -71,7 +71,7 @@ is the world on which the agents live and the model runs.</p>
 <li>pRect:      cached rect for performance</li>
 </ul>
 <p>Patches may not need their neighbors, thus we use a default
-of none.  n and n4 are promoted by the Patches agent set
+of none. n and n4 are promoted by the Patches agentset
 if world.neighbors is true, the default.</p>
 
             </div>
@@ -211,13 +211,13 @@ u.scaleOpacity c, s, @color</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">draw</span>: <span class="hljs-function"><span class="hljs-params">(ctx)</span> -&gt;</span>
+    u.deprecated <span class="hljs-string">"Patch.draw not used, Patches.draw uses pixels"</span>
     ctx.fillStyle = <span class="hljs-property">@color</span>.css <span class="hljs-comment"># u.colorStr @color</span>
     ctx.fillRect <span class="hljs-property">@x</span>-<span class="hljs-number">.5</span>, <span class="hljs-property">@y</span>-<span class="hljs-number">.5</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>
     <span class="hljs-keyword">if</span> <span class="hljs-property">@label</span>? <span class="hljs-comment"># REMIND: should be 2nd pass.</span>
       [x,y] = <span class="hljs-property">@breed</span>.patchXYtoPixelXY <span class="hljs-property">@x</span>, <span class="hljs-property">@y</span>
-      u.ctxDrawText ctx, <span class="hljs-property">@label</span>, x+<span class="hljs-property">@labelOffset</span>[<span class="hljs-number">0</span>], y+<span class="hljs-property">@labelOffset</span>[<span class="hljs-number">1</span>], <span class="hljs-property">@labelColor</span>
-
-  <span class="hljs-attribute">inRadius</span>: <span class="hljs-function"><span class="hljs-params">(agentSet, radius)</span> -&gt;</span> agentSet.inRadius @, radius</pre></div></div>
+      u.ctxDrawText ctx, <span class="hljs-property">@label</span>,
+        x+<span class="hljs-property">@labelOffset</span>[<span class="hljs-number">0</span>], y+<span class="hljs-property">@labelOffset</span>[<span class="hljs-number">1</span>], <span class="hljs-property">@labelColor</span>.css</pre></div></div>
             
         </li>
         
@@ -228,18 +228,11 @@ u.scaleOpacity c, s, @color</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-12">&#182;</a>
               </div>
-              <p>Return an array of the agents/breeds on this patch.
-If patches.cacheAgentsHere has created an @agents instance
-variable for the patches, agents will add/remove themselves
-as they move from patch to patch.</p>
+              <p>Return the members of the agentset within radius of me</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">agentsHere</span>: <span class="hljs-function">-&gt;</span>
-    u.deprecated <span class="hljs-string">"Patch.agentsHere: make caching default"</span> <span class="hljs-keyword">unless</span> <span class="hljs-property">@agents</span>
-    <span class="hljs-property">@agents</span> ? (a <span class="hljs-keyword">for</span> a <span class="hljs-keyword">in</span> <span class="hljs-property">@model</span>.agents <span class="hljs-keyword">when</span> a.p <span class="hljs-keyword">is</span> @)
-  <span class="hljs-attribute">breedsHere</span>: <span class="hljs-function"><span class="hljs-params">(breed)</span> -&gt;</span>
-    (a <span class="hljs-keyword">for</span> a <span class="hljs-keyword">in</span> <span class="hljs-property">@agentsHere</span>() <span class="hljs-keyword">when</span> a.breed <span class="hljs-keyword">is</span> breed)</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">inRadius</span>: <span class="hljs-function"><span class="hljs-params">(agentSet, radius)</span> -&gt;</span> agentSet.inRadius @, radius</pre></div></div>
             
         </li>
         
@@ -249,6 +242,28 @@ as they move from patch to patch.</p>
               
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-13">&#182;</a>
+              </div>
+              <p>Return an array of the turtles/breeds on this patch.
+If patches.cacheTurtlesHere has created an @turtles instance
+variable for the patches, turtles will add/remove themselves
+as they move from patch to patch.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">turtlesHere</span>: <span class="hljs-function">-&gt;</span>
+    u.deprecated <span class="hljs-string">"Patch.turtlesHere: make caching default"</span> <span class="hljs-keyword">unless</span> <span class="hljs-property">@turtles</span>
+    <span class="hljs-property">@turtles</span> ? (a <span class="hljs-keyword">for</span> a <span class="hljs-keyword">in</span> <span class="hljs-property">@model</span>.turtles <span class="hljs-keyword">when</span> a.p <span class="hljs-keyword">is</span> @)
+  <span class="hljs-attribute">breedsHere</span>: <span class="hljs-function"><span class="hljs-params">(breed)</span> -&gt;</span>
+    (a <span class="hljs-keyword">for</span> a <span class="hljs-keyword">in</span> <span class="hljs-property">@turtlesHere</span>() <span class="hljs-keyword">when</span> a.breed <span class="hljs-keyword">is</span> breed)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-14">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-14">&#182;</a>
               </div>
               <p>Returns true if this patch is on the edge of the grid.</p>
 
@@ -261,29 +276,29 @@ as they move from patch to patch.</p>
         </li>
         
         
-        <li id="section-14">
+        <li id="section-15">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-14">&#182;</a>
+                <a class="pilcrow" href="#section-15">&#182;</a>
               </div>
-              <p>Factory: Create num new agents on this patch. The optional init
-proc is called on the new agent after inserting in its agentSet.</p>
+              <p>Factory: Create num new turtles on this patch. The optional init
+function is called on the new turtle after inserting in its agentset.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">sprout</span>: <span class="hljs-function"><span class="hljs-params">(num = <span class="hljs-number">1</span>, breed = <span class="hljs-property">@model</span>.agents, init = -&gt;)</span> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">sprout</span>: <span class="hljs-function"><span class="hljs-params">(num = <span class="hljs-number">1</span>, breed = <span class="hljs-property">@model</span>.turtles, init = -&gt;)</span> -&gt;</span>
     breed.create num, <span class="hljs-function"><span class="hljs-params">(a)</span> =&gt;</span> <span class="hljs-comment"># fat arrow so that @ = this patch</span>
       a.setXY <span class="hljs-property">@x</span>, <span class="hljs-property">@y</span>; init(a); a</pre></div></div>
             
         </li>
         
         
-        <li id="section-15">
+        <li id="section-16">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-15">&#182;</a>
+                <a class="pilcrow" href="#section-16">&#182;</a>
               </div>
               <p>use colorMixin to setup colors</p>
 

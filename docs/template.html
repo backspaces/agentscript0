@@ -126,7 +126,7 @@ like to add custom images.</p>
                 <a class="pilcrow" href="#section-6">&#182;</a>
               </div>
               <p>Initialize our model via the <code>setup</code> abstract method.
-This model simply creates <code>population</code> agents with
+This model simply creates <code>population</code> turtles with
 arbitrary shapes with <code>size</code> size and <code>speed</code> velocity.
 We also periodically change the patch colors to random gray values.</p>
 
@@ -153,7 +153,7 @@ an external UI to setup for us.</p>
     <span class="hljs-property">@size</span> = <span class="hljs-number">2.0</span>   <span class="hljs-comment"># size in patch coords</span>
     <span class="hljs-property">@speed</span> = <span class="hljs-number">.5</span>   <span class="hljs-comment"># move forward this amount in patch coords</span>
     <span class="hljs-property">@wiggle</span> = u.degToRad(<span class="hljs-number">30</span>) <span class="hljs-comment"># degrees/radians to wiggle</span>
-    <span class="hljs-property">@startCircle</span> = <span class="hljs-literal">true</span>  <span class="hljs-comment"># initialize agents randomly or in circle</span></pre></div></div>
+    <span class="hljs-property">@startCircle</span> = <span class="hljs-literal">true</span>  <span class="hljs-comment"># initialize turtles randomly or in circle</span></pre></div></div>
             
         </li>
         
@@ -164,11 +164,11 @@ an external UI to setup for us.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-8">&#182;</a>
               </div>
-              <p>Set the default agent size; save storage over setting size for each agent</p>
+              <p>Set the default turtle size; save storage over setting size for each turtle</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="hljs-property">@agents</span>.setDefault <span class="hljs-string">"size"</span>, <span class="hljs-property">@size</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-property">@turtles</span>.setDefault <span class="hljs-string">"size"</span>, <span class="hljs-property">@size</span></pre></div></div>
             
         </li>
         
@@ -179,11 +179,11 @@ an external UI to setup for us.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-9">&#182;</a>
               </div>
-              <p>Set the agent to convert shape to bitmap for better performance.</p>
+              <p>Set the turtle to convert shape to bitmap for better performance.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="hljs-property">@agents</span>.setUseSprites()</pre></div></div>
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-property">@turtles</span>.setUseSprites()</pre></div></div>
             
         </li>
         
@@ -243,15 +243,15 @@ random gray value.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-13">&#182;</a>
               </div>
-              <p>Our empty @agents AgentSet will have been created.  Here we
-add <code>population</code> Agents we use in our model.
-We set the build-in Agent variables <code>size</code> and <code>shape</code>
-and layout the agents randomly or in a circle depending
+              <p>Our empty @turtles AgentSet will have been created.  Here we
+add <code>population</code> Turtles we use in our model.
+We set the build-in Turtle variables <code>size</code> and <code>shape</code>
+and layout the turtles randomly or in a circle depending
 on our modeel’s <code>startCircle</code> variable.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">for</span> a <span class="hljs-keyword">in</span> <span class="hljs-property">@agents</span>.create <span class="hljs-property">@population</span>
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">for</span> a <span class="hljs-keyword">in</span> <span class="hljs-property">@turtles</span>.create <span class="hljs-property">@population</span>
       a.shape = u.oneOf Shapes.names() <span class="hljs-comment"># random shapes</span>
       <span class="hljs-keyword">if</span> <span class="hljs-property">@startCircle</span>
         a.forward <span class="hljs-property">@patches</span>.maxX/<span class="hljs-number">2</span> <span class="hljs-comment"># start in circle</span>
@@ -267,13 +267,13 @@ on our modeel’s <code>startCircle</code> variable.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-14">&#182;</a>
               </div>
-              <p>Print number of agents and patches to the console.
+              <p>Print number of turtles and patches to the console.
 Note CoffeeScript
 <a href="http://jashkenas.github.com/coffee-script/#strings">string interpolation</a></p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    log <span class="hljs-string">"total agents: <span class="hljs-subst">#{<span class="hljs-property">@agents</span>.length}</span>, total patches: <span class="hljs-subst">#{<span class="hljs-property">@patches</span>.length}</span>"</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>    log <span class="hljs-string">"total turtles: <span class="hljs-subst">#{<span class="hljs-property">@turtles</span>.length}</span>, total patches: <span class="hljs-subst">#{<span class="hljs-property">@patches</span>.length}</span>"</span></pre></div></div>
             
         </li>
         
@@ -284,12 +284,12 @@ Note CoffeeScript
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-15">&#182;</a>
               </div>
-              <p>Print number of agents with each shape</p>
+              <p>Print number of turtles with each shape</p>
 
             </div>
             
             <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">for</span> s <span class="hljs-keyword">in</span> Shapes.names()
-      num = <span class="hljs-property">@agents</span>.getPropWith(<span class="hljs-string">"shape"</span>, s).length
+      num = <span class="hljs-property">@turtles</span>.getPropWith(<span class="hljs-string">"shape"</span>, s).length
       log <span class="hljs-string">"<span class="hljs-subst">#{num}</span> <span class="hljs-subst">#{s}</span>"</span>
     <span class="hljs-built_in">console</span>.log <span class="hljs-string">"Patch(0,0): "</span>, <span class="hljs-property">@patches</span>.patchXY <span class="hljs-number">0</span>,<span class="hljs-number">0</span></pre></div></div>
             
@@ -317,11 +317,11 @@ Note CoffeeScript
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-17">&#182;</a>
               </div>
-              <p>First, update our agents via <code>updateAgents</code> below</p>
+              <p>First, update our turtles via <code>updateTurtles</code> below</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="hljs-property">@updateAgents</span>(a) <span class="hljs-keyword">for</span> a <span class="hljs-keyword">in</span> <span class="hljs-property">@agents</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-property">@updateTurtles</span>(a) <span class="hljs-keyword">for</span> a <span class="hljs-keyword">in</span> <span class="hljs-property">@turtles</span></pre></div></div>
             
         </li>
         
@@ -356,7 +356,7 @@ the patches. Otherwise don’t refresh.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>      <span class="hljs-property">@setSpotlight</span> <span class="hljs-property">@agents</span>.oneOf() <span class="hljs-keyword">if</span> <span class="hljs-property">@anim</span>.ticks <span class="hljs-keyword">is</span> <span class="hljs-number">300</span>
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-property">@setSpotlight</span> <span class="hljs-property">@turtles</span>.oneOf() <span class="hljs-keyword">if</span> <span class="hljs-property">@anim</span>.ticks <span class="hljs-keyword">is</span> <span class="hljs-number">300</span>
       <span class="hljs-property">@setSpotlight</span> <span class="hljs-literal">null</span> <span class="hljs-keyword">if</span> <span class="hljs-property">@anim</span>.ticks <span class="hljs-keyword">is</span> <span class="hljs-number">600</span>
     <span class="hljs-keyword">else</span>
       <span class="hljs-property">@refreshPatches</span> = <span class="hljs-literal">false</span></pre></div></div>
@@ -404,12 +404,12 @@ Stop the animation at 1000. Restart by <code>ABM.model.start()</code> in console
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-22">&#182;</a>
               </div>
-              <p>Three of our own methods to manage agents &amp; patches
+              <p>Three of our own methods to manage turtles &amp; patches
 and report model state.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">updateAgents</span>: <span class="hljs-function"><span class="hljs-params">(a)</span> -&gt;</span> <span class="hljs-comment"># a is agent</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">updateTurtles</span>: <span class="hljs-function"><span class="hljs-params">(a)</span> -&gt;</span> <span class="hljs-comment"># a is turtle</span></pre></div></div>
             
         </li>
         
@@ -420,7 +420,7 @@ and report model state.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-23">&#182;</a>
               </div>
-              <p>Have our agent “wiggle” by changing
+              <p>Have our turtle “wiggle” by changing
 our heading by +/- <code>wiggle/2</code> radians</p>
 
             </div>
@@ -474,8 +474,8 @@ Avoid Garbage collection by using a colormap</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    headings = <span class="hljs-property">@agents</span>.getProp <span class="hljs-string">"heading"</span>
-<span class="hljs-function">    <span class="hljs-title">avgHeading</span> = <span class="hljs-params">(headings.reduce (a,b)-&gt;a+b)</span> / @<span class="hljs-title">agents</span>.<span class="hljs-title">length</span>
+            <div class="content"><div class='highlight'><pre>    headings = <span class="hljs-property">@turtles</span>.getProp <span class="hljs-string">"heading"</span>
+<span class="hljs-function">    <span class="hljs-title">avgHeading</span> = <span class="hljs-params">(headings.reduce (a,b)-&gt;a+b)</span> / @<span class="hljs-title">turtles</span>.<span class="hljs-title">length</span>
 </span></pre></div></div>
             
         </li>
@@ -492,7 +492,7 @@ Avoid Garbage collection by using a colormap</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>    log <span class="hljs-string">"
-average heading of agents:
+average heading of turtles:
 <span class="hljs-subst">#{avgHeading.toFixed(<span class="hljs-number">2</span>)}</span> radians,
 <span class="hljs-subst">#{u.radToDeg(avgHeading).toFixed(<span class="hljs-number">2</span>)}</span> degrees"</span></pre></div></div>
             

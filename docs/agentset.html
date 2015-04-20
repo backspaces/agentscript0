@@ -31,18 +31,18 @@
 are the items of the array.  Instances of the class are created
 by the <code>create</code> factory method of an AgentSet.</p>
 <p>It is a subclass of <code>Array</code> and is the base class for
-<code>Patches</code>, <code>Agents</code>, and <code>Links</code>. An AgentSet keeps track of all
+<code>Patches</code>, <code>Turtles</code>, and <code>Links</code>. An AgentSet keeps track of all
 its created instances.  It also provides, much like the <strong>Util</strong>
 module, many methods shared by all subclasses of AgentSet.</p>
 <p>A model contains three agentsets:</p>
 <ul>
 <li><code>patches</code>: the model’s “world” grid</li>
-<li><code>agents</code>: the model’s agents living on the patches</li>
+<li><code>turtles</code>: the model’s turtles living on the patches</li>
 <li><code>links</code>: the network links connecting agent pairs</li>
 </ul>
 <p>See NetLogo <a href="http://ccl.northwestern.edu/netlogo/docs/">documentation</a>
 for explanation of the overall semantics of Agent Based Modeling
-used by AgentSets as well as Patches, Agents, and Links.</p>
+used by AgentSets as well as Patches, Turtles, and Links.</p>
 <p>Note: subclassing <code>Array</code> can be dangerous and we may have to convert
 to a different style. See Trevor Burnham’s <a href="http://goo.gl/Lca8g">comments</a>
 but thus far we’ve resolved all related problems.</p>
@@ -79,7 +79,7 @@ but thus far we’ve resolved all related problems.</p>
 an <code>AgentSet</code> .. except for the ID which only impacts the add method.
 It is primarily used to turn a comprehension into an AgentSet instance
 which then gains access to all the methods below.  Ex:</p>
-<pre><code>evens = (a <span class="hljs-keyword">for</span> a <span class="hljs-keyword">in</span> <span class="hljs-property">@model</span>.agents <span class="hljs-keyword">when</span> a.id % <span class="hljs-number">2</span> <span class="hljs-keyword">is</span> <span class="hljs-number">0</span>)
+<pre><code>evens = (a <span class="hljs-keyword">for</span> a <span class="hljs-keyword">in</span> <span class="hljs-property">@model</span>.turtles <span class="hljs-keyword">when</span> a.id % <span class="hljs-number">2</span> <span class="hljs-keyword">is</span> <span class="hljs-number">0</span>)
 ABM.AgentSet.asSet(evens)
 randomEven = evens.oneOf()
 </code></pre>
@@ -173,7 +173,7 @@ This sub-array feature is how breeds are managed, see class <code>Model</code></
               <p>Add an agent to the list.  Only used by agentset factory methods. Adds
 the <code>id</code> property to all agents. Increment <code>ID</code>.
 Returns the object for chaining. The set will be sorted by <code>id</code>.</p>
-<p>By “agent” we mean an instance of <code>Patch</code>, <code>Agent</code> and <code>Link</code> and their breeds</p>
+<p>By “agent” we mean an instance of <code>Patch</code>, <code>Turtle</code> and <code>Link</code> and their breeds</p>
 
             </div>
             
@@ -333,8 +333,8 @@ Used by agentset methods creating new agentsets.</p>
               </div>
               <p>Is the given array an agentset of the given type?
 It does not use the prototype chain, so</p>
-<pre><code>isSet(agents, <span class="hljs-string">"AgentSet"</span>)
-</code></pre><p>is false. Current names: AgentSet, Agents, Patches, Links.
+<pre><code>isSet(turtles, <span class="hljs-string">"AgentSet"</span>)
+</code></pre><p>is false. Current names: AgentSet, Turtles, Patches, Links.
 Default name is “AgentSet”, good test for derived sets using asSet()</p>
 
             </div>
@@ -350,8 +350,8 @@ Default name is “AgentSet”, good test for derived sets using asSet()</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-17">&#182;</a>
               </div>
-              <p>Similar for above but includes breeds of Agents, Patches, Links too
-isBreed(“Agents”) returns true for an agent that isn’t a breed</p>
+              <p>Similar for above but includes breeds of Turtles, Patches, Links too
+isBreed(“Turtles”) returns true for an agent that isn’t a breed</p>
 
             </div>
             
@@ -704,7 +704,7 @@ AS.maxOneOf(<span class="hljs-function"><span class="hljs-params">(a)</span>-&gt
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-38">&#182;</a>
               </div>
-              <p>For agentsets who’s agents have a <code>draw</code> method.
+              <p>For agentsets whose agents have a <code>draw</code> method.
 Clears the graphics context (transparent), then
 calls each agent’s draw(ctx) method.</p>
 
@@ -752,7 +752,7 @@ To show/hide an individual object, set its prototype: o.hidden = bool</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-41">&#182;</a>
               </div>
-              <p>For patches &amp; agents, which have x,y. See Util doc.
+              <p>For patches &amp; turtles, which have x,y. See Util doc.
 Typically a subclass uses a rect/quadtree array to minimize
 the size, then uses asSet(array) to call inRadius or inCone</p>
 
@@ -893,7 +893,7 @@ Allows functions as strings. Use:</p>
 AS.<span class="hljs-reserved">with</span>(<span class="hljs-string">"o.x&lt;5"</span>).ask(<span class="hljs-string">"o.x=o.x+1"</span>)
 AS.getProp(<span class="hljs-string">"x"</span>) <span class="hljs-comment"># [2, 8, 6, 3, 3]</span>
 
-myModel.agents.<span class="hljs-reserved">with</span>(<span class="hljs-string">"o.id&lt;100"</span>).ask(<span class="hljs-string">"o.color=[255,0,0]"</span>)
+myModel.turtles.<span class="hljs-reserved">with</span>(<span class="hljs-string">"o.id&lt;100"</span>).ask(<span class="hljs-string">"o.color=[255,0,0]"</span>)
 </code></pre>
             </div>
             
