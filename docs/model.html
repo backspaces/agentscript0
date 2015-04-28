@@ -459,7 +459,7 @@ two abstract methods. <code>super</code> need not be called.</p>
                 <a class="pilcrow" href="#section-24">&#182;</a>
               </div>
               <p>Initialize model resources (images, files) here.
-Uses util.waitOn so can be be async.</p>
+Uses Util.waitOn so can be be async.</p>
 
             </div>
             
@@ -615,12 +615,18 @@ to avoid redrawing the same static scene. Called by animator.</p>
             <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">draw</span>: <span class="hljs-function"><span class="hljs-params">(force = <span class="hljs-property">@anim</span>.stopped <span class="hljs-keyword">or</span> <span class="hljs-property">@anim</span>.draws <span class="hljs-keyword">is</span> <span class="hljs-number">1</span>)</span> -&gt;</span>
     <span class="hljs-keyword">if</span> <span class="hljs-property">@debugging</span>
       <span class="hljs-built_in">console</span>.log <span class="hljs-property">@anim</span>.toString()  <span class="hljs-keyword">if</span> <span class="hljs-property">@anim</span>.draws % <span class="hljs-number">100</span> <span class="hljs-keyword">is</span> <span class="hljs-number">0</span>
+      <span class="hljs-property">@showSpriteSheet</span>() <span class="hljs-keyword">if</span> (<span class="hljs-property">@anim</span>.draws <span class="hljs-keyword">is</span> <span class="hljs-number">2</span>)<span class="hljs-comment"># and @turtles[0]?.useSprites</span>
     <span class="hljs-keyword">if</span> <span class="hljs-property">@div</span>?
       <span class="hljs-property">@patches</span>.draw  <span class="hljs-property">@contexts</span>.patches  <span class="hljs-keyword">if</span> force <span class="hljs-keyword">or</span> <span class="hljs-property">@refreshPatches</span>
       <span class="hljs-property">@links</span>.draw    <span class="hljs-property">@contexts</span>.links    <span class="hljs-keyword">if</span> force <span class="hljs-keyword">or</span> <span class="hljs-property">@refreshLinks</span>
       <span class="hljs-property">@turtles</span>.draw  <span class="hljs-property">@contexts</span>.turtles  <span class="hljs-keyword">if</span> force <span class="hljs-keyword">or</span> <span class="hljs-property">@refreshTurtles</span>
       <span class="hljs-property">@drawSpotlight</span> <span class="hljs-property">@spotlightTurtle</span>, <span class="hljs-property">@contexts</span>.spotlight <span class="hljs-keyword">if</span> <span class="hljs-property">@spotlightTurtle</span>?
-    <span class="hljs-property">@emit</span>(<span class="hljs-string">'draw'</span>)</pre></div></div>
+    <span class="hljs-property">@emit</span>(<span class="hljs-string">'draw'</span>)
+  <span class="hljs-attribute">toggleDrawing</span>: <span class="hljs-function">-&gt;</span>
+    <span class="hljs-keyword">if</span> <span class="hljs-property">@div</span>?
+      <span class="hljs-property">@div0</span> = <span class="hljs-property">@div</span>; <span class="hljs-property">@div</span> = <span class="hljs-literal">null</span>
+    <span class="hljs-keyword">else</span>
+      <span class="hljs-property">@div</span> = <span class="hljs-property">@div0</span>; <span class="hljs-property">@div0</span> = <span class="hljs-literal">null</span></pre></div></div>
             
         </li>
         
@@ -763,16 +769,16 @@ See <a href="http://goo.gl/1i7bd">CoffeeConsole</a> Chrome extension too.</p>
             <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">debug</span>: <span class="hljs-function"><span class="hljs-params">(<span class="hljs-property">@debugging</span>=<span class="hljs-literal">true</span>)</span>-&gt;</span>u.waitOn (<span class="hljs-function">=&gt;</span><span class="hljs-property">@modelReady</span>),(<span class="hljs-function">=&gt;</span><span class="hljs-property">@setRootVars</span>()); @
   <span class="hljs-attribute">setRootVars</span>: <span class="hljs-function">-&gt;</span>
     <span class="hljs-built_in">window</span>.psc = Patches
-    <span class="hljs-built_in">window</span>.asc = Turtles
+    <span class="hljs-built_in">window</span>.tsc = Turtles
     <span class="hljs-built_in">window</span>.lsc = Links
     <span class="hljs-built_in">window</span>.pc  = <span class="hljs-property">@Patch</span>
-    <span class="hljs-built_in">window</span>.ac  = <span class="hljs-property">@Turtle</span>
+    <span class="hljs-built_in">window</span>.tc  = <span class="hljs-property">@Turtle</span>
     <span class="hljs-built_in">window</span>.lc  = <span class="hljs-property">@Link</span>
     <span class="hljs-built_in">window</span>.ps  = <span class="hljs-property">@patches</span>
-    <span class="hljs-built_in">window</span>.as  = <span class="hljs-property">@turtles</span>
+    <span class="hljs-built_in">window</span>.ts  = <span class="hljs-property">@turtles</span>
     <span class="hljs-built_in">window</span>.ls  = <span class="hljs-property">@links</span>
     <span class="hljs-built_in">window</span>.p0  = <span class="hljs-property">@patches</span>[<span class="hljs-number">0</span>]
-    <span class="hljs-built_in">window</span>.a0  = <span class="hljs-property">@turtles</span>[<span class="hljs-number">0</span>]
+    <span class="hljs-built_in">window</span>.t0  = <span class="hljs-property">@turtles</span>[<span class="hljs-number">0</span>]
     <span class="hljs-built_in">window</span>.l0  = <span class="hljs-property">@links</span>[<span class="hljs-number">0</span>]
     <span class="hljs-built_in">window</span>.dr  = <span class="hljs-property">@drawing</span>
     <span class="hljs-built_in">window</span>.u   = Util
@@ -808,7 +814,7 @@ Typically the div should be before the model div, float right:</p>
         sheet.canvas.setAttribute <span class="hljs-string">"style"</span>, <span class="hljs-string">"float:right"</span>
         <span class="hljs-property">@div</span>.parentElement.insertBefore(sheet.canvas, <span class="hljs-property">@div</span>)
     <span class="hljs-keyword">else</span>
-      <span class="hljs-built_in">console</span>.log <span class="hljs-string">"showSpriteSheet: no sprite sheet found"</span></pre></div></div>
+      <span class="hljs-built_in">console</span>.log <span class="hljs-string">"showSpriteSheet: not using sprites"</span></pre></div></div>
             
         </li>
         
@@ -827,8 +833,6 @@ Thus @ABM is placed in the global scope.</p>
             
             <div class="content"><div class='highlight'><pre>
 <span class="hljs-property">@ABM</span> = {
-  util    <span class="hljs-comment"># deprecated, Util</span>
-  shapes  <span class="hljs-comment"># deprecated, Shapes</span>
   Util
   Color
   ColorMaps

@@ -454,17 +454,16 @@ and color.ix for typedColors</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-25">&#182;</a>
               </div>
-              <p>Return the map index or color proportional to the value between min, max.
-This is a linear interpolation based on the map indices.
-The optional minColor, maxColor args are for using a subset of the map.</p>
+              <p>Return the map color proportional to the number value between min, max.
+This is a linear interpolation based on the map indices.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="hljs-attribute">scaleIndex</span>: <span class="hljs-function"><span class="hljs-params">(number, min=<span class="hljs-number">0</span>, max=<span class="hljs-number">1</span>, minColor = <span class="hljs-number">0</span>, maxColor = <span class="hljs-property">@length</span>-<span class="hljs-number">1</span>)</span> -&gt;</span>
-      scale = u.lerpScale number, min, max <span class="hljs-comment"># (number-min)/(max-min)</span>
-      Math.round(u.lerp minColor, maxColor, scale)
-    <span class="hljs-attribute">scaleColor</span>: <span class="hljs-function"><span class="hljs-params">(number, min=<span class="hljs-number">0</span>, max=<span class="hljs-number">1</span>, minColor = <span class="hljs-number">0</span>, maxColor = <span class="hljs-property">@length</span>-<span class="hljs-number">1</span>)</span> -&gt;</span>
-      @[ <span class="hljs-property">@scaleIndex</span> number, min, max, minColor, maxColor ]</pre></div></div>
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-attribute">scaleColor</span>: <span class="hljs-function"><span class="hljs-params">(number, min, max)</span> -&gt;</span>
+      <span class="hljs-keyword">if</span> number &lt; min <span class="hljs-keyword">then</span> number = min
+      <span class="hljs-keyword">if</span> number &gt; max <span class="hljs-keyword">then</span> number = max
+      scale = (<span class="hljs-property">@length</span>-<span class="hljs-number">1</span>)*((number-min)/(max-min))
+      @[ Math.round scale ]</pre></div></div>
             
         </li>
         
