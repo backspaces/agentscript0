@@ -1,6 +1,6 @@
 # A NetLogo-like mouse handler.
 # See: [addEventListener](http://goo.gl/dq0nN)
-u = ABM.util
+u = ABM.Util
 
 class ABM.Mouse
   # Create and start mouse obj, args: a model, and a callback method.
