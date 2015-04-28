@@ -55,8 +55,6 @@
         if @useConsole and @anim.ticks % 100 is 0
           console.log "flock alignment: #{@reportFlockVectorSize()}"
         @flock(a) for a in @turtles
-        if @anim.draws is 2 # Show the sprite sheet if there is one after first draw
-          @showSpriteSheet()
         @stop() if @anim.ticks is 400
 
         @renderInDOM(a) for a in @turtles

@@ -79,11 +79,6 @@
           console.log "flock alignment: #{vec}" if @useConsole
           @ui.setUIValue "log", {alignment: vec, step: @anim.ticks}, true
         @flock(a) for a in @turtles
-        if @anim.draws is 2 # Show the sprite sheet if there is one after first draw
-          sheet = u.last(Shapes.spriteSheets) if Shapes.spriteSheets.length isnt 0
-          if sheet?
-            console.log sheet if @useConsole
-            document.getElementById("play").appendChild(sheet.canvas)
 
       flock: (a) -> # a is turtle
         flockmates = @turtles.inRadius a, @vision

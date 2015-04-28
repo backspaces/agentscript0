@@ -13,6 +13,7 @@
 # * hasNeighbors: true if each patch caches its neighbors
 # * isHeadless:   true if not using canvas drawing
 class Patches extends AgentSet
+  drawWithPixels: true # Experimental class variable
   # Constructor: super creates the empty AgentSet instance and installs
   # the agentClass (breed) variable shared by all the Patches in this set.
   # Patches are created from top-left to bottom-right to match data sets.
@@ -39,7 +40,7 @@ class Patches extends AgentSet
 
   # Draw patches using scaled image of colors. Note anti-aliasing may occur
   # if browser does not support smoothing flags.
-  usePixels: (@drawWithPixels=true) ->
+  usePixels: () ->
     u.deprecated "Patches.usePixels: pixels always used (color.pixel)"
 
   # Optimization: Cache a single set by modeler for use by patchRect,
@@ -61,16 +62,13 @@ class Patches extends AgentSet
   #
   setPixels: ->
     ctx = @model.contexts.patches
-    u.setCtxSmoothing ctx, false # crisp rendering # not @drawWithPixels
+    u.setCtxSmoothing ctx, false # crisp rendering
     if @size is 1
-    # then @usePixels(); @pixelsCtx = @model.contexts.patches
     then @pixelsCtx = ctx
     else @pixelsCtx = u.createCtx @numX, @numY
     @pixelsImageData = @pixelsCtx.getImageData(0, 0, @numX, @numY)
     @pixelsData = @pixelsImageData.data
-    # if @pixelsData instanceof Uint8Array # Check for typed arrays
-    @pixelsData32 = new Uint32Array @pixelsData.buffer
-    # @pixelsAreLittleEndian = u.isLittleEndian()
+    @pixelsData32 = new Uint32Array @pixelsData.buffer if @drawWithPixels
 
   # Draw patches.  Three cases:
   #
@@ -81,7 +79,6 @@ class Patches extends AgentSet
     if @monochrome
     then u.fillCtx ctx, @agentClass::color
     else @drawScaledPixels ctx
-    # else if @drawWithPixels then @drawScaledPixels ctx else super ctx
 
 # #### Patch grid coord system utilities:
 
@@ -136,6 +133,9 @@ class Patches extends AgentSet
           rect.push pnext if (meToo or p isnt pnext)
     @asSet rect
 
+  # Return patches within the patch square.
+  inRect: (agent, radius) -> #agentSet.inRadius @, radius
+    @patchRect( (agent.p ? agent), Math.ceil(radius) )
   # Return patches within radius of the given agent (patch or turtle)
   inRadius: (agent, radius) -> #agentSet.inRadius @, radius
     pset = @patchRect( (agent.p ? agent), Math.ceil(radius) )
@@ -215,16 +215,18 @@ class Patches extends AgentSet
   drawScaledPixels: (ctx) ->
     # u.setIdentity ctx & ctx.restore() only needed if patch size
     # not 1, pixel ops don't use transform but @size>1 uses
-    # a drawimage
+    # a drawimage, using a transform
     u.setIdentity ctx if @size isnt 1
-    @drawScaledPixels32 ctx
-    ctx.restore() if @size isnt 1
-  drawScaledPixels32: (ctx) ->
-    data = @pixelsData32
-    data[p.id] = p.color.pixel for p in @
+    data = @pixelsData32 ? @pixelsData
+
+    if @pixelsData32?
+    then data[p.id] = p.color.pixel for p in @
+    else data.set(p.color, p.id*4) for p in @
+
     @pixelsCtx.putImageData @pixelsImageData, 0, 0
     return if @size is 1
-    ctx.drawImage @pixelsCtx.canvas, 0, 0, ctx.canvas.width, ctx.canvas.height
+    ctx.drawImage @pixelsCtx.canvas, 0, 0, @pxWidth, @pxHeight
+    ctx.restore() if @size isnt 1
 
   # Diffuse the value of patch variable `p.v` by distributing `rate` percent
   # of each patch's value of `v` to its neighbors.

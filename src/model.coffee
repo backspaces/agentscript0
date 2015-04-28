@@ -154,7 +154,7 @@ class Model
 # two abstract methods. `super` need not be called.
 
   # Initialize model resources (images, files) here.
-  # Uses util.waitOn so can be be async.
+  # Uses Util.waitOn so can be be async.
   startup: -> # called by constructor
   # Initialize your model variables and defaults here.
   # If async used, make sure step/draw are aware of possible missing data.
@@ -199,12 +199,18 @@ class Model
   draw: (force = @anim.stopped or @anim.draws is 1) ->
     if @debugging
       console.log @anim.toString()  if @anim.draws % 100 is 0
+      @showSpriteSheet() if (@anim.draws is 2)# and @turtles[0]?.useSprites
     if @div?
       @patches.draw  @contexts.patches  if force or @refreshPatches
       @links.draw    @contexts.links    if force or @refreshLinks
       @turtles.draw  @contexts.turtles  if force or @refreshTurtles
       @drawSpotlight @spotlightTurtle, @contexts.spotlight if @spotlightTurtle?
     @emit('draw')
+  toggleDrawing: ->
+    if @div?
+      @div0 = @div; @div = null
+    else
+      @div = @div0; @div0 = null
 
 #### Wrappers around user-implemented methods
 
@@ -286,16 +292,16 @@ class Model
   debug: (@debugging=true)->u.waitOn (=>@modelReady),(=>@setRootVars()); @
   setRootVars: ->
     window.psc = Patches
-    window.asc = Turtles
+    window.tsc = Turtles
     window.lsc = Links
     window.pc  = @Patch
-    window.ac  = @Turtle
+    window.tc  = @Turtle
     window.lc  = @Link
     window.ps  = @patches
-    window.as  = @turtles
+    window.ts  = @turtles
     window.ls  = @links
     window.p0  = @patches[0]
-    window.a0  = @turtles[0]
+    window.t0  = @turtles[0]
     window.l0  = @links[0]
     window.dr  = @drawing
     window.u   = Util
@@ -320,15 +326,13 @@ class Model
         sheet.canvas.setAttribute "style", "float:right"
         @div.parentElement.insertBefore(sheet.canvas, @div)
     else
-      console.log "showSpriteSheet: no sprite sheet found"
+      console.log "showSpriteSheet: not using sprites"
 
 # Create the namespace **ABM** for our project.
 # Note here `this` or `@` == window due to coffeescript wrapper call.
 # Thus @ABM is placed in the global scope.
 
 @ABM = {
-  util    # deprecated, Util
-  shapes  # deprecated, Shapes
   Util
   Color
   ColorMaps

@@ -21,10 +21,9 @@
         @turtles.setDefault "heading", 0 # override promotion to random angle
         @links.setDefault "thickness", .5 # 2.5
 
+        @anim.setRate 60
 
         @turtles.create @buttons, (a) => # fat arrow for @patches etc
-          # a.size = 1.5
-          # a.shape = "circle"
           a.setXY @patches.randomPt()...
 
       step: ->

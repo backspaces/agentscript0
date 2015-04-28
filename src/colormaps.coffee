@@ -139,14 +139,13 @@ ColorMaps  = {
       for c,i in @ then return i if @colorsEqual(color, c)
       undefined
 
-    # Return the map index or color proportional to the value between min, max.
+    # Return the map color proportional to the number value between min, max.
     # This is a linear interpolation based on the map indices.
-    # The optional minColor, maxColor args are for using a subset of the map.
-    scaleIndex: (number, min=0, max=1, minColor = 0, maxColor = @length-1) ->
-      scale = u.lerpScale number, min, max # (number-min)/(max-min)
-      Math.round(u.lerp minColor, maxColor, scale)
-    scaleColor: (number, min=0, max=1, minColor = 0, maxColor = @length-1) ->
-      @[ @scaleIndex number, min, max, minColor, maxColor ]
+    scaleColor: (number, min, max) ->
+      if number < min then number = min
+      if number > max then number = max
+      scale = (@length-1)*((number-min)/(max-min))
+      @[ Math.round scale ]
 
     # Find the index/color closest to this r,g,b,a.
     # Alpha only used for exact lookup optimization.

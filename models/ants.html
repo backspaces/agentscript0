@@ -6,7 +6,7 @@
     <script type="text/coffeescript">
 
     u = ABM.Util # aliases
-    Shapes = ABM.shapes
+    Shapes = ABM.Shapes
     ColorMaps = ABM.ColorMaps
     class MyModel extends ABM.Model
       setup: ->
@@ -52,9 +52,6 @@
         @setupPatches()
         @setupTurtles()
       step: ->
-        # console.log @anim.toString() if @anim.ticks % 100 is 0
-        # Show the sprite sheet if there is one after first draw
-        @showSpriteSheet() if @anim.draws is 2
         @updateTurtles()
         @updatePatches()
 
@@ -124,8 +121,8 @@
           p.foodPheromone = p.nestPheromone = 0 if p.isOnEdge()
           unless (p.isNest or p.isFood) #  or p.isOnEdge()
             if p.foodPheromone > p.nestPheromone
-            then p.color = @foodColorMap.scaleColor p.foodPheromone
-            else p.color = @nestColorMap.scaleColor p.nestPheromone
+            then p.color = @foodColorMap.scaleColor p.foodPheromone, 0, 1
+            else p.color = @nestColorMap.scaleColor p.nestPheromone, 0, 1
             # Old:
             # then p.scaleColor @foodColor, p.foodPheromone
             # else p.scaleColor @nestColor, p.nestPheromone

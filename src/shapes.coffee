@@ -1,7 +1,7 @@
 # A *very* simple shapes module for drawing
 # [NetLogo-like](http://ccl.northwestern.edu/netlogo/docs/) agents.
 
-shapes = Shapes = do ->
+Shapes = do ->
   # Each shape is a named object with two members:
   # a boolean rotate and a draw procedure and two optional
   # properties: img for images, and shortcut for a transform-less

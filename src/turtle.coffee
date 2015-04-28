@@ -140,12 +140,12 @@ class Turtle
 
   # Return the closest torus topology point of given x,y relative to myself.
   # Used internally to determine how to draw links between two turtles.
-  # See util.torusPt.
+  # See Util.torusPt.
   torusPtXY: (x, y) ->
     u.torusPt @x, @y, x, y, @model.patches.numX, @model.patches.numY
 
   # Return the closest torus topology point of given turtle/patch
-  # relative to myself. See util.torusPt.
+  # relative to myself. See Util.torusPt.
   torusPt: (o) ->
     @torusPtXY o.x, o.y
 

@@ -8,17 +8,16 @@
     u = ABM.Util # shortcut for ABM.Util
     class MyModel extends ABM.Model
       setup: -> # called by Model constructor
-        # @refreshPatches = false
+        @refreshPatches = false
         @population = 200
         @patches.usePixels()
-        @patches.cacheTurtlesHere()
+        # @patches.cacheTurtlesHere()
+        @turtles.setDefault "useSprites", true
 
-
-        @anim.setRate 20, true
+        @anim.setRate 30 # 20, true
         @turtles.create @population
         for a in @turtles
-          a.size = 1
-          # a.shape = u.oneOf ABM.shapes.names()
+          a.size = 2
         for p in @patches
           p.color = u.randomGray()
           p.color = "red" if p.x is 0
@@ -26,8 +25,7 @@
       step: ->
         for a in @turtles
           a.rotate u.randomCentered(u.degToRad(40))
-          a.forward 1
-        # console.log @anim.toString() if @anim.ticks % 100 is 0
+          a.forward .5
         # @stop() if @anim.ticks is 200
 
     model = new MyModel {

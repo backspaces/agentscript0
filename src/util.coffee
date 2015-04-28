@@ -16,16 +16,19 @@ Util = util = u = # TODO: "util" deprecated in favor of Util
   #     error("wtf? foo=#{foo}") if fooProblem
   error: (s) -> throw new Error s
 
-  # Alert for a deprecated function.
-  deprecatedAlert: false
-  deprecatedMsgs: []
+  # Utility for logging a message only once .. i.e. if in loop
+  loggedMsgs: []
+  logOnce: (s) ->
+    if @loggedMsgs.indexOf(s) < 0
+      console.log s
+      @loggedMsgs.push s
+  # Deprecations: logOnce w/ optional single alert
+  deprecatedAlert: false # Set to true to let modeler know
   deprecated: (s) ->
-    if @deprecatedMsgs.length is 0 and @deprecatedAlert
+    if @deprecatedAlert
       alert "Deprecated functions, see console.log"
-    if @deprecatedMsgs.indexOf(s) < 0
-      console.log "DEPRECATED - #{s}"
-      @deprecatedMsgs.push s
-    null
+      @deprecatedAlert = false
+    @logOnce "DEPRECATED - #{s}"
 
 
   # Two max/min int values. One for 2^53, largest int in float64, other for
@@ -74,7 +77,11 @@ Util = util = u = # TODO: "util" deprecated in favor of Util
   # Return v to be between min, max via mod fcn
   wrap: (v, min, max) -> min + @mod(v-min, max-min)
   # Return v to be between min, max via clamping with Math.min/max
-  clamp: (v, min, max) -> Math.max(Math.min(v,max),min)
+  clamp: (v, min, max) ->
+    # Math.max(Math.min(v,max),min) appears to be slower
+    if v < min then return min
+    if v > max then return max
+    v
   # Return sign of a number as +/- 1
   sign: (v) -> if v<0 then -1 else 1
   # Return n to given precision, default 2
@@ -527,6 +534,7 @@ Util = util = u = # TODO: "util" deprecated in favor of Util
 
   # Return a JS array given a TypedArray.
   # To create TypedArray from JS array: new Uint8Array(jsa) etc
+  # normalArray = Array.prototype.slice.call(typedArray) works too.
   typedToJS: (typedArray) -> (i for i in typedArray)
 
   # Return a linear interpolation between lo and hi.

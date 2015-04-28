@@ -48,8 +48,6 @@
         if @useConsole and @anim.ticks % 25 is 0
           # console.log @anim.toString(), "flock alignment: #{@reportFlockVectorSize()}"
           console.log "flock alignment: #{@reportFlockVectorSize()}"
-        # Show the sprite sheet if there is one after first draw
-        @showSpriteSheet() if @anim.draws is 2
         @flock(a) for a in @turtles
 
       flock: (a) -> # a is turtle
