@@ -26,10 +26,10 @@
         # @turtles.setUseSprites() # 24 -> 36
 
         @turtles.setDefault "useSprites", true
-        @anim.setRate 30, false, false # multistep, noRAF
+        @anim.setRate 60# , false, false # multistep, noRAF
 
         @useConsole = true
-        @population = 500     # turtles
+        @population = 150     # turtles (was more, Chrome regression problem)
         @setVision 3          # patches & set patch rect
         @minSeparation = 0.75 # patches
         @setMaxTurn(3.0)      # degrees -> radians

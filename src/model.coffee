@@ -14,7 +14,7 @@ class Model
     patches:   {z:10, ctx:"2d"}
     drawing:   {z:20, ctx:"2d"}
     links:     {z:30, ctx:"2d"}
-    turtles:    {z:40, ctx:"2d"}
+    turtles:   {z:40, ctx:"2d"}
     spotlight: {z:50, ctx:"2d"}
   }
 
@@ -30,7 +30,6 @@ class Model
     maxY: 16
     isTorus: false
     hasNeighbors: true
-    # isHeadless: false
 
   # Constructor:
   #
@@ -48,7 +47,7 @@ class Model
     u.deprecated "Model: isHeadless no longer used" if args.isHeadless?
 
     # Merge args into options. Insures newer options/defaults included
-    for k,v of args when k isnt "isHeadless" # Remove headless test shortly
+    for k,v of args # when k isnt "isHeadless" # Remove headless test shortly
       u.error "Bad Model arg: #{k}: #{v}" if options[k] is undefined
       options[k] = v
     @setWorld options
@@ -57,8 +56,10 @@ class Model
 
     @contexts = {}
     if options.div?
-      (@div=document.getElementById(options.div)).setAttribute 'style',
-        "position:relative; width:#{@world.pxWidth}px; height:#{@world.pxHeight}px"
+      @div=document.getElementById(options.div)
+      # el.setAttribute 'style' erases existing style, el.style.xx does not
+      s=@div.style
+      s.position="relative"; s.width=@world.pxWidth; s.height=@world.pxHeight
 
       # * Create 2D canvas contexts layered on top of each other.
       # * Initialize a patch coord transform for each layer.

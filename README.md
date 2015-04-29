@@ -88,6 +88,8 @@ The models/ directory contains tiny models used both as unit tests and as exampl
 
 [**wallfollower.html**](models/wallfollower.html) An interesting wall following model from NetLogo. A set of "buildings" are created on the patches. Turtles find them, then follow the wall, half of them to the right, the others to the left.
 
+[**water.html**](models/water.html) A shallow water simulation with boats providing disturbance in the water. See [shallow water theory](http://www.mathworks.com/moler/exm/chapters/water.pdf) chapter of Cleve Moler's book.
+
 #### Sample Models Format
 
 Our example models use CoffeeScript directly within the browser via `text/coffeescript` [script tags](http://coffeescript.org/#scripts):

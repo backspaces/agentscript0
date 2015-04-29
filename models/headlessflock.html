@@ -102,8 +102,9 @@
         dy = (Math.cos a.heading for a in @turtles).reduce (x,y) -> x+y
         Math.sqrt(dx*dx + dy*dy)/@population
 
-    # div, patchSize, minX, maxX, minY, maxY, isTorus, hasNeighbors, isHeadless
+    # div, patchSize, minX, maxX, minY, maxY, isTorus, hasNeighbors
     #   Defaults: 13, -16, 16, -16, 16, false, true, false
+    # No div, therefore no model drawings
     model = new MyModel({
       size: 15,
       minX: -16,

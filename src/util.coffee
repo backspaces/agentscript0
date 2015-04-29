@@ -250,19 +250,6 @@ Util = util = u = # TODO: "util" deprecated in favor of Util
   hsbMap: (n=256, s=255,b=255)->
     @deprecated "Util.hsbMap: use ColorMaps.hslColorMap"
     ColorMaps.hslColorMap n, 1, 1
-    # (@hsbToRgb [i*255/(n-1),s,b] for i in [0...n])
-  # Use the canvas gradient feature to create nColors.
-  # This is a really sophisticated technique, see:
-  #  https://developer.mozilla.org/en-US/docs/Web/CSS/linear-gradient
-  # gradientMap: (nColors, stops, locs) ->
-  #   locs = (i/(stops.length-1) for i in [0...stops.length]) if not locs?
-  #   ctx = @createCtx nColors, 1
-  #   grad = ctx.createLinearGradient 0, 0, nColors, 0
-  #   grad.addColorStop locs[i], @colorStr stops[i] for i in [0...stops.length]
-  #   ctx.fillStyle = grad
-  #   ctx.fillRect 0, 0, nColors, 1
-  #   id = @ctxToImageData(ctx).data
-  #   ([id[i], id[i+1], id[i+2]] for i in [0...id.length] by 4)
 
   # Return little/big endian-ness of hardware.
   # See Mozilla pixel [manipulation article](http://goo.gl/Lxliq)
@@ -778,8 +765,11 @@ Util = util = u = # TODO: "util" deprecated in favor of Util
     @insertLayer div, element, width, height, z
     ctx
   insertLayer: (div, element, w, h, z) ->
-    element.setAttribute 'style', # Note: this erases existing style, el.style.position doesnt
-    "position:absolute;top:0;left:0;width:#{w};height:#{h};z-index:#{z}"
+    # Note: this erases existing style, el.style.position doesnt
+    # element.setAttribute 'style',
+    # "position:absolute;top:0;left:0;width:#{w};height:#{h};z-index:#{z}"
+    s = element.style
+    s.position="absolute"; s.top=0; s.left=0; s.width=w; s.height=h; s.zIndex=z
     div.appendChild(element)
 
   setCtxSmoothing: (ctx, smoothing) ->

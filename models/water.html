@@ -1,0 +1,93 @@
+<html>
+  <head>
+    <title>Diffusion Model</title>
+    <script src="../lib/agentscript.js"></script>
+    <script src="../tools/coffee-script.js"></script>
+    <script type="text/coffeescript">
+
+    # This is a contributed model by Cody (cody@redfish.com).
+    # It is a shallow water simulation with a few boats
+    # causing a disturbance in the water.
+    # This is a clear discription
+    # http://freespace.virgin.net/hugo.elias/graphics/x_water.htm
+    # This is a MatLab discription from our friend Cleve Moler
+    # http://www.mathworks.com/moler/exm/chapters/water.pdf
+
+    u = ABM.Util # ABM.Util alias
+    cmaps = ABM.ColorMaps
+    class MyModel extends ABM.Model
+      setup: ->
+
+        # globals
+        @population = 4
+        @speed = 1
+        @omega = 1.95
+        @smoothing = 0.999
+        @colorMap = cmaps.gradientColorMap 32, ["blue","aqua"]
+        @useInRect = false
+        @radius = 4
+        # Keep a rect of our radius size for performance
+        @patches.cacheRect @radius # helps a bit
+
+        @anim.setRate 60 #, true
+
+        # defaults
+        @turtles.setDefault "size", 3
+        # only a couple of turtles, sprites may not be needed here
+        # @turtles.setDefault "useSprites", true
+
+        @turtles.create @population
+
+        for p in @patches
+          # Cleve Moler sets his initial value to 0.14223
+          # on his shallow water chapter
+          p.depA = 0.14223
+          p.depB = p.depA
+
+      step: ->
+        for p in @patches
+          nsum = 0
+          for nei in p.n4
+            nsum += nei.depA
+          depth = @omega * nsum/p.n4.length + (1-@omega)*p.depB
+          p.depB = depth * @smoothing
+        for p in @patches # swap buffers
+          tmp = p.depA
+          p.depA = p.depB
+          p.depB = tmp
+        for p in @patches
+          # 0-2 seems a good max/min range via trial/error
+          p.color = @colorMap.scaleColor p.depA, 0, 2
+        for a in @turtles
+          if Math.sqrt( a.x*a.x + a.y*a.y) > @world.maxX*0.9
+            a.rotate u.degToRad(120)
+          else
+            a.rotate u.randomCentered(u.degToRad(20))
+          a.forward @speed
+          if @useInRect
+          then ps = @patches.inRect a.p, @radius
+          else ps = @patches.inRadius a.p, @radius
+          p.depA = 0.9 for p in ps
+        null # return something to avoid CS returning array of results
+
+    model = new MyModel {
+      div: "layers",
+      size: 5,
+      minX: -60,
+      maxX: 60,
+      minY: -60,
+      maxY: 60,
+      isTorus: false
+    }
+    model.debug() # Debug: Put Model vars in global name space
+    model.start() # Run model immediately after startup initialization
+
+    window.model = model
+
+    </script>
+  </head>
+  <body>
+    <div>Omega: </div><input type="range" min=0.3 max=2.0 value=1.9 step=0.01 onchange="console.log(window.model.omega=Number(this.value));"></input>
+    <div id="layers"></div>
+  </body>
+</html>

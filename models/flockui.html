@@ -14,6 +14,14 @@
       setVision: (@vision) ->  @patches.cacheRect @vision, true
       setMaxTurn: (maxTurn) -> @maxTurn = u.degToRad(maxTurn)
       toggleConsole: () -> @useConsole = not @useConsole
+      resetPopulation: (@population) ->
+        change = @population - @turtles.length
+        if change > 0
+          p.sprout 1 for p in @patches.nOf(change)
+        else
+          t.die() for t in @turtles.nOf(-change)
+        change # CS always returns something, this made some sense
+
 
       setup: ->
         # u.randomSeed() # use for repeatable runs
@@ -31,7 +39,7 @@
         # @anim.setRate 30, true # multistep
 
         @useConsole = true
-        @population = 500     # turtles
+        @population = 150     # turtles (was more, Chrome regression problem)
         @setVision 3          # patches & set patch rect
         @minSeparation = 0.75 # patches
         @setMaxTurn(3.0)      # degrees -> radians
@@ -128,6 +136,15 @@
         val: 3,
         smooth: true,
         setter: "setVision"
+      },
+      "population": {
+        type: "slider",
+        min: 50,
+        max: 500,
+        step: 25,
+        val: 150,
+        smooth: true,
+        setter: "resetPopulation"
       }
     })
 

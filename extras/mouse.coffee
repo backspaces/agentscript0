@@ -1,6 +1,6 @@
 # A NetLogo-like mouse handler.
 # See: [addEventListener](http://goo.gl/dq0nN)
-u = ABM.util
+u = ABM.Util
 
 class ABM.Mouse
   # Create and start mouse obj, args: a model, and a callback method.
@@ -34,7 +34,7 @@ class ABM.Mouse
     @handleMouseEvent(e)
   handleMouseUp: (e) =>
     @down = false
-    @moved = false    
+    @moved = false
     @handleMouseEvent(e)
   handleMouseMove: (e) =>
     @setXY(e)
@@ -141,7 +141,7 @@ class ABM.Mouse
     agentsHere = {}
     agents = []
     curPatch = @model.patches.patch(x, y)
-    
+
     agents = u.clone(@model.links)
     for patch in curPatch.n.concat(curPatch)
       agents = agents.concat(patch.turtlesHere())
@@ -163,5 +163,5 @@ class ABM.Mouse
 
     @lastAgentsHovered = agentsHere
 
-  mouseEvent: (agent, e) -> 
+  mouseEvent: (agent, e) ->
     return {target: agent, patchX: @x, patchY: @y, dx: @dx, dy: @dy, originalEvent: e}

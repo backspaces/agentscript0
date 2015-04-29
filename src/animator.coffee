@@ -75,4 +75,4 @@ class Animator
       @animHandle = requestAnimationFrame @animateDraws unless @stopped
   animate: ->
     @animateSteps() if @multiStep
-    @animateDraws() # unless @isHeadless and @multiStep
+    @animateDraws()

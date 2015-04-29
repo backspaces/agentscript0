@@ -11,7 +11,6 @@
 # * numX/numY:    width/height of grid.
 # * isTorus:      true if coord system wraps around at edges
 # * hasNeighbors: true if each patch caches its neighbors
-# * isHeadless:   true if not using canvas drawing
 class Patches extends AgentSet
   drawWithPixels: true # Experimental class variable
   # Constructor: super creates the empty AgentSet instance and installs

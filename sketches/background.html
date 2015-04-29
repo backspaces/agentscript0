@@ -1,44 +1,57 @@
 <html>
   <head>
-    <title>Background Model</title>
+    <title>Background Layer Model</title>
     <script src="../lib/agentscript.js"></script>
     <script src="../tools/coffee-script.js"></script>
     <script type="text/coffeescript">
-    
+
+    # Tricks for adding a background layer, under the patches.
+    # 1 - If the model doesn't need the drawing layer, just move it
+    #     under the patch layer and ask patches to import the image
+    # 2 - Or just create your own layer.  An easy way to do this is to
+    #     create a new entry in contextsInit with a z of 0
+    # 3 - Make your own layer as an image, setting its src
+    # Notes:
+    # - Standard layers currently start at z=10 and increment by 10 (See Model)
+    # - You need some transparent patch colors to see the background
+
     u = ABM.Util # shortcut for ABM.Util
+    background = "drawing" # "drawing", "layer", "image"
     class MyModel extends ABM.Model
-      moveDrawing: false
       constructor: -> # no need for args, super manages passing on to Model
-        console.log @contextsInit
-        @contextsInit.patches.z += 1 # make sure patches.z > 0
-        if @moveDrawing
-          @contextsInit.drawing.z = 0
-        else
-          @contextsInit.myCtx = {z:0,  ctx:"2d"}
+        switch background
+          when "drawing" then @contextsInit.drawing.z = 0
+          when "layer"   then @contextsInit.myCtx = {z:0,  ctx:"2d"}
+          when "image"   then @contextsInit.myCtx = {z:0,  ctx:"img"}
+          else u.error "bad background: #{background}"
+        console.log "background style:", background
+        console.log k, v for k,v of @contextsInit
         super
       startup: -> # called by Model constructor, sync
-        @img = u.importImage "data/redfish512t.png"
+        @img = u.importImage "data/redfish512t.png" unless background is "image"
       setup: -> # called by Model constructor and reset()
+        @turtles.setDefault "useSprites", true
         @refreshPatches = false
         @turtles.create 25, (a)->a.size = 3
+        #@anim.setRate 100#, false, true
         # patches transparent except for red axes
         @patches.setDefault "color", [0,0,0,0]
         p.color = [255,0,0] for p in @patches when p.x is 0 or p.y is 0
         # draw img to myCtx or drawing layer
-        if @moveDrawing
-          @patches.installDrawing @img
-        else
-          @patches.installDrawing @img, @contexts.myCtx
+        switch background
+          when "drawing" then @patches.installDrawing @img
+          when "layer"   then @patches.installDrawing @img, @contexts.myCtx
+          when "image"   then @contexts.myCtx.src = "data/redfish512t.png"
       step: ->
         for a in @turtles
           a.rotate u.randomCentered(u.degToRad(40))
-          a.forward 1
+          a.forward .5
 
     # MyModel::contextsInit.patches.z += 1 # make sure patches.z > 0
     # MyModel.contextsInit.myCtx = {z:0,  ctx:"2d"}
     model = new MyModel {
       div: "layers",
-      size: 10,
+      size: 8,
       minX: -25,
       maxX: 25,
       minY: -25,
@@ -54,5 +67,3 @@
     <div id="layers"></div>
   </body>
 </html>
-
-
