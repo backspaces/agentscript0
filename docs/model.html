@@ -69,7 +69,7 @@ Example:</p>
     <span class="hljs-attribute">patches</span>:   {<span class="hljs-attribute">z</span>:<span class="hljs-number">10</span>, <span class="hljs-attribute">ctx</span>:<span class="hljs-string">"2d"</span>}
     <span class="hljs-attribute">drawing</span>:   {<span class="hljs-attribute">z</span>:<span class="hljs-number">20</span>, <span class="hljs-attribute">ctx</span>:<span class="hljs-string">"2d"</span>}
     <span class="hljs-attribute">links</span>:     {<span class="hljs-attribute">z</span>:<span class="hljs-number">30</span>, <span class="hljs-attribute">ctx</span>:<span class="hljs-string">"2d"</span>}
-    <span class="hljs-attribute">turtles</span>:    {<span class="hljs-attribute">z</span>:<span class="hljs-number">40</span>, <span class="hljs-attribute">ctx</span>:<span class="hljs-string">"2d"</span>}
+    <span class="hljs-attribute">turtles</span>:   {<span class="hljs-attribute">z</span>:<span class="hljs-number">40</span>, <span class="hljs-attribute">ctx</span>:<span class="hljs-string">"2d"</span>}
     <span class="hljs-attribute">spotlight</span>: {<span class="hljs-attribute">z</span>:<span class="hljs-number">50</span>, <span class="hljs-attribute">ctx</span>:<span class="hljs-string">"2d"</span>}
   }</pre></div></div>
             
@@ -107,19 +107,6 @@ Access by (ABM.)Model.defaultOptions() etc</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-5">&#182;</a>
               </div>
-              <p>isHeadless: false</p>
-
-            </div>
-            
-        </li>
-        
-        
-        <li id="section-6">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-6">&#182;</a>
-              </div>
               <p>Constructor:</p>
 <ul>
 <li>create agentsets, install them and ourselves in ABM global namespace</li>
@@ -136,11 +123,11 @@ Access by (ABM.)Model.defaultOptions() etc</p>
         </li>
         
         
-        <li id="section-7">
+        <li id="section-6">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-7">&#182;</a>
+                <a class="pilcrow" href="#section-6">&#182;</a>
               </div>
               <p>Setup and error check args</p>
 
@@ -155,17 +142,17 @@ Access by (ABM.)Model.defaultOptions() etc</p>
         </li>
         
         
-        <li id="section-8">
+        <li id="section-7">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-8">&#182;</a>
+                <a class="pilcrow" href="#section-7">&#182;</a>
               </div>
               <p>Merge args into options. Insures newer options/defaults included</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">for</span> k,v <span class="hljs-keyword">of</span> args <span class="hljs-keyword">when</span> k <span class="hljs-keyword">isnt</span> <span class="hljs-string">"isHeadless"</span> <span class="hljs-comment"># Remove headless test shortly</span>
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">for</span> k,v <span class="hljs-keyword">of</span> args <span class="hljs-comment"># when k isnt "isHeadless" # Remove headless test shortly</span>
       u.error <span class="hljs-string">"Bad Model arg: <span class="hljs-subst">#{k}</span>: <span class="hljs-subst">#{v}</span>"</span> <span class="hljs-keyword">if</span> options[k] <span class="hljs-keyword">is</span> <span class="hljs-literal">undefined</span>
       options[k] = v
     <span class="hljs-property">@setWorld</span> options
@@ -174,8 +161,23 @@ Access by (ABM.)Model.defaultOptions() etc</p>
 
     <span class="hljs-property">@contexts</span> = {}
     <span class="hljs-keyword">if</span> options.div?
-      (<span class="hljs-property">@div</span>=<span class="hljs-built_in">document</span>.getElementById(options.div)).setAttribute <span class="hljs-string">'style'</span>,
-        <span class="hljs-string">"position:relative; width:<span class="hljs-subst">#{<span class="hljs-property">@world</span>.pxWidth}</span>px; height:<span class="hljs-subst">#{<span class="hljs-property">@world</span>.pxHeight}</span>px"</span></pre></div></div>
+      <span class="hljs-property">@div</span>=<span class="hljs-built_in">document</span>.getElementById(options.div)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              <p>el.setAttribute ‘style’ erases existing style, el.style.xx does not</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      s=<span class="hljs-property">@div</span>.style
+      s.position=<span class="hljs-string">"relative"</span>; s.width=<span class="hljs-property">@world</span>.pxWidth; s.height=<span class="hljs-property">@world</span>.pxHeight</pre></div></div>
             
         </li>
         

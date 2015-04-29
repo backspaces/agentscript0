@@ -214,14 +214,11 @@ array is unsorted, simply call <code>sortById</code> first, see <code>sortById</
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-10">&#182;</a>
               </div>
-              <p>Set the default value of an agent class, return agentset</p>
+              <p>Set/get the default value of an agent class</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">setDefault</span>: <span class="hljs-function"><span class="hljs-params">(name, value)</span> -&gt;</span>
-    <span class="hljs-keyword">if</span> name.match(<span class="hljs-regexp">/color/i</span>) <span class="hljs-keyword">and</span> u.isArray value
-      value = ColorMaps.Rgb.findClosestColor value...
-    <span class="hljs-property">@agentClass</span>::[name] = value <span class="hljs-comment"># ; @</span>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">setDefault</span>: <span class="hljs-function"><span class="hljs-params">(name, value)</span> -&gt;</span> <span class="hljs-property">@agentClass</span>::[name] = value
   <span class="hljs-attribute">getDefault</span>: <span class="hljs-function"><span class="hljs-params">(name)</span> -&gt;</span> <span class="hljs-property">@agentClass</span>::[name]</pre></div></div>
             
         </li>

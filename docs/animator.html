@@ -288,7 +288,7 @@ The “if” is to avoid from ms=0</p>
       <span class="hljs-property">@animHandle</span> = requestAnimationFrame <span class="hljs-property">@animateDraws</span> <span class="hljs-keyword">unless</span> <span class="hljs-property">@stopped</span>
   <span class="hljs-attribute">animate</span>: <span class="hljs-function">-&gt;</span>
     <span class="hljs-property">@animateSteps</span>() <span class="hljs-keyword">if</span> <span class="hljs-property">@multiStep</span>
-    <span class="hljs-property">@animateDraws</span>() <span class="hljs-comment"># unless @isHeadless and @multiStep</span></pre></div></div>
+    <span class="hljs-property">@animateDraws</span>()</pre></div></div>
             
         </li>
         

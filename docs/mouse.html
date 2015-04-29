@@ -32,7 +32,7 @@ See: <a href="http://goo.gl/dq0nN">addEventListener</a></p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>u = ABM.util
+            <div class="content"><div class='highlight'><pre>u = ABM.Util
 
 <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ABM</span>.<span class="hljs-title">Mouse</span></span></pre></div></div>
             
@@ -105,7 +105,7 @@ more standard down/up enabling move events.</p>
     <span class="hljs-property">@handleMouseEvent</span>(e)
   <span class="hljs-attribute">handleMouseUp</span>: <span class="hljs-function"><span class="hljs-params">(e)</span> =&gt;</span>
     <span class="hljs-property">@down</span> = <span class="hljs-literal">false</span>
-    <span class="hljs-property">@moved</span> = <span class="hljs-literal">false</span>    
+    <span class="hljs-property">@moved</span> = <span class="hljs-literal">false</span>
     <span class="hljs-property">@handleMouseEvent</span>(e)
   <span class="hljs-attribute">handleMouseMove</span>: <span class="hljs-function"><span class="hljs-params">(e)</span> =&gt;</span>
     <span class="hljs-property">@setXY</span>(e)
@@ -237,7 +237,7 @@ previously used e.offsetX, e.offsetY, which was less robust
     agentsHere = {}
     agents = []
     curPatch = <span class="hljs-property">@model</span>.patches.patch(x, y)
-    
+
     agents = u.clone(<span class="hljs-property">@model</span>.links)
     <span class="hljs-keyword">for</span> patch <span class="hljs-keyword">in</span> curPatch.n.concat(curPatch)
       agents = agents.concat(patch.turtlesHere())</pre></div></div>
@@ -283,7 +283,7 @@ previously used e.offsetX, e.offsetY, which was less robust
 
     <span class="hljs-property">@lastAgentsHovered</span> = agentsHere
 
-  <span class="hljs-attribute">mouseEvent</span>: <span class="hljs-function"><span class="hljs-params">(agent, e)</span> -&gt;</span> 
+  <span class="hljs-attribute">mouseEvent</span>: <span class="hljs-function"><span class="hljs-params">(agent, e)</span> -&gt;</span>
     <span class="hljs-keyword">return</span> {<span class="hljs-attribute">target</span>: agent, <span class="hljs-attribute">patchX</span>: <span class="hljs-property">@x</span>, <span class="hljs-attribute">patchY</span>: <span class="hljs-property">@y</span>, <span class="hljs-attribute">dx</span>: <span class="hljs-property">@dx</span>, <span class="hljs-attribute">dy</span>: <span class="hljs-property">@dy</span>, <span class="hljs-attribute">originalEvent</span>: e}</pre></div></div>
             
         </li>
