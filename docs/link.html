@@ -95,7 +95,7 @@
                 <a class="pilcrow" href="#section-4">&#182;</a>
               </div>
               <p>Draw a line between the two endpoints.  Draws “around” the
-torus if appropriate using two lines. As with Agent.draw,
+torus if appropriate using two lines. As with Turtle.draw,
 is called with patch coordinate transform installed.</p>
 
             </div>
@@ -133,11 +133,11 @@ is called with patch coordinate transform installed.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-5">&#182;</a>
               </div>
-              <p>Remove this link from the agent set</p>
+              <p>Remove this link from its agentset</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">die</span>:<span class="hljs-function"> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">die</span>: <span class="hljs-function">-&gt;</span>
     <span class="hljs-property">@breed</span>.remove @
     u.removeItem <span class="hljs-property">@end1</span>.links, @ <span class="hljs-keyword">if</span> <span class="hljs-property">@end1</span>.links?
     u.removeItem <span class="hljs-property">@end2</span>.links, @ <span class="hljs-keyword">if</span> <span class="hljs-property">@end2</span>.links?
@@ -160,7 +160,7 @@ is called with patch coordinate transform installed.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">bothEnds</span>:<span class="hljs-function"> -&gt;</span> [<span class="hljs-property">@end1</span>, <span class="hljs-property">@end2</span>]</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">bothEnds</span>: <span class="hljs-function">-&gt;</span> [<span class="hljs-property">@end1</span>, <span class="hljs-property">@end2</span>]</pre></div></div>
             
         </li>
         
@@ -175,7 +175,7 @@ is called with patch coordinate transform installed.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">length</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-property">@end1</span>.distance <span class="hljs-property">@end2</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">length</span>: <span class="hljs-function">-&gt;</span> <span class="hljs-property">@end1</span>.distance <span class="hljs-property">@end2</span></pre></div></div>
             
         </li>
         

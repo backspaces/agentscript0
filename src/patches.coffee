@@ -11,8 +11,8 @@
 # * numX/numY:    width/height of grid.
 # * isTorus:      true if coord system wraps around at edges
 # * hasNeighbors: true if each patch caches its neighbors
-# * isHeadless:   true if not using canvas drawing
 class Patches extends AgentSet
+  drawWithPixels: true # Experimental class variable
   # Constructor: super creates the empty AgentSet instance and installs
   # the agentClass (breed) variable shared by all the Patches in this set.
   # Patches are created from top-left to bottom-right to match data sets.
@@ -30,44 +30,44 @@ class Patches extends AgentSet
       for x in [@minX..@maxX] by 1
         @add new @agentClass x, y
     @setNeighbors() if @hasNeighbors
-    @setPixels() unless @isHeadless # setup off-page canvas for pixel ops
+    @setPixels() if @model.div? # setup off-page canvas for pixel ops
 
-  # Have patches cache the agents currently on them.
-  # Optimizes p.agentsHere method.
-  # Call before first agent is created.
-  cacheAgentsHere: -> p.agents = [] for p in @; null
+  # Have patches cache the turtles currently on them.
+  # Optimizes p.turtlesHere method.
+  # Call before first turtle is created.
+  cacheTurtlesHere: -> p.turtles = [] for p in @; null
 
   # Draw patches using scaled image of colors. Note anti-aliasing may occur
   # if browser does not support smoothing flags.
-  usePixels: (@drawWithPixels=true) ->
-    ctx = @model.contexts.patches
-    u.setCtxSmoothing ctx, not @drawWithPixels
+  usePixels: () ->
+    u.deprecated "Patches.usePixels: pixels always used (color.pixel)"
 
   # Optimization: Cache a single set by modeler for use by patchRect,
   # inCone, inRect, inRadius.  Ex: flock demo model's vision rect.
-  cacheRect: (radius, meToo=false) ->
+  cacheRect: (radius, meToo=true) ->
     for p in @
       p.pRect = @patchRect p, radius, radius, meToo
-      p.pRect.radius = radius#; p.pRect.meToo = meToo
-    radius
+      p.pRect.radius = radius
+    null # avoid CS returning huge array!
 
   # Install neighborhoods in patches
   setNeighbors: ->
     for p in @
-      p.n =  @patchRect p, 1, 1
+      p.n =  @patchRect p, 1, 1, false
       p.n4 = @asSet (n for n in p.n when n.x is p.x or n.y is p.y)
+    null # radius # avoid CS returning huge array!
 
   # Setup pixels used for `drawScaledPixels` and `importColors`
   #
   setPixels: ->
+    ctx = @model.contexts.patches
+    u.setCtxSmoothing ctx, false # crisp rendering
     if @size is 1
-    then @usePixels(); @pixelsCtx = @model.contexts.patches
+    then @pixelsCtx = ctx
     else @pixelsCtx = u.createCtx @numX, @numY
     @pixelsImageData = @pixelsCtx.getImageData(0, 0, @numX, @numY)
     @pixelsData = @pixelsImageData.data
-    if @pixelsData instanceof Uint8Array # Check for typed arrays
-      @pixelsData32 = new Uint32Array @pixelsData.buffer
-      @pixelsAreLittleEndian = u.isLittleEndian()
+    @pixelsData32 = new Uint32Array @pixelsData.buffer if @drawWithPixels
 
   # Draw patches.  Three cases:
   #
@@ -75,8 +75,9 @@ class Patches extends AgentSet
   # * Monochrome: just fill canvas w/ patch default
   # * Otherwise: just draw each patch individually
   draw: (ctx) ->
-    if @monochrome then u.fillCtx ctx, @agentClass::color
-    else if @drawWithPixels then @drawScaledPixels ctx else super ctx
+    if @monochrome
+    then u.fillCtx ctx, @agentClass::color
+    else @drawScaledPixels ctx
 
 # #### Patch grid coord system utilities:
 
@@ -90,7 +91,7 @@ class Patches extends AgentSet
   clamp: (x,y) -> [u.clamp(x, @minXcor, @maxXcor), u.clamp(y, @minYcor, @maxYcor)]
 
   # Return x,y float values to be modulo min/max patch coord values.
-  wrap: (x,y)  -> [u.wrap(x, @minXcor, @maxXcor),  u.wrap(y, @minYcor, @maxYcor)]
+  wrap: (x,y) -> [u.wrap(x, @minXcor, @maxXcor), u.wrap(y, @minYcor, @maxYcor)]
 
   # Return x,y float values to be between min/max patch values
   # using either clamp/wrap above according to isTorus topology.
@@ -118,30 +119,54 @@ class Patches extends AgentSet
 
 # #### Patch utilities
 
-  # Return an array of patches in a rectangle centered on the given
-  # patch `p`, dx, dy units to the right/left and up/down.
-  # Exclude `p` unless meToo is true, default false.
-  patchRect: (p, dx, dy, meToo=false) ->
-    return p.pRect if p.pRect? and p.pRect.radius is dx # and p.pRect.radius is dy
+  patchRect: (p, dx, dy=dx, meToo=true) ->
+    return p.pRect if p.pRect? and (p.pRect.radius is dx) and (dx is dy)
     rect = []; # REMIND: optimize if no wrapping, rect inside patch boundaries
     for y in [p.y-dy..p.y+dy] by 1 # by 1: perf: avoid bidir JS for loop
       for x in [p.x-dx..p.x+dx] by 1
         if @isTorus or (@minX<=x<=@maxX and @minY<=y<=@maxY)
           if @isTorus
-            x+=@numX if x<@minX; x-=@numX if x>@maxX
-            y+=@numY if y<@minY; y-=@numY if y>@maxY
+            if x < @minX then x += @numX else if x > @maxX then x -= @numX
+            if y < @minY then y += @numY else if y > @maxY then y -= @numY
           pnext = @patchXY x, y # much faster than coord()
-          unless pnext?
-            u.error "patchRect: x,y out of bounds, see console.log"
-            console.log "x #{x} y #{y} p.x #{p.x} p.y #{p.y} dx #{dx} dy #{dy}"
           rect.push pnext if (meToo or p isnt pnext)
     @asSet rect
+
+  # Return patches within the patch square.
+  inRect: (agent, radius) -> #agentSet.inRadius @, radius
+    @patchRect( (agent.p ? agent), Math.ceil(radius) )
+  # Return patches within radius of the given agent (patch or turtle)
+  inRadius: (agent, radius) -> #agentSet.inRadius @, radius
+    pset = @patchRect( (agent.p ? agent), Math.ceil(radius) )
+    pset.inRadius agent, radius
+  inCone: (agent, radius, angle, heading) ->
+    pset = @patchRect( (agent.p ? agent), Math.ceil(radius) )
+    pset.inRadius agent, radius, angle, heading
+
+  # Return all the turtles contained in the patchRect.
+  turtlesOnRect: (p, dx, dy=dx) ->
+    @turtlesOnPatches @patchRect(p, dx, dy, true)
+  turtlesOnPatches: (patches) ->
+    array = []
+    if patches.length isnt 0
+      u.error "turtlesOnPatches: no cached turtles." if not patches[0].turtles?
+      # Use push.apply, not concat, see:
+      # [jsPerf](http://jsperf.com/apply-push-vs-concat-array)
+      Array.prototype.push.apply(array, p.turtles) for p in patches
+    @asSet array
+
+  # Return all the unique patches the agentset or turtle is on.
+  patchesOf: (aset) ->
+    return @asSet([aset.p ? aset]) unless aset.length?
+    @asSet( ((a.p ? a) for a in aset) ).sortById().uniq()
+  turtlesOf: (aset) -> @turtlesOnPatches(@patchesOf(aset))
 
   # Draws, or "imports" an image URL into the drawing layer.
   # The image is scaled to fit the drawing layer.
   #
   # This is an async load, see this
-  # [new Image()](http://javascript.mfields.org/2011/creating-an-image-in-javascript/)
+  # [new Image()]
+  # (http://javascript.mfields.org/2011/creating-an-image-in-javascript/)
   # tutorial.  We draw the image into the drawing layer as
   # soon as the onload callback executes.
   importDrawing: (imageSrc, f) ->
@@ -189,32 +214,18 @@ class Patches extends AgentSet
   drawScaledPixels: (ctx) ->
     # u.setIdentity ctx & ctx.restore() only needed if patch size
     # not 1, pixel ops don't use transform but @size>1 uses
-    # a drawimage
+    # a drawimage, using a transform
     u.setIdentity ctx if @size isnt 1
-    if @pixelsData32? then @drawScaledPixels32 ctx else @drawScaledPixels8 ctx
+    data = @pixelsData32 ? @pixelsData
+
+    if @pixelsData32?
+    then data[p.id] = p.color.pixel for p in @
+    else data.set(p.color, p.id*4) for p in @
+
+    @pixelsCtx.putImageData @pixelsImageData, 0, 0
+    return if @size is 1
+    ctx.drawImage @pixelsCtx.canvas, 0, 0, @pxWidth, @pxHeight
     ctx.restore() if @size isnt 1
-  # The 8-bit version for drawScaledPixels.  Used for systems w/o typed arrays
-  drawScaledPixels8: (ctx) ->
-    data = @pixelsData
-    for p in @
-      i = @pixelByteIndex p; c = p.color
-      a = if c.length is 4 then c[3] else 255
-      data[i+j] = c[j] for j in [0..2]; data[i+3] = a
-    @pixelsCtx.putImageData @pixelsImageData, 0, 0
-    return if @size is 1
-    ctx.drawImage @pixelsCtx.canvas, 0, 0, ctx.canvas.width, ctx.canvas.height
-  # The 32-bit version of drawScaledPixels, with both little and big endian hardware.
-  drawScaledPixels32: (ctx) ->
-    data = @pixelsData32
-    for p in @
-      i = @pixelWordIndex p; c = p.color
-      a = if c.length is 4 then c[3] else 255
-      if @pixelsAreLittleEndian
-      then data[i] = (a << 24) | (c[2] << 16) | (c[1] << 8) | c[0]
-      else data[i] = (c[0] << 24) | (c[1] << 16) | (c[2] << 8) | a
-    @pixelsCtx.putImageData @pixelsImageData, 0, 0
-    return if @size is 1
-    ctx.drawImage @pixelsCtx.canvas, 0, 0, ctx.canvas.width, ctx.canvas.height
 
   # Diffuse the value of patch variable `p.v` by distributing `rate` percent
   # of each patch's value of `v` to its neighbors.
@@ -225,22 +236,13 @@ class Patches extends AgentSet
     unless @[0]._diffuseNext?
       p._diffuseNext = 0 for p in @
     # pass 1: calculate contribution of all patches to themselves and neighbors
-    # if cMap
-    #   minVal = Infinity; maxVal = -Infinity
-    #   unless cMap.scaleColor?
-    #     u.deprecated "Patch.diffuse: convert to ColorMap usage, using Jet"
-    #     cMap = ColorMaps.Jet
     for p in @
       dv = p[v]*rate; dv8 = dv/8; nn = p.n.length
       p._diffuseNext += p[v] - dv + (8-nn)*dv8
       n._diffuseNext += dv8 for n in p.n
-      # if cMap
-      #   minVal = Math.min minVal, p[v]
-      #   maxVal = Math.max maxVal, p[v]
     # pass 2: set new value for all patches, zero temp, modify color if c given
     for p in @
       p[v] = p._diffuseNext
       p._diffuseNext = 0
       p.color = ColorMaps.scaleColor color, p[v] if color?
-
     null # avoid returning copy of @

@@ -2,7 +2,7 @@
 
 <html>
 <head>
-  <title>agent.coffee</title>
+  <title>turtle.coffee</title>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
   <link rel="stylesheet" media="all" href="docco.css" />
@@ -15,7 +15,7 @@
         
           <li id="title">
               <div class="annotation">
-                  <h1>agent.coffee</h1>
+                  <h1>turtle.coffee</h1>
               </div>
           </li>
         
@@ -39,13 +39,13 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-2">&#182;</a>
               </div>
-              <p>Class Agent instances represent the dynamic, behavioral element of modeling.
-Each agent knows the patch it is on, and interacts with that and other
-patches, as well as other agents.</p>
+              <p>Class Turtle instances represent the dynamic, behavioral element of modeling.
+Each turtle knows the patch it is on, and interacts with that and other
+patches, as well as other turtles.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Agent</span></span></pre></div></div>
+            <div class="content"><div class='highlight'><pre><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Turtle</span></span></pre></div></div>
             
         </li>
         
@@ -59,20 +59,20 @@ patches, as well as other agents.</p>
               <p>Constructor &amp; Class Variables:</p>
 <ul>
 <li>id:         unique identifier, promoted by agentset create() factory method</li>
-<li>breed:      the agentset this agent belongs to</li>
+<li>breed:      the agentset this turtle belongs to</li>
 <li>x,y:        position on the patch grid, in patch coordinates, default: 0,0</li>
-<li>size:       size of agent, in patch coords, default: 1</li>
-<li>color:      the color of the agent, default: randomColor</li>
-<li>shape:      the shape name of the agent, default: “default”</li>
+<li>size:       size of turtle, in patch coords, default: 1</li>
+<li>color:      the color of the turtle, default: randomColor</li>
+<li>shape:      the shape name of the turtle, default: “default”</li>
 <li>label:      a text label drawn on my instances</li>
 <li>labelColor: the color of my label text</li>
 <li>labelOffset:the x,y offset of my label from my x,y location</li>
-<li>heading:    direction of the agent, in radians, from x-axis</li>
-<li>hidden:     whether or not to draw this agent</li>
+<li>heading:    direction of the turtle, in radians, from x-axis</li>
+<li>hidden:     whether or not to draw this turtle</li>
 <li>p:          patch at current x,y location</li>
-<li>penDown:    true if agent pen is drawing</li>
+<li>penDown:    true if turtle pen is drawing</li>
 <li>penSize:    size in pixels of the pen, default: 1 pixel</li>
-<li>sprite:     an image of the agent if non null</li>
+<li>sprite:     an image of the turtle if non null</li>
 <li>cacheLinks: if true, keep array of links in/out of me</li>
 <li>links:      array of links in/out of me.  Only used if @cacheLinks is true</li>
 </ul>
@@ -87,7 +87,7 @@ This can be a huge savings in memory.</p>
   <span class="hljs-attribute">x</span>: <span class="hljs-number">0</span>; <span class="hljs-attribute">y</span>:<span class="hljs-number">0</span>; <span class="hljs-attribute">p</span>: <span class="hljs-literal">null</span>  <span class="hljs-comment"># my location and the patch I'm on</span>
   <span class="hljs-attribute">size</span>: <span class="hljs-number">1</span>             <span class="hljs-comment"># my size in patch coords</span>
   <span class="hljs-attribute">color</span>: <span class="hljs-literal">null</span>         <span class="hljs-comment"># default color, overrides random color if set</span>
-  <span class="hljs-attribute">strokeColor</span>: <span class="hljs-literal">null</span>   <span class="hljs-comment"># color of the border of an agent</span>
+  <span class="hljs-attribute">strokeColor</span>: <span class="hljs-literal">null</span>   <span class="hljs-comment"># color of the border of an turtle</span>
   <span class="hljs-attribute">shape</span>: <span class="hljs-string">"default"</span>    <span class="hljs-comment"># my shape</span>
   <span class="hljs-attribute">hidden</span>: <span class="hljs-literal">false</span>       <span class="hljs-comment"># draw me?</span>
   <span class="hljs-attribute">label</span>: <span class="hljs-literal">null</span>         <span class="hljs-comment"># my text</span>
@@ -105,7 +105,7 @@ This can be a huge savings in memory.</p>
     <span class="hljs-property">@p</span> = <span class="hljs-property">@model</span>.patches.patch <span class="hljs-property">@x</span>, <span class="hljs-property">@y</span>
     <span class="hljs-property">@color</span> = u.randomColor() <span class="hljs-keyword">unless</span> <span class="hljs-property">@color</span>? <span class="hljs-comment"># or @useSprites or @hidden</span>
     <span class="hljs-property">@heading</span> = u.randomFloat(Math.PI*<span class="hljs-number">2</span>) <span class="hljs-keyword">unless</span> <span class="hljs-property">@heading</span>?
-    <span class="hljs-property">@p</span>.agents.push @ <span class="hljs-keyword">if</span> <span class="hljs-property">@p</span>.agents? <span class="hljs-comment"># @model.patches.cacheAgentsHere</span>
+    <span class="hljs-property">@p</span>.turtles.push @ <span class="hljs-keyword">if</span> <span class="hljs-property">@p</span>.turtles? <span class="hljs-comment"># @model.patches.cacheTurtlesHere</span>
     <span class="hljs-property">@links</span> = [] <span class="hljs-keyword">if</span> <span class="hljs-property">@cacheLinks</span></pre></div></div>
             
         </li>
@@ -117,12 +117,12 @@ This can be a huge savings in memory.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-4">&#182;</a>
               </div>
-              <p>Set agent color to <code>c</code> scaled by <code>s</code>. Usage: see patch.scaleColor</p>
+              <p>Set turtle color to <code>c</code> scaled by <code>s</code>. Usage: see patch.scaleColor</p>
 
             </div>
             
             <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">scaleColor</span>: <span class="hljs-function"><span class="hljs-params">(c, s)</span> -&gt;</span>
-    u.deprecated <span class="hljs-string">"Agent.scaleColor: use ColorMaps ramps or closestColor"</span>
+    u.deprecated <span class="hljs-string">"Turtle.scaleColor: use ColorMaps ramps or closestColor"</span>
     <span class="hljs-property">@color</span> = ColorMaps.scaleColor(c, s)</pre></div></div>
             
         </li>
@@ -141,7 +141,7 @@ u.scaleColor c, s, @color</p>
             
             <div class="content"><div class='highlight'><pre>
   <span class="hljs-attribute">scaleOpacity</span>: <span class="hljs-function"><span class="hljs-params">(c, s)</span> -&gt;</span>
-    u.deprecated <span class="hljs-string">"Agent.scaleOpacity: use ColorMaps ramps"</span>
+    u.deprecated <span class="hljs-string">"Turtle.scaleOpacity: use ColorMaps ramps"</span>
     <span class="hljs-property">@color</span> = u.scaleOpacity c, s, <span class="hljs-property">@color</span></pre></div></div>
             
         </li>
@@ -167,7 +167,7 @@ u.scaleOpacity c, s, @color</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-7">&#182;</a>
               </div>
-              <p>Return a string representation of the agent.</p>
+              <p>Return a string representation of the turtle.</p>
 
             </div>
             
@@ -182,7 +182,7 @@ u.scaleOpacity c, s, @color</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-8">&#182;</a>
               </div>
-              <p>Place the agent at the given x,y (floats) in patch coords
+              <p>Place the turtle at the given x,y (floats) in patch coords
 using patch topology (isTorus)</p>
 
             </div>
@@ -192,9 +192,9 @@ using patch topology (isTorus)</p>
     [<span class="hljs-property">@x</span>, <span class="hljs-property">@y</span>] = <span class="hljs-property">@model</span>.patches.coord x, y
     p = <span class="hljs-property">@p</span>
     <span class="hljs-property">@p</span> = <span class="hljs-property">@model</span>.patches.patch <span class="hljs-property">@x</span>, <span class="hljs-property">@y</span>
-    <span class="hljs-keyword">if</span> p.agents? <span class="hljs-keyword">and</span> p <span class="hljs-keyword">isnt</span> <span class="hljs-property">@p</span> <span class="hljs-comment"># @model.patches.cacheAgentsHere</span>
-      u.removeItem p.agents, @
-      <span class="hljs-property">@p</span>.agents.push @
+    <span class="hljs-keyword">if</span> p.turtles? <span class="hljs-keyword">and</span> p <span class="hljs-keyword">isnt</span> <span class="hljs-property">@p</span> <span class="hljs-comment"># @model.patches.cacheTurtlesHere</span>
+      u.removeItem p.turtles, @
+      <span class="hljs-property">@p</span>.turtles.push @
     <span class="hljs-keyword">if</span> <span class="hljs-property">@penDown</span>
       drawing = <span class="hljs-property">@model</span>.drawing
       drawing.strokeStyle = <span class="hljs-property">@color</span>.css <span class="hljs-comment"># u.colorStr @color</span>
@@ -212,7 +212,7 @@ using patch topology (isTorus)</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-9">&#182;</a>
               </div>
-              <p>Place the agent at the given patch/agent location</p>
+              <p>Place the turtle at the given patch/turtle location</p>
 
             </div>
             
@@ -262,7 +262,7 @@ Returns new heading.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-12">&#182;</a>
               </div>
-              <p>Draw the agent, instanciating a sprite if required</p>
+              <p>Draw the turtle, instanciating a sprite if required</p>
 
             </div>
             
@@ -288,7 +288,7 @@ Returns new heading.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-13">&#182;</a>
               </div>
-              <p>Set an individual agent’s sprite, synching its color, shape, size</p>
+              <p>Set an individual turtle’s sprite, synching its color, shape, size</p>
 
             </div>
             
@@ -323,7 +323,7 @@ Returns new heading.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-15">&#182;</a>
               </div>
-              <p>Draw the agent on the drawing layer, leaving permanent image.</p>
+              <p>Draw the turtle on the drawing layer, leaving permanent image.</p>
 
             </div>
             
@@ -357,11 +357,11 @@ using patch topology (isTorus)</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-17">&#182;</a>
               </div>
-              <p>Return distance in patch coords from me to given agent/patch using patch topology.</p>
+              <p>Return distance in patch coords from me to given turtle/patch using patch topology.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">distance</span>: <span class="hljs-function"><span class="hljs-params">(o)</span> -&gt;</span> <span class="hljs-comment"># o any object w/ x,y, patch or agent</span>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">distance</span>: <span class="hljs-function"><span class="hljs-params">(o)</span> -&gt;</span> <span class="hljs-comment"># o any object w/ x,y, patch or turtle</span>
     <span class="hljs-property">@distanceXY</span> o.x, o.y</pre></div></div>
             
         </li>
@@ -374,8 +374,8 @@ using patch topology (isTorus)</p>
                 <a class="pilcrow" href="#section-18">&#182;</a>
               </div>
               <p>Return the closest torus topology point of given x,y relative to myself.
-Used internally to determine how to draw links between two agents.
-See util.torusPt.</p>
+Used internally to determine how to draw links between two turtles.
+See Util.torusPt.</p>
 
             </div>
             
@@ -391,8 +391,8 @@ See util.torusPt.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-19">&#182;</a>
               </div>
-              <p>Return the closest torus topology point of given agent/patch
-relative to myself. See util.torusPt.</p>
+              <p>Return the closest torus topology point of given turtle/patch
+relative to myself. See Util.torusPt.</p>
 
             </div>
             
@@ -408,7 +408,7 @@ relative to myself. See util.torusPt.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-20">&#182;</a>
               </div>
-              <p>Set my heading towards given agent/patch using patch topology.</p>
+              <p>Set my heading towards given turtle/patch using patch topology.</p>
 
             </div>
             
@@ -441,7 +441,7 @@ relative to myself. See util.torusPt.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-22">&#182;</a>
               </div>
-              <p>Return heading towards given agent/patch using patch topology.</p>
+              <p>Return heading towards given turtle/patch using patch topology.</p>
 
             </div>
             
@@ -482,15 +482,15 @@ Heading is + for left, - for right.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-24">&#182;</a>
               </div>
-              <p>Remove myself from the model.  Includes removing myself from the agents
-agentset and removing any links I may have.</p>
+              <p>Remove myself from the model.  Includes removing myself from my
+agentset(s) and removing any links I may have.</p>
 
             </div>
             
             <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">die</span>: <span class="hljs-function">-&gt;</span>
     <span class="hljs-property">@breed</span>.remove @
     l.die() <span class="hljs-keyword">for</span> l <span class="hljs-keyword">in</span> <span class="hljs-property">@myLinks</span>() <span class="hljs-keyword">by</span> -<span class="hljs-number">1</span>
-    u.removeItem <span class="hljs-property">@p</span>.agents, @ <span class="hljs-keyword">if</span> <span class="hljs-property">@p</span>.agents?
+    u.removeItem <span class="hljs-property">@p</span>.turtles, @ <span class="hljs-keyword">if</span> <span class="hljs-property">@p</span>.turtles?
     <span class="hljs-literal">null</span></pre></div></div>
             
         </li>
@@ -502,16 +502,16 @@ agentset and removing any links I may have.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-25">&#182;</a>
               </div>
-              <p>Factory: create num new agents at this agents location. The optional init
-proc is called on the new agent after inserting in its agentSet.</p>
+              <p>Factory: create num new turtles at this turtle’s location. The optional init
+proc is called on the new turtle after inserting in its agentSet.</p>
 
             </div>
             
             <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">hatch</span>: <span class="hljs-function"><span class="hljs-params">(num = <span class="hljs-number">1</span>, breed = <span class="hljs-property">@breed</span>, init = -&gt;)</span> -&gt;</span>
-    breed.create num, <span class="hljs-function"><span class="hljs-params">(a)</span> =&gt;</span> <span class="hljs-comment"># fat arrow so that @ = this agent</span>
-      a.setXY <span class="hljs-property">@x</span>, <span class="hljs-property">@y</span> <span class="hljs-comment"># for side effects like patches.agentsHere</span>
+    breed.create num, <span class="hljs-function"><span class="hljs-params">(a)</span> =&gt;</span> <span class="hljs-comment"># fat arrow so that @ = this turtle</span>
+      a.setXY <span class="hljs-property">@x</span>, <span class="hljs-property">@y</span> <span class="hljs-comment"># for side effects like patches.turtlesHere</span>
       a.color = <span class="hljs-property">@color</span>
-      a[k] = @[k] <span class="hljs-keyword">for</span> k <span class="hljs-keyword">in</span> breed.ownVariables <span class="hljs-keyword">when</span> a[k] <span class="hljs-keyword">is</span> <span class="hljs-literal">null</span> <span class="hljs-comment"># hatched agent inherits parents' breed properties</span></pre></div></div>
+      a[k] = @[k] <span class="hljs-keyword">for</span> k <span class="hljs-keyword">in</span> breed.ownVariables <span class="hljs-keyword">when</span> a[k] <span class="hljs-keyword">is</span> <span class="hljs-literal">null</span> <span class="hljs-comment"># hatched turtle inherits parents' breed properties</span></pre></div></div>
             
         </li>
         
@@ -526,7 +526,7 @@ proc is called on the new agent after inserting in its agentSet.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>      init(a); a <span class="hljs-comment"># Important: init called after object inserted in agent set</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>      init(a); a <span class="hljs-comment"># Important: init called after object inserted in agentset</span></pre></div></div>
             
         </li>
         
@@ -571,7 +571,7 @@ from me, and within angle radians of my heading using patch topology</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-29">&#182;</a>
               </div>
-              <p>Return true if world coordinate falls on agent sprite</p>
+              <p>Return true if world coordinate falls on turtle sprite</p>
 
             </div>
             
@@ -618,11 +618,11 @@ from me, and within angle radians of my heading using patch topology</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-32">&#182;</a>
               </div>
-              <p>Return all agents linked to me.</p>
+              <p>Return all agents linked to me</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">linkNeighbors</span>: <span class="hljs-function">-&gt;</span> <span class="hljs-comment"># return all agents linked to me</span>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">linkNeighbors</span>: <span class="hljs-function">-&gt;</span>
     <span class="hljs-property">@otherEnd</span> l <span class="hljs-keyword">for</span> l <span class="hljs-keyword">in</span> <span class="hljs-property">@myLinks</span>()</pre></div></div>
             
         </li>
@@ -702,9 +702,9 @@ from me, and within angle radians of my heading using patch topology</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>colorMixin(Agent, <span class="hljs-string">"color"</span>, <span class="hljs-literal">null</span>)
-colorMixin(Agent, <span class="hljs-string">"strokeColor"</span>, <span class="hljs-literal">null</span>)
-colorMixin(Agent, <span class="hljs-string">"labelColor"</span>, <span class="hljs-string">"black"</span>)</pre></div></div>
+            <div class="content"><div class='highlight'><pre>colorMixin(Turtle, <span class="hljs-string">"color"</span>, <span class="hljs-literal">null</span>)
+colorMixin(Turtle, <span class="hljs-string">"strokeColor"</span>, <span class="hljs-literal">null</span>)
+colorMixin(Turtle, <span class="hljs-string">"labelColor"</span>, <span class="hljs-string">"black"</span>)</pre></div></div>
             
         </li>
         

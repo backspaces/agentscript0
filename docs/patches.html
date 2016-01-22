@@ -50,12 +50,12 @@ representing a 1x1 square in patch coordinates (via 2D coord transforms).</p>
 <li>numX/numY:    width/height of grid.</li>
 <li>isTorus:      true if coord system wraps around at edges</li>
 <li>hasNeighbors: true if each patch caches its neighbors</li>
-<li>isHeadless:   true if not using canvas drawing</li>
 </ul>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Patches</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">AgentSet</span></span></pre></div></div>
+            <div class="content"><div class='highlight'><pre><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Patches</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">AgentSet</span></span>
+  <span class="hljs-attribute">drawWithPixels</span>: <span class="hljs-literal">true</span> <span class="hljs-comment"># Experimental class variable</span></pre></div></div>
             
         </li>
         
@@ -72,7 +72,7 @@ Patches are created from top-left to bottom-right to match data sets.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">constructor</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-comment"># model, agentClass, name, mainSet</span>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">constructor</span>: <span class="hljs-function">-&gt;</span> <span class="hljs-comment"># model, agentClass, name, mainSet</span>
     <span class="hljs-keyword">super</span> <span class="hljs-comment"># call super with all the args I was called with</span>
     <span class="hljs-property">@monochrome</span> = <span class="hljs-literal">false</span> <span class="hljs-comment"># set to true to optimize patches all default color</span>
     @[k] = v <span class="hljs-keyword">for</span> own k,v <span class="hljs-keyword">of</span> <span class="hljs-property">@model</span>.world <span class="hljs-comment"># add world items to patches</span>
@@ -93,12 +93,12 @@ patches are started up empty and filled by “create” calls.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">populate</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-comment"># TopLeft to BottomRight, exactly as canvas imagedata</span>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">populate</span>: <span class="hljs-function">-&gt;</span> <span class="hljs-comment"># TopLeft to BottomRight, exactly as canvas imagedata</span>
     <span class="hljs-keyword">for</span> y <span class="hljs-keyword">in</span> [<span class="hljs-property">@maxY</span>..<span class="hljs-property">@minY</span>] <span class="hljs-keyword">by</span> -<span class="hljs-number">1</span>
       <span class="hljs-keyword">for</span> x <span class="hljs-keyword">in</span> [<span class="hljs-property">@minX</span>..<span class="hljs-property">@maxX</span>] <span class="hljs-keyword">by</span> <span class="hljs-number">1</span>
         <span class="hljs-property">@add</span> <span class="hljs-keyword">new</span> <span class="hljs-property">@agentClass</span> x, y
     <span class="hljs-property">@setNeighbors</span>() <span class="hljs-keyword">if</span> <span class="hljs-property">@hasNeighbors</span>
-    <span class="hljs-property">@setPixels</span>() <span class="hljs-keyword">unless</span> <span class="hljs-property">@isHeadless</span> <span class="hljs-comment"># setup off-page canvas for pixel ops</span></pre></div></div>
+    <span class="hljs-property">@setPixels</span>() <span class="hljs-keyword">if</span> <span class="hljs-property">@model</span>.div? <span class="hljs-comment"># setup off-page canvas for pixel ops</span></pre></div></div>
             
         </li>
         
@@ -109,13 +109,13 @@ patches are started up empty and filled by “create” calls.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-5">&#182;</a>
               </div>
-              <p>Have patches cache the agents currently on them.
-Optimizes p.agentsHere method.
-Call before first agent is created.</p>
+              <p>Have patches cache the turtles currently on them.
+Optimizes p.turtlesHere method.
+Call before first turtle is created.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">cacheAgentsHere</span>:<span class="hljs-function"> -&gt;</span> p.agents = [] <span class="hljs-keyword">for</span> p <span class="hljs-keyword">in</span> @; <span class="hljs-literal">null</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">cacheTurtlesHere</span>: <span class="hljs-function">-&gt;</span> p.turtles = [] <span class="hljs-keyword">for</span> p <span class="hljs-keyword">in</span> @; <span class="hljs-literal">null</span></pre></div></div>
             
         </li>
         
@@ -131,9 +131,8 @@ if browser does not support smoothing flags.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">usePixels</span>: <span class="hljs-function"><span class="hljs-params">(<span class="hljs-property">@drawWithPixels</span>=<span class="hljs-literal">true</span>)</span> -&gt;</span>
-    ctx = <span class="hljs-property">@model</span>.contexts.patches
-    u.setCtxSmoothing ctx, <span class="hljs-keyword">not</span> <span class="hljs-property">@drawWithPixels</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">usePixels</span>: <span class="hljs-function"><span class="hljs-params">()</span> -&gt;</span>
+    u.deprecated <span class="hljs-string">"Patches.usePixels: pixels always used (color.pixel)"</span></pre></div></div>
             
         </li>
         
@@ -149,11 +148,11 @@ inCone, inRect, inRadius.  Ex: flock demo model’s vision rect.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">cacheRect</span>: <span class="hljs-function"><span class="hljs-params">(radius, meToo=<span class="hljs-literal">false</span>)</span> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">cacheRect</span>: <span class="hljs-function"><span class="hljs-params">(radius, meToo=<span class="hljs-literal">true</span>)</span> -&gt;</span>
     <span class="hljs-keyword">for</span> p <span class="hljs-keyword">in</span> @
       p.pRect = <span class="hljs-property">@patchRect</span> p, radius, radius, meToo
-      p.pRect.radius = radius<span class="hljs-comment">#; p.pRect.meToo = meToo</span>
-    radius</pre></div></div>
+      p.pRect.radius = radius
+    <span class="hljs-literal">null</span> <span class="hljs-comment"># avoid CS returning huge array!</span></pre></div></div>
             
         </li>
         
@@ -168,10 +167,11 @@ inCone, inRect, inRadius.  Ex: flock demo model’s vision rect.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">setNeighbors</span>:<span class="hljs-function"> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">setNeighbors</span>: <span class="hljs-function">-&gt;</span>
     <span class="hljs-keyword">for</span> p <span class="hljs-keyword">in</span> @
-      p.n =  <span class="hljs-property">@patchRect</span> p, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>
-      p.n4 = <span class="hljs-property">@asSet</span> (n <span class="hljs-keyword">for</span> n <span class="hljs-keyword">in</span> p.n <span class="hljs-keyword">when</span> n.x <span class="hljs-keyword">is</span> p.x <span class="hljs-keyword">or</span> n.y <span class="hljs-keyword">is</span> p.y)</pre></div></div>
+      p.n =  <span class="hljs-property">@patchRect</span> p, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-literal">false</span>
+      p.n4 = <span class="hljs-property">@asSet</span> (n <span class="hljs-keyword">for</span> n <span class="hljs-keyword">in</span> p.n <span class="hljs-keyword">when</span> n.x <span class="hljs-keyword">is</span> p.x <span class="hljs-keyword">or</span> n.y <span class="hljs-keyword">is</span> p.y)
+    <span class="hljs-literal">null</span> <span class="hljs-comment"># radius # avoid CS returning huge array!</span></pre></div></div>
             
         </li>
         
@@ -186,15 +186,15 @@ inCone, inRect, inRadius.  Ex: flock demo model’s vision rect.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">setPixels</span>:<span class="hljs-function"> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">setPixels</span>: <span class="hljs-function">-&gt;</span>
+    ctx = <span class="hljs-property">@model</span>.contexts.patches
+    u.setCtxSmoothing ctx, <span class="hljs-literal">false</span> <span class="hljs-comment"># crisp rendering</span>
     <span class="hljs-keyword">if</span> <span class="hljs-property">@size</span> <span class="hljs-keyword">is</span> <span class="hljs-number">1</span>
-    <span class="hljs-keyword">then</span> <span class="hljs-property">@usePixels</span>(); <span class="hljs-property">@pixelsCtx</span> = <span class="hljs-property">@model</span>.contexts.patches
+    <span class="hljs-keyword">then</span> <span class="hljs-property">@pixelsCtx</span> = ctx
     <span class="hljs-keyword">else</span> <span class="hljs-property">@pixelsCtx</span> = u.createCtx <span class="hljs-property">@numX</span>, <span class="hljs-property">@numY</span>
     <span class="hljs-property">@pixelsImageData</span> = <span class="hljs-property">@pixelsCtx</span>.getImageData(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-property">@numX</span>, <span class="hljs-property">@numY</span>)
     <span class="hljs-property">@pixelsData</span> = <span class="hljs-property">@pixelsImageData</span>.data
-    <span class="hljs-keyword">if</span> <span class="hljs-property">@pixelsData</span> <span class="hljs-keyword">instanceof</span> Uint8Array <span class="hljs-comment"># Check for typed arrays</span>
-      <span class="hljs-property">@pixelsData32</span> = <span class="hljs-keyword">new</span> Uint32Array <span class="hljs-property">@pixelsData</span>.buffer
-      <span class="hljs-property">@pixelsAreLittleEndian</span> = u.isLittleEndian()</pre></div></div>
+    <span class="hljs-property">@pixelsData32</span> = <span class="hljs-keyword">new</span> Uint32Array <span class="hljs-property">@pixelsData</span>.buffer <span class="hljs-keyword">if</span> <span class="hljs-property">@drawWithPixels</span></pre></div></div>
             
         </li>
         
@@ -215,8 +215,9 @@ inCone, inRect, inRadius.  Ex: flock demo model’s vision rect.</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">draw</span>: <span class="hljs-function"><span class="hljs-params">(ctx)</span> -&gt;</span>
-    <span class="hljs-keyword">if</span> <span class="hljs-property">@monochrome</span> <span class="hljs-keyword">then</span> u.fillCtx ctx, <span class="hljs-property">@agentClass</span>::color
-    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> <span class="hljs-property">@drawWithPixels</span> <span class="hljs-keyword">then</span> <span class="hljs-property">@drawScaledPixels</span> ctx <span class="hljs-keyword">else</span> <span class="hljs-keyword">super</span> ctx</pre></div></div>
+    <span class="hljs-keyword">if</span> <span class="hljs-property">@monochrome</span>
+    <span class="hljs-keyword">then</span> u.fillCtx ctx, <span class="hljs-property">@agentClass</span>::color
+    <span class="hljs-keyword">else</span> <span class="hljs-property">@drawScaledPixels</span> ctx</pre></div></div>
             
         </li>
         
@@ -290,7 +291,7 @@ x &amp; y are both valid integer patch coordinates.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">wrap</span>: <span class="hljs-function"><span class="hljs-params">(x,y)</span>  -&gt;</span> [u.wrap(x, <span class="hljs-property">@minXcor</span>, <span class="hljs-property">@maxXcor</span>),  u.wrap(y, <span class="hljs-property">@minYcor</span>, <span class="hljs-property">@maxYcor</span>)]</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">wrap</span>: <span class="hljs-function"><span class="hljs-params">(x,y)</span> -&gt;</span> [u.wrap(x, <span class="hljs-property">@minXcor</span>, <span class="hljs-property">@maxXcor</span>), u.wrap(y, <span class="hljs-property">@minYcor</span>, <span class="hljs-property">@maxYcor</span>)]</pre></div></div>
             
         </li>
         
@@ -356,7 +357,7 @@ using either clamp/wrap above according to isTorus topology.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">randomPt</span>:<span class="hljs-function"> -&gt;</span> [u.randomFloat2(<span class="hljs-property">@minXcor</span>,<span class="hljs-property">@maxXcor</span>), u.randomFloat2(<span class="hljs-property">@minYcor</span>,<span class="hljs-property">@maxYcor</span>)]</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">randomPt</span>: <span class="hljs-function">-&gt;</span> [u.randomFloat2(<span class="hljs-property">@minXcor</span>,<span class="hljs-property">@maxXcor</span>), u.randomFloat2(<span class="hljs-property">@minYcor</span>,<span class="hljs-property">@maxYcor</span>)]</pre></div></div>
             
         </li>
         
@@ -414,6 +415,20 @@ using either clamp/wrap above according to isTorus topology.</p>
 
             </div>
             
+            <div class="content"><div class='highlight'><pre>
+  <span class="hljs-attribute">patchRect</span>: <span class="hljs-function"><span class="hljs-params">(p, dx, dy=dx, meToo=<span class="hljs-literal">true</span>)</span> -&gt;</span>
+    <span class="hljs-keyword">return</span> p.pRect <span class="hljs-keyword">if</span> p.pRect? <span class="hljs-keyword">and</span> (p.pRect.radius <span class="hljs-keyword">is</span> dx) <span class="hljs-keyword">and</span> (dx <span class="hljs-keyword">is</span> dy)
+    rect = []; <span class="hljs-comment"># REMIND: optimize if no wrapping, rect inside patch boundaries</span>
+    <span class="hljs-keyword">for</span> y <span class="hljs-keyword">in</span> [p.y-dy..p.y+dy] <span class="hljs-keyword">by</span> <span class="hljs-number">1</span> <span class="hljs-comment"># by 1: perf: avoid bidir JS for loop</span>
+      <span class="hljs-keyword">for</span> x <span class="hljs-keyword">in</span> [p.x-dx..p.x+dx] <span class="hljs-keyword">by</span> <span class="hljs-number">1</span>
+        <span class="hljs-keyword">if</span> <span class="hljs-property">@isTorus</span> <span class="hljs-keyword">or</span> (<span class="hljs-property">@minX</span>&lt;=x&lt;=<span class="hljs-property">@maxX</span> <span class="hljs-keyword">and</span> <span class="hljs-property">@minY</span>&lt;=y&lt;=<span class="hljs-property">@maxY</span>)
+          <span class="hljs-keyword">if</span> <span class="hljs-property">@isTorus</span>
+            <span class="hljs-keyword">if</span> x &lt; <span class="hljs-property">@minX</span> <span class="hljs-keyword">then</span> x += <span class="hljs-property">@numX</span> <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> x &gt; <span class="hljs-property">@maxX</span> <span class="hljs-keyword">then</span> x -= <span class="hljs-property">@numX</span>
+            <span class="hljs-keyword">if</span> y &lt; <span class="hljs-property">@minY</span> <span class="hljs-keyword">then</span> y += <span class="hljs-property">@numY</span> <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> y &gt; <span class="hljs-property">@maxY</span> <span class="hljs-keyword">then</span> y -= <span class="hljs-property">@numY</span>
+          pnext = <span class="hljs-property">@patchXY</span> x, y <span class="hljs-comment"># much faster than coord()</span>
+          rect.push pnext <span class="hljs-keyword">if</span> (meToo <span class="hljs-keyword">or</span> p <span class="hljs-keyword">isnt</span> pnext)
+    <span class="hljs-property">@asSet</span> rect</pre></div></div>
+            
         </li>
         
         
@@ -423,27 +438,12 @@ using either clamp/wrap above according to isTorus topology.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-24">&#182;</a>
               </div>
-              <p>Return an array of patches in a rectangle centered on the given
-patch <code>p</code>, dx, dy units to the right/left and up/down.
-Exclude <code>p</code> unless meToo is true, default false.</p>
+              <p>Return patches within the patch square.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">patchRect</span>: <span class="hljs-function"><span class="hljs-params">(p, dx, dy, meToo=<span class="hljs-literal">false</span>)</span> -&gt;</span>
-    <span class="hljs-keyword">return</span> p.pRect <span class="hljs-keyword">if</span> p.pRect? <span class="hljs-keyword">and</span> p.pRect.radius <span class="hljs-keyword">is</span> dx <span class="hljs-comment"># and p.pRect.radius is dy</span>
-    rect = []; <span class="hljs-comment"># REMIND: optimize if no wrapping, rect inside patch boundaries</span>
-    <span class="hljs-keyword">for</span> y <span class="hljs-keyword">in</span> [p.y-dy..p.y+dy] <span class="hljs-keyword">by</span> <span class="hljs-number">1</span> <span class="hljs-comment"># by 1: perf: avoid bidir JS for loop</span>
-      <span class="hljs-keyword">for</span> x <span class="hljs-keyword">in</span> [p.x-dx..p.x+dx] <span class="hljs-keyword">by</span> <span class="hljs-number">1</span>
-        <span class="hljs-keyword">if</span> <span class="hljs-property">@isTorus</span> <span class="hljs-keyword">or</span> (<span class="hljs-property">@minX</span>&lt;=x&lt;=<span class="hljs-property">@maxX</span> <span class="hljs-keyword">and</span> <span class="hljs-property">@minY</span>&lt;=y&lt;=<span class="hljs-property">@maxY</span>)
-          <span class="hljs-keyword">if</span> <span class="hljs-property">@isTorus</span>
-            x+=<span class="hljs-property">@numX</span> <span class="hljs-keyword">if</span> x&lt;<span class="hljs-property">@minX</span>; x-=<span class="hljs-property">@numX</span> <span class="hljs-keyword">if</span> x&gt;<span class="hljs-property">@maxX</span>
-            y+=<span class="hljs-property">@numY</span> <span class="hljs-keyword">if</span> y&lt;<span class="hljs-property">@minY</span>; y-=<span class="hljs-property">@numY</span> <span class="hljs-keyword">if</span> y&gt;<span class="hljs-property">@maxY</span>
-          pnext = <span class="hljs-property">@patchXY</span> x, y <span class="hljs-comment"># much faster than coord()</span>
-          <span class="hljs-keyword">unless</span> pnext?
-            u.error <span class="hljs-string">"patchRect: x,y out of bounds, see console.log"</span>
-            <span class="hljs-built_in">console</span>.log <span class="hljs-string">"x <span class="hljs-subst">#{x}</span> y <span class="hljs-subst">#{y}</span> p.x <span class="hljs-subst">#{p.x}</span> p.y <span class="hljs-subst">#{p.y}</span> dx <span class="hljs-subst">#{dx}</span> dy <span class="hljs-subst">#{dy}</span>"</span>
-          rect.push pnext <span class="hljs-keyword">if</span> (meToo <span class="hljs-keyword">or</span> p <span class="hljs-keyword">isnt</span> pnext)
-    <span class="hljs-property">@asSet</span> rect</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">inRect</span>: <span class="hljs-function"><span class="hljs-params">(agent, radius)</span> -&gt;</span> <span class="hljs-comment">#agentSet.inRadius @, radius</span>
+    <span class="hljs-property">@patchRect</span>( (agent.p ? agent), Math.ceil(radius) )</pre></div></div>
             
         </li>
         
@@ -454,10 +454,86 @@ Exclude <code>p</code> unless meToo is true, default false.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-25">&#182;</a>
               </div>
+              <p>Return patches within radius of the given agent (patch or turtle)</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">inRadius</span>: <span class="hljs-function"><span class="hljs-params">(agent, radius)</span> -&gt;</span> <span class="hljs-comment">#agentSet.inRadius @, radius</span>
+    pset = <span class="hljs-property">@patchRect</span>( (agent.p ? agent), Math.ceil(radius) )
+    pset.inRadius agent, radius
+  <span class="hljs-attribute">inCone</span>: <span class="hljs-function"><span class="hljs-params">(agent, radius, angle, heading)</span> -&gt;</span>
+    pset = <span class="hljs-property">@patchRect</span>( (agent.p ? agent), Math.ceil(radius) )
+    pset.inRadius agent, radius, angle, heading</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-26">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-26">&#182;</a>
+              </div>
+              <p>Return all the turtles contained in the patchRect.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">turtlesOnRect</span>: <span class="hljs-function"><span class="hljs-params">(p, dx, dy=dx)</span> -&gt;</span>
+    <span class="hljs-property">@turtlesOnPatches</span> <span class="hljs-property">@patchRect</span>(p, dx, dy, <span class="hljs-literal">true</span>)
+  <span class="hljs-attribute">turtlesOnPatches</span>: <span class="hljs-function"><span class="hljs-params">(patches)</span> -&gt;</span>
+    array = []
+    <span class="hljs-keyword">if</span> patches.length <span class="hljs-keyword">isnt</span> <span class="hljs-number">0</span>
+      u.error <span class="hljs-string">"turtlesOnPatches: no cached turtles."</span> <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> patches[<span class="hljs-number">0</span>].turtles?</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-27">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-27">&#182;</a>
+              </div>
+              <p>Use push.apply, not concat, see:
+<a href="http://jsperf.com/apply-push-vs-concat-array">jsPerf</a></p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      Array.prototype.push.apply(array, p.turtles) <span class="hljs-keyword">for</span> p <span class="hljs-keyword">in</span> patches
+    <span class="hljs-property">@asSet</span> array</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-28">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-28">&#182;</a>
+              </div>
+              <p>Return all the unique patches the agentset or turtle is on.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">patchesOf</span>: <span class="hljs-function"><span class="hljs-params">(aset)</span> -&gt;</span>
+    <span class="hljs-keyword">return</span> <span class="hljs-property">@asSet</span>([aset.p ? aset]) <span class="hljs-keyword">unless</span> aset.length?
+    <span class="hljs-property">@asSet</span>( ((a.p ? a) <span class="hljs-keyword">for</span> a <span class="hljs-keyword">in</span> aset) ).sortById().uniq()
+  <span class="hljs-attribute">turtlesOf</span>: <span class="hljs-function"><span class="hljs-params">(aset)</span> -&gt;</span> <span class="hljs-property">@turtlesOnPatches</span>(<span class="hljs-property">@patchesOf</span>(aset))</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-29">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-29">&#182;</a>
+              </div>
               <p>Draws, or “imports” an image URL into the drawing layer.
 The image is scaled to fit the drawing layer.</p>
 <p>This is an async load, see this
-<a href="http://javascript.mfields.org/2011/creating-an-image-in-javascript/">new Image()</a>
+[new Image()]
+(<a href="http://javascript.mfields.org/2011/creating-an-image-in-javascript/">http://javascript.mfields.org/2011/creating-an-image-in-javascript/</a>)
 tutorial.  We draw the image into the drawing layer as
 soon as the onload callback executes.</p>
 
@@ -471,11 +547,11 @@ soon as the onload callback executes.</p>
         </li>
         
         
-        <li id="section-26">
+        <li id="section-30">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-26">&#182;</a>
+                <a class="pilcrow" href="#section-30">&#182;</a>
               </div>
               <p>Direct install image into the given context, not async.</p>
 
@@ -489,11 +565,11 @@ soon as the onload callback executes.</p>
         </li>
         
         
-        <li id="section-27">
+        <li id="section-31">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-27">&#182;</a>
+                <a class="pilcrow" href="#section-31">&#182;</a>
               </div>
               <p>Utility function for pixel manipulation.  Given a patch, returns the
 native canvas index i into the pixel data.
@@ -507,11 +583,11 @@ The top-left order simplifies finding pixels in data sets</p>
         </li>
         
         
-        <li id="section-28">
+        <li id="section-32">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-28">&#182;</a>
+                <a class="pilcrow" href="#section-32">&#182;</a>
               </div>
               <p>Convert pixel location (top/left offset i.e. mouse) to patch coords (float)</p>
 
@@ -522,11 +598,11 @@ The top-left order simplifies finding pixels in data sets</p>
         </li>
         
         
-        <li id="section-29">
+        <li id="section-33">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-29">&#182;</a>
+                <a class="pilcrow" href="#section-33">&#182;</a>
               </div>
               <p>Convert patch coords (float) to pixel location (top/left offset i.e. mouse)</p>
 
@@ -537,11 +613,11 @@ The top-left order simplifies finding pixels in data sets</p>
         </li>
         
         
-        <li id="section-30">
+        <li id="section-34">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-30">&#182;</a>
+                <a class="pilcrow" href="#section-34">&#182;</a>
               </div>
               <p>Draws, or “imports” an image URL into the patches as their color property.
 The drawing is scaled to the number of x,y patches, thus one pixel
@@ -558,11 +634,11 @@ Map is a color map, only for gray for now</p>
         </li>
         
         
-        <li id="section-31">
+        <li id="section-35">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-31">&#182;</a>
+                <a class="pilcrow" href="#section-35">&#182;</a>
               </div>
               <p>Direct install image into the patch colors, not async.</p>
 
@@ -578,11 +654,11 @@ Map is a color map, only for gray for now</p>
         </li>
         
         
-        <li id="section-32">
+        <li id="section-36">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-32">&#182;</a>
+                <a class="pilcrow" href="#section-36">&#182;</a>
               </div>
               <p>promote initial default</p>
 
@@ -594,11 +670,11 @@ Map is a color map, only for gray for now</p>
         </li>
         
         
-        <li id="section-33">
+        <li id="section-37">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-33">&#182;</a>
+                <a class="pilcrow" href="#section-37">&#182;</a>
               </div>
               <p>Draw the patches via pixel manipulation rather than 2D drawRect.
 See Mozilla pixel <a href="http://goo.gl/Lxliq">manipulation article</a></p>
@@ -610,78 +686,38 @@ See Mozilla pixel <a href="http://goo.gl/Lxliq">manipulation article</a></p>
         </li>
         
         
-        <li id="section-34">
+        <li id="section-38">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-34">&#182;</a>
+                <a class="pilcrow" href="#section-38">&#182;</a>
               </div>
               <p>u.setIdentity ctx &amp; ctx.restore() only needed if patch size
 not 1, pixel ops don’t use transform but @size&gt;1 uses
-a drawimage</p>
+a drawimage, using a transform</p>
 
             </div>
             
             <div class="content"><div class='highlight'><pre>    u.setIdentity ctx <span class="hljs-keyword">if</span> <span class="hljs-property">@size</span> <span class="hljs-keyword">isnt</span> <span class="hljs-number">1</span>
-    <span class="hljs-keyword">if</span> <span class="hljs-property">@pixelsData32</span>? <span class="hljs-keyword">then</span> <span class="hljs-property">@drawScaledPixels32</span> ctx <span class="hljs-keyword">else</span> <span class="hljs-property">@drawScaledPixels8</span> ctx
+    data = <span class="hljs-property">@pixelsData32</span> ? <span class="hljs-property">@pixelsData</span>
+
+    <span class="hljs-keyword">if</span> <span class="hljs-property">@pixelsData32</span>?
+    <span class="hljs-keyword">then</span> data[p.id] = p.color.pixel <span class="hljs-keyword">for</span> p <span class="hljs-keyword">in</span> @
+    <span class="hljs-keyword">else</span> data.set(p.color, p.id*<span class="hljs-number">4</span>) <span class="hljs-keyword">for</span> p <span class="hljs-keyword">in</span> @
+
+    <span class="hljs-property">@pixelsCtx</span>.putImageData <span class="hljs-property">@pixelsImageData</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">if</span> <span class="hljs-property">@size</span> <span class="hljs-keyword">is</span> <span class="hljs-number">1</span>
+    ctx.drawImage <span class="hljs-property">@pixelsCtx</span>.canvas, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-property">@pxWidth</span>, <span class="hljs-property">@pxHeight</span>
     ctx.restore() <span class="hljs-keyword">if</span> <span class="hljs-property">@size</span> <span class="hljs-keyword">isnt</span> <span class="hljs-number">1</span></pre></div></div>
             
         </li>
         
         
-        <li id="section-35">
+        <li id="section-39">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-35">&#182;</a>
-              </div>
-              <p>The 8-bit version for drawScaledPixels.  Used for systems w/o typed arrays</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">drawScaledPixels8</span>: <span class="hljs-function"><span class="hljs-params">(ctx)</span> -&gt;</span>
-    data = <span class="hljs-property">@pixelsData</span>
-    <span class="hljs-keyword">for</span> p <span class="hljs-keyword">in</span> @
-      i = <span class="hljs-property">@pixelByteIndex</span> p; c = p.color
-      a = <span class="hljs-keyword">if</span> c.length <span class="hljs-keyword">is</span> <span class="hljs-number">4</span> <span class="hljs-keyword">then</span> c[<span class="hljs-number">3</span>] <span class="hljs-keyword">else</span> <span class="hljs-number">255</span>
-      data[i+j] = c[j] <span class="hljs-keyword">for</span> j <span class="hljs-keyword">in</span> [<span class="hljs-number">0.</span><span class="hljs-number">.2</span>]; data[i+<span class="hljs-number">3</span>] = a
-    <span class="hljs-property">@pixelsCtx</span>.putImageData <span class="hljs-property">@pixelsImageData</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>
-    <span class="hljs-keyword">return</span> <span class="hljs-keyword">if</span> <span class="hljs-property">@size</span> <span class="hljs-keyword">is</span> <span class="hljs-number">1</span>
-    ctx.drawImage <span class="hljs-property">@pixelsCtx</span>.canvas, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, ctx.canvas.width, ctx.canvas.height</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-36">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-36">&#182;</a>
-              </div>
-              <p>The 32-bit version of drawScaledPixels, with both little and big endian hardware.</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">drawScaledPixels32</span>: <span class="hljs-function"><span class="hljs-params">(ctx)</span> -&gt;</span>
-    data = <span class="hljs-property">@pixelsData32</span>
-    <span class="hljs-keyword">for</span> p <span class="hljs-keyword">in</span> @
-      i = <span class="hljs-property">@pixelWordIndex</span> p; c = p.color
-      a = <span class="hljs-keyword">if</span> c.length <span class="hljs-keyword">is</span> <span class="hljs-number">4</span> <span class="hljs-keyword">then</span> c[<span class="hljs-number">3</span>] <span class="hljs-keyword">else</span> <span class="hljs-number">255</span>
-      <span class="hljs-keyword">if</span> <span class="hljs-property">@pixelsAreLittleEndian</span>
-      <span class="hljs-keyword">then</span> data[i] = (a &lt;&lt; <span class="hljs-number">24</span>) | (c[<span class="hljs-number">2</span>] &lt;&lt; <span class="hljs-number">16</span>) | (c[<span class="hljs-number">1</span>] &lt;&lt; <span class="hljs-number">8</span>) | c[<span class="hljs-number">0</span>]
-      <span class="hljs-keyword">else</span> data[i] = (c[<span class="hljs-number">0</span>] &lt;&lt; <span class="hljs-number">24</span>) | (c[<span class="hljs-number">1</span>] &lt;&lt; <span class="hljs-number">16</span>) | (c[<span class="hljs-number">2</span>] &lt;&lt; <span class="hljs-number">8</span>) | a
-    <span class="hljs-property">@pixelsCtx</span>.putImageData <span class="hljs-property">@pixelsImageData</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>
-    <span class="hljs-keyword">return</span> <span class="hljs-keyword">if</span> <span class="hljs-property">@size</span> <span class="hljs-keyword">is</span> <span class="hljs-number">1</span>
-    ctx.drawImage <span class="hljs-property">@pixelsCtx</span>.canvas, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, ctx.canvas.width, ctx.canvas.height</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-37">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-37">&#182;</a>
+                <a class="pilcrow" href="#section-39">&#182;</a>
               </div>
               <p>Diffuse the value of patch variable <code>p.v</code> by distributing <code>rate</code> percent
 of each patch’s value of <code>v</code> to its neighbors.
@@ -695,11 +731,11 @@ If the patch has less than 8 neighbors, return the extra to the patch.</p>
         </li>
         
         
-        <li id="section-38">
+        <li id="section-40">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-38">&#182;</a>
+                <a class="pilcrow" href="#section-40">&#182;</a>
               </div>
               <p>zero temp variable if not yet set</p>
 
@@ -711,18 +747,13 @@ If the patch has less than 8 neighbors, return the extra to the patch.</p>
         </li>
         
         
-        <li id="section-39">
+        <li id="section-41">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-39">&#182;</a>
+                <a class="pilcrow" href="#section-41">&#182;</a>
               </div>
-              <p>pass 1: calculate contribution of all patches to themselves and neighbors
-if cMap
-  minVal = Infinity; maxVal = -Infinity
-  unless cMap.scaleColor?
-    u.deprecated “Patch.diffuse: convert to ColorMap usage, using Jet”
-    cMap = ColorMaps.Jet</p>
+              <p>pass 1: calculate contribution of all patches to themselves and neighbors</p>
 
             </div>
             
@@ -734,16 +765,13 @@ if cMap
         </li>
         
         
-        <li id="section-40">
+        <li id="section-42">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-40">&#182;</a>
+                <a class="pilcrow" href="#section-42">&#182;</a>
               </div>
-              <p>if cMap
-  minVal = Math.min minVal, p[v]
-  maxVal = Math.max maxVal, p[v]
-pass 2: set new value for all patches, zero temp, modify color if c given</p>
+              <p>pass 2: set new value for all patches, zero temp, modify color if c given</p>
 
             </div>
             
@@ -751,7 +779,6 @@ pass 2: set new value for all patches, zero temp, modify color if c given</p>
       p[v] = p._diffuseNext
       p._diffuseNext = <span class="hljs-number">0</span>
       p.color = ColorMaps.scaleColor color, p[v] <span class="hljs-keyword">if</span> color?
-
     <span class="hljs-literal">null</span> <span class="hljs-comment"># avoid returning copy of @</span></pre></div></div>
             
         </li>

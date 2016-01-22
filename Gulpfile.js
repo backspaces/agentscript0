@@ -6,9 +6,10 @@ var uglify  = require('gulp-uglify');
 var rename  = require('gulp-rename');
 var lazypipe= require('lazypipe');
 var taskList= require('gulp-task-listing');
+var exec    = require('child_process').exec;
 
 
-var ASNames = 'util evented color colormaps colormixin shapes agentset patch patches agent agents link links model animator'.split(' ');
+var ASNames = 'util evented color colormaps colormixin shapes agentset patch patches turtle turtles link links model animator'.split(' ');
 var ASPaths = ASNames.map(function(n){return 'src/'+n+'.coffee';});
 
 // Create "macro" pipes.  Note 'pipe(name,args)' not 'pipe(name(args))'
@@ -83,6 +84,17 @@ gulp.task('docs', function() {
 
 // Default: list out tasks
 gulp.task('default', taskList);
+
+var cb = function (err) {
+  if (err) console.log("cb: ", err);
+}
+gulp.task('test', function (cb) { // cb() insures async
+  exec('ping -c1 localhost; pwd', function (err, stdout, stderr) {
+    console.log(stdout);
+    console.log(stderr);
+    if (err) return cb(err);
+  });
+})
 
 /*
 Notes:

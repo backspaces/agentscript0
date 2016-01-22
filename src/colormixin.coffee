@@ -4,9 +4,8 @@
 # * labelColor: A defineProperty which calls a setter/getter method pair:
 # * setLableColor/getLabelColor: (will not be overridden if present)
 # * labelColorProp: the property used by set/get method, default to colorDefault
-# * labelColorMap: The colormap property, labelColorMap, w/ no setter/getter
 # * colorType: the type associated with labelColor, private within the closure
-colorMixin = (obj, colorName, colorDefault, colorMap=null, colorType="typed") ->
+colorMixin = (obj, colorName, colorDefault, colorType="typed") ->
   # If obj is a class, use its prototype
   proto = obj.prototype ? obj
   # Capitolize 1st char of colorName for creating property names
@@ -14,32 +13,26 @@ colorMixin = (obj, colorName, colorDefault, colorMap=null, colorType="typed") ->
   # Names we're adding to the prototype.
   # We don't add colorType, its in this closure.
   colorPropName = colorName + "Prop"
-  colorMapName  = colorName + "Map"
   getterName = "get#{colorTitle}"
   setterName = "set#{colorTitle}"
   # Add names to proto.
   proto[colorPropName] =
     if colorDefault then Color.convertColor colorDefault, colorType else null
-  proto[colorMapName] = colorMap # must be in proto, not instance
+  # Add setter if not already there:
   unless proto[setterName]?
     proto[setterName] = (r,g,b,a=255) ->
       # Setter: If a single argument given, convert to a valid color
       if g is undefined
         color = Color.convertColor r, colorType # type check/conversion
-      # else if map = proto[colorMapName] # @[colorMapName]
-      else if colorMap # @[colorMapName]
-        # If a colormap exists, use the closest map color.
-        # Assume map is of correct colorType.
-        color = colorMap.findClosestColor r, g, b, a
-      else
-        # If no colormap, set the color to the r,g,b,a values
-        if @hasOwnProperty(colorPropName) and colorType is "typed"
-          # If a typed color already created, use it
-          color = @[colorPropName]
+      # If own, non colormap color, use setter
+      else if @hasOwnProperty(colorPropName) and
+        colorType is "typed" and
+        not (color = @[colorPropName]).map?
           color.setColor r,g,b,a
-        else
-          # .. otherwise create a new one
-          color = Color.rgbaToColor r, g, b, a, colorType
+      # .. otherwise create a new color
+      else
+        console.log "new color"
+        color = Color.rgbaToColor r, g, b, a, colorType
       @[colorPropName] = color
   unless proto[getterName]?
     # Getter: return the colorPropName's value
@@ -48,8 +41,4 @@ colorMixin = (obj, colorName, colorDefault, colorMap=null, colorType="typed") ->
   Object.defineProperty proto, colorName,
     get: -> @[getterName]()
     set: (val) -> @[setterName](val)
-  # get/set this closure's colorMap
-  Object.defineProperty proto, colorMapName,
-    get: -> colorMap
-    set: (val) -> colorMap = val
   proto

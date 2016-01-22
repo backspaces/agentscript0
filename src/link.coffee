@@ -29,7 +29,7 @@ class Link
       @end2.links.push @
 
   # Draw a line between the two endpoints.  Draws "around" the
-  # torus if appropriate using two lines. As with Agent.draw,
+  # torus if appropriate using two lines. As with Turtle.draw,
   # is called with patch coordinate transform installed.
   draw: (ctx) ->
     ctx.save()
@@ -55,7 +55,7 @@ class Link
       [x,y] = @model.patches.patchXYtoPixelXY x0, y0
       u.ctxDrawText ctx, @label, x+@labelOffset[0], y+@labelOffset[1], @labelColor
 
-  # Remove this link from the agent set
+  # Remove this link from its agentset
   die: ->
     @breed.remove @
     u.removeItem @end1.links, @ if @end1.links?

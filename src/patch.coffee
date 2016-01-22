@@ -1,8 +1,8 @@
 # ### Patch
 
 # Class Patch instances represent a rectangle on a grid.  They hold variables
-# that are in the patches the agents live on.  The set of all patches (@model.patches)
-# is the world on which the agents live and the model runs.
+# that are in the patches the turtles live on.  The set of all patches (@model.patches)
+# is the world on which the turtles live and the model runs.
 class Patch
   # Constructor & Class Variables:
   # * id:         unique id, promoted by agentset create() factory method
@@ -17,7 +17,7 @@ class Patch
   # * pRect:      cached rect for performance
   #
   # Patches may not need their neighbors, thus we use a default
-  # of none.  n and n4 are promoted by the Patches agent set
+  # of none. n and n4 are promoted by the Patches agentset
   # if world.neighbors is true, the default.
 
   id: null            # unique id, promoted by agentset create factory method
@@ -57,27 +57,35 @@ class Patch
 
   # Draw the patch and its text label if there is one.
   draw: (ctx) ->
+    u.deprecated "Patch.draw not used, Patches.draw uses pixels"
     ctx.fillStyle = @color.css # u.colorStr @color
     ctx.fillRect @x-.5, @y-.5, 1, 1
     if @label? # REMIND: should be 2nd pass.
       [x,y] = @breed.patchXYtoPixelXY @x, @y
-      u.ctxDrawText ctx, @label, x+@labelOffset[0], y+@labelOffset[1], @labelColor
+      u.ctxDrawText ctx, @label,
+        x+@labelOffset[0], y+@labelOffset[1], @labelColor.css
 
-  # Return an array of the agents on this patch.
-  # If patches.cacheAgentsHere has created an @agents instance
-  # variable for the patches, agents will add/remove themselves
+  # Return the members of the agentset within radius of me
+  inRadius: (agentSet, radius) -> agentSet.inRadius @, radius
+
+  # Return an array of the turtles/breeds on this patch.
+  # If patches.cacheTurtlesHere has created an @turtles instance
+  # variable for the patches, turtles will add/remove themselves
   # as they move from patch to patch.
-  agentsHere: ->
-    @agents ? (a for a in @model.agents when a.p is @)
+  turtlesHere: ->
+    u.deprecated "Patch.turtlesHere: make caching default" unless @turtles
+    @turtles ? (a for a in @model.turtles when a.p is @)
+  breedsHere: (breed) ->
+    (a for a in @turtlesHere() when a.breed is breed)
 
   # Returns true if this patch is on the edge of the grid.
   isOnEdge: ->
     @x is @breed.minX or @x is @breed.maxX or \
     @y is @breed.minY or @y is @breed.maxY
 
-  # Factory: Create num new agents on this patch. The optional init
-  # proc is called on the new agent after inserting in its agentSet.
-  sprout: (num = 1, breed = @model.agents, init = ->) ->
+  # Factory: Create num new turtles on this patch. The optional init
+  # function is called on the new turtle after inserting in its agentset.
+  sprout: (num = 1, breed = @model.turtles, init = ->) ->
     breed.create num, (a) => # fat arrow so that @ = this patch
       a.setXY @x, @y; init(a); a
 

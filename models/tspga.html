@@ -4,16 +4,18 @@
     <script src="../lib/agentscript.js"></script>
     <script src="../tools/coffee-script.js"></script>
     <script type="text/coffeescript">
-    
+
     u = ABM.Util # ABM.Util alias
     class MyModel extends ABM.Model
       setup: ->
         @agentBreeds "nodes travelers"
-        
+
         # no optimizations: 44fps
         @refreshPatches = false # for static patches
-        @refreshAgents = false # for static agents
-        # @patches.usePixels(), setCacheAgentsHere would not apply
+        @refreshTurtles = false # for static turtles
+        # @patches.usePixels(), setCacheTurtlesHere would not apply
+        # @patches.cacheTurtlesHere() # not needed, inRadius used only once
+
         # both: 57+fps (max)
 
         # globals
@@ -25,15 +27,15 @@
         @bestTourLength = 0
         @bestTourTick = 0
         @stopTickDifference = 500
-        
+
         @anim.setRate 10, true
         # @anim.setRate 60, false
-        
+
         # defaults
         @patches.setDefault "color", [250, 250, 0]
-        # @agents.setDefault "shape", "circle"
-        # @agents.setDefault "color", [255,0,0]
-        # @agents.setDefault "heading", 0 # override promotion to random angle
+        # @turtles.setDefault "shape", "circle"
+        # @turtles.setDefault "color", [255,0,0]
+        # @turtles.setDefault "heading", 0 # override promotion to random angle
         @nodes.setDefault "shape", "circle"
         @nodes.setDefault "color", [255,0,0]
         @nodes.setDefault "heading", 0 # override promotion to random angle
@@ -41,38 +43,34 @@
         @links.setDefault "color", [255,0,0]
 
         # p.color = [250, 250, 0] for p in @patches
-        
-        # @setupNode a for a in @agents.create @nodeCount
+
+        # @setupNode a for a in @turtles.create @nodeCount
         @setupNode n for n in @nodes.create @nodeCount
-        
+
         @createTourLinks @nodes #()
-        @bestTourLength = @links.reduce ((sum,l)->sum+l.length()), 0 
-        
-        # @agents.create @travelersCount, (a) => @setupTraveler(a)
+        @bestTourLength = @links.reduce ((sum,l)->sum+l.length()), 0
+
+        # @turtles.create @travelersCount, (a) => @setupTraveler(a)
         @travelers.create @travelersCount, (a) => @setupTraveler(a)
 
       setupNode: (a) =>
-        ## a.color = [255,0,0]
-        ## a.shape = "circle"
-        # a.breed = "nodes"
         a.setXY @patches.randomPt()...
-        # a.setXY @patches.randomPt()... while @nodes().inRadius(a, 2).any()
-        a.setXY @patches.randomPt()... while @nodes.inRadius(a, 2).any()
+        a.setXY @patches.randomPt()... while @nodes.inRadius(a,2).other(a).any()
       setupTraveler: (a) =>
         # a.hidden = true
         # a.breed = "travelers"
         a.tourNodes = @nodes.clone().shuffle() # ()
         a.tourLength = @lengthFromNodes a.tourNodes
-        
+
       step: ->
-        console.log @anim.toString() if @anim.ticks % 100 is 0
+        # console.log @anim.toString() if @anim.ticks % 100 is 0
         @makeTour a for a in @travelers #()
         @installBestTour()
         if (@anim.ticks - @bestTourTick) is @stopTickDifference
           console.log "Stopping at tick #{@anim.ticks} after no change in #{@stopTickDifference} ticks"
           console.log "Best tour: #{@bestTourLength} at tick #{@bestTourTick}"
           @stop()
-      
+
       createTourLinks: (nodeList) ->
         @links.clear()
         @links.create nodeList[0], nodeList.last()
@@ -113,7 +111,7 @@
 
       reportNewTour: (a) ->
         console.log "new best tour at tick #{@anim.ticks}: #{a.tourLength} by traveler #{a.id}"
-        
+
     # div, patchSize, minX, maxX, minY, maxY, isTorus, hasNeighbors
     #   Defaults: 13, -16, 16, -16, 16, false, true
     model = new MyModel {
@@ -127,7 +125,7 @@
     }
     model.debug() # Debug: Put Model vars in global name space
     model.start() # Run model immediately after startup initialization
-    
+
     </script>
   </head>
   <body>

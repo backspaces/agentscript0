@@ -34,11 +34,12 @@ class MyModel extends ABM.Model
       console.log "This prevents two user defined image shapes from loading!"
       console.log "Use http:// protocol to enable image shapes."
     else
-      Shapes.add "cc", true, u.importImage("data/coffee.png")
+      Shapes.add "cup", true, u.importImage("data/coffee.png")
       Shapes.add "redfish", false, u.importImage("data/redfish64t.png")
+      Shapes.add "twitter", false, u.importImage("data/twitter.png")
 
   # Initialize our model via the `setup` abstract method.
-  # This model simply creates `population` agents with
+  # This model simply creates `population` turtles with
   # arbitrary shapes with `size` size and `speed` velocity.
   # We also periodically change the patch colors to random gray values.
   setup: -> # called by Model.constructor
@@ -46,15 +47,15 @@ class MyModel extends ABM.Model
   # Most instance variables are parameters we would like
   # an external UI to setup for us.
     @population = 100
-    @size = 1.5   # size in patch coords
+    @size = 2.0   # size in patch coords
     @speed = .5   # move forward this amount in patch coords
     @wiggle = u.degToRad(30) # degrees/radians to wiggle
-    @startCircle = true  # initialize agents randomly or in circle
+    @startCircle = true  # initialize turtles randomly or in circle
 
-    # Set the default agent size; save storage over setting size for each agent
-    @agents.setDefault "size", @size
-    # Set the agent to convert shape to bitmap for better performance.
-    @agents.setUseSprites()
+    # Set the default turtle size; save storage over setting size for each turtle
+    @turtles.setDefault "size", @size
+    # Set the turtle to convert shape to bitmap for better performance.
+    @turtles.setUseSprites()
 
     # Set animation to 30fps, without multiple steps per draw:
     @anim.setRate 30, false
@@ -68,32 +69,32 @@ class MyModel extends ABM.Model
       # Set x,y axes different color
       p.color = "blue" if p.x is 0 or p.y is 0
 
-    # Our empty @agents AgentSet will have been created.  Here we
-    # add `population` Agents we use in our model.
-    # We set the build-in Agent variables `size` and `shape`
-    # and layout the agents randomly or in a circle depending
+    # Our empty @turtles AgentSet will have been created.  Here we
+    # add `population` Turtles we use in our model.
+    # We set the build-in Turtle variables `size` and `shape`
+    # and layout the turtles randomly or in a circle depending
     # on our modeel's `startCircle` variable.
-    for a in @agents.create @population
+    for a in @turtles.create @population
       a.shape = u.oneOf Shapes.names() # random shapes
       if @startCircle
         a.forward @patches.maxX/2 # start in circle
       else
         a.setXY @patches.randomPt()... # set random location
 
-    # Print number of agents and patches to the console.
+    # Print number of turtles and patches to the console.
     # Note CoffeeScript
     # [string interpolation](http://jashkenas.github.com/coffee-script/#strings)
-    log "total agents: #{@agents.length}, total patches: #{@patches.length}"
-    # Print number of agents with each shape
+    log "total turtles: #{@turtles.length}, total patches: #{@patches.length}"
+    # Print number of turtles with each shape
     for s in Shapes.names()
-      num = @agents.getPropWith("shape", s).length
+      num = @turtles.getPropWith("shape", s).length
       log "#{num} #{s}"
     console.log "Patch(0,0): ", @patches.patchXY 0,0
 
   # Update our model via the second abstract method, `step`
   step: ->  # called by Model.animate
-    # First, update our agents via `updateAgents` below
-    @updateAgents(a) for a in @agents
+    # First, update our turtles via `updateTurtles` below
+    @updateTurtles(a) for a in @turtles
     # Every 100 steps, update our patches, print stats to
     # the console, and use the Model refresh flag to redraw
     # the patches. Otherwise don't refresh.
@@ -102,25 +103,19 @@ class MyModel extends ABM.Model
       @reportInfo()
       @refreshPatches = true
       # Add use of our first pull request:
-      @setSpotlight @agents.oneOf() if @anim.ticks is 300
+      @setSpotlight @turtles.oneOf() if @anim.ticks is 300
       @setSpotlight null if @anim.ticks is 600
     else
       @refreshPatches = false
-    if @anim.draws is 2 # Show the sprite sheet if there is one after first draw
-      sheet = u.last(Shapes.spriteSheets) if Shapes.spriteSheets.length isnt 0
-      if sheet?
-        log sheet
-        document.getElementById("play").appendChild(sheet.canvas)
-    log @anim.toString() if @anim.ticks % 100 is 0
     # Stop the animation at 1000. Restart by `ABM.model.start()` in console.
     if @anim.ticks is 1000
       log "..stopping, restart by app.start()"
       @stop()
 
-  # Three of our own methods to manage agents & patches
+  # Three of our own methods to manage turtles & patches
   # and report model state.
-  updateAgents: (a) -> # a is agent
-    # Have our agent "wiggle" by changing
+  updateTurtles: (a) -> # a is turtle
+    # Have our turtle "wiggle" by changing
     # our heading by +/- `wiggle/2` radians
     a.rotate u.randomCentered @wiggle
     # Then move forward by our speed.
@@ -132,11 +127,11 @@ class MyModel extends ABM.Model
     p.color = Maps.randomColor() if p.x isnt 0 and p.y isnt 0
   reportInfo: ->
     # Report the average heading, in radians and degrees
-    headings = @agents.getProp "heading"
-    avgHeading = (headings.reduce (a,b)->a+b) / @agents.length
+    headings = @turtles.getProp "heading"
+    avgHeading = (headings.reduce (a,b)->a+b) / @turtles.length
     # Note: multiline strings. block strings also available.
     log "
-average heading of agents:
+average heading of turtles:
 #{avgHeading.toFixed(2)} radians,
 #{u.radToDeg(avgHeading).toFixed(2)} degrees"
 

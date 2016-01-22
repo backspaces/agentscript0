@@ -1,7 +1,9 @@
 <html>
   <head>
-    <title>Flock Model</title>
+    <title>Flock GUI Model</title>
     <script src="../lib/agentscript.js"></script>
+    <script src="../tools/dat.gui.min.js"></script>
+    <script src="../lib/as.dat.gui.js"></script>
     <script src="../tools/coffee-script.js"></script>
     <script type="text/coffeescript">
 
@@ -12,6 +14,14 @@
       setVision: (@vision) ->  @patches.cacheRect @vision, true
       setMaxTurn: (maxTurn) -> @maxTurn = u.degToRad(maxTurn)
       toggleConsole: () -> @useConsole = not @useConsole
+      resetPopulation: (@population) ->
+        change = @population - @turtles.length
+        if change > 0
+          p.sprout 1 for p in @patches.nOf(change)
+        else
+          t.die() for t in @turtles.nOf(-change)
+        change # CS always returns something, this made some sense
+
 
       setup: ->
         # u.randomSeed() # use for repeatable runs
@@ -24,9 +34,9 @@
         # w/ refresh off and two optimizations, 22-23fps
         # Deprecated:
         # @turtles.setUseSprites() # 24 -> 36
-
         @turtles.setDefault "useSprites", true
-        @anim.setRate 60# , false, false # multistep, noRAF
+
+        # @anim.setRate 30, true # multistep
 
         @useConsole = true
         @population = 150     # turtles (was more, Chrome regression problem)
@@ -43,14 +53,13 @@
         #a.color = u.randomMapColor() for a in @turtles
 
       step: ->
-        if @useConsole and @anim.ticks % 100 is 0
+        if @useConsole and @anim.ticks % 25 is 0
+          # console.log @anim.toString(), "flock alignment: #{@reportFlockVectorSize()}"
           console.log "flock alignment: #{@reportFlockVectorSize()}"
         @flock(a) for a in @turtles
 
       flock: (a) -> # a is turtle
-        # These two forms are identical
-        # flockmates = @turtles.inRadius(a, @vision).other(a)
-        flockmates = a.inRadius(@turtles, @vision).other(a)
+        flockmates = @turtles.inRadius(a, @vision).other(a)
         if flockmates.length isnt 0
           [nearestNeighbor, d] = u.minOneOf flockmates, ((f) -> f.distance a), true
           if d < @minSeparation
@@ -100,6 +109,44 @@
     })
     .debug() # Debug: Put Model vars in global name space
     .start() # Run model immediately after startup initialization
+
+    gui = new ABM.DatGUI(model, {
+      "turning radius (deg)": {
+        type: "slider",
+        min: 0,
+        max: 10,
+        step: 0.5,
+        val: 3,
+        smooth: true,
+        setter: "setMaxTurn"
+      },
+      "minSeparation": {
+        type: "slider",
+        min: 0,
+        max: 10,
+        step: 0.25,
+        val: 0.75,
+        smooth: true
+      },
+      "vision radius": {
+        type: "slider",
+        min: 0,
+        max: 15,
+        step: 1,
+        val: 3,
+        smooth: true,
+        setter: "setVision"
+      },
+      "population": {
+        type: "slider",
+        min: 50,
+        max: 500,
+        step: 25,
+        val: 150,
+        smooth: true,
+        setter: "resetPopulation"
+      }
+    })
 
     </script>
   </head>

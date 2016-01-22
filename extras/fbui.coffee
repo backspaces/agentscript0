@@ -22,11 +22,11 @@ class ABM.FirebaseUI
   # * The button's setter is called on the false -> true transition
   
   constructor: (@fbname, @model, @ui) ->
-    @fb = new Firebase fbname
+    @fb = new Firebase @fbname
     @refs = {}; @refs[k] = @fb.child(k) for k,v of @ui
     @vals = {}; @vals[k] = v.val for k,v of @ui
     @resetModel()
-    @fb.set ui, (val)->console.log if val? then "FB error: #{val}" else "FB ready"
+    @fb.set @ui, (val)->console.log if val? then "FB error: #{val}" else "FB ready"
     @fb.on 'child_changed', (snapshot) =>
       console.log "childChange", snapshot.name(), snapshot.val().val
       @setModelValue snapshot.name(), snapshot.val().val

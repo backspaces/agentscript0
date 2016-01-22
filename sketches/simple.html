@@ -4,28 +4,43 @@
     <script src="../lib/agentscript.js"></script>
     <script src="../tools/coffee-script.js"></script>
     <script type="text/coffeescript">
-    
+
     u = ABM.Util # shortcut for ABM.Util
     class MyModel extends ABM.Model
       setup: -> # called by Model constructor
         @refreshPatches = false
-        @agents.create 25
-        for a in @agents
-          a.size = 3
-          a.shape = u.oneOf ABM.shapes.names()
+        @population = 200
+        @patches.usePixels()
+        # @patches.cacheTurtlesHere()
+        @turtles.setDefault "useSprites", true
+
+        @anim.setRate 30 # 20, true
+        # @anim.setRate 100, false, true
+
+        @turtles.create @population
+        for a in @turtles
+          a.size = 2
         for p in @patches
           p.color = u.randomGray()
-          p.color = [255,0,0] if p.x is 0
-          p.color = [255,255,0] if p.y is 0
+          p.color = "red" if p.x is 0
+          p.color = "green" if p.y is 0
       step: ->
-        for a in @agents
+        for a in @turtles
           a.rotate u.randomCentered(u.degToRad(40))
-          a.forward 1
+          a.forward .5
+        # @stop() if @anim.ticks is 200
 
-    # div, size, minX, maxX, minY, maxY, torus=true, neighbors=true
-    model = new MyModel("layers", 10, -25, 25, -20, 20, true)
-      .debug() # Debug: Put Model vars in global name space
-      .start() # Run model immediately after startup initialization
+    model = new MyModel {
+      div: "layers",
+      size: 10,
+      minX: 0,
+      maxX: 49,
+      minY: 0,
+      maxY: 39,
+      isTorus: true
+    }
+    .debug() # Debug: Put Model vars in global name space
+    .start() # Run model immediately after startup initialization
 
     </script>
   </head>
@@ -33,5 +48,3 @@
     <div id="layers"></div>
   </body>
 </html>
-
-

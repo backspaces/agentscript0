@@ -139,14 +139,13 @@ ColorMaps  = {
       for c,i in @ then return i if @colorsEqual(color, c)
       undefined
 
-    # Return the map index or color proportional to the value between min, max.
+    # Return the map color proportional to the number value between min, max.
     # This is a linear interpolation based on the map indices.
-    # The optional minColor, maxColor args are for using a subset of the map.
-    scaleIndex: (number, min=0, max=1, minColor = 0, maxColor = @length-1) ->
-      scale = u.lerpScale number, min, max # (number-min)/(max-min)
-      Math.round(u.lerp minColor, maxColor, scale)
-    scaleColor: (number, min=0, max=1, minColor = 0, maxColor = @length-1) ->
-      @[ @scaleIndex number, min, max, minColor, maxColor ]
+    scaleColor: (number, min, max) ->
+      if number < min then number = min
+      if number > max then number = max
+      scale = (@length-1)*((number-min)/(max-min))
+      @[ Math.round scale ]
 
     # Find the index/color closest to this r,g,b,a.
     # Alpha only used for exact lookup optimization.
@@ -251,7 +250,7 @@ ColorMaps  = {
       map = map.concat ramps[name]
     map = @basicColorMap map
     map[k] = v for k, v of ramps
-    # Hack: will remove; helps migration of agent/patch.scaleColor
+    # Hack: will remove; helps migration of turtle/patch.scaleColor
     map[Color.convertColor k, "css"] = v for k, v of ramps
     map
 
@@ -276,7 +275,7 @@ ColorMaps  = {
     @colorMap @arrayToColors(array, type), indexToo
 
   # Create shared maps and utilities
-  createSharedMaps: (whiteToo = true) ->
+  createSharedMaps: ->
     # A map of all 256 gray colors
     @Gray    = @grayColorMap()
     # A popular rgb map of the best 256 colors
@@ -290,13 +289,22 @@ ColorMaps  = {
     # The netlogo map. NetLogo.yellow etc are individual netlogo hue ramps
     @NetLogo = @netLogoColorMap 10
     # Like above but largest < 256 map (252). Does not diminish to white.
-    # Ramps.yellow is thus a ramp from black to brightest NetLogo yellow hue
+    # NetLogoRamps.yellow is thus a ramp from black to brightest NetLogo
+    # yellow hue while CssRamps.yellow is black to Css "yellow"
     @NetLogoRamps = @netLogoColorMap 18, false
     @CssRamps     = @cssBasicColorMap 18, false
-  randomGray: (min, max) -> @Gray.randomColor(min, max)
-  randomColor: -> @Rgb256.randomColor() # sharedRgb?
 
-  # Legacy/Temporary: replace util/patch/agent scaleColor
+  # Return random gray/color from a shared map.
+  # Colormap colors are immutable, so if you don't want
+  # a shared gray/color but one who's color you will change
+  # via color.setColor(..), then use clone:
+  #
+  #     color = ColorMaps.randomColor().clone()
+  #     color = ColorMaps.Jet.scaleColor(.5).clone()
+  randomGray: (min, max) -> @Gray.randomColor(min, max)
+  randomColor: () -> @Rgb256.randomColor()
+
+  # Legacy/Temporary: replace util/patch/turtle scaleColor
   scaleColor: (color, number, min=0, max=1) ->
     if color.scaleColor? # colormap ramp
       return color.scaleColor number, min, max

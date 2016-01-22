@@ -1,0 +1,153 @@
+<html>
+  <head>
+    <title>Shallow Water Model</title>
+    <script src="../lib/agentscript.js"></script>
+    <script src="../tools/coffee-script.js"></script>
+    <script src="../tools/dat.gui.min.js"></script>
+    <script src="../lib/as.dat.gui.js"></script>
+    <script type="text/coffeescript">
+
+    # This is a contributed model by Cody Smith (cody@redfish.com).
+    # It is a shallow water simulation with a few boats
+    # causing a disturbance in the water.
+    # This is a clear discription:
+    # http://freespace.virgin.net/hugo.elias/graphics/x_water.htm
+    # This is a MatLab discription from our friend Cleve Moler:
+    # http://www.mathworks.com/moler/exm/chapters/water.pdf
+
+    u = ABM.Util # ABM.Util alias
+    cmaps = ABM.ColorMaps
+    class MyModel extends ABM.Model
+      # GUI setters:
+      setOmega: (@omega) ->
+      setRoundWake: (@useRoundWake) ->
+      setSpeed: (@speed) ->
+      setGradientSize: (@gradientSize) ->
+        @colorMap = cmaps.gradientColorMap @gradientSize, ["blue","aqua"]
+      setRadius: (@radius) ->
+        # Keep a rect of our radius size for performance
+        @patches.cacheRect @radius # helps a bit, but not sure how much
+      resetPopulation: (@population) ->
+        change = @population - @turtles.length
+        if change > 0
+          @turtles.create change # start at origin
+        else
+          t.die() for t in @turtles.nOf(-change)
+        change # CS always returns something, this made some sense
+
+      setup: ->
+        # globals
+        @population = 4
+        @speed = 1
+        @omega = 1.95
+        @smoothing = 0.999
+        @useRoundWake = true
+
+        @setRadius 4
+        @setGradientSize 32
+
+        @anim.setRate 60 #, true
+
+        # defaults
+        @turtles.setDefault "size", 3
+        # only a couple of turtles, sprites may not be needed here
+        # @turtles.setDefault "useSprites", true
+
+        @turtles.create @population
+
+        for p in @patches
+          # Cleve Moler sets his initial value to 0.14223
+          # on his shallow water chapter
+          p.depA = 0.14223
+          p.depB = p.depA
+
+      step: ->
+        for p in @patches
+          nsum = 0
+          for nei in p.n4
+            nsum += nei.depA
+          depth = @omega * nsum/p.n4.length + (1-@omega)*p.depB
+          p.depB = depth * @smoothing
+        for p in @patches # swap buffers
+          tmp = p.depA
+          p.depA = p.depB
+          p.depB = tmp
+        for p in @patches
+          # 0-2 seems a good max/min range via trial/error
+          p.color = @colorMap.scaleColor p.depA, 0, 2
+        for a in @turtles
+          if Math.sqrt( a.x*a.x + a.y*a.y) > @world.maxX*0.9
+            a.rotate u.degToRad(120)
+          else
+            a.rotate u.randomCentered(u.degToRad(20))
+          a.forward @speed
+          if @useRoundWake
+          then ps = @patches.inRadius a.p, @radius
+          else ps = @patches.inRect a.p, @radius
+          p.depA = 0.9 for p in ps
+        null # return something to avoid CS returning array of results
+
+    model = new MyModel {
+      div: "layers",
+      size: 5,
+      minX: -60,
+      maxX: 60,
+      minY: -60,
+      maxY: 60,
+      isTorus: false
+    }
+    model.debug() # Debug: Put Model vars in global name space
+    model.start() # Run model immediately after startup initialization
+
+    gui = new ABM.DatGUI model,
+      "Population":
+        type: "slider"
+        min: 1
+        max: 10
+        step: 1
+        val: model.population
+        smooth: true
+        setter: "resetPopulation"
+      "Omega":
+        type: "slider"
+        min: 0
+        max: 2
+        step: 0.1
+        val: model.omega
+        smooth: true
+        setter: "setOmega"
+      "Speed":
+        type: "slider"
+        min: .2
+        max: 2
+        step: 0.2
+        val: model.speed
+        smooth: true
+        setter: "setSpeed"
+      "Gradient Colors":
+        type: "slider"
+        min: 8
+        max: 64
+        step: 2
+        val: model.gradientSize
+        smooth: true
+        setter: "setGradientSize"
+      "Wake Radius":
+        type: "slider"
+        min: 1
+        max: 10
+        step: 1
+        val: model.radius
+        smooth: true
+        setter: "setRadius"
+      "Round Wake":
+        type: "switch"
+        val: model.useRoundWake
+        setter: "setRoundWake"
+
+    </script>
+  </head>
+  <body>
+    <div id="layers"></div>
+  </body>
+</html>

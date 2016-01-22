@@ -44,7 +44,7 @@ ABM.DataSet = class DataSet
   # Reset a dataset to have new width, height and data.  Allows creating
   # an empty dataset and having it filled by another function.
   reset: (@width, @height, @data) ->
-    if data.length isnt width*height
+    if @data.length isnt @width*@height
       u.error """DataSet: data array length error:
       data.length: #{@data.length} width: #{@width} height: #{@height}
       """
@@ -127,7 +127,7 @@ ABM.DataSet = class DataSet
   toPatchColors: (model = @model) -> model.patches.installColors(img=@toImage()); img
   # Resample dataset to patch width/height and set named patch variable.
   # Note this "insets" the dataset so the variable is sampled the center of the patch.
-  # The dataset can be sampled directly to its edges .. i.e. in agent coords.
+  # The dataset can be sampled directly to its edges .. i.e. in turtle coords.
   toPatchVar: (name, model = @model) ->
     if (ps=model.patches).length is @data.length
     then p[name] = @data[i] for p,i in ps
@@ -243,7 +243,7 @@ ABM.AscDataSet = class AscDataSet extends DataSet
   # Complete an initial, empty dataset object who's string
   # is read via an xhr request.
   parse: (@str) ->
-    textData = str.split "\n"; @header = {}; #gisData.data = []
+    textData = @str.split "\n"; @header = {}; #gisData.data = []
     for i in [0..5]
       keyVal = textData[i].split /\s+/
       @header[keyVal[0].toLowerCase()] = parseFloat keyVal[1]

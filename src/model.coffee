@@ -1,4 +1,4 @@
-# Class Model is the control center for our AgentSets: Patches, Agents and Links.
+# Class Model is the control center for our AgentSets: Patches, Turtles and Links.
 # Creating new models is done by subclassing class Model and overriding two
 # virtual/abstract methods: `setup()` and `step()`
 
@@ -14,9 +14,23 @@ class Model
     patches:   {z:10, ctx:"2d"}
     drawing:   {z:20, ctx:"2d"}
     links:     {z:30, ctx:"2d"}
-    agents:    {z:40, ctx:"2d"}
+    turtles:   {z:40, ctx:"2d"}
     spotlight: {z:50, ctx:"2d"}
   }
+
+  # Static method: return defaulted Model options object.
+  # Access by (ABM.)Model.defaultOptions() etc
+  @nonWorldOptions = ["div"]
+  @defaultOptions: ->
+    div: null
+    size: 13
+    minX: -16
+    maxX: 16
+    minY: -16
+    maxY: 16
+    isTorus: false
+    hasNeighbors: true
+
   # Constructor:
   #
   # * create agentsets, install them and ourselves in ABM global namespace
@@ -24,28 +38,33 @@ class Model
   # * setup patch coord transforms for each layer context
   # * intialize various instance variables
   # * call `setup` abstract method
-  constructor: (
-    divOrOpts, size=13, minX=-16, maxX=16, minY=-16, maxY=16,
-    isTorus=false, hasNeighbors=true, isHeadless=false
-  ) ->
+  constructor: (args) ->
+    # Setup and error check args
+    options = Model.defaultOptions()
+    unless u.isObject args # remove after a while
+      console.log "option defaults:", options
+      u.error "Model constructor: use options object; see console for defaults."
+    u.deprecated "Model: isHeadless no longer used" if args.isHeadless?
+
+    # Merge args into options. Insures newer options/defaults included
+    for k,v of args # when k isnt "isHeadless" # Remove headless test shortly
+      u.error "Bad Model arg: #{k}: #{v}" if options[k] is undefined
+      options[k] = v
+    @setWorld options
+
     u.mixin(@, new Evented())
-    if typeof divOrOpts is 'string'
-      div = divOrOpts
-      @setWorldDeprecated size, minX, maxX, minY, maxY,
-        isTorus, hasNeighbors, isHeadless
-    else
-      div = divOrOpts.div
-      isHeadless = divOrOpts.isHeadless = divOrOpts.isHeadless or not div?
-      @setWorld divOrOpts
+
     @contexts = {}
-    unless isHeadless
-      (@div=document.getElementById(div)).setAttribute 'style',
-        "position:relative; width:#{@world.pxWidth}px; height:#{@world.pxHeight}px"
+    if options.div?
+      @div=document.getElementById(options.div)
+      # el.setAttribute 'style' erases existing style, el.style.xx does not
+      s=@div.style
+      s.position="relative"; s.width=@world.pxWidth; s.height=@world.pxHeight
 
       # * Create 2D canvas contexts layered on top of each other.
       # * Initialize a patch coord transform for each layer.
       #
-      # Note: this transform is permanent .. there isn't the usual ctx.restore().
+      # Note: The transform is permanent .. there isn't the usual ctx.restore().
       # To use the original canvas 2D transform temporarily:
       #
       #     u.setIdentity ctx
@@ -67,19 +86,19 @@ class Model
     # Set drawing controls.  Default to drawing each agentset.
     # Optimization: If any of these is set to false, the associated
     # agentset is drawn only once, remaining static after that.
-    @refreshLinks = @refreshAgents = @refreshPatches = true
+    @refreshLinks = @refreshTurtles = @refreshPatches = true
 
     # Create model-local versions of AgentSets and their
     # agent class.  Clone the agent classes so that they
     # can use "defaults" in isolation when multiple
     # models run on a page.
     @Patch = u.cloneClass(Patch)
-    @Agent = u.cloneClass(Agent)
+    @Turtle = u.cloneClass(Turtle)
     @Link = u.cloneClass(Link)
 
     # Initialize agentsets.
     @patches = new Patches @, @Patch, "patches"
-    @agents = new Agents @, @Agent, "agents"
+    @turtles = new Turtles @, @Turtle, "turtles"
     @links = new Links @, @Link, "links"
 
     # Initialize model global resources
@@ -90,21 +109,15 @@ class Model
     @startup()
     u.waitOnFiles => @modelReady=true; @setupAndEmit(); @globals() unless @globalNames.set
 
-  # Initialize/reset world parameters.
+  # Initialize/reset world parameters by expanding options.
   setWorld: (opts) ->
-    w = defaults = { size: 13, minX: -16, maxX: 16, minY: -16, maxY: 16, isTorus: false, hasNeighbors: true, isHeadless: false }
-    for own k,v of opts
-      w[k] = v
-    {size, minX, maxX, minY, maxY, isTorus, hasNeighbors, isHeadless} = w
-    numX = maxX-minX+1; numY = maxY-minY+1; pxWidth = numX*size; pxHeight = numY*size
-    minXcor=minX-.5; maxXcor=maxX+.5; minYcor=minY-.5; maxYcor=maxY+.5
-    @world = {size,minX,maxX,minY,maxY,minXcor,maxXcor,minYcor,maxYcor,
-      numX,numY,pxWidth,pxHeight,isTorus,hasNeighbors,isHeadless}
-  setWorldDeprecated: (size, minX, maxX, minY, maxY, isTorus, hasNeighbors, isHeadless) ->
-    numX = maxX-minX+1; numY = maxY-minY+1; pxWidth = numX*size; pxHeight = numY*size
-    minXcor=minX-.5; maxXcor=maxX+.5; minYcor=minY-.5; maxYcor=maxY+.5
-    @world = {size,minX,maxX,minY,maxY,minXcor,maxXcor,minYcor,maxYcor,
-      numX,numY,pxWidth,pxHeight,isTorus,hasNeighbors,isHeadless}
+    w = {}; w[k] = v for own k,v of opts when k not in Model.nonWorldOptions
+    w.numX    = w.maxX-w.minX+1;  w.numY    = w.maxY-w.minY+1
+    w.pxWidth = w.numX*w.size;    w.pxHeight= w.numY*w.size
+    w.minXcor = w.minX-.5;        w.maxXcor = w.maxX+.5
+    w.minYcor = w.minY-.5;        w.maxYcor = w.maxY+.5
+    @world = w
+
   setCtxTransform: (ctx) ->
     ctx.canvas.width = @world.pxWidth; ctx.canvas.height = @world.pxHeight
     ctx.save()
@@ -118,7 +131,7 @@ class Model
 #### Optimizations:
 
   # Modelers "tune" their model by adjusting flags:<br>
-  # `@refreshLinks, @refreshAgents, @refreshPatches`<br>
+  # `@refreshLinks, @refreshTurtles, @refreshPatches`<br>
   # and by the following helper methods:
 
   # Draw patches using scaled image of colors. Note anti-aliasing may occur
@@ -129,24 +142,20 @@ class Model
   # Don't use if patch breeds have different colors.
   setMonochromePatches: -> @patches.monochrome = true
 
-  # Have patches cache the agents currently on them.
-  # Optimizes Patch p.agentsHere method
-  setCacheAgentsHere: -> @patches.cacheAgentsHere()
+  # Have patches cache the turtles currently on them.
+  # Optimizes Patch p.turtlesHere method
+  setCacheTurtlesHere: -> @patches.cacheTurtlesHere()
 
-  # Have agents cache the links with them as a node.
-  # Optimizes Agent a.myLinks method
-  setCacheMyLinks: -> @agents.cacheLinks()
-
-  # Have patches cache the given patchRect.
-  # Optimizes patchRect, inRadius and inCone
-  setCachePatchRect:(radius,meToo=false)->@patches.cacheRect radius,meToo
+  # Have turtles cache the links with them as a node.
+  # Optimizes Turtle a.myLinks method
+  setCacheMyLinks: -> @turtles.cacheLinks()
 
 #### User Model Creation
 # A user's model is made by subclassing Model and over-riding these
 # two abstract methods. `super` need not be called.
 
   # Initialize model resources (images, files) here.
-  # Uses util.waitOn so can be be async.
+  # Uses Util.waitOn so can be be async.
   startup: -> # called by constructor
   # Initialize your model variables and defaults here.
   # If async used, make sure step/draw are aware of possible missing data.
@@ -173,8 +182,8 @@ class Model
     (v.restore(); @setCtxTransform v) for k,v of @contexts when v.canvas?
     console.log "reset: patches"
     @patches = new Patches @, @Patch, "patches"
-    console.log "reset: agents"
-    @agents = new Agents @, @Agent, "agents"
+    console.log "reset: turtles"
+    @turtles = new Turtles @, @Turtle, "turtles"
     console.log "reset: links"
     @links = new Links @, @Link, "links"
     Shapes.spriteSheets.length = 0 # possibly null out entries?
@@ -189,11 +198,20 @@ class Model
 # their "refresh" flags are set.  The latter are simple optimizations
 # to avoid redrawing the same static scene. Called by animator.
   draw: (force = @anim.stopped or @anim.draws is 1) ->
-    @patches.draw @contexts.patches  if force or @refreshPatches
-    @links.draw   @contexts.links    if force or @refreshLinks
-    @agents.draw  @contexts.agents   if force or @refreshAgents
-    @drawSpotlight @spotlightAgent, @contexts.spotlight if @spotlightAgent?
+    if @debugging
+      console.log @anim.toString()  if @anim.draws % 100 is 0
+      @showSpriteSheet() if (@anim.draws is 2)# and @turtles[0]?.useSprites
+    if @div?
+      @patches.draw  @contexts.patches  if force or @refreshPatches
+      @links.draw    @contexts.links    if force or @refreshLinks
+      @turtles.draw  @contexts.turtles  if force or @refreshTurtles
+      @drawSpotlight @spotlightTurtle, @contexts.spotlight if @spotlightTurtle?
     @emit('draw')
+  toggleDrawing: ->
+    if @div?
+      @div0 = @div; @div = null
+    else
+      @div = @div0; @div0 = null
 
 #### Wrappers around user-implemented methods
 
@@ -204,20 +222,20 @@ class Model
     @step()
     @emit('step')
 
-# Creates a spotlight effect on an agent, so we can follow it throughout the model.
+# Creates a spotlight effect on a turtle, so we can follow it throughout the model.
 # Use:
 #
-#     @setSpotliight breed.oneOf()
+#     @setSpotlight breed.oneOf()
 #
 # to draw one of a random breed. Remove spotlight by passing `null`
-  setSpotlight: (@spotlightAgent) ->
-    u.clearCtx @contexts.spotlight unless @spotlightAgent?
+  setSpotlight: (@spotlightTurtle) ->
+    u.clearCtx @contexts.spotlight unless @spotlightTurtle?
 
-  drawSpotlight: (agent, ctx) ->
+  drawSpotlight: (turtle, ctx) ->
     u.clearCtx ctx
     u.fillCtx ctx, Color.typedColor(0,0,0,.6*255)
     ctx.beginPath()
-    ctx.arc agent.x, agent.y, 3, 0, 2*Math.PI, false
+    ctx.arc turtle.x, turtle.y, 3, 0, 2*Math.PI, false
     ctx.fill()
 
 
@@ -235,14 +253,14 @@ class Model
 #     @embers and @fires
 #     @spokes and @rims
 #
-# These agentsets' `create` methods create subclasses of Agent/Link.
-# Use of <breed>.setDefault methods work as for agents/links, creating default
+# These agentsets' `create` methods create subclasses of Turtle/Link.
+# Use of <breed>.setDefault methods work as for turtles/links, creating default
 # values for the breed set:
 #
 #     @embers.setDefault "color", [255,0,0]
 #
-# ..will set the default color for just the embers. Note: patch breeds are currently
-# not usable due to the patches being prebuilt.  Stay tuned.
+# ..will set the default color for just the embers. Note: patch breeds are
+# experimental, using setBreed, due to the patches being prebuilt.
 
   createBreeds: (breedNames, baseClass, baseSet) ->
     breeds = []; breeds.classes = {}; breeds.sets = {}
@@ -258,13 +276,13 @@ class Model
   patchBreeds: (breedNames) ->
     @patches.breeds = @createBreeds breedNames, @Patch, Patches
   agentBreeds: (breedNames) ->
-    @agents.breeds = @createBreeds breedNames, @Agent, Agents
+    @turtles.breeds = @createBreeds breedNames, @Turtle, Turtles
   linkBreeds:  (breedNames) ->
     @links.breeds = @createBreeds breedNames, @Link, Links
 
   # Utility for models to create agentsets from arrays.  Ex:
   #
-  #     even = @asSet (a for a in @agents when a.id % 2 is 0)
+  #     even = @asSet (a for a in @turtles when a.id % 2 is 0)
   #     even.shuffle().getProp("id") # [6, 0, 4, 2, 8]
   asSet: (a, setType = AgentSet) -> AgentSet.asSet a, setType
 
@@ -275,16 +293,16 @@ class Model
   debug: (@debugging=true)->u.waitOn (=>@modelReady),(=>@setRootVars()); @
   setRootVars: ->
     window.psc = Patches
-    window.asc = Agents
+    window.tsc = Turtles
     window.lsc = Links
     window.pc  = @Patch
-    window.ac  = @Agent
+    window.tc  = @Turtle
     window.lc  = @Link
     window.ps  = @patches
-    window.as  = @agents
+    window.ts  = @turtles
     window.ls  = @links
     window.p0  = @patches[0]
-    window.a0  = @agents[0]
+    window.t0  = @turtles[0]
     window.l0  = @links[0]
     window.dr  = @drawing
     window.u   = Util
@@ -294,15 +312,28 @@ class Model
     window.dv  = @div
     window.app = @
 
+  # Debug aid: Fill a named div with the (last) sprite sheet
+  # Typically the div should be before the model div, float right:
+  #
+  #    <div id="sprites" style="float:right;"></div>
+  #
+  # If no divName given, use spriteSheet itself w/ float:right style
+  showSpriteSheet: (divName) ->
+    if Shapes.spriteSheets.length isnt 0
+      sheet = Util.last(Shapes.spriteSheets)
+      if divName?
+        document.getElementById(divName).appendChild(sheet.canvas)
+      else
+        sheet.canvas.setAttribute "style", "float:right"
+        @div.parentElement.insertBefore(sheet.canvas, @div)
+    else
+      console.log "showSpriteSheet: not using sprites"
+
 # Create the namespace **ABM** for our project.
 # Note here `this` or `@` == window due to coffeescript wrapper call.
 # Thus @ABM is placed in the global scope.
-# @ABM={}
-
 
 @ABM = {
-  util    # deprecated, Util
-  shapes  # deprecated, Shapes
   Util
   Color
   ColorMaps
@@ -311,8 +342,8 @@ class Model
   AgentSet
   Patch
   Patches
-  Agent
-  Agents
+  Turtle
+  Turtles
   Link
   Links
   Animator

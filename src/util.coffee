@@ -16,16 +16,19 @@ Util = util = u = # TODO: "util" deprecated in favor of Util
   #     error("wtf? foo=#{foo}") if fooProblem
   error: (s) -> throw new Error s
 
-  # Alert for a deprecated function.
-  deprecatedAlert: false
-  deprecatedMsgs: []
+  # Utility for logging a message only once .. i.e. if in loop
+  loggedMsgs: []
+  logOnce: (s) ->
+    if @loggedMsgs.indexOf(s) < 0
+      console.log s
+      @loggedMsgs.push s
+  # Deprecations: logOnce w/ optional single alert
+  deprecatedAlert: false # Set to true to let modeler know
   deprecated: (s) ->
-    if @deprecatedMsgs.length is 0 and @deprecatedAlert
+    if @deprecatedAlert
       alert "Deprecated functions, see console.log"
-    if @deprecatedMsgs.indexOf(s) < 0
-      console.log "DEPRECATED - #{s}"
-      @deprecatedMsgs.push s
-    null
+      @deprecatedAlert = false
+    @logOnce "DEPRECATED - #{s}"
 
 
   # Two max/min int values. One for 2^53, largest int in float64, other for
@@ -43,6 +46,7 @@ Util = util = u = # TODO: "util" deprecated in favor of Util
   isString: (obj) -> typeof obj is 'string' || obj instanceof String
   isInteger: Number.isInteger or # like isArray
     (num) -> Math.floor(num) is num
+  isObject: (obj) -> toString.call(obj) is '[object Object]'
 
 # ### Numeric Operations
 
@@ -73,7 +77,11 @@ Util = util = u = # TODO: "util" deprecated in favor of Util
   # Return v to be between min, max via mod fcn
   wrap: (v, min, max) -> min + @mod(v-min, max-min)
   # Return v to be between min, max via clamping with Math.min/max
-  clamp: (v, min, max) -> Math.max(Math.min(v,max),min)
+  clamp: (v, min, max) ->
+    # Math.max(Math.min(v,max),min) appears to be slower
+    if v < min then return min
+    if v > max then return max
+    v
   # Return sign of a number as +/- 1
   sign: (v) -> if v<0 then -1 else 1
   # Return n to given precision, default 2
@@ -201,7 +209,10 @@ Util = util = u = # TODO: "util" deprecated in favor of Util
       when b then h = (r - g) / d + 4
     [Math.round(255*h/6), Math.round(255*s), Math.round(255*v)]
   hsbToRgb: (c) ->
-    @deprecated "Util.hsbToRgb: use Color.hslToRgb"
+    @deprecated "Util.hsbToRgb: use Color/ColorMaps HSL functions"
+    # Could use ths but very slow.
+    #
+    #     Color.hslToRgb c[0]*360/255, c[1]*100/255, c[2]*50/255 # very slow
     h=c[0]/255; s=c[1]/255; v=c[2]/255; i = Math.floor(h*6)
     f = h * 6 - i;        p = v * (1 - s)
     q = v * (1 - f * s);  t = v * (1 - (1 - f) * s)
@@ -239,19 +250,6 @@ Util = util = u = # TODO: "util" deprecated in favor of Util
   hsbMap: (n=256, s=255,b=255)->
     @deprecated "Util.hsbMap: use ColorMaps.hslColorMap"
     ColorMaps.hslColorMap n, 1, 1
-    # (@hsbToRgb [i*255/(n-1),s,b] for i in [0...n])
-  # Use the canvas gradient feature to create nColors.
-  # This is a really sophisticated technique, see:
-  #  https://developer.mozilla.org/en-US/docs/Web/CSS/linear-gradient
-  # gradientMap: (nColors, stops, locs) ->
-  #   locs = (i/(stops.length-1) for i in [0...stops.length]) if not locs?
-  #   ctx = @createCtx nColors, 1
-  #   grad = ctx.createLinearGradient 0, 0, nColors, 0
-  #   grad.addColorStop locs[i], @colorStr stops[i] for i in [0...stops.length]
-  #   ctx.fillStyle = grad
-  #   ctx.fillRect 0, 0, nColors, 1
-  #   id = @ctxToImageData(ctx).data
-  #   ([id[i], id[i+1], id[i+2]] for i in [0...id.length] by 4)
 
   # Return little/big endian-ness of hardware.
   # See Mozilla pixel [manipulation article](http://goo.gl/Lxliq)
@@ -305,7 +303,10 @@ Util = util = u = # TODO: "util" deprecated in favor of Util
   # mixin() knows to copy prototype functions into the prototype
   mixin: (destObj, srcObject) ->
     destObj[key] = srcObject[key] for own key of srcObject
-    destObj.__proto__[key] = srcObject.__proto__[key] for own key of srcObject.__proto__
+    destProto = Object.getPrototypeOf destObj
+    srcProto = Object.getPrototypeOf srcObject
+    destProto[key] = srcProto[key] for own key of srcProto
+    # destObj.__proto__[key] = srcObject.__proto__[key] for own key of srcObject.__proto__
 
   # Parse a string to its JS value.
   # If s isn't a JS expression, return decoded string
@@ -353,10 +354,10 @@ Util = util = u = # TODO: "util" deprecated in favor of Util
   # True if item is in array. Binary search if f isnt null.
   contains: (array, item, f) -> @indexOf(array, item, f) >= 0
   # Remove an item from an array. Binary search if f isnt null.
-  # Error if item not in array.
+  # Return array. OK if item not found.
   removeItem: (array, item, f) ->
-    unless (i = @indexOf array, item, f) < 0 then array.splice i, 1
-    else @error "removeItem: item not found" #; array
+    array.splice i, 1 unless (i = @indexOf array, item, f) < 0
+    array
   # Remove elements in items from an array. Binary search if f isnt null.
   # Error if an item not in array.
   removeItems: (array, items, f) -> @removeItem(array,i,f) for i in items; array
@@ -425,8 +426,9 @@ Util = util = u = # TODO: "util" deprecated in favor of Util
   #     sortBy array, "i"
   #     # array now is [{i:-1},{i:1},{i:2},{i:2},{i:5}]
   sortBy: (array, f) ->
-   f = @propFcn f if @isString f # use item[f] if f is string
-   array.sort (a,b) -> f(a) - f(b)
+    if @isString f
+    then array.sort (a,b) -> a[f] - b[f]
+    else array.sort (a,b) -> f(a) - f(b)
 
   # Numeric sort, default to ascending. Mutator, see clone above.
   # Works with TypedArrays too
@@ -519,6 +521,7 @@ Util = util = u = # TODO: "util" deprecated in favor of Util
 
   # Return a JS array given a TypedArray.
   # To create TypedArray from JS array: new Uint8Array(jsa) etc
+  # normalArray = Array.prototype.slice.call(typedArray) works too.
   typedToJS: (typedArray) -> (i for i in typedArray)
 
   # Return a linear interpolation between lo and hi.
@@ -575,13 +578,25 @@ Util = util = u = # TODO: "util" deprecated in favor of Util
   # Return angle in [-pi,pi] radians from x1,y1 to x2,y2
   # [See: Math.atan2](http://goo.gl/JS8DF)
   radsToward: (x1, y1, x2, y2) -> Math.atan2 y2-y1, x2-x1
+  # Return true if x,y is in rect bounded by min/max X/Y
+  inRect: (x, y, minX, minY, maxX, maxY) ->
+    (minX <= x <= maxX) and (minY <= y <= maxY)
+  # Return true if x,y is in rect defined by x0,y0,dx,dy
+  # (dx/dy half width/height)
+  inCenteredRect: (x, y, x0, y0, dx, dy) ->
+    (x0-dx <= x <= x0+dx and y0-dy <= y <= y0+dy)
+
   # Return true if x2,y2 is in cone radians around heading radians from x1,x2
   # and within distance radius from x1,x2.
   # I.e. is p2 in cone/heading/radius from p1?
-  inCone: (heading, cone, radius, x1, y1, x2, y2) ->
+  # inCone: (heading, cone, radius, x1, y1, x2, y2) ->
+  inCone: (radius, angle, heading, x1, y1, x2, y2) ->
     if radius < @distance x1, y1, x2, y2 then return false
     angle12 = @radsToward x1, y1, x2, y2 # angle from 1 to 2
-    cone/2 >=Math.abs @subtractRads(heading, angle12)
+    angle/2 >=Math.abs @subtractRads(heading, angle12)
+  # inHeading: (heading, x1, y1, x2, y2) ->
+  #   angle12 = @radsToward x1, y1, x2, y2 # angle from 1 to 2
+  #   cone/2 >=Math.abs @subtractRads(heading, angle12)
   # Return the Euclidean distance and distance squared between x1,y1, x2,y2.
   # The squared distance is used for comparisons to avoid the Math.sqrt fcn.
   distance: (x1, y1, x2, y2) -> dx = x1-x2; dy = y1-y2; Math.sqrt dx*dx + dy*dy
@@ -637,16 +652,21 @@ Util = util = u = # TODO: "util" deprecated in favor of Util
     x = if Math.abs(x2r-x1) < Math.abs(x2-x1) then x2r else x2
     y = if Math.abs(y2r-y1) < Math.abs(y2-y1) then y2r else y2
     [x,y]
-  # Return the angle from x1,y1 to x2.y2 on torus using shortest reflection.
+  # Return the angle from x1,y1 to x2,y2 on torus using shortest reflection.
   torusRadsToward: (x1, y1, x2, y2, w, h) ->
     [x2,y2] = @torusPt x1, y1, x2, y2, w, h
     @radsToward x1, y1, x2, y2
   # Return true if x2,y2 is in cone radians around heading radians from x1,x2
   # and within distance radius from x1,x2 considering all torus reflections.
-  inTorusCone: (heading, cone, radius, x1, y1, x2, y2, w, h) ->
+  # inTorusCone: (heading, cone, radius, x1, y1, x2, y2, w, h) ->
+  inTorusCone: (radius, angle, heading, x1, y1, x2, y2, w, h) ->
     for p in @torus4Pts x1, y1, x2, y2, w, h
-      return true if @inCone heading, cone, radius, x1, y1, p[0], p[1]
+      return true if @inCone radius, angle, heading, x1, y1, p[0], p[1]
     false
+  inTorusRect: (x, y, minX, minY, maxX, maxY, w, h) ->
+    if x < minX then x += w else if x > maxX then x -= w
+    if y < minY then y += h else if y > maxY then y -= h
+    (minX <= x <= maxX) and (minY <= y <= maxY)
 
 # ### File I/O
 
@@ -745,8 +765,11 @@ Util = util = u = # TODO: "util" deprecated in favor of Util
     @insertLayer div, element, width, height, z
     ctx
   insertLayer: (div, element, w, h, z) ->
-    element.setAttribute 'style', # Note: this erases existing style, el.style.position doesnt
-    "position:absolute;top:0;left:0;width:#{w};height:#{h};z-index:#{z}"
+    # Note: this erases existing style, el.style.position doesnt
+    # element.setAttribute 'style',
+    # "position:absolute;top:0;left:0;width:#{w};height:#{h};z-index:#{z}"
+    s = element.style
+    s.position="absolute"; s.top=0; s.left=0; s.width=w; s.height=h; s.zIndex=z
     div.appendChild(element)
 
   setCtxSmoothing: (ctx, smoothing) ->

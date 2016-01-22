@@ -454,17 +454,16 @@ and color.ix for typedColors</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-25">&#182;</a>
               </div>
-              <p>Return the map index or color proportional to the value between min, max.
-This is a linear interpolation based on the map indices.
-The optional minColor, maxColor args are for using a subset of the map.</p>
+              <p>Return the map color proportional to the number value between min, max.
+This is a linear interpolation based on the map indices.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="hljs-attribute">scaleIndex</span>: <span class="hljs-function"><span class="hljs-params">(number, min=<span class="hljs-number">0</span>, max=<span class="hljs-number">1</span>, minColor = <span class="hljs-number">0</span>, maxColor = <span class="hljs-property">@length</span>-<span class="hljs-number">1</span>)</span> -&gt;</span>
-      scale = u.lerpScale number, min, max <span class="hljs-comment"># (number-min)/(max-min)</span>
-      Math.round(u.lerp minColor, maxColor, scale)
-    <span class="hljs-attribute">scaleColor</span>: <span class="hljs-function"><span class="hljs-params">(number, min=<span class="hljs-number">0</span>, max=<span class="hljs-number">1</span>, minColor = <span class="hljs-number">0</span>, maxColor = <span class="hljs-property">@length</span>-<span class="hljs-number">1</span>)</span> -&gt;</span>
-      @[ <span class="hljs-property">@scaleIndex</span> number, min, max, minColor, maxColor ]</pre></div></div>
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-attribute">scaleColor</span>: <span class="hljs-function"><span class="hljs-params">(number, min, max)</span> -&gt;</span>
+      <span class="hljs-keyword">if</span> number &lt; min <span class="hljs-keyword">then</span> number = min
+      <span class="hljs-keyword">if</span> number &gt; max <span class="hljs-keyword">then</span> number = max
+      scale = (<span class="hljs-property">@length</span>-<span class="hljs-number">1</span>)*((number-min)/(max-min))
+      @[ Math.round scale ]</pre></div></div>
             
         </li>
         
@@ -759,7 +758,7 @@ an alternative to ramp from black to full color as well.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-41">&#182;</a>
               </div>
-              <p>Hack: will remove; helps migration of agent/patch.scaleColor</p>
+              <p>Hack: will remove; helps migration of turtle/patch.scaleColor</p>
 
             </div>
             
@@ -836,7 +835,7 @@ with nOpacity opacity values, default to all 256</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">createSharedMaps</span>: <span class="hljs-function"><span class="hljs-params">(whiteToo = <span class="hljs-literal">true</span>)</span> -&gt;</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">createSharedMaps</span>: <span class="hljs-function">-&gt;</span></pre></div></div>
             
         </li>
         
@@ -938,14 +937,13 @@ with nOpacity opacity values, default to all 256</p>
                 <a class="pilcrow" href="#section-52">&#182;</a>
               </div>
               <p>Like above but largest &lt; 256 map (252). Does not diminish to white.
-Ramps.yellow is thus a ramp from black to brightest NetLogo yellow hue</p>
+NetLogoRamps.yellow is thus a ramp from black to brightest NetLogo
+yellow hue while CssRamps.yellow is black to Css “yellow”</p>
 
             </div>
             
             <div class="content"><div class='highlight'><pre>    <span class="hljs-property">@NetLogoRamps</span> = <span class="hljs-property">@netLogoColorMap</span> <span class="hljs-number">18</span>, <span class="hljs-literal">false</span>
-    <span class="hljs-property">@CssRamps</span>     = <span class="hljs-property">@cssBasicColorMap</span> <span class="hljs-number">18</span>, <span class="hljs-literal">false</span>
-  <span class="hljs-attribute">randomGray</span>: <span class="hljs-function"><span class="hljs-params">(min, max)</span> -&gt;</span> <span class="hljs-property">@Gray</span>.randomColor(min, max)
-  <span class="hljs-attribute">randomColor</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-property">@Rgb256</span>.randomColor() <span class="hljs-comment"># sharedRgb?</span></pre></div></div>
+    <span class="hljs-property">@CssRamps</span>     = <span class="hljs-property">@cssBasicColorMap</span> <span class="hljs-number">18</span>, <span class="hljs-literal">false</span></pre></div></div>
             
         </li>
         
@@ -956,7 +954,28 @@ Ramps.yellow is thus a ramp from black to brightest NetLogo yellow hue</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-53">&#182;</a>
               </div>
-              <p>Legacy/Temporary: replace util/patch/agent scaleColor</p>
+              <p>Return random gray/color from a shared map.
+Colormap colors are immutable, so if you don’t want
+a shared gray/color but one who’s color you will change
+via color.setColor(..), then use clone:</p>
+<pre><code>color = ColorMaps.randomColor().clone()
+color = ColorMaps.Jet.scaleColor(<span class="hljs-number">.5</span>).clone()
+</code></pre>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">randomGray</span>: <span class="hljs-function"><span class="hljs-params">(min, max)</span> -&gt;</span> <span class="hljs-property">@Gray</span>.randomColor(min, max)
+  <span class="hljs-attribute">randomColor</span>: <span class="hljs-function"><span class="hljs-params">()</span> -&gt;</span> <span class="hljs-property">@Rgb256</span>.randomColor()</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-54">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-54">&#182;</a>
+              </div>
+              <p>Legacy/Temporary: replace util/patch/turtle scaleColor</p>
 
             </div>
             

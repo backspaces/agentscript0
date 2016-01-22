@@ -2,7 +2,7 @@
 
 <html>
 <head>
-  <title>agents.coffee</title>
+  <title>turtles.coffee</title>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
   <link rel="stylesheet" media="all" href="docco.css" />
@@ -15,7 +15,7 @@
         
           <li id="title">
               <div class="annotation">
-                  <h1>agents.coffee</h1>
+                  <h1>turtles.coffee</h1>
               </div>
           </li>
         
@@ -27,7 +27,7 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-1">&#182;</a>
               </div>
-              <h3 id="agents">Agents</h3>
+              <h3 id="turtles">Turtles</h3>
 
             </div>
             
@@ -40,12 +40,12 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-2">&#182;</a>
               </div>
-              <p>Class Agents is a subclass of AgentSet which stores instances of Agent or
-Breeds, which are subclasses of Agent</p>
+              <p>Class Turtles is a subclass of AgentSet which stores instances of Turtle or
+Breeds, which are subclasses of Turtle</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Agents</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">AgentSet</span></span></pre></div></div>
+            <div class="content"><div class='highlight'><pre><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Turtles</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">AgentSet</span></span></pre></div></div>
             
         </li>
         
@@ -57,7 +57,7 @@ Breeds, which are subclasses of Agent</p>
                 <a class="pilcrow" href="#section-3">&#182;</a>
               </div>
               <p>Constructor creates the empty AgentSet instance and installs
-the agentClass (breed) variable shared by all the Agents in this set.</p>
+the agentClass (breed) variable shared by all the turtles in this set.</p>
 
             </div>
             
@@ -86,12 +86,12 @@ the agentClass (breed) variable shared by all the Agents in this set.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-5">&#182;</a>
               </div>
-              <p>Have agents cache the links with them as a node.
-Optimizes Agent a.myLinks method. Call before any agents created.</p>
+              <p>Have turtles cache the links with them as a node.
+Optimizes Turtle a.myLinks method. Call before any turtles created.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">cacheLinks</span>: <span class="hljs-function">-&gt;</span> <span class="hljs-property">@agentClass</span>::cacheLinks = <span class="hljs-literal">true</span> <span class="hljs-comment"># all agents, not individual breeds</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">cacheLinks</span>: <span class="hljs-function">-&gt;</span> <span class="hljs-property">@agentClass</span>::cacheLinks = <span class="hljs-literal">true</span> <span class="hljs-comment"># all turtles, not individual breeds</span></pre></div></div>
             
         </li>
         
@@ -107,7 +107,7 @@ Optimizes Agent a.myLinks method. Call before any agents created.</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">setUseSprites</span>: <span class="hljs-function"><span class="hljs-params">(useSprites=<span class="hljs-literal">true</span>)</span> -&gt;</span>
-    u.deprecated <span class="hljs-string">'Agents.setUseSprites: use agents.setDefault("useSprites",bool)'</span>
+    u.deprecated <span class="hljs-string">'Turtles.setUseSprites: use turtles.setDefault("useSprites",bool)'</span>
     <span class="hljs-property">@setDefault</span>(<span class="hljs-string">"useSprites"</span>, useSprites)</pre></div></div>
             
         </li>
@@ -119,12 +119,12 @@ Optimizes Agent a.myLinks method. Call before any agents created.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-7">&#182;</a>
               </div>
-              <p>Factory: create num new agents stored in this agentset.The optional init
-proc is called on the new agent after inserting in its agentSet.</p>
+              <p>Factory: create num new turtles stored in this agentset. The optional init
+function is called on the new turtle after inserting in its agentset.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">create</span>: <span class="hljs-function"><span class="hljs-params">(num, init = -&gt;)</span> -&gt;</span> <span class="hljs-comment"># returns array of new agents too</span>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">create</span>: <span class="hljs-function"><span class="hljs-params">(num, init = -&gt;)</span> -&gt;</span> <span class="hljs-comment"># returns array of new turtles too</span>
     (<span class="hljs-function"><span class="hljs-params">(o)</span> -&gt;</span> init(o); o) <span class="hljs-property">@add</span> <span class="hljs-keyword">new</span> <span class="hljs-property">@agentClass</span> <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> [<span class="hljs-number">1.</span>.num] <span class="hljs-keyword">by</span> <span class="hljs-number">1</span> <span class="hljs-comment"># too tricky?</span></pre></div></div>
             
         </li>
@@ -136,7 +136,7 @@ proc is called on the new agent after inserting in its agentSet.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-8">&#182;</a>
               </div>
-              <p>Remove all agents from set via agent.die()
+              <p>Remove all turtles from set via turtle.die()
 Note call in reverse order to optimize list restructuring.</p>
 
             </div>
@@ -153,7 +153,7 @@ Note call in reverse order to optimize list restructuring.</p>
                 <a class="pilcrow" href="#section-9">&#182;</a>
               </div>
               <p>Filter to return all instances of this breed.  Note: if used by
-the mainSet, returns just the agents that are not subclassed breeds.</p>
+the mainSet, returns just the turtles that are not subclassed breeds.</p>
 
             </div>
             
@@ -174,7 +174,7 @@ the mainSet, returns just the agents that are not subclassed breeds.</p>
             
             <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">inPatches</span>: <span class="hljs-function"><span class="hljs-params">(patches)</span> -&gt;</span>
     array = []
-    array.push p.agentsHere()... <span class="hljs-keyword">for</span> p <span class="hljs-keyword">in</span> patches <span class="hljs-comment"># concat measured slower</span></pre></div></div>
+    array.push p.turtlesHere()... <span class="hljs-keyword">for</span> p <span class="hljs-keyword">in</span> patches <span class="hljs-comment"># concat measured slower</span></pre></div></div>
             
         </li>
         
@@ -200,7 +200,7 @@ the mainSet, returns just the agents that are not subclassed breeds.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-12">&#182;</a>
               </div>
-              <p>Return an agentset of agents/breeds within the patchRect</p>
+              <p>Return an agentset of turtles/breeds within the patchRect, dx/y integers</p>
 
             </div>
             
@@ -218,13 +218,13 @@ the mainSet, returns just the agents that are not subclassed breeds.</p>
                 <a class="pilcrow" href="#section-13">&#182;</a>
               </div>
               <p>Return the members of this agentset that are within radius distance
-from me, and within cone radians of my heading using patch topology</p>
+from me, using patch topology</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">inCone</span>: <span class="hljs-function"><span class="hljs-params">(a, radius, angle)</span> -&gt;</span>
-    as = <span class="hljs-property">@inRect</span> a, radius, radius <span class="hljs-comment">#, true</span>
-    as.inCone a, radius, angle, a.heading</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">inRadius</span>: <span class="hljs-function"><span class="hljs-params">(agent, radius)</span> -&gt;</span>
+    as = <span class="hljs-property">@inRect</span>( (agent.p ? agent), Math.ceil(radius) )
+    as.inRadius agent, radius</pre></div></div>
             
         </li>
         
@@ -236,13 +236,14 @@ from me, and within cone radians of my heading using patch topology</p>
                 <a class="pilcrow" href="#section-14">&#182;</a>
               </div>
               <p>Return the members of this agentset that are within radius distance
-from me, using patch topology</p>
+from agent, and within cone of angle, heading from agent
+using patch topology</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">inRadius</span>: <span class="hljs-function"><span class="hljs-params">(a, radius)</span> -&gt;</span>
-    as = <span class="hljs-property">@inRect</span> a.p, radius
-    as.inRadius a, radius
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">inCone</span>: <span class="hljs-function"><span class="hljs-params">(agent, radius, angle, heading)</span> -&gt;</span>
+    as = <span class="hljs-property">@inRect</span>( (agent.p ? agent), Math.ceil(radius) )
+    as.inCone agent, radius, angle, heading
 
   <span class="hljs-attribute">setDraggable</span>: <span class="hljs-function">-&gt;</span>
     <span class="hljs-property">@on</span> <span class="hljs-string">'dragstart'</span>, <span class="hljs-function"><span class="hljs-params">(mouseEvent)</span> =&gt;</span>
