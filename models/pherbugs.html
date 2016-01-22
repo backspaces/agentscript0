@@ -8,7 +8,7 @@
     <script>
     var gui;
     var myModel = function () {
-      var u = ABM.util; // useful alias for utilities
+      var u = ABM.Util; // useful alias for utilities
       ABM.Model.prototype.startup = function () {
         console.log("startup");
       };
@@ -31,24 +31,24 @@
         this.randomMove = 0.2;
         this.refreshPatches = true;
         this.refreshLinks = false;
-        this.agents.setUseSprites();
+        this.turtles.setUseSprites();
         this.population = 100;
         for (var pNdx=0; pNdx < this.patches.length; pNdx++) {
           this.patches[pNdx].color = [0,0,0];
           this.patches[pNdx].pheromone = 0;
         }
-        this.agents.create(this.population);
-        for (var aNdx=0; aNdx < this.agents.length; aNdx++) {
+        this.turtles.create(this.population);
+        for (var aNdx=0; aNdx < this.turtles.length; aNdx++) {
           var pt = this.patches.randomPt();
-          this.agents[aNdx].setXY(pt[0],pt[1]);
-          //this.agents[aNdx].setXY(0,0);
-          this.agents[aNdx].color = [255,255,0];
-          this.agents[aNdx].idealPher = u.randomInt(this.maxIdealPher-this.minIdealPher)+this.minIdealPher;
-          this.agents[aNdx].outputPher = u.randomInt(this.maxOutputPher-this.minOutputPher)+this.minOutputPher;
+          this.turtles[aNdx].setXY(pt[0],pt[1]);
+          //this.turtles[aNdx].setXY(0,0);
+          this.turtles[aNdx].color = [255,255,0];
+          this.turtles[aNdx].idealPher = u.randomInt(this.maxIdealPher-this.minIdealPher)+this.minIdealPher;
+          this.turtles[aNdx].outputPher = u.randomInt(this.maxOutputPher-this.minOutputPher)+this.minOutputPher;
           // The bug is happy when the patch contains its ideal amount.
-          this.agents[aNdx].unhappiness = 0; 
+          this.turtles[aNdx].unhappiness = 0; 
         }
-        console.log("patches: " + this.patches.length + " agents: " + this.agents.length);
+        console.log("patches: " + this.patches.length + " agents: " + this.turtles.length);
       };
       ABM.Model.prototype.step = function () {
 
@@ -56,8 +56,8 @@
          * agent operations -- loop over all agents
          */
 
-        for (var aNdx=0; aNdx < this.agents.length; aNdx++) {
-          var a = this.agents[aNdx];
+        for (var aNdx=0; aNdx < this.turtles.length; aNdx++) {
+          var a = this.turtles[aNdx];
           if (a.p.pheromones < a.idealPher) // if there is too little pheromone here
             a.unhappiness = (a.idealPher - a.p.pheromone) / this.maxPher;
           else // there is the right amount or too much phereomone here
@@ -97,7 +97,7 @@
           if (a.p.pheromone > this.maxPher) a.p.pheromone = this.maxPher;
 
           // If I decided to move, then do so.
-          if (move && (tgtPatch.agentsHere().length == 0)) a.moveTo(tgtPatch);
+          if (move && (tgtPatch.turtlesHere().length == 0)) a.moveTo(tgtPatch);
         } // end agent operations
 
         /* 
