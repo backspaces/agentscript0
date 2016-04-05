@@ -81,7 +81,7 @@ If f is string, f set to fcn returning p[f]</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-property">@patchDataSet</span>: <span class="hljs-function"><span class="hljs-params">(f)</span> -&gt;</span> <span class="hljs-keyword">new</span> PatchDataSet f</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  @patchDataSet: <span class="hljs-function"><span class="hljs-params">(f)</span> -&gt;</span> <span class="hljs-keyword">new</span> PatchDataSet f</pre></div></div>
             
         </li>
         
@@ -99,7 +99,7 @@ async array, Image or XHR response.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-property">@importImageDataSet</span>: <span class="hljs-function"><span class="hljs-params">(name, f, format=u.pixelByte(<span class="hljs-number">0</span>), arrayType=Uint8ClampedArray, rowsPerSlice)</span> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  @importImageDataSet: <span class="hljs-function"><span class="hljs-params">(name, f, format=u.pixelByte(<span class="hljs-number">0</span>), arrayType=Uint8ClampedArray, rowsPerSlice)</span> -&gt;</span>
     ds = <span class="hljs-keyword">new</span> ImageDataSet(<span class="hljs-literal">null</span>, format, arrayType, rowsPerSlice) <span class="hljs-comment"># empty dataset</span>
     u.importImage name, <span class="hljs-function"><span class="hljs-params">(img)</span> -&gt;</span> <span class="hljs-comment"># =&gt; not needed</span>
       ds.parse img
@@ -120,7 +120,7 @@ The parse method converts a string into a dataset. Async</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-property">@importAscDataSet</span>: <span class="hljs-function"><span class="hljs-params">(name, f)</span> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  @importAscDataSet: <span class="hljs-function"><span class="hljs-params">(name, f)</span> -&gt;</span>
     ds = <span class="hljs-keyword">new</span> AscDataSet() <span class="hljs-comment"># empty dataset</span>
     u.xhrLoadFile name, <span class="hljs-string">"GET"</span>, <span class="hljs-string">"text"</span>, <span class="hljs-function"><span class="hljs-params">(response)</span> -&gt;</span> <span class="hljs-comment"># -&gt; OK, closure</span>
       ds.parse response <span class="hljs-comment"># complete the empty dataset</span>
@@ -140,9 +140,9 @@ The parse method converts a string into a dataset. Async</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">constructor</span>: <span class="hljs-function"><span class="hljs-params">(width=<span class="hljs-number">0</span>, height=<span class="hljs-number">0</span>, data=[], <span class="hljs-property">@model</span>)</span> -&gt;</span>
-    <span class="hljs-property">@setDefaults</span>()
-    <span class="hljs-property">@reset</span> width, height, data</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  constructor: <span class="hljs-function"><span class="hljs-params">(width=<span class="hljs-number">0</span>, height=<span class="hljs-number">0</span>, data=[], @model)</span> -&gt;</span>
+    @setDefaults()
+    @reset width, height, data</pre></div></div>
             
         </li>
         
@@ -158,10 +158,10 @@ an empty dataset and having it filled by another function.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">reset</span>: <span class="hljs-function"><span class="hljs-params">(<span class="hljs-property">@width</span>, <span class="hljs-property">@height</span>, <span class="hljs-property">@data</span>)</span> -&gt;</span>
-    <span class="hljs-keyword">if</span> <span class="hljs-property">@data</span>.length <span class="hljs-keyword">isnt</span> <span class="hljs-property">@width</span>*<span class="hljs-property">@height</span>
+            <div class="content"><div class='highlight'><pre>  reset: <span class="hljs-function"><span class="hljs-params">(@width, @height, @data)</span> -&gt;</span>
+    <span class="hljs-keyword">if</span> @data.length <span class="hljs-keyword">isnt</span> @width*@height
       u.error <span class="hljs-string">"""DataSet: data array length error:
-      data.length: <span class="hljs-subst">#{<span class="hljs-property">@data</span>.length}</span> width: <span class="hljs-subst">#{<span class="hljs-property">@width</span>}</span> height: <span class="hljs-subst">#{<span class="hljs-property">@height</span>}</span>
+      data.length: <span class="hljs-subst">#{@data.length}</span> width: <span class="hljs-subst">#{@width}</span> height: <span class="hljs-subst">#{@height}</span>
       """</span>
     @</pre></div></div>
             
@@ -178,8 +178,8 @@ an empty dataset and having it filled by another function.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">checkXY</span>: <span class="hljs-function"><span class="hljs-params">(x,y)</span> -&gt;</span>
-    u.error <span class="hljs-string">"x,y out of range: <span class="hljs-subst">#{x}</span>,<span class="hljs-subst">#{y}</span>"</span> <span class="hljs-keyword">unless</span> (<span class="hljs-number">0</span>&lt;=x&lt;=<span class="hljs-property">@width</span>-<span class="hljs-number">1</span> <span class="hljs-keyword">and</span> <span class="hljs-number">0</span>&lt;=y&lt;=<span class="hljs-property">@height</span>-<span class="hljs-number">1</span>)</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  checkXY: <span class="hljs-function"><span class="hljs-params">(x,y)</span> -&gt;</span>
+    u.error <span class="hljs-string">"x,y out of range: <span class="hljs-subst">#{x}</span>,<span class="hljs-subst">#{y}</span>"</span> <span class="hljs-keyword">unless</span> (<span class="hljs-number">0</span>&lt;=x&lt;=@width<span class="hljs-number">-1</span> <span class="hljs-keyword">and</span> <span class="hljs-number">0</span>&lt;=y&lt;=@height<span class="hljs-number">-1</span>)</pre></div></div>
             
         </li>
         
@@ -194,17 +194,17 @@ an empty dataset and having it filled by another function.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">setDefaults</span>: <span class="hljs-function">-&gt;</span>
-    <span class="hljs-property">@useNearest</span>=<span class="hljs-literal">false</span>
-    <span class="hljs-property">@crop</span>=<span class="hljs-literal">false</span>
-    <span class="hljs-property">@normalizeImage</span>=<span class="hljs-literal">true</span>
-    <span class="hljs-property">@alpha</span>=<span class="hljs-number">255</span>
-    <span class="hljs-property">@gray</span>=<span class="hljs-literal">true</span>
-  <span class="hljs-attribute">setSampler</span>: <span class="hljs-function"><span class="hljs-params">(<span class="hljs-property">@useNearest</span>)</span> -&gt;</span>
-  <span class="hljs-attribute">setConvolveCrop</span>: <span class="hljs-function"><span class="hljs-params">(<span class="hljs-property">@crop</span>)</span> -&gt;</span>
-  <span class="hljs-attribute">setImageNormalize</span>: <span class="hljs-function"><span class="hljs-params">(<span class="hljs-property">@normalizeImage</span>)</span> -&gt;</span>
-  <span class="hljs-attribute">setImageAlpha</span>: <span class="hljs-function"><span class="hljs-params">(<span class="hljs-property">@alpha</span>)</span> -&gt;</span> <span class="hljs-comment"># pixel alpha: [0,255]</span>
-  <span class="hljs-attribute">setImageGray</span>: <span class="hljs-function"><span class="hljs-params">(<span class="hljs-property">@gray</span>)</span> -&gt;</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  setDefaults: <span class="hljs-function">-&gt;</span>
+    @useNearest=<span class="hljs-literal">false</span>
+    @crop=<span class="hljs-literal">false</span>
+    @normalizeImage=<span class="hljs-literal">true</span>
+    @alpha=<span class="hljs-number">255</span>
+    @gray=<span class="hljs-literal">true</span>
+  setSampler: <span class="hljs-function"><span class="hljs-params">(@useNearest)</span> -&gt;</span>
+  setConvolveCrop: <span class="hljs-function"><span class="hljs-params">(@crop)</span> -&gt;</span>
+  setImageNormalize: <span class="hljs-function"><span class="hljs-params">(@normalizeImage)</span> -&gt;</span>
+  setImageAlpha: <span class="hljs-function"><span class="hljs-params">(@alpha)</span> -&gt;</span> <span class="hljs-comment"># pixel alpha: [0,255]</span>
+  setImageGray: <span class="hljs-function"><span class="hljs-params">(@gray)</span> -&gt;</span></pre></div></div>
             
         </li>
         
@@ -220,7 +220,7 @@ an empty dataset and having it filled by another function.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">setModel</span>: <span class="hljs-function"><span class="hljs-params">(<span class="hljs-property">@model</span>)</span> -&gt;</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  setModel: <span class="hljs-function"><span class="hljs-params">(@model)</span> -&gt;</span></pre></div></div>
             
         </li>
         
@@ -235,7 +235,7 @@ an empty dataset and having it filled by another function.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">sample</span>: <span class="hljs-function"><span class="hljs-params">(x,y)</span> -&gt;</span> <span class="hljs-keyword">if</span> <span class="hljs-property">@useNearest</span> <span class="hljs-keyword">then</span> <span class="hljs-property">@nearest</span> x,y <span class="hljs-keyword">else</span> <span class="hljs-property">@bilinear</span> x,y</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  sample: <span class="hljs-function"><span class="hljs-params">(x,y)</span> -&gt;</span> <span class="hljs-keyword">if</span> @useNearest <span class="hljs-keyword">then</span> @nearest x,y <span class="hljs-keyword">else</span> @bilinear x,y</pre></div></div>
             
         </li>
         
@@ -250,7 +250,7 @@ an empty dataset and having it filled by another function.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">nearest</span>: <span class="hljs-function"><span class="hljs-params">(x,y)</span> -&gt;</span> <span class="hljs-property">@getXY</span> Math.round(x), Math.round(y)</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  nearest: <span class="hljs-function"><span class="hljs-params">(x,y)</span> -&gt;</span> @getXY Math.round(x), Math.round(y)</pre></div></div>
             
         </li>
         
@@ -265,9 +265,9 @@ an empty dataset and having it filled by another function.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">bilinear</span>: <span class="hljs-function"><span class="hljs-params">(x,y)</span> -&gt;</span> <span class="hljs-comment"># http://en.wikipedia.org/wiki/Bilinear_interpolation</span>
-    <span class="hljs-property">@checkXY</span> x,y
-    x0=Math.floor x; y0=Math.floor y; i=<span class="hljs-property">@toIndex</span> x0,y0; w=<span class="hljs-property">@width</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  bilinear: <span class="hljs-function"><span class="hljs-params">(x,y)</span> -&gt;</span> <span class="hljs-comment"># http://en.wikipedia.org/wiki/Bilinear_interpolation</span>
+    @checkXY x,y
+    x0=Math.floor x; y0=Math.floor y; i=@toIndex x0,y0; w=@width</pre></div></div>
             
         </li>
         
@@ -298,7 +298,7 @@ if fij wrap on x, x is 0, dx is 1; return f00<em>dy+f01</em>y, linear on y</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    f00=<span class="hljs-property">@data</span>[i]; f01=<span class="hljs-property">@data</span>[i+w] ? <span class="hljs-number">0</span>; f10=<span class="hljs-property">@data</span>[++i] ? <span class="hljs-number">0</span>; f11=<span class="hljs-property">@data</span>[i+w] ? <span class="hljs-number">0</span>
+            <div class="content"><div class='highlight'><pre>    f00=@data[i]; f01=@data[i+w] ? <span class="hljs-number">0</span>; f10=@data[++i] ? <span class="hljs-number">0</span>; f11=@data[i+w] ? <span class="hljs-number">0</span>
     f00*dx*dy + f10*x*dy + f01*dx*y + f11*x*y</pre></div></div>
             
         </li>
@@ -314,7 +314,7 @@ if fij wrap on x, x is 0, dx is 1; return f00<em>dy+f01</em>y, linear on y</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">toIndex</span>: <span class="hljs-function"><span class="hljs-params">(x,y)</span> -&gt;</span> x + y*<span class="hljs-property">@width</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  toIndex: <span class="hljs-function"><span class="hljs-params">(x,y)</span> -&gt;</span> x + y*@width</pre></div></div>
             
         </li>
         
@@ -329,7 +329,7 @@ if fij wrap on x, x is 0, dx is 1; return f00<em>dy+f01</em>y, linear on y</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">toXY</span>: <span class="hljs-function"><span class="hljs-params">(i)</span> -&gt;</span> [i % <span class="hljs-property">@width</span>, Math.floor i/<span class="hljs-property">@width</span>]</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  toXY: <span class="hljs-function"><span class="hljs-params">(i)</span> -&gt;</span> [i % @width, Math.floor i/@width]</pre></div></div>
             
         </li>
         
@@ -344,7 +344,7 @@ if fij wrap on x, x is 0, dx is 1; return f00<em>dy+f01</em>y, linear on y</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">getXY</span>: <span class="hljs-function"><span class="hljs-params">(x,y)</span> -&gt;</span> <span class="hljs-property">@checkXY</span> x,y; <span class="hljs-property">@data</span>[<span class="hljs-property">@toIndex</span> x,y]</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  getXY: <span class="hljs-function"><span class="hljs-params">(x,y)</span> -&gt;</span> @checkXY x,y; @data[@toIndex x,y]</pre></div></div>
             
         </li>
         
@@ -359,7 +359,7 @@ if fij wrap on x, x is 0, dx is 1; return f00<em>dy+f01</em>y, linear on y</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">setXY</span>: <span class="hljs-function"><span class="hljs-params">(x,y,num)</span> -&gt;</span> <span class="hljs-property">@checkXY</span> x,y; <span class="hljs-property">@data</span>[<span class="hljs-property">@toIndex</span> x,y] = num</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  setXY: <span class="hljs-function"><span class="hljs-params">(x,y,num)</span> -&gt;</span> @checkXY x,y; @data[@toIndex x,y] = num</pre></div></div>
             
         </li>
         
@@ -375,11 +375,11 @@ If p &lt; 0, print data, otherwise use toFixed to truncate to p precision</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">toString</span>: <span class="hljs-function"><span class="hljs-params">(p=<span class="hljs-number">2</span>, sep=<span class="hljs-string">", "</span>)</span>-&gt;</span>
-    s = <span class="hljs-string">"width: <span class="hljs-subst">#{<span class="hljs-property">@width</span>}</span> height: <span class="hljs-subst">#{<span class="hljs-property">@height</span>}</span> data:"</span>
-    data = <span class="hljs-keyword">if</span> p&lt;<span class="hljs-number">0</span> <span class="hljs-keyword">then</span> <span class="hljs-property">@data</span> <span class="hljs-keyword">else</span> u.aToFixed <span class="hljs-property">@data</span>, p
-    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> [<span class="hljs-number">0.</span>..<span class="hljs-property">@height</span>]
-      s += <span class="hljs-string">"\n"</span> + <span class="hljs-string">"<span class="hljs-subst">#{i}</span>: <span class="hljs-subst">#{data.slice i*<span class="hljs-property">@width</span>, (i+<span class="hljs-number">1</span>)*<span class="hljs-property">@width</span>}</span>"</span>
+            <div class="content"><div class='highlight'><pre>  toString: <span class="hljs-function"><span class="hljs-params">(p=<span class="hljs-number">2</span>, sep=<span class="hljs-string">", "</span>)</span>-&gt;</span>
+    s = <span class="hljs-string">"width: <span class="hljs-subst">#{@width}</span> height: <span class="hljs-subst">#{@height}</span> data:"</span>
+    data = <span class="hljs-keyword">if</span> p&lt;<span class="hljs-number">0</span> <span class="hljs-keyword">then</span> @data <span class="hljs-keyword">else</span> u.aToFixed @data, p
+    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> [<span class="hljs-number">0.</span>..@height]
+      s += <span class="hljs-string">"\n"</span> + <span class="hljs-string">"<span class="hljs-subst">#{i}</span>: <span class="hljs-subst">#{data.slice i*@width, (i+<span class="hljs-number">1</span>)*@width}</span>"</span>
     s.replace <span class="hljs-regexp">/,/g</span>, sep</pre></div></div>
             
         </li>
@@ -395,22 +395,22 @@ If p &lt; 0, print data, otherwise use toFixed to truncate to p precision</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">toImage</span>: <span class="hljs-function">-&gt;</span> <span class="hljs-property">@toContext</span>().canvas
-  <span class="hljs-attribute">toContext</span>: <span class="hljs-function">-&gt;</span>
-    ctx = u.createCtx <span class="hljs-property">@width</span>, <span class="hljs-property">@height</span>
-    idata = ctx.getImageData(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-property">@width</span>, <span class="hljs-property">@height</span>); ta = idata.data
-    <span class="hljs-keyword">if</span> <span class="hljs-property">@normalizeImage</span>
-      data = <span class="hljs-keyword">if</span> <span class="hljs-property">@gray</span> <span class="hljs-keyword">then</span> u.normalize8 <span class="hljs-property">@data</span> <span class="hljs-keyword">else</span> u.normalizeInt <span class="hljs-property">@data</span>, <span class="hljs-number">0</span>, Math.pow(<span class="hljs-number">2</span>,<span class="hljs-number">24</span>)-<span class="hljs-number">1</span>
+            <div class="content"><div class='highlight'><pre>  toImage: <span class="hljs-function">-&gt;</span> @toContext().canvas
+  toContext: <span class="hljs-function">-&gt;</span>
+    ctx = u.createCtx @width, @height
+    idata = ctx.getImageData(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, @width, @height); ta = idata.data
+    <span class="hljs-keyword">if</span> @normalizeImage
+      data = <span class="hljs-keyword">if</span> @gray <span class="hljs-keyword">then</span> u.normalize8 @data <span class="hljs-keyword">else</span> u.normalizeInt @data, <span class="hljs-number">0</span>, Math.pow(<span class="hljs-number">2</span>,<span class="hljs-number">24</span>)<span class="hljs-number">-1</span>
     <span class="hljs-keyword">else</span>
-      data = (Math.round d <span class="hljs-keyword">for</span> d <span class="hljs-keyword">in</span> <span class="hljs-property">@data</span>)
+      data = (Math.round d <span class="hljs-keyword">for</span> d <span class="hljs-keyword">in</span> @data)
     <span class="hljs-keyword">for</span> num, i <span class="hljs-keyword">in</span> data
       j=<span class="hljs-number">4</span>*i
-      <span class="hljs-keyword">if</span> <span class="hljs-property">@gray</span>
+      <span class="hljs-keyword">if</span> @gray
         ta[j] = ta[j+<span class="hljs-number">1</span>] = ta[j+<span class="hljs-number">2</span>] = Math.floor num
-        ta[j+<span class="hljs-number">3</span>] = <span class="hljs-property">@alpha</span>
+        ta[j+<span class="hljs-number">3</span>] = @alpha
       <span class="hljs-keyword">else</span>
         ta[j]=(num&gt;&gt;<span class="hljs-number">16</span>)&amp;<span class="hljs-number">0xff</span>; ta[j+<span class="hljs-number">1</span>]=(num&gt;&gt;<span class="hljs-number">8</span>)&amp;<span class="hljs-number">0xff</span>; ta[j+<span class="hljs-number">2</span>]=num&amp;<span class="hljs-number">0xff</span>
-        ta[j+<span class="hljs-number">3</span>] = <span class="hljs-keyword">if</span> <span class="hljs-property">@normalizeImage</span> <span class="hljs-keyword">then</span> <span class="hljs-property">@alpha</span> <span class="hljs-keyword">else</span> ta[j+<span class="hljs-number">3</span>]=(num&gt;&gt;<span class="hljs-number">24</span>)&amp;<span class="hljs-number">0xff</span>
+        ta[j+<span class="hljs-number">3</span>] = <span class="hljs-keyword">if</span> @normalizeImage <span class="hljs-keyword">then</span> @alpha <span class="hljs-keyword">else</span> ta[j+<span class="hljs-number">3</span>]=(num&gt;&gt;<span class="hljs-number">24</span>)&amp;<span class="hljs-number">0xff</span>
     ctx.putImageData idata, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>
     ctx</pre></div></div>
             
@@ -429,7 +429,7 @@ in a new browser tab for viewing.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">toDataUrl</span>: <span class="hljs-function"><span class="hljs-params">()</span> -&gt;</span> u.ctxToDataUrl <span class="hljs-property">@toContext</span>()</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  toDataUrl: <span class="hljs-function"><span class="hljs-params">()</span> -&gt;</span> u.ctxToDataUrl @toContext()</pre></div></div>
             
         </li>
         
@@ -444,8 +444,8 @@ in a new browser tab for viewing.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">toDrawing</span>: <span class="hljs-function"><span class="hljs-params">(model = <span class="hljs-property">@model</span>)</span> -&gt;</span> model.patches.installDrawing(img=<span class="hljs-property">@toImage</span>()); img
-  <span class="hljs-attribute">toPatchColors</span>: <span class="hljs-function"><span class="hljs-params">(model = <span class="hljs-property">@model</span>)</span> -&gt;</span> model.patches.installColors(img=<span class="hljs-property">@toImage</span>()); img</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  toDrawing: <span class="hljs-function"><span class="hljs-params">(model = @model)</span> -&gt;</span> model.patches.installDrawing(img=@toImage()); img
+  toPatchColors: <span class="hljs-function"><span class="hljs-params">(model = @model)</span> -&gt;</span> model.patches.installColors(img=@toImage()); img</pre></div></div>
             
         </li>
         
@@ -462,10 +462,10 @@ The dataset can be sampled directly to its edges .. i.e. in turtle coords.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">toPatchVar</span>: <span class="hljs-function"><span class="hljs-params">(name, model = <span class="hljs-property">@model</span>)</span> -&gt;</span>
-    <span class="hljs-keyword">if</span> (ps=model.patches).length <span class="hljs-keyword">is</span> <span class="hljs-property">@data</span>.length
-    <span class="hljs-keyword">then</span> p[name] = <span class="hljs-property">@data</span>[i] <span class="hljs-keyword">for</span> p,i <span class="hljs-keyword">in</span> ps
-    <span class="hljs-keyword">else</span> p[name] = <span class="hljs-property">@patchSample</span> p.x, p.y, model <span class="hljs-keyword">for</span> p <span class="hljs-keyword">in</span> ps
+            <div class="content"><div class='highlight'><pre>  toPatchVar: <span class="hljs-function"><span class="hljs-params">(name, model = @model)</span> -&gt;</span>
+    <span class="hljs-keyword">if</span> (ps=model.patches).length <span class="hljs-keyword">is</span> @data.length
+    <span class="hljs-keyword">then</span> p[name] = @data[i] <span class="hljs-keyword">for</span> p,i <span class="hljs-keyword">in</span> ps
+    <span class="hljs-keyword">else</span> p[name] = @patchSample p.x, p.y, model <span class="hljs-keyword">for</span> p <span class="hljs-keyword">in</span> ps
     <span class="hljs-literal">null</span></pre></div></div>
             
         </li>
@@ -482,12 +482,12 @@ x,y is in topleft-bottomright box: [tlx,tly,tlx+w,tly-h]</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">coordSample</span>: <span class="hljs-function"><span class="hljs-params">(x, y, tlx, tly, w, h)</span> -&gt;</span> <span class="hljs-comment">#brx, bry) -&gt;</span>
-    xs=(x-tlx)*(<span class="hljs-property">@width</span>-<span class="hljs-number">1</span>)/w;  ys=(tly-y)*(<span class="hljs-property">@height</span>-<span class="hljs-number">1</span>)/h <span class="hljs-comment"># convert to sample space</span>
-    <span class="hljs-property">@sample</span> xs,ys
-  <span class="hljs-attribute">patchSample</span>: <span class="hljs-function"><span class="hljs-params">(px, py, model = <span class="hljs-property">@model</span>)</span> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  coordSample: <span class="hljs-function"><span class="hljs-params">(x, y, tlx, tly, w, h)</span> -&gt;</span> <span class="hljs-comment">#brx, bry) -&gt;</span>
+    xs=(x-tlx)*(@width<span class="hljs-number">-1</span>)/w;  ys=(tly-y)*(@height<span class="hljs-number">-1</span>)/h <span class="hljs-comment"># convert to sample space</span>
+    @sample xs,ys
+  patchSample: <span class="hljs-function"><span class="hljs-params">(px, py, model = @model)</span> -&gt;</span>
     w=model.world
-    <span class="hljs-property">@coordSample</span> px, py, w.minXcor, w.maxYcor, w.numX, w.numY</pre></div></div>
+    @coordSample px, py, w.minXcor, w.maxYcor, w.numX, w.numY</pre></div></div>
             
         </li>
         
@@ -502,7 +502,7 @@ x,y is in topleft-bottomright box: [tlx,tly,tlx+w,tly-h]</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">normalize</span>: <span class="hljs-function"><span class="hljs-params">(lo, hi)</span> -&gt;</span> <span class="hljs-keyword">new</span> DataSet <span class="hljs-property">@width</span>, <span class="hljs-property">@height</span>, u.normalize(<span class="hljs-property">@data</span>, lo, hi), <span class="hljs-property">@model</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  normalize: <span class="hljs-function"><span class="hljs-params">(lo, hi)</span> -&gt;</span> <span class="hljs-keyword">new</span> DataSet @width, @height, u.normalize(@data, lo, hi), @model</pre></div></div>
             
         </li>
         
@@ -517,7 +517,7 @@ x,y is in topleft-bottomright box: [tlx,tly,tlx+w,tly-h]</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">normalize8</span>: <span class="hljs-function">-&gt;</span> <span class="hljs-keyword">new</span> DataSet <span class="hljs-property">@width</span>, <span class="hljs-property">@height</span>, u.normalize8(<span class="hljs-property">@data</span>), <span class="hljs-property">@model</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  normalize8: <span class="hljs-function">-&gt;</span> <span class="hljs-keyword">new</span> DataSet @width, @height, u.normalize8(@data), @model</pre></div></div>
             
         </li>
         
@@ -532,14 +532,14 @@ x,y is in topleft-bottomright box: [tlx,tly,tlx+w,tly-h]</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">resample</span>: <span class="hljs-function"><span class="hljs-params">(width, height)</span> -&gt;</span>
-    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> DataSet width,height,<span class="hljs-property">@data</span>,<span class="hljs-property">@model</span> <span class="hljs-keyword">if</span> width <span class="hljs-keyword">is</span> <span class="hljs-property">@width</span> <span class="hljs-keyword">and</span> height <span class="hljs-keyword">is</span> <span class="hljs-property">@height</span>
-    data = []; xScale = (<span class="hljs-property">@width</span>-<span class="hljs-number">1</span>)<span class="hljs-regexp">/(width-1); yScale = (@height-1)/</span>(height-<span class="hljs-number">1</span>)
+            <div class="content"><div class='highlight'><pre>  resample: <span class="hljs-function"><span class="hljs-params">(width, height)</span> -&gt;</span>
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> DataSet width,height,@data,@model <span class="hljs-keyword">if</span> width <span class="hljs-keyword">is</span> @width <span class="hljs-keyword">and</span> height <span class="hljs-keyword">is</span> @height
+    data = []; xScale = (@width<span class="hljs-number">-1</span>)<span class="hljs-regexp">/(width-1); yScale = (@height-1)/</span>(height<span class="hljs-number">-1</span>)
     <span class="hljs-keyword">for</span> y <span class="hljs-keyword">in</span> [<span class="hljs-number">0.</span>..height] <span class="hljs-keyword">by</span> <span class="hljs-number">1</span>
       <span class="hljs-keyword">for</span> x <span class="hljs-keyword">in</span> [<span class="hljs-number">0.</span>..width] <span class="hljs-keyword">by</span> <span class="hljs-number">1</span>
         xs=x*xScale; ys=y*yScale
-        data.push <span class="hljs-property">@sample</span> xs,ys
-    <span class="hljs-keyword">new</span> DataSet width, height, data, <span class="hljs-property">@model</span></pre></div></div>
+        data.push @sample xs,ys
+    <span class="hljs-keyword">new</span> DataSet width, height, data, @model</pre></div></div>
             
         </li>
         
@@ -555,13 +555,13 @@ Off-edge neighbors revert to nearest edge value.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">neighborhood</span>: <span class="hljs-function"><span class="hljs-params">(x,y,array=[])</span> -&gt;</span> <span class="hljs-comment"># return 3x3 neighborhood</span>
+            <div class="content"><div class='highlight'><pre>  neighborhood: <span class="hljs-function"><span class="hljs-params">(x,y,array=[])</span> -&gt;</span> <span class="hljs-comment"># return 3x3 neighborhood</span>
     array.length = <span class="hljs-number">0</span> <span class="hljs-comment"># in case user supplied an array</span>
-    <span class="hljs-keyword">for</span> dy <span class="hljs-keyword">in</span> [-<span class="hljs-number">1.</span><span class="hljs-number">.1</span>]
-      <span class="hljs-keyword">for</span> dx <span class="hljs-keyword">in</span> [-<span class="hljs-number">1.</span><span class="hljs-number">.1</span>]
-        x0=u.clamp x+dx, <span class="hljs-number">0</span>, <span class="hljs-property">@width</span>-<span class="hljs-number">1</span>
-        y0=u.clamp y+dy, <span class="hljs-number">0</span>, <span class="hljs-property">@height</span>-<span class="hljs-number">1</span>
-        array.push <span class="hljs-property">@data</span>[<span class="hljs-property">@toIndex</span> x0, y0]
+    <span class="hljs-keyword">for</span> dy <span class="hljs-keyword">in</span> [<span class="hljs-number">-1.</span><span class="hljs-number">.1</span>]
+      <span class="hljs-keyword">for</span> dx <span class="hljs-keyword">in</span> [<span class="hljs-number">-1.</span><span class="hljs-number">.1</span>]
+        x0=u.clamp x+dx, <span class="hljs-number">0</span>, @width<span class="hljs-number">-1</span>
+        y0=u.clamp y+dy, <span class="hljs-number">0</span>, @height<span class="hljs-number">-1</span>
+        array.push @data[@toIndex x0, y0]
     array</pre></div></div>
             
         </li>
@@ -578,16 +578,16 @@ See <a href="http://goo.gl/ubFiji">Convolution article</a></p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">convolve</span>: <span class="hljs-function"><span class="hljs-params">(kernel,factor=<span class="hljs-number">1</span>)</span> -&gt;</span> <span class="hljs-comment"># Factory: return new convolved dataset</span>
+            <div class="content"><div class='highlight'><pre>  convolve: <span class="hljs-function"><span class="hljs-params">(kernel,factor=<span class="hljs-number">1</span>)</span> -&gt;</span> <span class="hljs-comment"># Factory: return new convolved dataset</span>
     array = []; n = []
-    <span class="hljs-keyword">if</span> <span class="hljs-property">@crop</span>
-    <span class="hljs-keyword">then</span> x0=y0=<span class="hljs-number">1</span>; h=<span class="hljs-property">@height</span>-<span class="hljs-number">1</span>; w=<span class="hljs-property">@width</span>-<span class="hljs-number">1</span>
-    <span class="hljs-keyword">else</span> x0=y0=<span class="hljs-number">0</span>; h=<span class="hljs-property">@height</span>; w=<span class="hljs-property">@width</span>
+    <span class="hljs-keyword">if</span> @crop
+    <span class="hljs-keyword">then</span> x0=y0=<span class="hljs-number">1</span>; h=@height<span class="hljs-number">-1</span>; w=@width<span class="hljs-number">-1</span>
+    <span class="hljs-keyword">else</span> x0=y0=<span class="hljs-number">0</span>; h=@height; w=@width
     <span class="hljs-keyword">for</span> y <span class="hljs-keyword">in</span> [y0...h] <span class="hljs-keyword">by</span> <span class="hljs-number">1</span>
       <span class="hljs-keyword">for</span> x <span class="hljs-keyword">in</span> [x0...w] <span class="hljs-keyword">by</span> <span class="hljs-number">1</span>
-        <span class="hljs-property">@neighborhood</span> x,y,n
+        @neighborhood x,y,n
         array.push u.aSum(u.aPairMul(kernel, n))*factor
-    <span class="hljs-keyword">new</span> DataSet w-x0, h-y0, array, <span class="hljs-property">@model</span></pre></div></div>
+    <span class="hljs-keyword">new</span> DataSet w-x0, h-y0, array, @model</pre></div></div>
             
         </li>
         
@@ -602,12 +602,12 @@ See <a href="http://goo.gl/ubFiji">Convolution article</a></p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">dzdx</span>: <span class="hljs-function"><span class="hljs-params">(n=<span class="hljs-number">2</span>,factor=<span class="hljs-number">1</span>/<span class="hljs-number">8</span>)</span> -&gt;</span> <span class="hljs-property">@convolve</span>([-<span class="hljs-number">1</span>,<span class="hljs-number">0</span>,<span class="hljs-number">1</span>,-n,<span class="hljs-number">0</span>,n,-<span class="hljs-number">1</span>,<span class="hljs-number">0</span>,<span class="hljs-number">1</span>],factor)
-  <span class="hljs-attribute">dzdy</span>: <span class="hljs-function"><span class="hljs-params">(n=<span class="hljs-number">2</span>,factor=<span class="hljs-number">1</span>/<span class="hljs-number">8</span>)</span> -&gt;</span> <span class="hljs-property">@convolve</span>([<span class="hljs-number">1</span>,n,<span class="hljs-number">1</span>,<span class="hljs-number">0</span>,<span class="hljs-number">0</span>,<span class="hljs-number">0</span>,-<span class="hljs-number">1</span>,-n,-<span class="hljs-number">1</span>],factor)
-  <span class="hljs-attribute">laplace8</span>: <span class="hljs-function">-&gt;</span> <span class="hljs-property">@convolve</span>([-<span class="hljs-number">1</span>,-<span class="hljs-number">1</span>,-<span class="hljs-number">1</span>,-<span class="hljs-number">1</span>,<span class="hljs-number">8</span>,-<span class="hljs-number">1</span>,-<span class="hljs-number">1</span>,-<span class="hljs-number">1</span>,-<span class="hljs-number">1</span>])
-  <span class="hljs-attribute">laplace4</span>: <span class="hljs-function">-&gt;</span> <span class="hljs-property">@convolve</span>([<span class="hljs-number">0</span>,-<span class="hljs-number">1</span>,<span class="hljs-number">0</span>,-<span class="hljs-number">1</span>,<span class="hljs-number">4</span>,-<span class="hljs-number">1</span>,<span class="hljs-number">0</span>,-<span class="hljs-number">1</span>,<span class="hljs-number">0</span>])
-  <span class="hljs-attribute">blur</span>: <span class="hljs-function"><span class="hljs-params">(factor=<span class="hljs-number">0.0625</span>)</span> -&gt;</span> <span class="hljs-property">@convolve</span>([<span class="hljs-number">1</span>,<span class="hljs-number">2</span>,<span class="hljs-number">1</span>,<span class="hljs-number">2</span>,<span class="hljs-number">4</span>,<span class="hljs-number">2</span>,<span class="hljs-number">1</span>,<span class="hljs-number">2</span>,<span class="hljs-number">1</span>], factor) <span class="hljs-comment"># 1/16 = 0.0625</span>
-  <span class="hljs-attribute">edge</span>: <span class="hljs-function">-&gt;</span> <span class="hljs-property">@convolve</span>([<span class="hljs-number">1</span>,<span class="hljs-number">1</span>,<span class="hljs-number">1</span>,<span class="hljs-number">1</span>,-<span class="hljs-number">7</span>,<span class="hljs-number">1</span>,<span class="hljs-number">1</span>,<span class="hljs-number">1</span>,<span class="hljs-number">1</span>])</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  dzdx: <span class="hljs-function"><span class="hljs-params">(n=<span class="hljs-number">2</span>,factor=<span class="hljs-number">1</span>/<span class="hljs-number">8</span>)</span> -&gt;</span> @convolve([<span class="hljs-number">-1</span>,<span class="hljs-number">0</span>,<span class="hljs-number">1</span>,-n,<span class="hljs-number">0</span>,n,<span class="hljs-number">-1</span>,<span class="hljs-number">0</span>,<span class="hljs-number">1</span>],factor)
+  dzdy: <span class="hljs-function"><span class="hljs-params">(n=<span class="hljs-number">2</span>,factor=<span class="hljs-number">1</span>/<span class="hljs-number">8</span>)</span> -&gt;</span> @convolve([<span class="hljs-number">1</span>,n,<span class="hljs-number">1</span>,<span class="hljs-number">0</span>,<span class="hljs-number">0</span>,<span class="hljs-number">0</span>,<span class="hljs-number">-1</span>,-n,<span class="hljs-number">-1</span>],factor)
+  laplace8: <span class="hljs-function">-&gt;</span> @convolve([<span class="hljs-number">-1</span>,<span class="hljs-number">-1</span>,<span class="hljs-number">-1</span>,<span class="hljs-number">-1</span>,<span class="hljs-number">8</span>,<span class="hljs-number">-1</span>,<span class="hljs-number">-1</span>,<span class="hljs-number">-1</span>,<span class="hljs-number">-1</span>])
+  laplace4: <span class="hljs-function">-&gt;</span> @convolve([<span class="hljs-number">0</span>,<span class="hljs-number">-1</span>,<span class="hljs-number">0</span>,<span class="hljs-number">-1</span>,<span class="hljs-number">4</span>,<span class="hljs-number">-1</span>,<span class="hljs-number">0</span>,<span class="hljs-number">-1</span>,<span class="hljs-number">0</span>])
+  blur: <span class="hljs-function"><span class="hljs-params">(factor=<span class="hljs-number">0.0625</span>)</span> -&gt;</span> @convolve([<span class="hljs-number">1</span>,<span class="hljs-number">2</span>,<span class="hljs-number">1</span>,<span class="hljs-number">2</span>,<span class="hljs-number">4</span>,<span class="hljs-number">2</span>,<span class="hljs-number">1</span>,<span class="hljs-number">2</span>,<span class="hljs-number">1</span>], factor) <span class="hljs-comment"># 1/16 = 0.0625</span>
+  edge: <span class="hljs-function">-&gt;</span> @convolve([<span class="hljs-number">1</span>,<span class="hljs-number">1</span>,<span class="hljs-number">1</span>,<span class="hljs-number">1</span>,<span class="hljs-number">-7</span>,<span class="hljs-number">1</span>,<span class="hljs-number">1</span>,<span class="hljs-number">1</span>,<span class="hljs-number">1</span>])</pre></div></div>
             
         </li>
         
@@ -622,7 +622,7 @@ See <a href="http://goo.gl/ubFiji">Convolution article</a></p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">filter</span>: <span class="hljs-function"><span class="hljs-params">(f)</span> -&gt;</span> <span class="hljs-keyword">new</span> DataSet <span class="hljs-property">@width</span>, <span class="hljs-property">@height</span>, (f(d) <span class="hljs-keyword">for</span> d <span class="hljs-keyword">in</span> <span class="hljs-property">@data</span>), <span class="hljs-property">@model</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  filter: <span class="hljs-function"><span class="hljs-params">(f)</span> -&gt;</span> <span class="hljs-keyword">new</span> DataSet @width, @height, (f(d) <span class="hljs-keyword">for</span> d <span class="hljs-keyword">in</span> @data), @model</pre></div></div>
             
         </li>
         
@@ -641,9 +641,9 @@ those wanting to use the results of the two convolutions.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">slopeAndAspect</span>: <span class="hljs-function"><span class="hljs-params">(noNaNs=<span class="hljs-literal">true</span>, posAngle=<span class="hljs-literal">true</span>)</span> -&gt;</span>
-    dzdx = <span class="hljs-property">@dzdx</span>() <span class="hljs-comment"># sub left z from right</span>
-    dzdy = <span class="hljs-property">@dzdy</span>() <span class="hljs-comment"># sub bottom z from top</span>
+            <div class="content"><div class='highlight'><pre>  slopeAndAspect: <span class="hljs-function"><span class="hljs-params">(noNaNs=<span class="hljs-literal">true</span>, posAngle=<span class="hljs-literal">true</span>)</span> -&gt;</span>
+    dzdx = @dzdx() <span class="hljs-comment"># sub left z from right</span>
+    dzdy = @dzdy() <span class="hljs-comment"># sub bottom z from top</span>
     aspect = []; slope = []; h = dzdx.height; w = dzdx.width
     <span class="hljs-keyword">for</span> y <span class="hljs-keyword">in</span> [<span class="hljs-number">0.</span>..h] <span class="hljs-keyword">by</span> <span class="hljs-number">1</span>
       <span class="hljs-keyword">for</span> x <span class="hljs-keyword">in</span> [<span class="hljs-number">0.</span>..w] <span class="hljs-keyword">by</span> <span class="hljs-number">1</span>
@@ -682,8 +682,8 @@ those wanting to use the results of the two convolutions.</p>
             
             <div class="content"><div class='highlight'><pre>        rad += <span class="hljs-number">2</span>*Math.PI <span class="hljs-keyword">if</span> posAngle <span class="hljs-keyword">and</span> rad &lt; <span class="hljs-number">0</span>
         aspect.push rad
-    slope = <span class="hljs-keyword">new</span> DataSet w, h, slope, <span class="hljs-property">@model</span>
-    aspect = <span class="hljs-keyword">new</span> DataSet w, h, aspect, <span class="hljs-property">@model</span>
+    slope = <span class="hljs-keyword">new</span> DataSet w, h, slope, @model
+    aspect = <span class="hljs-keyword">new</span> DataSet w, h, aspect, @model
     u.aToObj [slope, aspect, dzdx, dzdy], [<span class="hljs-string">"slope"</span>, <span class="hljs-string">"aspect"</span>, <span class="hljs-string">"dzdx"</span>, <span class="hljs-string">"dzdy"</span>]</pre></div></div>
             
         </li>
@@ -699,13 +699,13 @@ those wanting to use the results of the two convolutions.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">subset</span>: <span class="hljs-function"><span class="hljs-params">(x, y, width, height)</span> -&gt;</span>
-    u.error <span class="hljs-string">"subSet: params out of range"</span> <span class="hljs-keyword">if</span> x+width&gt;<span class="hljs-property">@width</span> <span class="hljs-keyword">or</span> y+height&gt;<span class="hljs-property">@height</span>
+            <div class="content"><div class='highlight'><pre>  subset: <span class="hljs-function"><span class="hljs-params">(x, y, width, height)</span> -&gt;</span>
+    u.error <span class="hljs-string">"subSet: params out of range"</span> <span class="hljs-keyword">if</span> x+width&gt;@width <span class="hljs-keyword">or</span> y+height&gt;@height
     data = []
     <span class="hljs-keyword">for</span> j <span class="hljs-keyword">in</span> [y...y+height] <span class="hljs-keyword">by</span> <span class="hljs-number">1</span>
       <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> [x...x+width] <span class="hljs-keyword">by</span> <span class="hljs-number">1</span>
-        data.push <span class="hljs-property">@getXY</span> i,j
-    <span class="hljs-keyword">new</span> DataSet width, height, data, <span class="hljs-property">@model</span>
+        data.push @getXY i,j
+    <span class="hljs-keyword">new</span> DataSet width, height, data, @model
 
 ABM.AscDataSet = <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AscDataSet</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">DataSet</span></span></pre></div></div>
             
@@ -721,10 +721,10 @@ ABM.AscDataSet = <span class="hljs-class"><span class="hljs-keyword">class</span
               <p>An .asc GIS file a text file with a header:</p>
 <pre><code>ncols <span class="hljs-number">195</span>
 nrows <span class="hljs-number">195</span>
-xllcorner -<span class="hljs-number">84.355652</span>
+xllcorner <span class="hljs-number">-84.355652</span>
 yllcorner <span class="hljs-number">39.177963</span>
 cellsize <span class="hljs-number">0.000093</span>
-NODATA_value -<span class="hljs-number">9999</span>
+NODATA_value <span class="hljs-number">-9999</span>
 </code></pre><p>..followed by a ncols X nrows matrix of numbers</p>
 
             </div>
@@ -744,10 +744,10 @@ so that it can be used in an async file operation.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">constructor</span>: <span class="hljs-function"><span class="hljs-params">(<span class="hljs-property">@str</span>=<span class="hljs-string">""</span>, <span class="hljs-property">@model</span>)</span> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  constructor: <span class="hljs-function"><span class="hljs-params">(@str=<span class="hljs-string">""</span>, @model)</span> -&gt;</span>
     <span class="hljs-keyword">super</span>() <span class="hljs-comment"># start out as an empty dataset</span>
-    <span class="hljs-keyword">return</span> <span class="hljs-keyword">if</span> <span class="hljs-property">@str</span>.length <span class="hljs-keyword">is</span> <span class="hljs-number">0</span>
-    <span class="hljs-property">@parse</span> <span class="hljs-property">@str</span></pre></div></div>
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">if</span> @str.length <span class="hljs-keyword">is</span> <span class="hljs-number">0</span>
+    @parse @str</pre></div></div>
             
         </li>
         
@@ -763,16 +763,16 @@ is read via an xhr request.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">parse</span>: <span class="hljs-function"><span class="hljs-params">(<span class="hljs-property">@str</span>)</span> -&gt;</span>
-    textData = <span class="hljs-property">@str</span>.split <span class="hljs-string">"\n"</span>; <span class="hljs-property">@header</span> = {}; <span class="hljs-comment">#gisData.data = []</span>
+            <div class="content"><div class='highlight'><pre>  parse: <span class="hljs-function"><span class="hljs-params">(@str)</span> -&gt;</span>
+    textData = @str.split <span class="hljs-string">"\n"</span>; @header = {}; <span class="hljs-comment">#gisData.data = []</span>
     <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> [<span class="hljs-number">0.</span><span class="hljs-number">.5</span>]
       keyVal = textData[i].split <span class="hljs-regexp">/\s+/</span>
-      <span class="hljs-property">@header</span>[keyVal[<span class="hljs-number">0</span>].toLowerCase()] = parseFloat keyVal[<span class="hljs-number">1</span>]
-    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> [<span class="hljs-number">0.</span>..<span class="hljs-property">@header</span>.nrows] <span class="hljs-keyword">by</span> <span class="hljs-number">1</span>
+      @header[keyVal[<span class="hljs-number">0</span>].toLowerCase()] = parseFloat keyVal[<span class="hljs-number">1</span>]
+    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> [<span class="hljs-number">0.</span>..@header.nrows] <span class="hljs-keyword">by</span> <span class="hljs-number">1</span>
       nums = textData[<span class="hljs-number">6</span>+i].trim().split(<span class="hljs-string">" "</span>)
       nums[i] = parseFloat nums[i] <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> [<span class="hljs-number">0.</span>..nums.length]
-      <span class="hljs-property">@data</span> = <span class="hljs-property">@data</span>.concat nums
-    <span class="hljs-property">@reset</span> <span class="hljs-property">@header</span>.ncols, <span class="hljs-property">@header</span>.nrows, <span class="hljs-property">@data</span>
+      @data = @data.concat nums
+    @reset @header.ncols, @header.nrows, @data
 
 ABM.ImageDataSet = <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ImageDataSet</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">DataSet</span></span></pre></div></div>
             
@@ -795,24 +795,24 @@ img may be a canvas</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">constructor</span>: <span class="hljs-function"><span class="hljs-params">(img, <span class="hljs-property">@f</span>=u.pixelByte(<span class="hljs-number">0</span>), <span class="hljs-property">@arrayType</span>=Uint8ClampedArray, <span class="hljs-property">@rowsPerSlice</span>, <span class="hljs-property">@model</span>)</span> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  constructor: <span class="hljs-function"><span class="hljs-params">(img, @f=u.pixelByte(<span class="hljs-number">0</span>), @arrayType=Uint8ClampedArray, @rowsPerSlice, @model)</span> -&gt;</span>
     <span class="hljs-keyword">super</span>() <span class="hljs-comment"># start out as an empty dataset</span>
     <span class="hljs-keyword">return</span> <span class="hljs-keyword">unless</span> img?
-    <span class="hljs-property">@parse</span> img
-  <span class="hljs-attribute">parse</span>: <span class="hljs-function"><span class="hljs-params">(img)</span> -&gt;</span>
-    <span class="hljs-property">@rowsPerSlice</span> <span class="hljs-keyword">or</span>= img.height
-    data = u.imageRowsToData img, <span class="hljs-property">@rowsPerSlice</span>, <span class="hljs-property">@f</span>, <span class="hljs-property">@arrayType</span>
-    <span class="hljs-property">@reset</span> img.width, img.height, data
+    @parse img
+  parse: <span class="hljs-function"><span class="hljs-params">(img)</span> -&gt;</span>
+    @rowsPerSlice <span class="hljs-keyword">or</span>= img.height
+    data = u.imageRowsToData img, @rowsPerSlice, @f, @arrayType
+    @reset img.width, img.height, data
 
 ABM.PatchDataSet = <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">PatchDataSet</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">DataSet</span></span>
-  <span class="hljs-attribute">constructor</span>: <span class="hljs-function"><span class="hljs-params">(f, arrayType=Array, <span class="hljs-property">@model</span>)</span> -&gt;</span>
-    data = <span class="hljs-keyword">new</span> arrayType (ps=<span class="hljs-property">@model</span>.patches).length
+  constructor: <span class="hljs-function"><span class="hljs-params">(f, arrayType=Array, @model)</span> -&gt;</span>
+    data = <span class="hljs-keyword">new</span> arrayType (ps=@model.patches).length
     f = u.propFcn f <span class="hljs-keyword">if</span> u.isString f
     data[i] = f(p) <span class="hljs-keyword">for</span> p,i <span class="hljs-keyword">in</span> ps
     <span class="hljs-keyword">super</span> ps.numX, ps.numY, data
-    <span class="hljs-property">@useNearest</span> = <span class="hljs-literal">true</span>
-  <span class="hljs-attribute">toPatchVar</span>: <span class="hljs-function"><span class="hljs-params">(name)</span> -&gt;</span>
-    p[name] = <span class="hljs-property">@data</span>[i] <span class="hljs-keyword">for</span> p,i <span class="hljs-keyword">in</span> <span class="hljs-property">@model</span>.patches; <span class="hljs-literal">null</span></pre></div></div>
+    @useNearest = <span class="hljs-literal">true</span>
+  toPatchVar: <span class="hljs-function"><span class="hljs-params">(name)</span> -&gt;</span>
+    p[name] = @data[i] <span class="hljs-keyword">for</span> p,i <span class="hljs-keyword">in</span> @model.patches; <span class="hljs-literal">null</span></pre></div></div>
             
         </li>
         

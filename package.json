@@ -16,17 +16,16 @@
     "modeling"
   ],
   "author": "Owen Densmore",
-  "license": "GPLv3",
+  "license": "GPL-3.0",
   "bugs": {
     "url": "https://github.com/backspaces/agentscript/issues"
   },
   "scripts": {
-    "gulp":  "gulp",
-    "all":   "gulp all",
+    "gulp": "gulp",
+    "all": "gulp all",
     "build": "gulp build",
-    "docs":  "gulp docs",
+    "docs": "gulp docs",
     "watch": "gulp watch&",
-
     "git-diff": "git diff Gulpfile.js LICENSE README.md package.json src extras models sketches",
     "git-prep": "git checkout master && gulp all && git add . && git status",
     "git-commit": "git checkout master && git commit -v && git push origin master",

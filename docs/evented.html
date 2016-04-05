@@ -60,20 +60,20 @@ function can be triggered every time the model is stepped or drawn (e.g. the pat
             
             <div class="content"><div class='highlight'><pre>
 <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Evented</span></span>
-  <span class="hljs-attribute">constructor</span>: <span class="hljs-function"><span class="hljs-params">()</span> -&gt;</span>
-    <span class="hljs-property">@events</span> = {}
+  constructor: <span class="hljs-function"><span class="hljs-params">()</span> -&gt;</span>
+    @events = {}
 
-  <span class="hljs-attribute">emit</span>: <span class="hljs-function"><span class="hljs-params">(name, args...)</span> -&gt;</span>
-    <span class="hljs-keyword">if</span> <span class="hljs-property">@events</span>[name]
-      cb args... <span class="hljs-keyword">for</span> cb <span class="hljs-keyword">in</span> <span class="hljs-property">@events</span>[name]
+  emit: <span class="hljs-function"><span class="hljs-params">(name, args...)</span> -&gt;</span>
+    <span class="hljs-keyword">if</span> @events[name]
+      cb args... <span class="hljs-keyword">for</span> cb <span class="hljs-keyword">in</span> @events[name]
 
-  <span class="hljs-attribute">on</span>: <span class="hljs-function"><span class="hljs-params">(name, cb)</span> -&gt;</span>
-    (<span class="hljs-property">@events</span>[name]?=[]).push cb
+  on: <span class="hljs-function"><span class="hljs-params">(name, cb)</span> -&gt;</span>
+    (@events[name]?=[]).push cb
 
-  <span class="hljs-attribute">off</span>: <span class="hljs-function"><span class="hljs-params">(name, cb)</span> -&gt;</span>
-    <span class="hljs-keyword">if</span> <span class="hljs-property">@events</span>[name]
-      <span class="hljs-keyword">if</span> cb <span class="hljs-keyword">then</span> <span class="hljs-property">@events</span>[name] = (l <span class="hljs-keyword">for</span> l <span class="hljs-keyword">in</span> <span class="hljs-property">@events</span>[name] <span class="hljs-keyword">when</span> l <span class="hljs-keyword">isnt</span> cb)
-      <span class="hljs-keyword">else</span> <span class="hljs-keyword">delete</span> <span class="hljs-property">@events</span>[name]</pre></div></div>
+  off: <span class="hljs-function"><span class="hljs-params">(name, cb)</span> -&gt;</span>
+    <span class="hljs-keyword">if</span> @events[name]
+      <span class="hljs-keyword">if</span> cb <span class="hljs-keyword">then</span> @events[name] = (l <span class="hljs-keyword">for</span> l <span class="hljs-keyword">in</span> @events[name] <span class="hljs-keyword">when</span> l <span class="hljs-keyword">isnt</span> cb)
+      <span class="hljs-keyword">else</span> <span class="hljs-keyword">delete</span> @events[name]</pre></div></div>
             
         </li>
         

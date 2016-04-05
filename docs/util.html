@@ -51,7 +51,7 @@ Alias: u is an alias for ABM.Util within the agentscript module (not outside)</p
             </div>
             
             <div class="content"><div class='highlight'><pre>
-Util = util = u = <span class="hljs-comment"># TODO: "util" deprecated in favor of Util</span></pre></div></div>
+Util = util = u = <span class="hljs-comment"># <span class="hljs-doctag">TODO:</span> "util" deprecated in favor of Util</span></pre></div></div>
             
         </li>
         
@@ -67,7 +67,7 @@ Util = util = u = <span class="hljs-comment"># TODO: "util" deprecated in favor 
 </code></pre>
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">error</span>: <span class="hljs-function"><span class="hljs-params">(s)</span> -&gt;</span> <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> Error s</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  error: <span class="hljs-function"><span class="hljs-params">(s)</span> -&gt;</span> <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> Error s</pre></div></div>
             
         </li>
         
@@ -82,11 +82,11 @@ Util = util = u = <span class="hljs-comment"># TODO: "util" deprecated in favor 
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">loggedMsgs</span>: []
-  <span class="hljs-attribute">logOnce</span>: <span class="hljs-function"><span class="hljs-params">(s)</span> -&gt;</span>
-    <span class="hljs-keyword">if</span> <span class="hljs-property">@loggedMsgs</span>.indexOf(s) &lt; <span class="hljs-number">0</span>
+            <div class="content"><div class='highlight'><pre>  loggedMsgs: []
+  logOnce: <span class="hljs-function"><span class="hljs-params">(s)</span> -&gt;</span>
+    <span class="hljs-keyword">if</span> @loggedMsgs.indexOf(s) &lt; <span class="hljs-number">0</span>
       <span class="hljs-built_in">console</span>.log s
-      <span class="hljs-property">@loggedMsgs</span>.push s</pre></div></div>
+      @loggedMsgs.push s</pre></div></div>
             
         </li>
         
@@ -101,12 +101,12 @@ Util = util = u = <span class="hljs-comment"># TODO: "util" deprecated in favor 
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">deprecatedAlert</span>: <span class="hljs-literal">false</span> <span class="hljs-comment"># Set to true to let modeler know</span>
-  <span class="hljs-attribute">deprecated</span>: <span class="hljs-function"><span class="hljs-params">(s)</span> -&gt;</span>
-    <span class="hljs-keyword">if</span> <span class="hljs-property">@deprecatedAlert</span>
+            <div class="content"><div class='highlight'><pre>  deprecatedAlert: <span class="hljs-literal">false</span> <span class="hljs-comment"># Set to true to let modeler know</span>
+  deprecated: <span class="hljs-function"><span class="hljs-params">(s)</span> -&gt;</span>
+    <span class="hljs-keyword">if</span> @deprecatedAlert
       alert <span class="hljs-string">"Deprecated functions, see console.log"</span>
-      <span class="hljs-property">@deprecatedAlert</span> = <span class="hljs-literal">false</span>
-    <span class="hljs-property">@logOnce</span> <span class="hljs-string">"DEPRECATED - <span class="hljs-subst">#{s}</span>"</span></pre></div></div>
+      @deprecatedAlert = <span class="hljs-literal">false</span>
+    @logOnce <span class="hljs-string">"DEPRECATED - <span class="hljs-subst">#{s}</span>"</span></pre></div></div>
             
         </li>
         
@@ -122,8 +122,8 @@ bitwise ops which are 32 bit. See <a href="http://goo.gl/WpAzT">discussion</a></
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">MaxINT</span>: Math.pow(<span class="hljs-number">2</span>,<span class="hljs-number">53</span>); <span class="hljs-attribute">MinINT</span>: -Math.pow(<span class="hljs-number">2</span>,<span class="hljs-number">53</span>) <span class="hljs-comment"># -@MaxINT fails, @ not defined yet</span>
-  <span class="hljs-attribute">MaxINT32</span>: <span class="hljs-number">0</span>|<span class="hljs-number">0x7fffffff</span>; <span class="hljs-attribute">MinINT32</span>: <span class="hljs-number">0</span>|<span class="hljs-number">0x80000000</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  MaxINT: Math.pow(<span class="hljs-number">2</span>,<span class="hljs-number">53</span>); MinINT: -Math.pow(<span class="hljs-number">2</span>,<span class="hljs-number">53</span>) <span class="hljs-comment"># -@MaxINT fails, @ not defined yet</span>
+  MaxINT32: <span class="hljs-number">0</span>|<span class="hljs-number">0x7fffffff</span>; MinINT32: <span class="hljs-number">0</span>|<span class="hljs-number">0x80000000</span></pre></div></div>
             
         </li>
         
@@ -139,7 +139,7 @@ See <a href="http://underscorejs.org/docs/underscore.html">underscore docs</a></
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">isArray</span>: Array.isArray <span class="hljs-keyword">or</span> <span class="hljs-comment"># returns a function that is then applied to arg.</span>
+            <div class="content"><div class='highlight'><pre>  isArray: Array.isArray <span class="hljs-keyword">or</span> <span class="hljs-comment"># returns a function that is then applied to arg.</span>
     (obj) -&gt; toString.call(obj) <span class="hljs-keyword">is</span> <span class="hljs-string">'[object Array]'</span></pre></div></div>
             
         </li>
@@ -155,7 +155,7 @@ See <a href="http://underscorejs.org/docs/underscore.html">underscore docs</a></
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">isFunction</span>: <span class="hljs-function"><span class="hljs-params">(obj)</span> -&gt;</span> <span class="hljs-keyword">typeof</span> obj <span class="hljs-keyword">is</span> <span class="hljs-string">"function"</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  isFunction: <span class="hljs-function"><span class="hljs-params">(obj)</span> -&gt;</span> <span class="hljs-keyword">typeof</span> obj <span class="hljs-keyword">is</span> <span class="hljs-string">"function"</span></pre></div></div>
             
         </li>
         
@@ -170,10 +170,10 @@ See <a href="http://underscorejs.org/docs/underscore.html">underscore docs</a></
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">isString</span>: <span class="hljs-function"><span class="hljs-params">(obj)</span> -&gt;</span> <span class="hljs-keyword">typeof</span> obj <span class="hljs-keyword">is</span> <span class="hljs-string">'string'</span> || obj <span class="hljs-keyword">instanceof</span> String
-  <span class="hljs-attribute">isInteger</span>: Number.isInteger <span class="hljs-keyword">or</span> <span class="hljs-comment"># like isArray</span>
+            <div class="content"><div class='highlight'><pre>  isString: <span class="hljs-function"><span class="hljs-params">(obj)</span> -&gt;</span> <span class="hljs-keyword">typeof</span> obj <span class="hljs-keyword">is</span> <span class="hljs-string">'string'</span> || obj <span class="hljs-keyword">instanceof</span> String
+  isInteger: Number.isInteger <span class="hljs-keyword">or</span> <span class="hljs-comment"># like isArray</span>
     (num) -&gt; Math.floor(num) <span class="hljs-keyword">is</span> num
-  <span class="hljs-attribute">isObject</span>: <span class="hljs-function"><span class="hljs-params">(obj)</span> -&gt;</span> toString.call(obj) <span class="hljs-keyword">is</span> <span class="hljs-string">'[object Object]'</span></pre></div></div>
+  isObject: <span class="hljs-function"><span class="hljs-params">(obj)</span> -&gt;</span> toString.call(obj) <span class="hljs-keyword">is</span> <span class="hljs-string">'[object Object]'</span></pre></div></div>
             
         </li>
         
@@ -202,7 +202,7 @@ See <a href="http://goo.gl/FafN3z">StackOverflow</a></p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">randomSeed</span>: <span class="hljs-function"><span class="hljs-params">(seed=<span class="hljs-number">123456</span>)</span> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  randomSeed: <span class="hljs-function"><span class="hljs-params">(seed=<span class="hljs-number">123456</span>)</span> -&gt;</span>
     Math.random = <span class="hljs-function">-&gt;</span> x=Math.sin(seed++)*<span class="hljs-number">10000</span>; x-Math.floor(x)</pre></div></div>
             
         </li>
@@ -218,8 +218,8 @@ See <a href="http://goo.gl/FafN3z">StackOverflow</a></p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">randomInt</span>: <span class="hljs-function"><span class="hljs-params">(max)</span> -&gt;</span> Math.floor(Math.random() * max)
-  <span class="hljs-attribute">randomInt2</span>: <span class="hljs-function"><span class="hljs-params">(min, max)</span> -&gt;</span> min + Math.floor(Math.random() * (max-min))</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  randomInt: <span class="hljs-function"><span class="hljs-params">(max)</span> -&gt;</span> Math.floor(Math.random() * max)
+  randomInt2: <span class="hljs-function"><span class="hljs-params">(min, max)</span> -&gt;</span> min + Math.floor(Math.random() * (max-min))</pre></div></div>
             
         </li>
         
@@ -234,9 +234,9 @@ See <a href="http://goo.gl/FafN3z">StackOverflow</a></p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">randomNormal</span>: <span class="hljs-function"><span class="hljs-params">(mean = <span class="hljs-number">0.0</span>, sigma = <span class="hljs-number">1.0</span>)</span> -&gt;</span> <span class="hljs-comment"># Box-Muller</span>
+            <div class="content"><div class='highlight'><pre>  randomNormal: <span class="hljs-function"><span class="hljs-params">(mean = <span class="hljs-number">0.0</span>, sigma = <span class="hljs-number">1.0</span>)</span> -&gt;</span> <span class="hljs-comment"># Box-Muller</span>
     u1 = <span class="hljs-number">1.0</span>-Math.random(); u2 = Math.random() <span class="hljs-comment"># u1 in (0,1]</span>
-    norm = Math.sqrt(-<span class="hljs-number">2.0</span>*Math.log(u1)) * Math.cos(<span class="hljs-number">2.0</span>*Math.PI*u2)
+    norm = Math.sqrt(<span class="hljs-number">-2.0</span>*Math.log(u1)) * Math.cos(<span class="hljs-number">2.0</span>*Math.PI*u2)
     norm*sigma + mean</pre></div></div>
             
         </li>
@@ -252,9 +252,9 @@ See <a href="http://goo.gl/FafN3z">StackOverflow</a></p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">randomFloat</span>: <span class="hljs-function"><span class="hljs-params">(max)</span> -&gt;</span> Math.random() * max
-  <span class="hljs-attribute">randomFloat2</span>: <span class="hljs-function"><span class="hljs-params">(min, max)</span> -&gt;</span> min + Math.random() * (max-min)
-  <span class="hljs-attribute">randomCentered</span>: <span class="hljs-function"><span class="hljs-params">(r)</span> -&gt;</span> <span class="hljs-property">@randomFloat2</span> -r/<span class="hljs-number">2</span>, r/<span class="hljs-number">2</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  randomFloat: <span class="hljs-function"><span class="hljs-params">(max)</span> -&gt;</span> Math.random() * max
+  randomFloat2: <span class="hljs-function"><span class="hljs-params">(min, max)</span> -&gt;</span> min + Math.random() * (max-min)
+  randomCentered: <span class="hljs-function"><span class="hljs-params">(r)</span> -&gt;</span> @randomFloat2 -r/<span class="hljs-number">2</span>, r/<span class="hljs-number">2</span></pre></div></div>
             
         </li>
         
@@ -270,9 +270,9 @@ Note ln: (n) -&gt; Math.log n .. i.e. JS’s log is log base e</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">log10</span>: <span class="hljs-function"><span class="hljs-params">(n)</span> -&gt;</span> Math.log(n)/Math.LN10
-  <span class="hljs-attribute">log2</span>: <span class="hljs-function"><span class="hljs-params">(n)</span> -&gt;</span> <span class="hljs-property">@logN</span> n, <span class="hljs-number">2</span>
-  <span class="hljs-attribute">logN</span>: <span class="hljs-function"><span class="hljs-params">(n, base)</span> -&gt;</span> Math.log(n)/Math.log(base)</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  log10: <span class="hljs-function"><span class="hljs-params">(n)</span> -&gt;</span> Math.log(n)/Math.LN10
+  log2: <span class="hljs-function"><span class="hljs-params">(n)</span> -&gt;</span> @logN n, <span class="hljs-number">2</span>
+  logN: <span class="hljs-function"><span class="hljs-params">(n, base)</span> -&gt;</span> Math.log(n)/Math.log(base)</pre></div></div>
             
         </li>
         
@@ -287,7 +287,7 @@ Note ln: (n) -&gt; Math.log n .. i.e. JS’s log is log base e</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">mod</span>: <span class="hljs-function"><span class="hljs-params">(v, n)</span> -&gt;</span> ((v % n) + n) % n</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  mod: <span class="hljs-function"><span class="hljs-params">(v, n)</span> -&gt;</span> ((v % n) + n) % n</pre></div></div>
             
         </li>
         
@@ -302,7 +302,7 @@ Note ln: (n) -&gt; Math.log n .. i.e. JS’s log is log base e</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">wrap</span>: <span class="hljs-function"><span class="hljs-params">(v, min, max)</span> -&gt;</span> min + <span class="hljs-property">@mod</span>(v-min, max-min)</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  wrap: <span class="hljs-function"><span class="hljs-params">(v, min, max)</span> -&gt;</span> min + @mod(v-min, max-min)</pre></div></div>
             
         </li>
         
@@ -317,7 +317,7 @@ Note ln: (n) -&gt; Math.log n .. i.e. JS’s log is log base e</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">clamp</span>: <span class="hljs-function"><span class="hljs-params">(v, min, max)</span> -&gt;</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  clamp: <span class="hljs-function"><span class="hljs-params">(v, min, max)</span> -&gt;</span></pre></div></div>
             
         </li>
         
@@ -349,7 +349,7 @@ Note ln: (n) -&gt; Math.log n .. i.e. JS’s log is log base e</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">sign</span>: <span class="hljs-function"><span class="hljs-params">(v)</span> -&gt;</span> <span class="hljs-keyword">if</span> v&lt;<span class="hljs-number">0</span> <span class="hljs-keyword">then</span> -<span class="hljs-number">1</span> <span class="hljs-keyword">else</span> <span class="hljs-number">1</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  sign: <span class="hljs-function"><span class="hljs-params">(v)</span> -&gt;</span> <span class="hljs-keyword">if</span> v&lt;<span class="hljs-number">0</span> <span class="hljs-keyword">then</span> <span class="hljs-number">-1</span> <span class="hljs-keyword">else</span> <span class="hljs-number">1</span></pre></div></div>
             
         </li>
         
@@ -365,7 +365,7 @@ Considerably faster than equivalent: Number(n.toFixed(p))</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">fixed</span>: <span class="hljs-function"><span class="hljs-params">(n,p=<span class="hljs-number">2</span>)</span> -&gt;</span> p = Math.pow(<span class="hljs-number">10</span>,p); Math.round(n*p)/p</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  fixed: <span class="hljs-function"><span class="hljs-params">(n,p=<span class="hljs-number">2</span>)</span> -&gt;</span> p = Math.pow(<span class="hljs-number">10</span>,p); Math.round(n*p)/p</pre></div></div>
             
         </li>
         
@@ -381,7 +381,7 @@ useful for printing</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">aToFixed</span>: <span class="hljs-function"><span class="hljs-params">(a, p=<span class="hljs-number">2</span>)</span> -&gt;</span> (i.toFixed p <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> a)</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  aToFixed: <span class="hljs-function"><span class="hljs-params">(a, p=<span class="hljs-number">2</span>)</span> -&gt;</span> (i.toFixed p <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> a)</pre></div></div>
             
         </li>
         
@@ -396,7 +396,7 @@ useful for printing</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">tls</span>: <span class="hljs-function"><span class="hljs-params">(n)</span> -&gt;</span> n.toLocaleString()</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  tls: <span class="hljs-function"><span class="hljs-params">(n)</span> -&gt;</span> n.toLocaleString()</pre></div></div>
             
         </li>
         
@@ -424,7 +424,7 @@ useful for printing</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">upperCamelCase</span>: <span class="hljs-function"><span class="hljs-params">(str)</span> -&gt;</span> str.charAt(<span class="hljs-number">0</span>).toUpperCase() + str.substr(<span class="hljs-number">1</span>)</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  upperCamelCase: <span class="hljs-function"><span class="hljs-params">(str)</span> -&gt;</span> str.charAt(<span class="hljs-number">0</span>).toUpperCase() + str.substr(<span class="hljs-number">1</span>)</pre></div></div>
             
         </li>
         
@@ -454,7 +454,7 @@ color string property. The str value is set on the first call to colorStr</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">randomColor</span>: <span class="hljs-function"><span class="hljs-params">(c = [])</span> -&gt;</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  randomColor: <span class="hljs-function"><span class="hljs-params">(c = [])</span> -&gt;</span></pre></div></div>
             
         </li>
         
@@ -471,8 +471,8 @@ c</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="hljs-property">@deprecated</span> <span class="hljs-string">"Util.randomColor: use ColorMaps.randomColor"</span>
-    <span class="hljs-property">@error</span> <span class="hljs-string">"Util.randomColor: c cannot be exiting color"</span> <span class="hljs-keyword">if</span> c.length <span class="hljs-keyword">isnt</span> <span class="hljs-number">0</span>
+            <div class="content"><div class='highlight'><pre>    @deprecated <span class="hljs-string">"Util.randomColor: use ColorMaps.randomColor"</span>
+    @error <span class="hljs-string">"Util.randomColor: c cannot be exiting color"</span> <span class="hljs-keyword">if</span> c.length <span class="hljs-keyword">isnt</span> <span class="hljs-number">0</span>
     ColorMaps.randomColor()</pre></div></div>
             
         </li>
@@ -488,8 +488,8 @@ c</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">randomGray</span>: <span class="hljs-function"><span class="hljs-params">(c = [], min = <span class="hljs-number">64</span>, max = <span class="hljs-number">192</span>)</span> -&gt;</span>
-    <span class="hljs-keyword">if</span> arguments.length <span class="hljs-keyword">is</span> <span class="hljs-number">2</span> <span class="hljs-keyword">then</span> <span class="hljs-keyword">return</span> <span class="hljs-property">@randomGray</span> <span class="hljs-literal">null</span>, c, min</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  randomGray: <span class="hljs-function"><span class="hljs-params">(c = [], min = <span class="hljs-number">64</span>, max = <span class="hljs-number">192</span>)</span> -&gt;</span>
+    <span class="hljs-keyword">if</span> arguments.length <span class="hljs-keyword">is</span> <span class="hljs-number">2</span> <span class="hljs-keyword">then</span> <span class="hljs-keyword">return</span> @randomGray <span class="hljs-literal">null</span>, c, min</pre></div></div>
             
         </li>
         
@@ -507,8 +507,8 @@ c</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="hljs-property">@deprecated</span> <span class="hljs-string">"Util.randomGray: use ColorMaps.randomGray"</span>
-    <span class="hljs-property">@error</span> <span class="hljs-string">"Util.randomGray: c cannot be exiting color"</span> <span class="hljs-keyword">if</span> c.length <span class="hljs-keyword">isnt</span> <span class="hljs-number">0</span>
+            <div class="content"><div class='highlight'><pre>    @deprecated <span class="hljs-string">"Util.randomGray: use ColorMaps.randomGray"</span>
+    @error <span class="hljs-string">"Util.randomGray: c cannot be exiting color"</span> <span class="hljs-keyword">if</span> c.length <span class="hljs-keyword">isnt</span> <span class="hljs-number">0</span>
     ColorMaps.randomGray(min, max)</pre></div></div>
             
         </li>
@@ -525,9 +525,9 @@ Default is one of 125 (5^3) colors</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">randomMapColor</span>: <span class="hljs-function"><span class="hljs-params">(c = [], set = [<span class="hljs-number">0</span>,<span class="hljs-number">63</span>,<span class="hljs-number">127</span>,<span class="hljs-number">191</span>,<span class="hljs-number">255</span>])</span> -&gt;</span>
-    <span class="hljs-property">@deprecated</span> <span class="hljs-string">"Util.randomMapColor: use ColorMaps.randomColor() or similar"</span>
-    <span class="hljs-property">@error</span> <span class="hljs-string">"Util.randomMapColor: c cannot be exiting color"</span> <span class="hljs-keyword">if</span> c.length <span class="hljs-keyword">isnt</span> <span class="hljs-number">0</span>
+            <div class="content"><div class='highlight'><pre>  randomMapColor: <span class="hljs-function"><span class="hljs-params">(c = [], set = [<span class="hljs-number">0</span>,<span class="hljs-number">63</span>,<span class="hljs-number">127</span>,<span class="hljs-number">191</span>,<span class="hljs-number">255</span>])</span> -&gt;</span>
+    @deprecated <span class="hljs-string">"Util.randomMapColor: use ColorMaps.randomColor() or similar"</span>
+    @error <span class="hljs-string">"Util.randomMapColor: c cannot be exiting color"</span> <span class="hljs-keyword">if</span> c.length <span class="hljs-keyword">isnt</span> <span class="hljs-number">0</span>
     ColorMaps.randomColor()</pre></div></div>
             
         </li>
@@ -548,11 +548,11 @@ Modifying an existing array minimizes GC overhead</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">setColor</span>: <span class="hljs-function"><span class="hljs-params">(c, r, g, b, a)</span> -&gt;</span>
-    <span class="hljs-property">@deprecated</span> <span class="hljs-string">"Util.setColor: use the Color/ColorMaps modules"</span>
+            <div class="content"><div class='highlight'><pre>  setColor: <span class="hljs-function"><span class="hljs-params">(c, r, g, b, a)</span> -&gt;</span>
+    @deprecated <span class="hljs-string">"Util.setColor: use the Color/ColorMaps modules"</span>
     <span class="hljs-keyword">if</span> c.setColor? <span class="hljs-comment"># typedColor</span>
       <span class="hljs-keyword">if</span> c.map
-        <span class="hljs-property">@error</span> <span class="hljs-string">"Util.setColor: cannot modify colormap colors"</span>
+        @error <span class="hljs-string">"Util.setColor: cannot modify colormap colors"</span>
       <span class="hljs-keyword">else</span>
         c.setColor r, g, b, a
     <span class="hljs-keyword">else</span>
@@ -574,9 +574,9 @@ c</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">setGray</span>: <span class="hljs-function"><span class="hljs-params">(c, g, a)</span> -&gt;</span>
-    <span class="hljs-property">@deprecated</span> <span class="hljs-string">"Util.setGray: use the Color/ColorMaps modules"</span>
-    <span class="hljs-property">@setColor</span> c, g, g, g, a</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  setGray: <span class="hljs-function"><span class="hljs-params">(c, g, a)</span> -&gt;</span>
+    @deprecated <span class="hljs-string">"Util.setGray: use the Color/ColorMaps modules"</span>
+    @setColor c, g, g, g, a</pre></div></div>
             
         </li>
         
@@ -591,9 +591,9 @@ c</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">scaleColor</span>: <span class="hljs-function"><span class="hljs-params">(max, s, c = [])</span> -&gt;</span>
-    <span class="hljs-property">@deprecated</span> <span class="hljs-string">"Util.scaleColor: use the Color/ColorMaps modules"</span>
-    <span class="hljs-property">@error</span> <span class="hljs-string">"Util.scaleColor: cannot modify colormap colors"</span>
+            <div class="content"><div class='highlight'><pre>  scaleColor: <span class="hljs-function"><span class="hljs-params">(max, s, c = [])</span> -&gt;</span>
+    @deprecated <span class="hljs-string">"Util.scaleColor: use the Color/ColorMaps modules"</span>
+    @error <span class="hljs-string">"Util.scaleColor: cannot modify colormap colors"</span>
     ColorMaps.Rgb.findClosestColor Color.rgbLerp(max, s)</pre></div></div>
             
         </li>
@@ -612,13 +612,13 @@ Return color with new opacity, result, by scaling a value of rgba.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">scaleOpacity</span>: <span class="hljs-function"><span class="hljs-params">(rgba, scale, c = <span class="hljs-property">@clone</span>(rgba))</span> -&gt;</span>
-    <span class="hljs-property">@deprecated</span> <span class="hljs-string">"Util.scaleOpacity: use the Color/ColorMaps modules"</span>
-    <span class="hljs-keyword">if</span> <span class="hljs-property">@isArray</span> rgba
+            <div class="content"><div class='highlight'><pre>  scaleOpacity: <span class="hljs-function"><span class="hljs-params">(rgba, scale, c = @clone(rgba))</span> -&gt;</span>
+    @deprecated <span class="hljs-string">"Util.scaleOpacity: use the Color/ColorMaps modules"</span>
+    <span class="hljs-keyword">if</span> @isArray rgba
       c[<span class="hljs-number">3</span>] = <span class="hljs-number">1</span> <span class="hljs-keyword">unless</span> c[<span class="hljs-number">3</span>]?
-      c[<span class="hljs-number">3</span>] = <span class="hljs-property">@lerp</span> <span class="hljs-number">0</span>, c[<span class="hljs-number">3</span>], scale
+      c[<span class="hljs-number">3</span>] = @lerp <span class="hljs-number">0</span>, c[<span class="hljs-number">3</span>], scale
     <span class="hljs-keyword">else</span> <span class="hljs-comment"># typed color</span>
-      c[<span class="hljs-number">3</span>] = <span class="hljs-property">@lerp</span> <span class="hljs-number">0</span>, c[<span class="hljs-number">3</span>], scale
+      c[<span class="hljs-number">3</span>] = @lerp <span class="hljs-number">0</span>, c[<span class="hljs-number">3</span>], scale
       <span class="hljs-keyword">if</span> c.map
         c = Color.typedColor c...
       <span class="hljs-keyword">else</span>
@@ -655,8 +655,8 @@ result</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">colorStr</span>: <span class="hljs-function"><span class="hljs-params">(c)</span> -&gt;</span>
-    <span class="hljs-property">@deprecated</span> <span class="hljs-string">"Util.colorStr: use Color module or typedColor"</span>
+            <div class="content"><div class='highlight'><pre>  colorStr: <span class="hljs-function"><span class="hljs-params">(c)</span> -&gt;</span>
+    @deprecated <span class="hljs-string">"Util.colorStr: use Color module or typedColor"</span>
     c.css ? Color.arrayToColor c, <span class="hljs-string">"css"</span></pre></div></div>
             
         </li>
@@ -675,8 +675,8 @@ Compare two colors.  Alas, there is no array.Equal operator.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">colorsEqual</span>: <span class="hljs-function"><span class="hljs-params">(c1, c2)</span> -&gt;</span>
-    <span class="hljs-property">@deprecated</span> <span class="hljs-string">"Util.colorsEqual: use Color/ColorMaps or typedColor.pixel"</span>
+            <div class="content"><div class='highlight'><pre>  colorsEqual: <span class="hljs-function"><span class="hljs-params">(c1, c2)</span> -&gt;</span>
+    @deprecated <span class="hljs-string">"Util.colorsEqual: use Color/ColorMaps or typedColor.pixel"</span>
     Color.colorsEqual c1, c2</pre></div></div>
             
         </li>
@@ -695,8 +695,8 @@ Round for 0-255 int for gray color value.
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">rgbToGray</span>: <span class="hljs-function"><span class="hljs-params">(c)</span> -&gt;</span>
-    <span class="hljs-property">@deprecated</span> <span class="hljs-string">"Util.rgbToGray: use Color.rgbIntensity"</span>
+            <div class="content"><div class='highlight'><pre>  rgbToGray: <span class="hljs-function"><span class="hljs-params">(c)</span> -&gt;</span>
+    @deprecated <span class="hljs-string">"Util.rgbToGray: use Color.rgbIntensity"</span>
     Color.rgbIntensity c...</pre></div></div>
             
         </li>
@@ -716,8 +716,8 @@ and <a href="http://goo.gl/7yP4cO">Blog Post</a></p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">rgbToHsb</span>: <span class="hljs-function"><span class="hljs-params">(c)</span> -&gt;</span>
-    <span class="hljs-property">@deprecated</span> <span class="hljs-string">"Util.rgbToHsb: use extras/rgbToHsl"</span>
+            <div class="content"><div class='highlight'><pre>  rgbToHsb: <span class="hljs-function"><span class="hljs-params">(c)</span> -&gt;</span>
+    @deprecated <span class="hljs-string">"Util.rgbToHsb: use extras/rgbToHsl"</span>
     r=c[<span class="hljs-number">0</span>]/<span class="hljs-number">255</span>; g=c[<span class="hljs-number">1</span>]/<span class="hljs-number">255</span>; b=c[<span class="hljs-number">2</span>]/<span class="hljs-number">255</span>
     max = Math.max(r,g,b); min = Math.min(r,g,b); v = max
     h = <span class="hljs-number">0</span>; d = max-min; s = <span class="hljs-keyword">if</span> max <span class="hljs-keyword">is</span> <span class="hljs-number">0</span> <span class="hljs-keyword">then</span> <span class="hljs-number">0</span> <span class="hljs-keyword">else</span> d/max
@@ -726,8 +726,8 @@ and <a href="http://goo.gl/7yP4cO">Blog Post</a></p>
       <span class="hljs-keyword">when</span> g <span class="hljs-keyword">then</span> h = (b - r) / d + <span class="hljs-number">2</span>
       <span class="hljs-keyword">when</span> b <span class="hljs-keyword">then</span> h = (r - g) / d + <span class="hljs-number">4</span>
     [Math.round(<span class="hljs-number">255</span>*h/<span class="hljs-number">6</span>), Math.round(<span class="hljs-number">255</span>*s), Math.round(<span class="hljs-number">255</span>*v)]
-  <span class="hljs-attribute">hsbToRgb</span>: <span class="hljs-function"><span class="hljs-params">(c)</span> -&gt;</span>
-    <span class="hljs-property">@deprecated</span> <span class="hljs-string">"Util.hsbToRgb: use Color/ColorMaps HSL functions"</span></pre></div></div>
+  hsbToRgb: <span class="hljs-function"><span class="hljs-params">(c)</span> -&gt;</span>
+    @deprecated <span class="hljs-string">"Util.hsbToRgb: use Color/ColorMaps HSL functions"</span></pre></div></div>
             
         </li>
         
@@ -785,8 +785,8 @@ R=G=B=4, the resulting map has 4<em>4</em>4=64 colors.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">rgbMap</span>: <span class="hljs-function"><span class="hljs-params">(R,G=R,B=R)</span> -&gt;</span>
-    <span class="hljs-property">@deprecated</span> <span class="hljs-string">"Util.rgbMap: use ColorMaps.rgbColorMap or Rgb/Rgb256"</span>
+            <div class="content"><div class='highlight'><pre>  rgbMap: <span class="hljs-function"><span class="hljs-params">(R,G=R,B=R)</span> -&gt;</span>
+    @deprecated <span class="hljs-string">"Util.rgbMap: use ColorMaps.rgbColorMap or Rgb/Rgb256"</span>
     ColorMaps.rgbColorMap R, G, B</pre></div></div>
             
         </li>
@@ -807,8 +807,8 @@ Create a gray map of all 256 gray values</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">grayMap</span>: <span class="hljs-function">-&gt;</span>
-    <span class="hljs-property">@deprecated</span> <span class="hljs-string">"Util.grayMap: use ColorMaps.grayColorMap or Gray"</span>
+            <div class="content"><div class='highlight'><pre>  grayMap: <span class="hljs-function">-&gt;</span>
+    @deprecated <span class="hljs-string">"Util.grayMap: use ColorMaps.grayColorMap or Gray"</span>
     ColorMaps.Gray</pre></div></div>
             
         </li>
@@ -826,8 +826,8 @@ and brightness.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">hsbMap</span>: <span class="hljs-function"><span class="hljs-params">(n=<span class="hljs-number">256</span>, s=<span class="hljs-number">255</span>,b=<span class="hljs-number">255</span>)</span>-&gt;</span>
-    <span class="hljs-property">@deprecated</span> <span class="hljs-string">"Util.hsbMap: use ColorMaps.hslColorMap"</span>
+            <div class="content"><div class='highlight'><pre>  hsbMap: <span class="hljs-function"><span class="hljs-params">(n=<span class="hljs-number">256</span>, s=<span class="hljs-number">255</span>,b=<span class="hljs-number">255</span>)</span>-&gt;</span>
+    @deprecated <span class="hljs-string">"Util.hsbMap: use ColorMaps.hslColorMap"</span>
     ColorMaps.hslColorMap n, <span class="hljs-number">1</span>, <span class="hljs-number">1</span></pre></div></div>
             
         </li>
@@ -844,7 +844,7 @@ See Mozilla pixel <a href="http://goo.gl/Lxliq">manipulation article</a></p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">isLittleEndian</span>: <span class="hljs-function">-&gt;</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  isLittleEndian: <span class="hljs-function">-&gt;</span></pre></div></div>
             
         </li>
         
@@ -889,8 +889,8 @@ See Mozilla pixel <a href="http://goo.gl/Lxliq">manipulation article</a></p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">degToRad</span>: <span class="hljs-function"><span class="hljs-params">(degrees)</span> -&gt;</span> degrees * Math.PI / <span class="hljs-number">180</span>
-  <span class="hljs-attribute">radToDeg</span>: <span class="hljs-function"><span class="hljs-params">(radians)</span> -&gt;</span> radians * <span class="hljs-number">180</span> / Math.PI</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  degToRad: <span class="hljs-function"><span class="hljs-params">(degrees)</span> -&gt;</span> degrees * Math.PI / <span class="hljs-number">180</span>
+  radToDeg: <span class="hljs-function"><span class="hljs-params">(radians)</span> -&gt;</span> radians * <span class="hljs-number">180</span> / Math.PI</pre></div></div>
             
         </li>
         
@@ -906,7 +906,7 @@ See NetLogo’s <a href="http://goo.gl/CjoHuV">subtract-headings</a> for explana
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">subtractRads</span>: <span class="hljs-function"><span class="hljs-params">(rad1, rad2)</span> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  subtractRads: <span class="hljs-function"><span class="hljs-params">(rad1, rad2)</span> -&gt;</span>
     dr = rad1-rad2; PI = Math.PI
     dr += <span class="hljs-number">2</span>*PI <span class="hljs-keyword">if</span> dr &lt;= -PI; dr -= <span class="hljs-number">2</span>*PI <span class="hljs-keyword">if</span> dr &gt; PI; dr</pre></div></div>
             
@@ -936,9 +936,9 @@ See NetLogo’s <a href="http://goo.gl/CjoHuV">subtract-headings</a> for explana
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">ownKeys</span>: <span class="hljs-function"><span class="hljs-params">(obj)</span> -&gt;</span> (key <span class="hljs-keyword">for</span> own key, value <span class="hljs-keyword">of</span> obj)
-  <span class="hljs-attribute">ownVarKeys</span>: <span class="hljs-function"><span class="hljs-params">(obj)</span> -&gt;</span> (key <span class="hljs-keyword">for</span> own key, value <span class="hljs-keyword">of</span> obj <span class="hljs-keyword">when</span> <span class="hljs-keyword">not</span> <span class="hljs-property">@isFunction</span> value)
-  <span class="hljs-attribute">ownValues</span>: <span class="hljs-function"><span class="hljs-params">(obj)</span> -&gt;</span> (value <span class="hljs-keyword">for</span> own key, value <span class="hljs-keyword">of</span> obj)</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  ownKeys: <span class="hljs-function"><span class="hljs-params">(obj)</span> -&gt;</span> (key <span class="hljs-keyword">for</span> own key, value <span class="hljs-keyword">of</span> obj)
+  ownVarKeys: <span class="hljs-function"><span class="hljs-params">(obj)</span> -&gt;</span> (key <span class="hljs-keyword">for</span> own key, value <span class="hljs-keyword">of</span> obj <span class="hljs-keyword">when</span> <span class="hljs-keyword">not</span> @isFunction value)
+  ownValues: <span class="hljs-function"><span class="hljs-params">(obj)</span> -&gt;</span> (value <span class="hljs-keyword">for</span> own key, value <span class="hljs-keyword">of</span> obj)</pre></div></div>
             
         </li>
         
@@ -953,7 +953,7 @@ See NetLogo’s <a href="http://goo.gl/CjoHuV">subtract-headings</a> for explana
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">mixinObject</span>: <span class="hljs-function"><span class="hljs-params">(destObj, srcObject)</span> -&gt;</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  mixinObject: <span class="hljs-function"><span class="hljs-params">(destObj, srcObject)</span> -&gt;</span></pre></div></div>
             
         </li>
         
@@ -988,9 +988,9 @@ when the object has a prototype other than Object.prototype</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">cloneObject</span>: <span class="hljs-function"><span class="hljs-params">(obj)</span> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  cloneObject: <span class="hljs-function"><span class="hljs-params">(obj)</span> -&gt;</span>
     newObj = Object.create(Object.getPrototypeOf(obj))
-    <span class="hljs-property">@mixinObject</span> newObj, obj</pre></div></div>
+    @mixinObject newObj, obj</pre></div></div>
             
         </li>
         
@@ -1007,12 +1007,12 @@ models in a page when the prototype has global variables.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">cloneClass</span>: <span class="hljs-function"><span class="hljs-params">(oldClass, newName)</span> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  cloneClass: <span class="hljs-function"><span class="hljs-params">(oldClass, newName)</span> -&gt;</span>
     ctorStr = oldClass.toString().replace(<span class="hljs-regexp">/^/</span>, <span class="hljs-string">"var ctor = "</span>)
     <span class="hljs-keyword">if</span> newName
       ctorStr = ctorStr.replace(<span class="hljs-regexp">/function.*(?=\()/</span>, <span class="hljs-string">"function <span class="hljs-subst">#{newName}</span>"</span>)
     eval(ctorStr)
-    ctor.prototype = <span class="hljs-property">@cloneObject</span>(oldClass.prototype)
+    ctor.prototype = @cloneObject(oldClass.prototype)
     ctor</pre></div></div>
             
         </li>
@@ -1030,7 +1030,7 @@ mixin() knows to copy prototype functions into the prototype</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">mixin</span>: <span class="hljs-function"><span class="hljs-params">(destObj, srcObject)</span> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  mixin: <span class="hljs-function"><span class="hljs-params">(destObj, srcObject)</span> -&gt;</span>
     destObj[key] = srcObject[key] <span class="hljs-keyword">for</span> own key <span class="hljs-keyword">of</span> srcObject
     destProto = Object.getPrototypeOf destObj
     srcProto = Object.getPrototypeOf srcObject
@@ -1063,7 +1063,7 @@ If s isn’t a JS expression, return decoded string</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">parseToPrimitive</span>: <span class="hljs-function"><span class="hljs-params">(s)</span> -&gt;</span> <span class="hljs-comment"># http://goo.gl/jxb6Ae http://goo.gl/mQsQan</span>
+            <div class="content"><div class='highlight'><pre>  parseToPrimitive: <span class="hljs-function"><span class="hljs-params">(s)</span> -&gt;</span> <span class="hljs-comment"># http://goo.gl/jxb6Ae http://goo.gl/mQsQan</span>
     <span class="hljs-keyword">try</span> JSON.parse(s); <span class="hljs-keyword">catch</span> e <span class="hljs-keyword">then</span> decodeURIComponent(s)</pre></div></div>
             
         </li>
@@ -1081,11 +1081,11 @@ Otherwise use parseToPrimitive. <a href="http://goo.gl/vIwdG6">StackOverflow</a>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">parseQueryString</span>: <span class="hljs-function"><span class="hljs-params">(query = <span class="hljs-built_in">window</span>.location.search.substring(<span class="hljs-number">1</span>))</span> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  parseQueryString: <span class="hljs-function"><span class="hljs-params">(query = <span class="hljs-built_in">window</span>.location.search.substring(<span class="hljs-number">1</span>))</span> -&gt;</span>
     res = {}
     <span class="hljs-keyword">for</span> s <span class="hljs-keyword">in</span> query.split <span class="hljs-string">"&amp;"</span> <span class="hljs-keyword">when</span> query.length <span class="hljs-keyword">isnt</span> <span class="hljs-number">0</span>
       t=s.split <span class="hljs-string">"="</span>
-      res[t[<span class="hljs-number">0</span>]]=<span class="hljs-keyword">if</span> t.length <span class="hljs-keyword">is</span> <span class="hljs-number">1</span> <span class="hljs-keyword">then</span> <span class="hljs-literal">true</span> <span class="hljs-keyword">else</span> <span class="hljs-property">@parseToPrimitive</span>(t[<span class="hljs-number">1</span>])
+      res[t[<span class="hljs-number">0</span>]]=<span class="hljs-keyword">if</span> t.length <span class="hljs-keyword">is</span> <span class="hljs-number">1</span> <span class="hljs-keyword">then</span> <span class="hljs-literal">true</span> <span class="hljs-keyword">else</span> @parseToPrimitive(t[<span class="hljs-number">1</span>])
     res</pre></div></div>
             
         </li>
@@ -1114,8 +1114,8 @@ Otherwise use parseToPrimitive. <a href="http://goo.gl/vIwdG6">StackOverflow</a>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">any</span>: <span class="hljs-function"><span class="hljs-params">(array)</span> -&gt;</span> array.length <span class="hljs-keyword">isnt</span> <span class="hljs-number">0</span>
-  <span class="hljs-attribute">empty</span>: <span class="hljs-function"><span class="hljs-params">(array)</span> -&gt;</span> array.length <span class="hljs-keyword">is</span> <span class="hljs-number">0</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  any: <span class="hljs-function"><span class="hljs-params">(array)</span> -&gt;</span> array.length <span class="hljs-keyword">isnt</span> <span class="hljs-number">0</span>
+  empty: <span class="hljs-function"><span class="hljs-params">(array)</span> -&gt;</span> array.length <span class="hljs-keyword">is</span> <span class="hljs-number">0</span></pre></div></div>
             
         </li>
         
@@ -1133,7 +1133,7 @@ Works with TypedArrays too.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">clone</span>: <span class="hljs-function"><span class="hljs-params">(array, begin, end)</span> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  clone: <span class="hljs-function"><span class="hljs-params">(array, begin, end)</span> -&gt;</span>
     op = <span class="hljs-keyword">if</span> array.slice? <span class="hljs-keyword">then</span> <span class="hljs-string">"slice"</span> <span class="hljs-keyword">else</span> <span class="hljs-string">"subarray"</span>
     <span class="hljs-keyword">if</span> begin? <span class="hljs-keyword">then</span> array[op] begin, end <span class="hljs-keyword">else</span> array[op] <span class="hljs-number">0</span></pre></div></div>
             
@@ -1150,9 +1150,9 @@ Works with TypedArrays too.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">last</span>: <span class="hljs-function"><span class="hljs-params">(array)</span> -&gt;</span>
-    <span class="hljs-property">@error</span> <span class="hljs-string">"last: empty array"</span> <span class="hljs-keyword">if</span> <span class="hljs-property">@empty</span> array
-    array[array.length-<span class="hljs-number">1</span>]</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  last: <span class="hljs-function"><span class="hljs-params">(array)</span> -&gt;</span>
+    @error <span class="hljs-string">"last: empty array"</span> <span class="hljs-keyword">if</span> @empty array
+    array[array.length<span class="hljs-number">-1</span>]</pre></div></div>
             
         </li>
         
@@ -1167,9 +1167,9 @@ Works with TypedArrays too.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">oneOf</span>: <span class="hljs-function"><span class="hljs-params">(array)</span> -&gt;</span>
-    <span class="hljs-property">@error</span> <span class="hljs-string">"oneOf: empty array"</span> <span class="hljs-keyword">if</span> <span class="hljs-property">@empty</span> array
-    array[<span class="hljs-property">@randomInt</span> array.length]</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  oneOf: <span class="hljs-function"><span class="hljs-params">(array)</span> -&gt;</span>
+    @error <span class="hljs-string">"oneOf: empty array"</span> <span class="hljs-keyword">if</span> @empty array
+    array[@randomInt array.length]</pre></div></div>
             
         </li>
         
@@ -1185,10 +1185,10 @@ Note: array elements presumed unique, i.e. objects or distinct primitives</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">nOf</span>: <span class="hljs-function"><span class="hljs-params">(array, n)</span> -&gt;</span> <span class="hljs-comment"># Note: clone, shuffle then first n: poor performance</span>
+            <div class="content"><div class='highlight'><pre>  nOf: <span class="hljs-function"><span class="hljs-params">(array, n)</span> -&gt;</span> <span class="hljs-comment"># Note: clone, shuffle then first n: poor performance</span>
     n = Math.min(array.length, Math.floor(n)) <span class="hljs-comment"># OK if n is float</span>
     r = []; <span class="hljs-keyword">while</span> r.length &lt; n
-      o = <span class="hljs-property">@oneOf</span>(array); r.push o <span class="hljs-keyword">unless</span> o <span class="hljs-keyword">in</span> r
+      o = @oneOf(array); r.push o <span class="hljs-keyword">unless</span> o <span class="hljs-keyword">in</span> r
     r</pre></div></div>
             
         </li>
@@ -1204,7 +1204,7 @@ Note: array elements presumed unique, i.e. objects or distinct primitives</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">contains</span>: <span class="hljs-function"><span class="hljs-params">(array, item, f)</span> -&gt;</span> <span class="hljs-property">@indexOf</span>(array, item, f) &gt;= <span class="hljs-number">0</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  contains: <span class="hljs-function"><span class="hljs-params">(array, item, f)</span> -&gt;</span> @indexOf(array, item, f) &gt;= <span class="hljs-number">0</span></pre></div></div>
             
         </li>
         
@@ -1220,8 +1220,8 @@ Return array. OK if item not found.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">removeItem</span>: <span class="hljs-function"><span class="hljs-params">(array, item, f)</span> -&gt;</span>
-    array.splice i, <span class="hljs-number">1</span> <span class="hljs-keyword">unless</span> (i = <span class="hljs-property">@indexOf</span> array, item, f) &lt; <span class="hljs-number">0</span>
+            <div class="content"><div class='highlight'><pre>  removeItem: <span class="hljs-function"><span class="hljs-params">(array, item, f)</span> -&gt;</span>
+    array.splice i, <span class="hljs-number">1</span> <span class="hljs-keyword">unless</span> (i = @indexOf array, item, f) &lt; <span class="hljs-number">0</span>
     array</pre></div></div>
             
         </li>
@@ -1238,7 +1238,7 @@ Error if an item not in array.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">removeItems</span>: <span class="hljs-function"><span class="hljs-params">(array, items, f)</span> -&gt;</span> <span class="hljs-property">@removeItem</span>(array,i,f) <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> items; array</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  removeItems: <span class="hljs-function"><span class="hljs-params">(array, items, f)</span> -&gt;</span> @removeItem(array,i,f) <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> items; array</pre></div></div>
             
         </li>
         
@@ -1253,8 +1253,8 @@ Error if an item not in array.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">insertItem</span>: <span class="hljs-function"><span class="hljs-params">(array, item, f)</span> -&gt;</span>
-    i = <span class="hljs-property">@sortedIndex</span> array, item, f
+            <div class="content"><div class='highlight'><pre>  insertItem: <span class="hljs-function"><span class="hljs-params">(array, item, f)</span> -&gt;</span>
+    i = @sortedIndex array, item, f
     error <span class="hljs-string">"insertItem: item already in array"</span> <span class="hljs-keyword">if</span> array[i] <span class="hljs-keyword">is</span> item
     array.splice i, <span class="hljs-number">0</span>, item</pre></div></div>
             
@@ -1272,7 +1272,7 @@ Clever! See <a href="http://goo.gl/TT2SY">cookbook</a></p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">shuffle</span>: <span class="hljs-function"><span class="hljs-params">(array)</span> -&gt;</span> array.sort -&gt; <span class="hljs-number">0.5</span> - Math.random()</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  shuffle: <span class="hljs-function"><span class="hljs-params">(array)</span> -&gt;</span> array.sort -&gt; <span class="hljs-number">0.5</span> - Math.random()</pre></div></div>
             
         </li>
         
@@ -1287,7 +1287,7 @@ Clever! See <a href="http://goo.gl/TT2SY">cookbook</a></p>
 If f is a string, return element with max value of that property.
 If “valueToo” then return a 2-array of the element and the value;
 used for cases where f is costly function.</p>
-<pre><code>array = [{<span class="hljs-attribute">x</span>:<span class="hljs-number">1</span>,<span class="hljs-attribute">y</span>:<span class="hljs-number">2</span>}, {<span class="hljs-attribute">x</span>:<span class="hljs-number">3</span>,<span class="hljs-attribute">y</span>:<span class="hljs-number">4</span>}]
+<pre><code>array = [{x:<span class="hljs-number">1</span>,y:<span class="hljs-number">2</span>}, {x:<span class="hljs-number">3</span>,y:<span class="hljs-number">4</span>}]
 <span class="hljs-comment"># returns {x: 1, y: 2} 5</span>
 [min, dist2] = minOneOf array, <span class="hljs-function">(<span class="hljs-params">(o)</span>-&gt;</span>o.x*o.x+o.y*o.y), <span class="hljs-literal">true</span>
 <span class="hljs-comment"># returns {x: 3, y: 4}</span>
@@ -1295,20 +1295,20 @@ max = maxOneOf array, <span class="hljs-string">"x"</span>
 </code></pre>
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">minOneOf</span>: <span class="hljs-function"><span class="hljs-params">(array, f=<span class="hljs-property">@identity</span>, valueToo=<span class="hljs-literal">false</span>)</span> -&gt;</span>
-    <span class="hljs-property">@error</span> <span class="hljs-string">"minOneOf: empty array"</span> <span class="hljs-keyword">if</span> <span class="hljs-property">@empty</span> array
-    r = Infinity; o = <span class="hljs-literal">null</span>; f = <span class="hljs-property">@propFcn</span> f <span class="hljs-keyword">if</span> <span class="hljs-property">@isString</span> f
+            <div class="content"><div class='highlight'><pre>  minOneOf: <span class="hljs-function"><span class="hljs-params">(array, f=@identity, valueToo=<span class="hljs-literal">false</span>)</span> -&gt;</span>
+    @error <span class="hljs-string">"minOneOf: empty array"</span> <span class="hljs-keyword">if</span> @empty array
+    r = Infinity; o = <span class="hljs-literal">null</span>; f = @propFcn f <span class="hljs-keyword">if</span> @isString f
     <span class="hljs-keyword">for</span> a <span class="hljs-keyword">in</span> array
       (r = r1; o = a) <span class="hljs-keyword">if</span> (r1=f(a)) &lt; r
     <span class="hljs-keyword">if</span> valueToo <span class="hljs-keyword">then</span> [o, r] <span class="hljs-keyword">else</span> o
-  <span class="hljs-attribute">maxOneOf</span>: <span class="hljs-function"><span class="hljs-params">(array, f=<span class="hljs-property">@identity</span>, valueToo=<span class="hljs-literal">false</span>)</span> -&gt;</span>
-    <span class="hljs-property">@error</span> <span class="hljs-string">"maxOneOf: empty array"</span> <span class="hljs-keyword">if</span> <span class="hljs-property">@empty</span> array
-    r = -Infinity; o = <span class="hljs-literal">null</span>; f = <span class="hljs-property">@propFcn</span> f <span class="hljs-keyword">if</span> <span class="hljs-property">@isString</span> f
+  maxOneOf: <span class="hljs-function"><span class="hljs-params">(array, f=@identity, valueToo=<span class="hljs-literal">false</span>)</span> -&gt;</span>
+    @error <span class="hljs-string">"maxOneOf: empty array"</span> <span class="hljs-keyword">if</span> @empty array
+    r = -Infinity; o = <span class="hljs-literal">null</span>; f = @propFcn f <span class="hljs-keyword">if</span> @isString f
     <span class="hljs-keyword">for</span> a <span class="hljs-keyword">in</span> array
       (r = r1; o = a) <span class="hljs-keyword">if</span> (r1=f(a)) &gt; r
     <span class="hljs-keyword">if</span> valueToo <span class="hljs-keyword">then</span> [o, r] <span class="hljs-keyword">else</span> o
-  <span class="hljs-attribute">firstOneOf</span>: <span class="hljs-function"><span class="hljs-params">(array, f)</span> -&gt;</span>
-    <span class="hljs-keyword">return</span> i <span class="hljs-keyword">for</span> a,i <span class="hljs-keyword">in</span> array <span class="hljs-keyword">when</span> f(a); <span class="hljs-keyword">return</span> -<span class="hljs-number">1</span></pre></div></div>
+  firstOneOf: <span class="hljs-function"><span class="hljs-params">(array, f)</span> -&gt;</span>
+    <span class="hljs-keyword">return</span> i <span class="hljs-keyword">for</span> a,i <span class="hljs-keyword">in</span> array <span class="hljs-keyword">when</span> f(a); <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span></pre></div></div>
             
         </li>
         
@@ -1327,14 +1327,14 @@ If f is a string, return histogram of that property in objects.</p>
 <pre><code>a = [<span class="hljs-number">1</span>,<span class="hljs-number">3</span>,<span class="hljs-number">4</span>,<span class="hljs-number">1</span>,<span class="hljs-number">1</span>,<span class="hljs-number">10</span>]
 h = histOf a, <span class="hljs-number">2</span>, <span class="hljs-function"><span class="hljs-params">(i)</span> -&gt;</span> i
 
-b = ({<span class="hljs-attribute">id</span>:i} <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> a)
+b = ({id:i} <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> a)
 h = histOf b, <span class="hljs-number">2</span>, <span class="hljs-function"><span class="hljs-params">(o)</span> -&gt;</span> o.id
 h = histOf b, <span class="hljs-number">2</span>, <span class="hljs-string">"id"</span>
 </code></pre>
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">histOf</span>: <span class="hljs-function"><span class="hljs-params">(array, bin=<span class="hljs-number">1</span>, f=(i)-&gt;i)</span> -&gt;</span>
-    r = []; f = <span class="hljs-property">@propFcn</span> f <span class="hljs-keyword">if</span> <span class="hljs-property">@isString</span> f
+            <div class="content"><div class='highlight'><pre>  histOf: <span class="hljs-function"><span class="hljs-params">(array, bin=<span class="hljs-number">1</span>, f=(i)-&gt;i)</span> -&gt;</span>
+    r = []; f = @propFcn f <span class="hljs-keyword">if</span> @isString f
     <span class="hljs-keyword">for</span> a <span class="hljs-keyword">in</span> array
       i = Math.floor f(a)/bin
       r[i] = <span class="hljs-keyword">if</span> (ri=r[i])? <span class="hljs-keyword">then</span> ri+<span class="hljs-number">1</span> <span class="hljs-keyword">else</span> <span class="hljs-number">1</span>
@@ -1354,14 +1354,14 @@ h = histOf b, <span class="hljs-number">2</span>, <span class="hljs-string">"id"
 If f is string, f returns property of object.
 Returns array.
 Clone first if you want to preserve the original array.</p>
-<pre><code>array = [{<span class="hljs-attribute">i</span>:<span class="hljs-number">1</span>},{<span class="hljs-attribute">i</span>:<span class="hljs-number">5</span>},{<span class="hljs-attribute">i</span>:-<span class="hljs-number">1</span>},{<span class="hljs-attribute">i</span>:<span class="hljs-number">2</span>},{<span class="hljs-attribute">i</span>:<span class="hljs-number">2</span>}]
+<pre><code>array = [{i:<span class="hljs-number">1</span>},{i:<span class="hljs-number">5</span>},{i:<span class="hljs-number">-1</span>},{i:<span class="hljs-number">2</span>},{i:<span class="hljs-number">2</span>}]
 sortBy array, <span class="hljs-string">"i"</span>
 <span class="hljs-comment"># array now is [{i:-1},{i:1},{i:2},{i:2},{i:5}]</span>
 </code></pre>
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">sortBy</span>: <span class="hljs-function"><span class="hljs-params">(array, f)</span> -&gt;</span>
-    <span class="hljs-keyword">if</span> <span class="hljs-property">@isString</span> f
+            <div class="content"><div class='highlight'><pre>  sortBy: <span class="hljs-function"><span class="hljs-params">(array, f)</span> -&gt;</span>
+    <span class="hljs-keyword">if</span> @isString f
     <span class="hljs-keyword">then</span> array.sort (a,b) -&gt; a[f] - b[f]
     <span class="hljs-keyword">else</span> array.sort (a,b) -&gt; f(a) - f(b)</pre></div></div>
             
@@ -1379,7 +1379,7 @@ Works with TypedArrays too</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">sortNums</span>: <span class="hljs-function"><span class="hljs-params">(array, ascending=<span class="hljs-literal">true</span>)</span> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  sortNums: <span class="hljs-function"><span class="hljs-params">(array, ascending=<span class="hljs-literal">true</span>)</span> -&gt;</span>
     f = <span class="hljs-keyword">if</span> ascending <span class="hljs-keyword">then</span> (a,b) -&gt; a-b <span class="hljs-keyword">else</span> (a,b) -&gt; b-a
     <span class="hljs-keyword">if</span> array.sort? <span class="hljs-keyword">then</span> array.sort(f) <span class="hljs-keyword">else</span> Array.prototype.sort.call(array, f)</pre></div></div>
             
@@ -1395,7 +1395,7 @@ Works with TypedArrays too</p>
               <p>Mutator. Removes adjacent dups, by reference, in place from sorted array.
 Note “by reference” means litteraly same object, not copy. Returns array.
 Clone first if you want to preserve the original array.</p>
-<pre><code>ids = ({<span class="hljs-attribute">id</span>:i} <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> [<span class="hljs-number">0.</span><span class="hljs-number">.10</span>])
+<pre><code>ids = ({id:i} <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> [<span class="hljs-number">0.</span><span class="hljs-number">.10</span>])
 a = (ids[i] <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> [<span class="hljs-number">1</span>,<span class="hljs-number">3</span>,<span class="hljs-number">4</span>,<span class="hljs-number">1</span>,<span class="hljs-number">1</span>,<span class="hljs-number">10</span>])
 <span class="hljs-comment"># a is [{id:1},{id:3},{id:4},{id:1},{id:1},{id:10}]</span>
 b = clone a
@@ -1406,9 +1406,9 @@ uniq b
 </code></pre>
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">uniq</span>: <span class="hljs-function"><span class="hljs-params">(array)</span> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  uniq: <span class="hljs-function"><span class="hljs-params">(array)</span> -&gt;</span>
     <span class="hljs-keyword">return</span> array <span class="hljs-keyword">if</span> array.length &lt; <span class="hljs-number">2</span> <span class="hljs-comment"># return if empty or singlton</span>
-    array.splice i,<span class="hljs-number">1</span> <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> [array.length-<span class="hljs-number">1.</span><span class="hljs-number">.1</span>] <span class="hljs-keyword">by</span> -<span class="hljs-number">1</span> <span class="hljs-keyword">when</span> array[i-<span class="hljs-number">1</span>] <span class="hljs-keyword">is</span> array[i]
+    array.splice i,<span class="hljs-number">1</span> <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> [array.length<span class="hljs-number">-1.</span><span class="hljs-number">.1</span>] <span class="hljs-keyword">by</span> <span class="hljs-number">-1</span> <span class="hljs-keyword">when</span> array[i<span class="hljs-number">-1</span>] <span class="hljs-keyword">is</span> array[i]
     array</pre></div></div>
             
         </li>
@@ -1425,7 +1425,7 @@ uniq b
 </code></pre>
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">flatten</span>: <span class="hljs-function"><span class="hljs-params">(matrix)</span> -&gt;</span> matrix.reduce( <span class="hljs-function"><span class="hljs-params">(a,b)</span> -&gt;</span> a.concat b )</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  flatten: <span class="hljs-function"><span class="hljs-params">(matrix)</span> -&gt;</span> matrix.reduce( <span class="hljs-function"><span class="hljs-params">(a,b)</span> -&gt;</span> a.concat b )</pre></div></div>
             
         </li>
         
@@ -1440,7 +1440,7 @@ uniq b
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">aProp</span>: <span class="hljs-function"><span class="hljs-params">(array, propOrFn)</span> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  aProp: <span class="hljs-function"><span class="hljs-params">(array, propOrFn)</span> -&gt;</span>
     <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span> propOrFn <span class="hljs-keyword">is</span> <span class="hljs-string">'function'</span>
     <span class="hljs-keyword">then</span> propOrFn(a) <span class="hljs-keyword">for</span> a <span class="hljs-keyword">in</span> array
     <span class="hljs-keyword">else</span> a[propOrFn] <span class="hljs-keyword">for</span> a <span class="hljs-keyword">in</span> array</pre></div></div>
@@ -1461,7 +1461,7 @@ a = [<span class="hljs-number">1</span>,<span class="hljs-number">2</span>,<span
 </code></pre>
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">aToObj</span>: <span class="hljs-function"><span class="hljs-params">(array, names)</span> -&gt;</span> array[n] = array[i] <span class="hljs-keyword">for</span> n,i <span class="hljs-keyword">in</span> names; array</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  aToObj: <span class="hljs-function"><span class="hljs-params">(array, names)</span> -&gt;</span> array[n] = array[i] <span class="hljs-keyword">for</span> n,i <span class="hljs-keyword">in</span> names; array</pre></div></div>
             
         </li>
         
@@ -1477,19 +1477,19 @@ Iterate rather than reduce: work with typed arrays</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">aMax</span>: <span class="hljs-function"><span class="hljs-params">(array)</span> -&gt;</span> v=array[<span class="hljs-number">0</span>]; v=Math.max v,a <span class="hljs-keyword">for</span> a <span class="hljs-keyword">in</span> array; v
-  <span class="hljs-attribute">aMin</span>: <span class="hljs-function"><span class="hljs-params">(array)</span> -&gt;</span> v=array[<span class="hljs-number">0</span>]; v=Math.min v,a <span class="hljs-keyword">for</span> a <span class="hljs-keyword">in</span> array; v
-  <span class="hljs-attribute">aSum</span>: <span class="hljs-function"><span class="hljs-params">(array)</span> -&gt;</span> v=<span class="hljs-number">0</span>; v += a <span class="hljs-keyword">for</span> a <span class="hljs-keyword">in</span> array; v
-  <span class="hljs-attribute">aAvg</span>: <span class="hljs-function"><span class="hljs-params">(array)</span> -&gt;</span> <span class="hljs-property">@aSum</span>(array)/array.length
-  <span class="hljs-attribute">aMid</span>: <span class="hljs-function"><span class="hljs-params">(array)</span> -&gt;</span> <span class="hljs-comment"># mid == median</span>
-    array = <span class="hljs-keyword">if</span> array.sort? <span class="hljs-keyword">then</span> <span class="hljs-property">@clone</span> array <span class="hljs-keyword">else</span> <span class="hljs-property">@typedToJS</span> array
-    <span class="hljs-property">@sortNums</span> array
+            <div class="content"><div class='highlight'><pre>  aMax: <span class="hljs-function"><span class="hljs-params">(array)</span> -&gt;</span> v=array[<span class="hljs-number">0</span>]; v=Math.max v,a <span class="hljs-keyword">for</span> a <span class="hljs-keyword">in</span> array; v
+  aMin: <span class="hljs-function"><span class="hljs-params">(array)</span> -&gt;</span> v=array[<span class="hljs-number">0</span>]; v=Math.min v,a <span class="hljs-keyword">for</span> a <span class="hljs-keyword">in</span> array; v
+  aSum: <span class="hljs-function"><span class="hljs-params">(array)</span> -&gt;</span> v=<span class="hljs-number">0</span>; v += a <span class="hljs-keyword">for</span> a <span class="hljs-keyword">in</span> array; v
+  aAvg: <span class="hljs-function"><span class="hljs-params">(array)</span> -&gt;</span> @aSum(array)/array.length
+  aMid: <span class="hljs-function"><span class="hljs-params">(array)</span> -&gt;</span> <span class="hljs-comment"># mid == median</span>
+    array = <span class="hljs-keyword">if</span> array.sort? <span class="hljs-keyword">then</span> @clone array <span class="hljs-keyword">else</span> @typedToJS array
+    @sortNums array
     array[Math.floor(array.length/<span class="hljs-number">2</span>)]
-  <span class="hljs-attribute">aStats</span>: <span class="hljs-function"><span class="hljs-params">(array)</span> -&gt;</span>
-    min = <span class="hljs-property">@aMin</span> array
-    max = <span class="hljs-property">@aMax</span> array
-    avg = <span class="hljs-property">@aAvg</span> array
-    mid = <span class="hljs-property">@aMid</span> array
+  aStats: <span class="hljs-function"><span class="hljs-params">(array)</span> -&gt;</span>
+    min = @aMin array
+    max = @aMax array
+    avg = @aAvg array
+    mid = @aMid array
     {min, max, avg, mid}</pre></div></div>
             
         </li>
@@ -1505,7 +1505,7 @@ Iterate rather than reduce: work with typed arrays</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">aNaNs</span>: <span class="hljs-function"><span class="hljs-params">(array)</span> -&gt;</span> (i <span class="hljs-keyword">for</span> v,i <span class="hljs-keyword">in</span> array <span class="hljs-keyword">when</span> isNaN v)</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  aNaNs: <span class="hljs-function"><span class="hljs-params">(array)</span> -&gt;</span> (i <span class="hljs-keyword">for</span> v,i <span class="hljs-keyword">in</span> array <span class="hljs-keyword">when</span> isNaN v)</pre></div></div>
             
         </li>
         
@@ -1524,7 +1524,7 @@ Warning: if step isn’t exact, stop may not be in array.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">aRange</span>: <span class="hljs-function"><span class="hljs-params">(start, stop, step=<span class="hljs-number">1</span>)</span> -&gt;</span> (x <span class="hljs-keyword">for</span> x <span class="hljs-keyword">in</span> [start..stop] <span class="hljs-keyword">by</span> step)</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  aRange: <span class="hljs-function"><span class="hljs-params">(start, stop, step=<span class="hljs-number">1</span>)</span> -&gt;</span> (x <span class="hljs-keyword">for</span> x <span class="hljs-keyword">in</span> [start..stop] <span class="hljs-keyword">by</span> step)</pre></div></div>
             
         </li>
         
@@ -1542,7 +1542,7 @@ include start/stop w/in float accuracy.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">aRamp</span>: <span class="hljs-function"><span class="hljs-params">(start, stop, numItems)</span> -&gt;</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  aRamp: <span class="hljs-function"><span class="hljs-params">(start, stop, numItems)</span> -&gt;</span></pre></div></div>
             
         </li>
         
@@ -1558,7 +1558,7 @@ has float accuracy problems</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    ( start + (stop-start)*(i/(numItems-<span class="hljs-number">1</span>)) <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> [<span class="hljs-number">0.</span>..numItems] )</pre></div></div>
+            <div class="content"><div class='highlight'><pre>    ( start + (stop-start)*(i/(numItems<span class="hljs-number">-1</span>)) <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> [<span class="hljs-number">0.</span>..numItems] )</pre></div></div>
             
         </li>
         
@@ -1573,8 +1573,8 @@ has float accuracy problems</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">aIntRamp</span>: <span class="hljs-function"><span class="hljs-params">(start, stop, numItems)</span> -&gt;</span>
-    (Math.round(num) <span class="hljs-keyword">for</span> num <span class="hljs-keyword">in</span> <span class="hljs-property">@aRamp</span> start, stop, numItems)</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  aIntRamp: <span class="hljs-function"><span class="hljs-params">(start, stop, numItems)</span> -&gt;</span>
+    (Math.round(num) <span class="hljs-keyword">for</span> num <span class="hljs-keyword">in</span> @aRamp start, stop, numItems)</pre></div></div>
             
         </li>
         
@@ -1589,10 +1589,10 @@ has float accuracy problems</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">aPairwise</span>: <span class="hljs-function"><span class="hljs-params">(a1, a2, f)</span> -&gt;</span> v=<span class="hljs-number">0</span>; f(v,a2[i]) <span class="hljs-keyword">for</span> v,i <span class="hljs-keyword">in</span> a1
-  <span class="hljs-attribute">aPairSum</span>: <span class="hljs-function"><span class="hljs-params">(a1, a2)</span> -&gt;</span> <span class="hljs-property">@aPairwise</span> a1, a2, <span class="hljs-function"><span class="hljs-params">(a,b)</span>-&gt;</span>a+b
-  <span class="hljs-attribute">aPairDif</span>: <span class="hljs-function"><span class="hljs-params">(a1, a2)</span> -&gt;</span> <span class="hljs-property">@aPairwise</span> a1, a2, <span class="hljs-function"><span class="hljs-params">(a,b)</span>-&gt;</span>a-b
-  <span class="hljs-attribute">aPairMul</span>: <span class="hljs-function"><span class="hljs-params">(a1, a2)</span> -&gt;</span> <span class="hljs-property">@aPairwise</span> a1, a2, <span class="hljs-function"><span class="hljs-params">(a,b)</span>-&gt;</span>a*b</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  aPairwise: <span class="hljs-function"><span class="hljs-params">(a1, a2, f)</span> -&gt;</span> v=<span class="hljs-number">0</span>; f(v,a2[i]) <span class="hljs-keyword">for</span> v,i <span class="hljs-keyword">in</span> a1
+  aPairSum: <span class="hljs-function"><span class="hljs-params">(a1, a2)</span> -&gt;</span> @aPairwise a1, a2, <span class="hljs-function"><span class="hljs-params">(a,b)</span>-&gt;</span>a+b
+  aPairDif: <span class="hljs-function"><span class="hljs-params">(a1, a2)</span> -&gt;</span> @aPairwise a1, a2, <span class="hljs-function"><span class="hljs-params">(a,b)</span>-&gt;</span>a-b
+  aPairMul: <span class="hljs-function"><span class="hljs-params">(a1, a2)</span> -&gt;</span> @aPairwise a1, a2, <span class="hljs-function"><span class="hljs-params">(a,b)</span>-&gt;</span>a*b</pre></div></div>
             
         </li>
         
@@ -1609,7 +1609,7 @@ normalArray = Array.prototype.slice.call(typedArray) works too.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">typedToJS</span>: <span class="hljs-function"><span class="hljs-params">(typedArray)</span> -&gt;</span> (i <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> typedArray)</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  typedToJS: <span class="hljs-function"><span class="hljs-params">(typedArray)</span> -&gt;</span> (i <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> typedArray)</pre></div></div>
             
         </li>
         
@@ -1627,8 +1627,8 @@ If lo&gt;hi, scaling is from hi end of range.
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">lerp</span>: <span class="hljs-function"><span class="hljs-params">(lo, hi, scale)</span> -&gt;</span>
-    scale = <span class="hljs-property">@clamp</span> scale, <span class="hljs-number">0</span>, <span class="hljs-number">1</span>
+            <div class="content"><div class='highlight'><pre>  lerp: <span class="hljs-function"><span class="hljs-params">(lo, hi, scale)</span> -&gt;</span>
+    scale = @clamp scale, <span class="hljs-number">0</span>, <span class="hljs-number">1</span>
     <span class="hljs-keyword">if</span> lo &lt;= hi <span class="hljs-keyword">then</span> lo + (hi-lo)*scale <span class="hljs-keyword">else</span> lo - (lo-hi)*scale</pre></div></div>
             
         </li>
@@ -1644,7 +1644,7 @@ If lo&gt;hi, scaling is from hi end of range.
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">lerpScale</span>: <span class="hljs-function"><span class="hljs-params">(number, lo, hi)</span> -&gt;</span> (number-lo)/(hi-lo)</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  lerpScale: <span class="hljs-function"><span class="hljs-params">(number, lo, hi)</span> -&gt;</span> (number-lo)/(hi-lo)</pre></div></div>
             
         </li>
         
@@ -1659,7 +1659,7 @@ If lo&gt;hi, scaling is from hi end of range.
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">lerp2</span>: <span class="hljs-function"><span class="hljs-params">(x0, y0, x1, y1, scale)</span> -&gt;</span> [<span class="hljs-property">@lerp</span>(x0,x1,scale), <span class="hljs-property">@lerp</span>(y0,y1,scale)]</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  lerp2: <span class="hljs-function"><span class="hljs-params">(x0, y0, x1, y1, scale)</span> -&gt;</span> [@lerp(x0,x1,scale), @lerp(y0,y1,scale)]</pre></div></div>
             
         </li>
         
@@ -1675,9 +1675,9 @@ Note: to have a half-open interval, [lo,hi), try hi=hi-.00009</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">normalize</span>: <span class="hljs-function"><span class="hljs-params">(array, lo = <span class="hljs-number">0</span>, hi = <span class="hljs-number">1</span>)</span> -&gt;</span>
-    min = <span class="hljs-property">@aMin</span> array; max = <span class="hljs-property">@aMax</span> array; scale = <span class="hljs-number">1</span>/(max-min)
-    (<span class="hljs-property">@lerp</span>(lo, hi, scale*(num-min)) <span class="hljs-keyword">for</span> num <span class="hljs-keyword">in</span> array)</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  normalize: <span class="hljs-function"><span class="hljs-params">(array, lo = <span class="hljs-number">0</span>, hi = <span class="hljs-number">1</span>)</span> -&gt;</span>
+    min = @aMin array; max = @aMax array; scale = <span class="hljs-number">1</span>/(max-min)
+    (@lerp(lo, hi, scale*(num-min)) <span class="hljs-keyword">for</span> num <span class="hljs-keyword">in</span> array)</pre></div></div>
             
         </li>
         
@@ -1692,8 +1692,8 @@ Note: to have a half-open interval, [lo,hi), try hi=hi-.00009</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">normalize8</span>: <span class="hljs-function"><span class="hljs-params">(array)</span> -&gt;</span> <span class="hljs-keyword">new</span> Uint8ClampedArray <span class="hljs-property">@normalize</span>(array,-<span class="hljs-number">.5</span>,<span class="hljs-number">255.5</span>)
-  <span class="hljs-attribute">normalizeInt</span>: <span class="hljs-function"><span class="hljs-params">(array, lo, hi)</span> -&gt;</span> (Math.round i <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-property">@normalize</span> array, lo, hi) <span class="hljs-comment"># clamp?</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  normalize8: <span class="hljs-function"><span class="hljs-params">(array)</span> -&gt;</span> <span class="hljs-keyword">new</span> Uint8ClampedArray @normalize(array,<span class="hljs-number">-.5</span>,<span class="hljs-number">255.5</span>)
+  normalizeInt: <span class="hljs-function"><span class="hljs-params">(array, lo, hi)</span> -&gt;</span> (Math.round i <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> @normalize array, lo, hi) <span class="hljs-comment"># clamp?</span></pre></div></div>
             
         </li>
         
@@ -1713,8 +1713,8 @@ Adapted from underscore’s _.sortedIndex.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">sortedIndex</span>: <span class="hljs-function"><span class="hljs-params">(array, item, f=(o)-&gt;o)</span> -&gt;</span> <span class="hljs-comment"># update to _.sortedIndex someday</span>
-    f = <span class="hljs-property">@propFcn</span> f <span class="hljs-keyword">if</span> <span class="hljs-property">@isString</span> f <span class="hljs-comment"># use item[f] if f is string</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  sortedIndex: <span class="hljs-function"><span class="hljs-params">(array, item, f=(o)-&gt;o)</span> -&gt;</span> <span class="hljs-comment"># update to _.sortedIndex someday</span>
+    f = @propFcn f <span class="hljs-keyword">if</span> @isString f <span class="hljs-comment"># use item[f] if f is string</span></pre></div></div>
             
         </li>
         
@@ -1748,7 +1748,7 @@ Adapted from underscore’s _.sortedIndex.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">identity</span>: <span class="hljs-function"><span class="hljs-params">(o)</span> -&gt;</span> o</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  identity: <span class="hljs-function"><span class="hljs-params">(o)</span> -&gt;</span> o</pre></div></div>
             
         </li>
         
@@ -1763,7 +1763,7 @@ Adapted from underscore’s _.sortedIndex.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">propFcn</span>: <span class="hljs-function"><span class="hljs-params">(prop)</span> -&gt;</span> (o)-&gt;o[prop]</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  propFcn: <span class="hljs-function"><span class="hljs-params">(prop)</span> -&gt;</span> (o)-&gt;o[prop]</pre></div></div>
             
         </li>
         
@@ -1781,10 +1781,10 @@ Property can be string or function. If property is “”, use identity default.
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">indexOf</span>: <span class="hljs-function"><span class="hljs-params">(array, item, property)</span>-&gt;</span>
+            <div class="content"><div class='highlight'><pre>  indexOf: <span class="hljs-function"><span class="hljs-params">(array, item, property)</span>-&gt;</span>
     <span class="hljs-keyword">if</span> property?
-      i = <span class="hljs-property">@sortedIndex</span> array, item, <span class="hljs-keyword">if</span> property <span class="hljs-keyword">is</span> <span class="hljs-string">""</span> <span class="hljs-keyword">then</span> <span class="hljs-literal">null</span> <span class="hljs-keyword">else</span> property
-      <span class="hljs-keyword">if</span> array[i] <span class="hljs-keyword">is</span> item <span class="hljs-keyword">then</span> i <span class="hljs-keyword">else</span> -<span class="hljs-number">1</span>
+      i = @sortedIndex array, item, <span class="hljs-keyword">if</span> property <span class="hljs-keyword">is</span> <span class="hljs-string">""</span> <span class="hljs-keyword">then</span> <span class="hljs-literal">null</span> <span class="hljs-keyword">else</span> property
+      <span class="hljs-keyword">if</span> array[i] <span class="hljs-keyword">is</span> item <span class="hljs-keyword">then</span> i <span class="hljs-keyword">else</span> <span class="hljs-number">-1</span>
     <span class="hljs-keyword">else</span> array.indexOf item</pre></div></div>
             
         </li>
@@ -1814,7 +1814,7 @@ Property can be string or function. If property is “”, use identity default.
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">radsToward</span>: <span class="hljs-function"><span class="hljs-params">(x1, y1, x2, y2)</span> -&gt;</span> Math.atan2 y2-y1, x2-x1</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  radsToward: <span class="hljs-function"><span class="hljs-params">(x1, y1, x2, y2)</span> -&gt;</span> Math.atan2 y2-y1, x2-x1</pre></div></div>
             
         </li>
         
@@ -1829,7 +1829,7 @@ Property can be string or function. If property is “”, use identity default.
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">inRect</span>: <span class="hljs-function"><span class="hljs-params">(x, y, minX, minY, maxX, maxY)</span> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  inRect: <span class="hljs-function"><span class="hljs-params">(x, y, minX, minY, maxX, maxY)</span> -&gt;</span>
     (minX &lt;= x &lt;= maxX) <span class="hljs-keyword">and</span> (minY &lt;= y &lt;= maxY)</pre></div></div>
             
         </li>
@@ -1846,7 +1846,7 @@ Property can be string or function. If property is “”, use identity default.
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">inCenteredRect</span>: <span class="hljs-function"><span class="hljs-params">(x, y, x0, y0, dx, dy)</span> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  inCenteredRect: <span class="hljs-function"><span class="hljs-params">(x, y, x0, y0, dx, dy)</span> -&gt;</span>
     (x0-dx &lt;= x &lt;= x0+dx <span class="hljs-keyword">and</span> y0-dy &lt;= y &lt;= y0+dy)</pre></div></div>
             
         </li>
@@ -1865,10 +1865,10 @@ inCone: (heading, cone, radius, x1, y1, x2, y2) -&gt;</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">inCone</span>: <span class="hljs-function"><span class="hljs-params">(radius, angle, heading, x1, y1, x2, y2)</span> -&gt;</span>
-    <span class="hljs-keyword">if</span> radius &lt; <span class="hljs-property">@distance</span> x1, y1, x2, y2 <span class="hljs-keyword">then</span> <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>
-    angle12 = <span class="hljs-property">@radsToward</span> x1, y1, x2, y2 <span class="hljs-comment"># angle from 1 to 2</span>
-    angle/<span class="hljs-number">2</span> &gt;=Math.abs <span class="hljs-property">@subtractRads</span>(heading, angle12)</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  inCone: <span class="hljs-function"><span class="hljs-params">(radius, angle, heading, x1, y1, x2, y2)</span> -&gt;</span>
+    <span class="hljs-keyword">if</span> radius &lt; @distance x1, y1, x2, y2 <span class="hljs-keyword">then</span> <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>
+    angle12 = @radsToward x1, y1, x2, y2 <span class="hljs-comment"># angle from 1 to 2</span>
+    angle/<span class="hljs-number">2</span> &gt;=Math.abs @subtractRads(heading, angle12)</pre></div></div>
             
         </li>
         
@@ -1887,8 +1887,8 @@ The squared distance is used for comparisons to avoid the Math.sqrt fcn.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">distance</span>: <span class="hljs-function"><span class="hljs-params">(x1, y1, x2, y2)</span> -&gt;</span> dx = x1-x2; dy = y1-y2; Math.sqrt dx*dx + dy*dy
-  <span class="hljs-attribute">sqDistance</span>: <span class="hljs-function"><span class="hljs-params">(x1, y1, x2, y2)</span> -&gt;</span> dx = x1-x2; dy = y1-y2; dx*dx + dy*dy</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  distance: <span class="hljs-function"><span class="hljs-params">(x1, y1, x2, y2)</span> -&gt;</span> dx = x1-x2; dy = y1-y2; Math.sqrt dx*dx + dy*dy
+  sqDistance: <span class="hljs-function"><span class="hljs-params">(x1, y1, x2, y2)</span> -&gt;</span> dx = x1-x2; dy = y1-y2; dx*dx + dy*dy</pre></div></div>
             
         </li>
         
@@ -1904,7 +1904,7 @@ Default to 0,0 origin, optional x,y origin.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">polarToXY</span>: <span class="hljs-function"><span class="hljs-params">(r, theta, x=<span class="hljs-number">0</span>, y=<span class="hljs-number">0</span>)</span> -&gt;</span> [x+r*Math.cos(theta), y+r*Math.sin(theta)]</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  polarToXY: <span class="hljs-function"><span class="hljs-params">(r, theta, x=<span class="hljs-number">0</span>, y=<span class="hljs-number">0</span>)</span> -&gt;</span> [x+r*Math.cos(theta), y+r*Math.sin(theta)]</pre></div></div>
             
         </li>
         
@@ -1938,9 +1938,9 @@ A and B must also include the towards-reflections around A, thus 4 points.</p>
 </code></pre>
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">torusDistance</span>: <span class="hljs-function"><span class="hljs-params">(x1, y1, x2, y2, w, h)</span> -&gt;</span>
-    Math.sqrt <span class="hljs-property">@torusSqDistance</span> x1, y1, x2, y2, w, h
-  <span class="hljs-attribute">torusSqDistance</span>: <span class="hljs-function"><span class="hljs-params">(x1, y1, x2, y2, w, h)</span> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  torusDistance: <span class="hljs-function"><span class="hljs-params">(x1, y1, x2, y2, w, h)</span> -&gt;</span>
+    Math.sqrt @torusSqDistance x1, y1, x2, y2, w, h
+  torusSqDistance: <span class="hljs-function"><span class="hljs-params">(x1, y1, x2, y2, w, h)</span> -&gt;</span>
     dx = Math.abs x2-x1; dy = Math.abs y2-y1
     dxMin = Math.min dx, w-dx; dyMin = Math.min dy, h-dy
     dxMin*dxMin + dyMin*dyMin</pre></div></div>
@@ -1958,7 +1958,7 @@ A and B must also include the towards-reflections around A, thus 4 points.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">torusWraps</span>: <span class="hljs-function"><span class="hljs-params">(x1, y1, x2, y2, w, h)</span> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  torusWraps: <span class="hljs-function"><span class="hljs-params">(x1, y1, x2, y2, w, h)</span> -&gt;</span>
     dx = Math.abs x2-x1; dy = Math.abs y2-y1
     dx &gt; w-dx <span class="hljs-keyword">or</span> dy &gt; h-dy</pre></div></div>
             
@@ -1975,7 +1975,7 @@ A and B must also include the towards-reflections around A, thus 4 points.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">torus4Pts</span>: <span class="hljs-function"><span class="hljs-params">(x1, y1, x2, y2, w, h)</span> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  torus4Pts: <span class="hljs-function"><span class="hljs-params">(x1, y1, x2, y2, w, h)</span> -&gt;</span>
     x2r = <span class="hljs-keyword">if</span> x2&lt;x1 <span class="hljs-keyword">then</span> x2+w <span class="hljs-keyword">else</span> x2-w
     y2r = <span class="hljs-keyword">if</span> y2&lt;y1 <span class="hljs-keyword">then</span> y2+h <span class="hljs-keyword">else</span> y2-h
     [ [x2,y2], [x2r,y2], [x2,y2r], [x2r,y2r] ]</pre></div></div>
@@ -1993,7 +1993,7 @@ A and B must also include the towards-reflections around A, thus 4 points.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">torusPt</span>: <span class="hljs-function"><span class="hljs-params">(x1, y1, x2, y2, w, h)</span> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  torusPt: <span class="hljs-function"><span class="hljs-params">(x1, y1, x2, y2, w, h)</span> -&gt;</span>
     x2r = <span class="hljs-keyword">if</span> x2&lt;x1 <span class="hljs-keyword">then</span> x2+w <span class="hljs-keyword">else</span> x2-w
     y2r = <span class="hljs-keyword">if</span> y2&lt;y1 <span class="hljs-keyword">then</span> y2+h <span class="hljs-keyword">else</span> y2-h
     x = <span class="hljs-keyword">if</span> Math.abs(x2r-x1) &lt; Math.abs(x2-x1) <span class="hljs-keyword">then</span> x2r <span class="hljs-keyword">else</span> x2
@@ -2013,9 +2013,9 @@ A and B must also include the towards-reflections around A, thus 4 points.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">torusRadsToward</span>: <span class="hljs-function"><span class="hljs-params">(x1, y1, x2, y2, w, h)</span> -&gt;</span>
-    [x2,y2] = <span class="hljs-property">@torusPt</span> x1, y1, x2, y2, w, h
-    <span class="hljs-property">@radsToward</span> x1, y1, x2, y2</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  torusRadsToward: <span class="hljs-function"><span class="hljs-params">(x1, y1, x2, y2, w, h)</span> -&gt;</span>
+    [x2,y2] = @torusPt x1, y1, x2, y2, w, h
+    @radsToward x1, y1, x2, y2</pre></div></div>
             
         </li>
         
@@ -2032,11 +2032,11 @@ inTorusCone: (heading, cone, radius, x1, y1, x2, y2, w, h) -&gt;</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">inTorusCone</span>: <span class="hljs-function"><span class="hljs-params">(radius, angle, heading, x1, y1, x2, y2, w, h)</span> -&gt;</span>
-    <span class="hljs-keyword">for</span> p <span class="hljs-keyword">in</span> <span class="hljs-property">@torus4Pts</span> x1, y1, x2, y2, w, h
-      <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span> <span class="hljs-keyword">if</span> <span class="hljs-property">@inCone</span> radius, angle, heading, x1, y1, p[<span class="hljs-number">0</span>], p[<span class="hljs-number">1</span>]
+            <div class="content"><div class='highlight'><pre>  inTorusCone: <span class="hljs-function"><span class="hljs-params">(radius, angle, heading, x1, y1, x2, y2, w, h)</span> -&gt;</span>
+    <span class="hljs-keyword">for</span> p <span class="hljs-keyword">in</span> @torus4Pts x1, y1, x2, y2, w, h
+      <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span> <span class="hljs-keyword">if</span> @inCone radius, angle, heading, x1, y1, p[<span class="hljs-number">0</span>], p[<span class="hljs-number">1</span>]
     <span class="hljs-literal">false</span>
-  <span class="hljs-attribute">inTorusRect</span>: <span class="hljs-function"><span class="hljs-params">(x, y, minX, minY, maxX, maxY, w, h)</span> -&gt;</span>
+  inTorusRect: <span class="hljs-function"><span class="hljs-params">(x, y, minX, minY, maxX, maxY, w, h)</span> -&gt;</span>
     <span class="hljs-keyword">if</span> x &lt; minX <span class="hljs-keyword">then</span> x += w <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> x &gt; maxX <span class="hljs-keyword">then</span> x -= w
     <span class="hljs-keyword">if</span> y &lt; minY <span class="hljs-keyword">then</span> y += h <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> y &gt; maxY <span class="hljs-keyword">then</span> y -= h
     (minX &lt;= x &lt;= maxX) <span class="hljs-keyword">and</span> (minY &lt;= y &lt;= maxY)</pre></div></div>
@@ -2067,7 +2067,7 @@ inTorusCone: (heading, cone, radius, x1, y1, x2, y2, w, h) -&gt;</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">fileIndex</span>: {}</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  fileIndex: {}</pre></div></div>
             
         </li>
         
@@ -2082,11 +2082,11 @@ inTorusCone: (heading, cone, radius, x1, y1, x2, y2, w, h) -&gt;</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">importImage</span>: <span class="hljs-function"><span class="hljs-params">(name, f = -&gt;)</span> -&gt;</span>
-    <span class="hljs-keyword">if</span> (img=<span class="hljs-property">@fileIndex</span>[name])? <span class="hljs-comment"># wtf? or ((img=name).width and img.height)</span>
+            <div class="content"><div class='highlight'><pre>  importImage: <span class="hljs-function"><span class="hljs-params">(name, f = -&gt;)</span> -&gt;</span>
+    <span class="hljs-keyword">if</span> (img=@fileIndex[name])? <span class="hljs-comment"># wtf? or ((img=name).width and img.height)</span>
       f(img) <span class="hljs-comment">#if img.isDone</span>
     <span class="hljs-keyword">else</span>
-      <span class="hljs-property">@fileIndex</span>[name] = img = <span class="hljs-keyword">new</span> Image()
+      @fileIndex[name] = img = <span class="hljs-keyword">new</span> Image()
       img.isDone = <span class="hljs-literal">false</span>
       img.crossOrigin = <span class="hljs-string">"Anonymous"</span>
       img.onload = <span class="hljs-function">-&gt;</span> f(img); img.isDone = <span class="hljs-literal">true</span>
@@ -2108,11 +2108,11 @@ method is “GET” or “POST”. f is function to call onload, default to no-o
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">xhrLoadFile</span>: <span class="hljs-function"><span class="hljs-params">(name, method=<span class="hljs-string">"GET"</span>, type=<span class="hljs-string">"text"</span>, f = -&gt;)</span> -&gt;</span> <span class="hljs-comment"># AJAX async request</span>
-    <span class="hljs-keyword">if</span> (xhr=<span class="hljs-property">@fileIndex</span>[name])?
+            <div class="content"><div class='highlight'><pre>  xhrLoadFile: <span class="hljs-function"><span class="hljs-params">(name, method=<span class="hljs-string">"GET"</span>, type=<span class="hljs-string">"text"</span>, f = -&gt;)</span> -&gt;</span> <span class="hljs-comment"># AJAX async request</span>
+    <span class="hljs-keyword">if</span> (xhr=@fileIndex[name])?
       f(xhr.response)
     <span class="hljs-keyword">else</span>
-      <span class="hljs-property">@fileIndex</span>[name] = xhr = <span class="hljs-keyword">new</span> XMLHttpRequest()
+      @fileIndex[name] = xhr = <span class="hljs-keyword">new</span> XMLHttpRequest()
       xhr.isDone = <span class="hljs-literal">false</span>
       xhr.open method, name <span class="hljs-comment"># POST mainly for security and large files</span>
       xhr.responseType = type
@@ -2133,8 +2133,8 @@ method is “GET” or “POST”. f is function to call onload, default to no-o
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">filesLoaded</span>: <span class="hljs-function"><span class="hljs-params">(files = <span class="hljs-property">@fileIndex</span>)</span> -&gt;</span>
-    array = (v.isDone <span class="hljs-keyword">for</span> v <span class="hljs-keyword">in</span> (<span class="hljs-property">@ownValues</span> files))
+            <div class="content"><div class='highlight'><pre>  filesLoaded: <span class="hljs-function"><span class="hljs-params">(files = @fileIndex)</span> -&gt;</span>
+    array = (v.isDone <span class="hljs-keyword">for</span> v <span class="hljs-keyword">in</span> (@ownValues files))
     array.reduce (<span class="hljs-function"><span class="hljs-params">(a,b)</span>-&gt;</span>a <span class="hljs-keyword">and</span> b), <span class="hljs-literal">true</span></pre></div></div>
             
         </li>
@@ -2150,7 +2150,7 @@ method is “GET” or “POST”. f is function to call onload, default to no-o
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">waitOnFiles</span>: <span class="hljs-function"><span class="hljs-params">(f, files = <span class="hljs-property">@fileIndex</span>)</span> -&gt;</span> <span class="hljs-property">@waitOn</span> (<span class="hljs-function">=&gt;</span> <span class="hljs-property">@filesLoaded</span> files), f</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  waitOnFiles: <span class="hljs-function"><span class="hljs-params">(f, files = @fileIndex)</span> -&gt;</span> @waitOn (<span class="hljs-function">=&gt;</span> @filesLoaded files), f</pre></div></div>
             
         </li>
         
@@ -2165,8 +2165,8 @@ method is “GET” or “POST”. f is function to call onload, default to no-o
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">waitOn</span>: <span class="hljs-function"><span class="hljs-params">(done, f)</span> -&gt;</span>
-    <span class="hljs-keyword">if</span> done() <span class="hljs-keyword">then</span> f() <span class="hljs-keyword">else</span> setTimeout (<span class="hljs-function">=&gt;</span> <span class="hljs-property">@waitOn</span>(done, f)), <span class="hljs-number">1000</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  waitOn: <span class="hljs-function"><span class="hljs-params">(done, f)</span> -&gt;</span>
+    <span class="hljs-keyword">if</span> done() <span class="hljs-keyword">then</span> f() <span class="hljs-keyword">else</span> setTimeout (<span class="hljs-function">=&gt;</span> @waitOn(done, f)), <span class="hljs-number">1000</span></pre></div></div>
             
         </li>
         
@@ -2184,7 +2184,7 @@ Should be sync</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">cloneImage</span>: <span class="hljs-function"><span class="hljs-params">(img)</span> -&gt;</span> (i=<span class="hljs-keyword">new</span> Image()).src = img.src; i</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  cloneImage: <span class="hljs-function"><span class="hljs-params">(img)</span> -&gt;</span> (i=<span class="hljs-keyword">new</span> Image()).src = img.src; i</pre></div></div>
             
         </li>
         
@@ -2201,14 +2201,14 @@ The function f = f(imageData, rgbIndex) -&gt; number</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">imageToData</span>: <span class="hljs-function"><span class="hljs-params">(img, f=<span class="hljs-property">@pixelByte</span>(<span class="hljs-number">0</span>), arrayType=Uint8ClampedArray)</span> -&gt;</span>
-    <span class="hljs-property">@imageRowsToData</span> img, img.height, f, arrayType
-  <span class="hljs-attribute">imageRowsToData</span>: <span class="hljs-function"><span class="hljs-params">(img, rowsPerSlice, f=<span class="hljs-property">@pixelByte</span>(<span class="hljs-number">0</span>), arrayType=Uint8ClampedArray)</span> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  imageToData: <span class="hljs-function"><span class="hljs-params">(img, f=@pixelByte(<span class="hljs-number">0</span>), arrayType=Uint8ClampedArray)</span> -&gt;</span>
+    @imageRowsToData img, img.height, f, arrayType
+  imageRowsToData: <span class="hljs-function"><span class="hljs-params">(img, rowsPerSlice, f=@pixelByte(<span class="hljs-number">0</span>), arrayType=Uint8ClampedArray)</span> -&gt;</span>
     rowsDone = <span class="hljs-number">0</span>; data = <span class="hljs-keyword">new</span> arrayType img.width*img.height
     <span class="hljs-keyword">while</span> rowsDone &lt; img.height
       rows = Math.min img.height - rowsDone, rowsPerSlice
-      ctx = <span class="hljs-property">@imageSliceToCtx</span> img, <span class="hljs-number">0</span>, rowsDone, img.width, rows <span class="hljs-comment"># REMIND: pass ctx</span>
-      idata = <span class="hljs-property">@ctxToImageData</span>(ctx).data
+      ctx = @imageSliceToCtx img, <span class="hljs-number">0</span>, rowsDone, img.width, rows <span class="hljs-comment"># REMIND: pass ctx</span>
+      idata = @ctxToImageData(ctx).data
       dataStart = rowsDone*img.width
       data[dataStart+i] = f(idata,<span class="hljs-number">4</span>*i) <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> [<span class="hljs-number">0.</span>..idata.length/<span class="hljs-number">4</span>] <span class="hljs-keyword">by</span> <span class="hljs-number">1</span>
       rowsDone += rows
@@ -2228,11 +2228,11 @@ They return a fcn in a closure which “sees” the args and variables</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">pixelBytesToInt</span>: <span class="hljs-function"><span class="hljs-params">(a)</span> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  pixelBytesToInt: <span class="hljs-function"><span class="hljs-params">(a)</span> -&gt;</span>
     ImageByteFmts = [[<span class="hljs-number">2</span>],[<span class="hljs-number">1</span>,<span class="hljs-number">2</span>],[<span class="hljs-number">0</span>,<span class="hljs-number">1</span>,<span class="hljs-number">2</span>],[<span class="hljs-number">3</span>,<span class="hljs-number">0</span>,<span class="hljs-number">1</span>,<span class="hljs-number">2</span>]]
-    a=ImageByteFmts[a-<span class="hljs-number">1</span>] <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span> a <span class="hljs-keyword">is</span> <span class="hljs-string">"number"</span>
+    a=ImageByteFmts[a<span class="hljs-number">-1</span>] <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span> a <span class="hljs-keyword">is</span> <span class="hljs-string">"number"</span>
     (id,i)-&gt;val = <span class="hljs-number">0</span>; val = val*<span class="hljs-number">256</span> + id[i+j] <span class="hljs-keyword">for</span> j <span class="hljs-keyword">in</span> a; val
-  <span class="hljs-attribute">pixelByte</span>: <span class="hljs-function"><span class="hljs-params">(n)</span> -&gt;</span> (id,i)-&gt;id[i+n]</pre></div></div>
+  pixelByte: <span class="hljs-function"><span class="hljs-params">(n)</span> -&gt;</span> (id,i)-&gt;id[i+n]</pre></div></div>
             
         </li>
         
@@ -2260,7 +2260,7 @@ They return a fcn in a closure which “sees” the args and variables</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">createCanvas</span>: <span class="hljs-function"><span class="hljs-params">(width, height)</span> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  createCanvas: <span class="hljs-function"><span class="hljs-params">(width, height)</span> -&gt;</span>
     can = <span class="hljs-built_in">document</span>.createElement <span class="hljs-string">'canvas'</span>
     can.width = width; can.height = height
     can</pre></div></div>
@@ -2279,8 +2279,8 @@ Note ctx.canvas is the canvas for the ctx, and can be use as an image.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">createCtx</span>: <span class="hljs-function"><span class="hljs-params">(width, height, ctxType=<span class="hljs-string">"2d"</span>)</span> -&gt;</span>
-    can = <span class="hljs-property">@createCanvas</span> width, height
+            <div class="content"><div class='highlight'><pre>  createCtx: <span class="hljs-function"><span class="hljs-params">(width, height, ctxType=<span class="hljs-string">"2d"</span>)</span> -&gt;</span>
+    can = @createCanvas width, height
     <span class="hljs-keyword">if</span> ctxType <span class="hljs-keyword">is</span> <span class="hljs-string">"2d"</span>
     <span class="hljs-keyword">then</span> can.getContext <span class="hljs-string">"2d"</span>
     <span class="hljs-keyword">else</span> can.getContext(<span class="hljs-string">"webgl"</span>) ? can.getContext(<span class="hljs-string">"experimental-webgl"</span>)</pre></div></div>
@@ -2301,13 +2301,13 @@ and with the z-index of z.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">createLayer</span>: <span class="hljs-function"><span class="hljs-params">(div, width, height, z, ctx = <span class="hljs-string">"2d"</span>)</span> -&gt;</span> <span class="hljs-comment"># a canvas ctx object</span>
+            <div class="content"><div class='highlight'><pre>  createLayer: <span class="hljs-function"><span class="hljs-params">(div, width, height, z, ctx = <span class="hljs-string">"2d"</span>)</span> -&gt;</span> <span class="hljs-comment"># a canvas ctx object</span>
     <span class="hljs-keyword">if</span> ctx <span class="hljs-keyword">is</span> <span class="hljs-string">"img"</span>
     <span class="hljs-keyword">then</span> element = ctx = <span class="hljs-keyword">new</span> Image(); ctx.width = width; ctx.height=height
-    <span class="hljs-keyword">else</span> element = (ctx=<span class="hljs-property">@createCtx</span>(width, height, ctx)).canvas
-    <span class="hljs-property">@insertLayer</span> div, element, width, height, z
+    <span class="hljs-keyword">else</span> element = (ctx=@createCtx(width, height, ctx)).canvas
+    @insertLayer div, element, width, height, z
     ctx
-  <span class="hljs-attribute">insertLayer</span>: <span class="hljs-function"><span class="hljs-params">(div, element, w, h, z)</span> -&gt;</span></pre></div></div>
+  insertLayer: <span class="hljs-function"><span class="hljs-params">(div, element, w, h, z)</span> -&gt;</span></pre></div></div>
             
         </li>
         
@@ -2328,7 +2328,7 @@ element.setAttribute ‘style’,
     s.position=<span class="hljs-string">"absolute"</span>; s.top=<span class="hljs-number">0</span>; s.left=<span class="hljs-number">0</span>; s.width=w; s.height=h; s.zIndex=z
     div.appendChild(element)
 
-  <span class="hljs-attribute">setCtxSmoothing</span>: <span class="hljs-function"><span class="hljs-params">(ctx, smoothing)</span> -&gt;</span></pre></div></div>
+  setCtxSmoothing: <span class="hljs-function"><span class="hljs-params">(ctx, smoothing)</span> -&gt;</span></pre></div></div>
             
         </li>
         
@@ -2376,7 +2376,7 @@ ctx.webkitImageSmoothingEnabled = smoothing</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">setIdentity</span>: <span class="hljs-function"><span class="hljs-params">(ctx)</span> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  setIdentity: <span class="hljs-function"><span class="hljs-params">(ctx)</span> -&gt;</span>
     ctx.save() <span class="hljs-comment"># revert to native 2D transform</span>
     ctx.setTransform <span class="hljs-number">1</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span></pre></div></div>
             
@@ -2393,9 +2393,9 @@ ctx.webkitImageSmoothingEnabled = smoothing</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">clearCtx</span>: <span class="hljs-function"><span class="hljs-params">(ctx)</span> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  clearCtx: <span class="hljs-function"><span class="hljs-params">(ctx)</span> -&gt;</span>
     <span class="hljs-keyword">if</span> ctx.save? <span class="hljs-comment"># test for 2D ctx</span>
-      <span class="hljs-property">@setIdentity</span> ctx <span class="hljs-comment"># ctx.canvas.width = ctx.canvas.width not used so as to preserve patch coords</span>
+      @setIdentity ctx <span class="hljs-comment"># ctx.canvas.width = ctx.canvas.width not used so as to preserve patch coords</span>
       ctx.clearRect <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, ctx.canvas.width, ctx.canvas.height
       ctx.restore()
     <span class="hljs-keyword">else</span> <span class="hljs-comment"># 3D</span>
@@ -2415,9 +2415,9 @@ ctx.webkitImageSmoothingEnabled = smoothing</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">fillCtx</span>: <span class="hljs-function"><span class="hljs-params">(ctx, color)</span> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  fillCtx: <span class="hljs-function"><span class="hljs-params">(ctx, color)</span> -&gt;</span>
     <span class="hljs-keyword">if</span> ctx.fillStyle? <span class="hljs-comment"># test for 2D ctx</span>
-      <span class="hljs-property">@setIdentity</span> ctx
+      @setIdentity ctx
       ctx.fillStyle = color.css ? Color.convertColor color, <span class="hljs-string">"css"</span> <span class="hljs-comment"># @colorStr(color)</span>
       ctx.fillRect <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, ctx.canvas.width, ctx.canvas.height
       ctx.restore()
@@ -2439,8 +2439,8 @@ Use setIdentity .. reset if a transform is being used by caller.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">ctxDrawText</span>: <span class="hljs-function"><span class="hljs-params">(ctx, string, x, y, color, setIdentity = <span class="hljs-literal">true</span>)</span> -&gt;</span>
-    <span class="hljs-property">@setIdentity</span>(ctx) <span class="hljs-keyword">if</span> setIdentity
+            <div class="content"><div class='highlight'><pre>  ctxDrawText: <span class="hljs-function"><span class="hljs-params">(ctx, string, x, y, color, setIdentity = <span class="hljs-literal">true</span>)</span> -&gt;</span>
+    @setIdentity(ctx) <span class="hljs-keyword">if</span> setIdentity
     ctx.fillStyle = color.css <span class="hljs-comment"># @colorStr color</span>
     ctx.fillText(string, x, y)
     ctx.restore() <span class="hljs-keyword">if</span> setIdentity</pre></div></div>
@@ -2464,9 +2464,9 @@ Use setIdentity .. reset if a transform is being used by caller.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">ctxTextParams</span>: <span class="hljs-function"><span class="hljs-params">(ctx, font, align = <span class="hljs-string">"center"</span>, baseline = <span class="hljs-string">"middle"</span>)</span> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  ctxTextParams: <span class="hljs-function"><span class="hljs-params">(ctx, font, align = <span class="hljs-string">"center"</span>, baseline = <span class="hljs-string">"middle"</span>)</span> -&gt;</span>
     ctx.font = font; ctx.textAlign = align; ctx.textBaseline = baseline
-  <span class="hljs-attribute">elementTextParams</span>: <span class="hljs-function"><span class="hljs-params">(e, font, align = <span class="hljs-string">"center"</span>, baseline = <span class="hljs-string">"middle"</span>)</span> -&gt;</span>
+  elementTextParams: <span class="hljs-function"><span class="hljs-params">(e, font, align = <span class="hljs-string">"center"</span>, baseline = <span class="hljs-string">"middle"</span>)</span> -&gt;</span>
     e = e.canvas <span class="hljs-keyword">if</span> e.canvas?
     e.style.font = font; e.style.textAlign = align; e.style.textBaseline = baseline</pre></div></div>
             
@@ -2485,30 +2485,30 @@ Note: to convert a ctx to an “image” (drawImage) use ctx.canvas</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">imageToCtx</span>: <span class="hljs-function"><span class="hljs-params">(img, w, h)</span> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  imageToCtx: <span class="hljs-function"><span class="hljs-params">(img, w, h)</span> -&gt;</span>
     <span class="hljs-keyword">if</span> w? <span class="hljs-keyword">and</span> h?
-      ctx = <span class="hljs-property">@createCtx</span> w, h
+      ctx = @createCtx w, h
       ctx.drawImage img, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, w, h
     <span class="hljs-keyword">else</span>
-      ctx = <span class="hljs-property">@createCtx</span> img.width, img.height
+      ctx = @createCtx img.width, img.height
       ctx.drawImage img, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>
     ctx
-  <span class="hljs-attribute">imageSliceToCtx</span>: <span class="hljs-function"><span class="hljs-params">(img, sx, sy, sw, sh, ctx)</span> -&gt;</span>
+  imageSliceToCtx: <span class="hljs-function"><span class="hljs-params">(img, sx, sy, sw, sh, ctx)</span> -&gt;</span>
     <span class="hljs-keyword">if</span> ctx?
     <span class="hljs-keyword">then</span> ctx.canvas.width = sw; ctx.canvas.height = sh
-    <span class="hljs-keyword">else</span> ctx = <span class="hljs-property">@createCtx</span> sw, sh
+    <span class="hljs-keyword">else</span> ctx = @createCtx sw, sh
     ctx.drawImage img, sx, sy, sw, sh, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, sw, sh
     ctx
-  <span class="hljs-attribute">imageToCtxDownStepped</span>: <span class="hljs-function"><span class="hljs-params">(img, tw, th)</span> -&gt;</span> <span class="hljs-comment"># http://goo.gl/UnLJSZ</span>
-    ctx1 = <span class="hljs-property">@createCtx</span> tw, th
+  imageToCtxDownStepped: <span class="hljs-function"><span class="hljs-params">(img, tw, th)</span> -&gt;</span> <span class="hljs-comment">#  http://goo.gl/QFE5cI</span>
+    ctx1 = @createCtx tw, th
     w = img.width; h = img.height; ihalf = <span class="hljs-function"><span class="hljs-params">(n)</span> -&gt;</span> Math.ceil n/<span class="hljs-number">2</span>
-    steps = Math.ceil(<span class="hljs-property">@log2</span>( <span class="hljs-keyword">if</span> (w/tw)&gt;(h/th) <span class="hljs-keyword">then</span> (w/tw) <span class="hljs-keyword">else</span> (h/th)) )
+    steps = Math.ceil(@log2( <span class="hljs-keyword">if</span> (w/tw)&gt;(h/th) <span class="hljs-keyword">then</span> (w/tw) <span class="hljs-keyword">else</span> (h/th)) )
     <span class="hljs-built_in">console</span>.log <span class="hljs-string">"steps"</span>, steps
     <span class="hljs-keyword">if</span> steps &lt;= <span class="hljs-number">1</span>
       ctx1.drawImage img, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, tw, th
     <span class="hljs-keyword">else</span>
       <span class="hljs-built_in">console</span>.log <span class="hljs-string">"img w/h"</span>, w, h, <span class="hljs-string">"-&gt;"</span>, ihalf(w), ihalf(h)
-      ctx = <span class="hljs-property">@createCtx</span> w = ihalf(w), h = ihalf(h); can = ctx.canvas
+      ctx = @createCtx w = ihalf(w), h = ihalf(h); can = ctx.canvas
       ctx.drawImage img, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, w, h
       <span class="hljs-keyword">for</span> step <span class="hljs-keyword">in</span> [steps..<span class="hljs-number">.2</span>] <span class="hljs-comment"># 2 not 1 due to initial halving above</span>
         <span class="hljs-built_in">console</span>.log <span class="hljs-string">"can w/h"</span>, w, h, <span class="hljs-string">"-&gt;"</span>, ihalf(w), ihalf(h)
@@ -2533,8 +2533,8 @@ Fix: use ctx.canvas for programatic imaging.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">ctxToDataUrl</span>: <span class="hljs-function"><span class="hljs-params">(ctx)</span> -&gt;</span> ctx.canvas.toDataURL <span class="hljs-string">"image/png"</span>
-  <span class="hljs-attribute">ctxToDataUrlImage</span>: <span class="hljs-function"><span class="hljs-params">(ctx, f)</span> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  ctxToDataUrl: <span class="hljs-function"><span class="hljs-params">(ctx)</span> -&gt;</span> ctx.canvas.toDataURL <span class="hljs-string">"image/png"</span>
+  ctxToDataUrlImage: <span class="hljs-function"><span class="hljs-params">(ctx, f)</span> -&gt;</span>
     img = <span class="hljs-keyword">new</span> Image()
     (img.onload = <span class="hljs-function">-&gt;</span> f(img)) <span class="hljs-keyword">if</span> f?
     img.src = ctx.canvas.toDataURL <span class="hljs-string">"image/png"</span>
@@ -2553,7 +2553,7 @@ Fix: use ctx.canvas for programatic imaging.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">ctxToImageData</span>: <span class="hljs-function"><span class="hljs-params">(ctx)</span> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  ctxToImageData: <span class="hljs-function"><span class="hljs-params">(ctx)</span> -&gt;</span>
     ctx.getImageData <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, ctx.canvas.width, ctx.canvas.height</pre></div></div>
             
         </li>
@@ -2586,7 +2586,7 @@ See <a href="http://goo.gl/VUlhY">this tutorial</a>.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">drawCenteredImage</span>: <span class="hljs-function"><span class="hljs-params">(ctx, img, rad, x, y, dx, dy)</span> -&gt;</span> <span class="hljs-comment"># presume save/restore surrounds this</span>
+            <div class="content"><div class='highlight'><pre>  drawCenteredImage: <span class="hljs-function"><span class="hljs-params">(ctx, img, rad, x, y, dx, dy)</span> -&gt;</span> <span class="hljs-comment"># presume save/restore surrounds this</span>
     ctx.translate x, y <span class="hljs-comment"># translate to center</span>
     ctx.rotate rad
     ctx.drawImage img, -dx/<span class="hljs-number">2</span>, -dy/<span class="hljs-number">2</span></pre></div></div>
@@ -2604,8 +2604,8 @@ See <a href="http://goo.gl/VUlhY">this tutorial</a>.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">copyCtx</span>: <span class="hljs-function"><span class="hljs-params">(ctx0)</span> -&gt;</span>
-    ctx = <span class="hljs-property">@createCtx</span> ctx0.canvas.width, ctx0.canvas.height
+            <div class="content"><div class='highlight'><pre>  copyCtx: <span class="hljs-function"><span class="hljs-params">(ctx0)</span> -&gt;</span>
+    ctx = @createCtx ctx0.canvas.width, ctx0.canvas.height
     ctx.drawImage ctx0.canvas, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>
     ctx</pre></div></div>
             
@@ -2622,8 +2622,8 @@ See <a href="http://goo.gl/VUlhY">this tutorial</a>.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">resizeCtx</span>: <span class="hljs-function"><span class="hljs-params">(ctx, width, height, scale = <span class="hljs-literal">false</span>)</span> -&gt;</span> <span class="hljs-comment"># http://goo.gl/Tp90B</span>
-    copy = <span class="hljs-property">@copyCtx</span> ctx
+            <div class="content"><div class='highlight'><pre>  resizeCtx: <span class="hljs-function"><span class="hljs-params">(ctx, width, height, scale = <span class="hljs-literal">false</span>)</span> -&gt;</span> <span class="hljs-comment"># http://goo.gl/Tp90B</span>
+    copy = @copyCtx ctx
     ctx.canvas.width = width; ctx.canvas.height = height
     ctx.drawImage copy.canvas, <span class="hljs-number">0</span>, <span class="hljs-number">0</span></pre></div></div>
             

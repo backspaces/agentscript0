@@ -36,7 +36,7 @@ for explanation of context of a class and its constructor.</p>
 <p>We do not provide a constructor of our own.
 CoffeeScript automatically calls <code>Model.constructor &lt;args&gt;</code>
 and <code>setup</code> will be called by <code>Model.constructor</code>. See:</p>
-<pre><code>model = <span class="hljs-keyword">new</span> MyModel <span class="hljs-string">"layers"</span>, <span class="hljs-number">13</span>, -<span class="hljs-number">16</span>, <span class="hljs-number">16</span>, -<span class="hljs-number">16</span>, <span class="hljs-number">16</span>
+<pre><code>model = <span class="hljs-keyword">new</span> MyModel <span class="hljs-string">"layers"</span>, <span class="hljs-number">13</span>, <span class="hljs-number">-16</span>, <span class="hljs-number">16</span>, <span class="hljs-number">-16</span>, <span class="hljs-number">16</span>
 </code></pre><p>below, which passes all its arguments to <code>Model</code></p>
 
             </div>
@@ -74,7 +74,7 @@ for an example, not needed by simple models.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">startup</span>: <span class="hljs-function">-&gt;</span> <span class="hljs-comment"># called by constructor</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  startup: <span class="hljs-function">-&gt;</span> <span class="hljs-comment"># called by constructor</span></pre></div></div>
             
         </li>
         
@@ -90,7 +90,7 @@ for an example, not needed by simple models.</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>    Shapes.add <span class="hljs-string">"bowtie"</span>, <span class="hljs-literal">true</span>, <span class="hljs-function"><span class="hljs-params">(c)</span> -&gt;</span>
-      Shapes.poly c, [[-<span class="hljs-number">.5</span>,-<span class="hljs-number">.5</span>],[<span class="hljs-number">.5</span>,<span class="hljs-number">.5</span>],[-<span class="hljs-number">.5</span>,<span class="hljs-number">.5</span>],[<span class="hljs-number">.5</span>,-<span class="hljs-number">.5</span>]]</pre></div></div>
+      Shapes.poly c, [[<span class="hljs-number">-.5</span>,<span class="hljs-number">-.5</span>],[<span class="hljs-number">.5</span>,<span class="hljs-number">.5</span>],[<span class="hljs-number">-.5</span>,<span class="hljs-number">.5</span>],[<span class="hljs-number">.5</span>,<span class="hljs-number">-.5</span>]]</pre></div></div>
             
         </li>
         
@@ -132,7 +132,7 @@ We also periodically change the patch colors to random gray values.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">setup</span>: <span class="hljs-function">-&gt;</span> <span class="hljs-comment"># called by Model.constructor</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  setup: <span class="hljs-function">-&gt;</span> <span class="hljs-comment"># called by Model.constructor</span></pre></div></div>
             
         </li>
         
@@ -149,11 +149,11 @@ an external UI to setup for us.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="hljs-property">@population</span> = <span class="hljs-number">100</span>
-    <span class="hljs-property">@size</span> = <span class="hljs-number">2.0</span>   <span class="hljs-comment"># size in patch coords</span>
-    <span class="hljs-property">@speed</span> = <span class="hljs-number">.5</span>   <span class="hljs-comment"># move forward this amount in patch coords</span>
-    <span class="hljs-property">@wiggle</span> = u.degToRad(<span class="hljs-number">30</span>) <span class="hljs-comment"># degrees/radians to wiggle</span>
-    <span class="hljs-property">@startCircle</span> = <span class="hljs-literal">true</span>  <span class="hljs-comment"># initialize turtles randomly or in circle</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>    @population = <span class="hljs-number">100</span>
+    @size = <span class="hljs-number">2.0</span>   <span class="hljs-comment"># size in patch coords</span>
+    @speed = <span class="hljs-number">.5</span>   <span class="hljs-comment"># move forward this amount in patch coords</span>
+    @wiggle = u.degToRad(<span class="hljs-number">30</span>) <span class="hljs-comment"># degrees/radians to wiggle</span>
+    @startCircle = <span class="hljs-literal">true</span>  <span class="hljs-comment"># initialize turtles randomly or in circle</span></pre></div></div>
             
         </li>
         
@@ -168,7 +168,7 @@ an external UI to setup for us.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="hljs-property">@turtles</span>.setDefault <span class="hljs-string">"size"</span>, <span class="hljs-property">@size</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>    @turtles.setDefault <span class="hljs-string">"size"</span>, @size</pre></div></div>
             
         </li>
         
@@ -183,7 +183,7 @@ an external UI to setup for us.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="hljs-property">@turtles</span>.setUseSprites()</pre></div></div>
+            <div class="content"><div class='highlight'><pre>    @turtles.setUseSprites()</pre></div></div>
             
         </li>
         
@@ -198,7 +198,7 @@ an external UI to setup for us.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="hljs-property">@anim</span>.setRate <span class="hljs-number">30</span>, <span class="hljs-literal">false</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>    @anim.setRate <span class="hljs-number">30</span>, <span class="hljs-literal">false</span></pre></div></div>
             
         </li>
         
@@ -216,7 +216,7 @@ random gray value.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">for</span> p <span class="hljs-keyword">in</span> <span class="hljs-property">@patches</span>
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">for</span> p <span class="hljs-keyword">in</span> @patches
       p.color = Maps.randomGray(<span class="hljs-number">0</span>,<span class="hljs-number">100</span>)</pre></div></div>
             
         </li>
@@ -251,12 +251,12 @@ on our modeel’s <code>startCircle</code> variable.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">for</span> a <span class="hljs-keyword">in</span> <span class="hljs-property">@turtles</span>.create <span class="hljs-property">@population</span>
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">for</span> a <span class="hljs-keyword">in</span> @turtles.create @population
       a.shape = u.oneOf Shapes.names() <span class="hljs-comment"># random shapes</span>
-      <span class="hljs-keyword">if</span> <span class="hljs-property">@startCircle</span>
-        a.forward <span class="hljs-property">@patches</span>.maxX/<span class="hljs-number">2</span> <span class="hljs-comment"># start in circle</span>
+      <span class="hljs-keyword">if</span> @startCircle
+        a.forward @patches.maxX/<span class="hljs-number">2</span> <span class="hljs-comment"># start in circle</span>
       <span class="hljs-keyword">else</span>
-        a.setXY <span class="hljs-property">@patches</span>.randomPt()... <span class="hljs-comment"># set random location</span></pre></div></div>
+        a.setXY @patches.randomPt()... <span class="hljs-comment"># set random location</span></pre></div></div>
             
         </li>
         
@@ -273,7 +273,7 @@ Note CoffeeScript
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    log <span class="hljs-string">"total turtles: <span class="hljs-subst">#{<span class="hljs-property">@turtles</span>.length}</span>, total patches: <span class="hljs-subst">#{<span class="hljs-property">@patches</span>.length}</span>"</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>    log <span class="hljs-string">"total turtles: <span class="hljs-subst">#{@turtles.length}</span>, total patches: <span class="hljs-subst">#{@patches.length}</span>"</span></pre></div></div>
             
         </li>
         
@@ -289,9 +289,9 @@ Note CoffeeScript
             </div>
             
             <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">for</span> s <span class="hljs-keyword">in</span> Shapes.names()
-      num = <span class="hljs-property">@turtles</span>.getPropWith(<span class="hljs-string">"shape"</span>, s).length
+      num = @turtles.getPropWith(<span class="hljs-string">"shape"</span>, s).length
       log <span class="hljs-string">"<span class="hljs-subst">#{num}</span> <span class="hljs-subst">#{s}</span>"</span>
-    <span class="hljs-built_in">console</span>.log <span class="hljs-string">"Patch(0,0): "</span>, <span class="hljs-property">@patches</span>.patchXY <span class="hljs-number">0</span>,<span class="hljs-number">0</span></pre></div></div>
+    <span class="hljs-built_in">console</span>.log <span class="hljs-string">"Patch(0,0): "</span>, @patches.patchXY <span class="hljs-number">0</span>,<span class="hljs-number">0</span></pre></div></div>
             
         </li>
         
@@ -306,7 +306,7 @@ Note CoffeeScript
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">step</span>: <span class="hljs-function">-&gt;</span>  <span class="hljs-comment"># called by Model.animate</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  step: <span class="hljs-function">-&gt;</span>  <span class="hljs-comment"># called by Model.animate</span></pre></div></div>
             
         </li>
         
@@ -321,7 +321,7 @@ Note CoffeeScript
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="hljs-property">@updateTurtles</span>(a) <span class="hljs-keyword">for</span> a <span class="hljs-keyword">in</span> <span class="hljs-property">@turtles</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>    @updateTurtles(a) <span class="hljs-keyword">for</span> a <span class="hljs-keyword">in</span> @turtles</pre></div></div>
             
         </li>
         
@@ -338,10 +338,10 @@ the patches. Otherwise don’t refresh.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">if</span> <span class="hljs-property">@anim</span>.ticks % <span class="hljs-number">100</span> <span class="hljs-keyword">is</span> <span class="hljs-number">0</span>
-      <span class="hljs-property">@updatePatches</span>(p) <span class="hljs-keyword">for</span> p <span class="hljs-keyword">in</span> <span class="hljs-property">@patches</span>
-      <span class="hljs-property">@reportInfo</span>()
-      <span class="hljs-property">@refreshPatches</span> = <span class="hljs-literal">true</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">if</span> @anim.ticks % <span class="hljs-number">100</span> <span class="hljs-keyword">is</span> <span class="hljs-number">0</span>
+      @updatePatches(p) <span class="hljs-keyword">for</span> p <span class="hljs-keyword">in</span> @patches
+      @reportInfo()
+      @refreshPatches = <span class="hljs-literal">true</span></pre></div></div>
             
         </li>
         
@@ -356,10 +356,10 @@ the patches. Otherwise don’t refresh.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>      <span class="hljs-property">@setSpotlight</span> <span class="hljs-property">@turtles</span>.oneOf() <span class="hljs-keyword">if</span> <span class="hljs-property">@anim</span>.ticks <span class="hljs-keyword">is</span> <span class="hljs-number">300</span>
-      <span class="hljs-property">@setSpotlight</span> <span class="hljs-literal">null</span> <span class="hljs-keyword">if</span> <span class="hljs-property">@anim</span>.ticks <span class="hljs-keyword">is</span> <span class="hljs-number">600</span>
+            <div class="content"><div class='highlight'><pre>      @setSpotlight @turtles.oneOf() <span class="hljs-keyword">if</span> @anim.ticks <span class="hljs-keyword">is</span> <span class="hljs-number">300</span>
+      @setSpotlight <span class="hljs-literal">null</span> <span class="hljs-keyword">if</span> @anim.ticks <span class="hljs-keyword">is</span> <span class="hljs-number">600</span>
     <span class="hljs-keyword">else</span>
-      <span class="hljs-property">@refreshPatches</span> = <span class="hljs-literal">false</span></pre></div></div>
+      @refreshPatches = <span class="hljs-literal">false</span></pre></div></div>
             
         </li>
         
@@ -374,9 +374,9 @@ the patches. Otherwise don’t refresh.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">if</span> <span class="hljs-property">@anim</span>.ticks <span class="hljs-keyword">is</span> <span class="hljs-number">1000</span>
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">if</span> @anim.ticks <span class="hljs-keyword">is</span> <span class="hljs-number">1000</span>
       log <span class="hljs-string">"..stopping, restart by app.start()"</span>
-      <span class="hljs-property">@stop</span>()</pre></div></div>
+      @stop()</pre></div></div>
             
         </li>
         
@@ -392,7 +392,7 @@ and report model state.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">updateTurtles</span>: <span class="hljs-function"><span class="hljs-params">(a)</span> -&gt;</span> <span class="hljs-comment"># a is turtle</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  updateTurtles: <span class="hljs-function"><span class="hljs-params">(a)</span> -&gt;</span> <span class="hljs-comment"># a is turtle</span></pre></div></div>
             
         </li>
         
@@ -408,7 +408,7 @@ our heading by +/- <code>wiggle/2</code> radians</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    a.rotate u.randomCentered <span class="hljs-property">@wiggle</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>    a.rotate u.randomCentered @wiggle</pre></div></div>
             
         </li>
         
@@ -423,8 +423,8 @@ our heading by +/- <code>wiggle/2</code> radians</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    a.forward <span class="hljs-property">@speed</span>
-  <span class="hljs-attribute">updatePatches</span>: <span class="hljs-function"><span class="hljs-params">(p)</span> -&gt;</span> <span class="hljs-comment"># p is patch</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>    a.forward @speed
+  updatePatches: <span class="hljs-function"><span class="hljs-params">(p)</span> -&gt;</span> <span class="hljs-comment"># p is patch</span></pre></div></div>
             
         </li>
         
@@ -442,7 +442,7 @@ Avoid Garbage collection by using a colormap</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>    p.color = Maps.randomColor() <span class="hljs-keyword">if</span> p.x <span class="hljs-keyword">isnt</span> <span class="hljs-number">0</span> <span class="hljs-keyword">and</span> p.y <span class="hljs-keyword">isnt</span> <span class="hljs-number">0</span>
-  <span class="hljs-attribute">reportInfo</span>: <span class="hljs-function">-&gt;</span></pre></div></div>
+  reportInfo: <span class="hljs-function">-&gt;</span></pre></div></div>
             
         </li>
         
@@ -457,7 +457,7 @@ Avoid Garbage collection by using a colormap</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    headings = <span class="hljs-property">@turtles</span>.getProp <span class="hljs-string">"heading"</span>
+            <div class="content"><div class='highlight'><pre>    headings = @turtles.getProp <span class="hljs-string">"heading"</span>
 <span class="hljs-function">    <span class="hljs-title">avgHeading</span> = <span class="hljs-params">(headings.reduce (a,b)-&gt;a+b)</span> / @<span class="hljs-title">turtles</span>.<span class="hljs-title">length</span>
 </span></pre></div></div>
             
@@ -498,14 +498,14 @@ for patchSize, minX, maxX, minY, maxY</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>model = <span class="hljs-keyword">new</span> MyModel({
-  <span class="hljs-attribute">div</span>: <span class="hljs-string">"layers"</span>,
-  <span class="hljs-attribute">size</span>: <span class="hljs-number">13</span>,
-  <span class="hljs-attribute">minX</span>: -<span class="hljs-number">16</span>,
-  <span class="hljs-attribute">maxX</span>: <span class="hljs-number">16</span>,
-  <span class="hljs-attribute">minY</span>: -<span class="hljs-number">16</span>,
-  <span class="hljs-attribute">maxY</span>: <span class="hljs-number">16</span>,
-  <span class="hljs-attribute">isTorus</span>: <span class="hljs-literal">true</span>,
-  <span class="hljs-attribute">hasNeighbors</span>: <span class="hljs-literal">false</span>
+  div: <span class="hljs-string">"layers"</span>,
+  size: <span class="hljs-number">13</span>,
+  minX: <span class="hljs-number">-16</span>,
+  maxX: <span class="hljs-number">16</span>,
+  minY: <span class="hljs-number">-16</span>,
+  maxY: <span class="hljs-number">16</span>,
+  isTorus: <span class="hljs-literal">true</span>,
+  hasNeighbors: <span class="hljs-literal">false</span>
 })
 .debug() <span class="hljs-comment"># Debug: Put Model vars in global name space</span>
 .start() <span class="hljs-comment"># Run model immediately after startup initialization</span></pre></div></div>

@@ -843,7 +843,7 @@ Util = util = u = # TODO: "util" deprecated in favor of Util
     else ctx = @createCtx sw, sh
     ctx.drawImage img, sx, sy, sw, sh, 0, 0, sw, sh
     ctx
-  imageToCtxDownStepped: (img, tw, th) -> # http://goo.gl/UnLJSZ
+  imageToCtxDownStepped: (img, tw, th) -> #  http://goo.gl/QFE5cI
     ctx1 = @createCtx tw, th
     w = img.width; h = img.height; ihalf = (n) -> Math.ceil n/2
     steps = Math.ceil(@log2( if (w/tw)>(h/th) then (w/tw) else (h/th)) )

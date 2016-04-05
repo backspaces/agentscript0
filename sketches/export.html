@@ -1,0 +1,119 @@
+<html>
+  <head>
+    <title>Export Sketch</title>
+    <script src="http://agentscript.org/lib/agentscript.js"></script>
+    <script src="http://agentscript.org/tools/coffee-script.js"></script>
+    <script type="text/coffeescript">
+
+    u = ABM.Util # ABM.Util alias
+    class MyModel extends ABM.Model
+      # Return base64 "image", 96dpi resolution, format = "png" or "jpeg",
+      # using canvas.toDataURL https://goo.gl/kvWXCw
+      # If jpeg, the quality is used w/ default 0.92 (toDataUrl's default).
+      # Png does not use quality being lossless.
+      exportLayerDataUrl: (name, format = "png", quality = 0.92) ->
+        ctx = @contexts[name]
+        ctx.canvas.toDataURL "image/#{format}", quality
+      exportWorldDataUrl: (format = "png", quality = 0.92) ->
+        worldCtx = u.createCtx @world.pxWidth, @world.pxHeight
+        for name, ctx of @contexts
+          worldCtx.drawImage ctx.canvas, 0, 0
+        worldCtx.canvas.toDataURL "image/#{format}", quality
+      dataUrlToImage: (dataURL) ->
+        img = new Image()
+        img.src = dataURL
+        img
+      showLayers: (div) ->
+        console.log 'stopping'
+        div = document.querySelector('#exports')
+        for layer in ['patches', 'turtles', 'links']
+          dataUrl = @exportLayerDataUrl layer
+          console.log layer, dataUrl.length
+          img = @dataUrlToImage dataUrl
+          div.appendChild(img)
+        div = document.querySelector('#composite')
+        dataUrl = @exportWorldDataUrl()
+        console.log 'world', dataUrl.length
+        img = @dataUrlToImage dataUrl
+        div.appendChild(img)
+
+
+      setup: ->
+        @agentBreeds "nodes drivers"
+        @nodes.setDefault "shape", "circle"
+        @nodes.setDefault "size", .3
+        @drivers.setDefault "size", 1.5
+
+        @linkBreeds "roads"
+        @roads.setDefault "labelColor", [255,0,0]
+
+        @refreshPatches = false
+        @refreshLinks = false
+        @drivers.setDefault "useSprites", true
+
+        # globals
+        @numNodes = 30
+        @numDrivers = 100
+        @layoutCircle = true
+        @baseVelocity = 0.1 # patchs
+        @velocityDelta = 0.1 # patches
+
+        p.color = u.randomGray 10, 100 for p in @patches
+        for p in @patches.nOf @numNodes
+          p.sprout 1, @nodes, (a) =>
+            if @nodes.length > 1 # if @nodes().length > 1
+              @roads.create a, @nodes.other(a).oneOf() # @roads.create a, @nodes().other(a).oneOf()
+
+        if @layoutCircle then @roads.layoutCircle @nodes, @patches.maxX - 1
+
+        # no defaults, hatch copies its values to new turtle
+        for i in [1..@numDrivers]
+          n = @nodes.oneOf() # n = @nodes().oneOf()
+          n.hatch 1, @drivers, (a) =>
+            a.fromNode = a.toNode = u.oneOf n.linkNeighbors() #.oneOf()
+            a.face a.toNode
+            a.v = @baseVelocity + u.randomFloat @velocityDelta
+        null # avoid returning "for" results above
+
+      step: ->
+        for d in @drivers #for d in @drivers()
+          d.face d.toNode
+          d.forward Math.min d.v, d.distance d.toNode
+          if .01 > d.distance d.toNode # or (d.distance d.toNode) < .01
+            d.fromNode = d.toNode
+            d.toNode = u.oneOf d.toNode.linkNeighbors() #.oneOf()
+        if @anim.ticks is 200
+          @stop()
+          @showLayers()
+        null # avoid returning "for" results above
+
+    # div, patchSize, minX, maxX, minY, maxY, isTorus, hasNeighbors
+    #   Defaults: 13, -16, 16, -16, 16, false, true
+    model = new MyModel {
+      div: "layers",
+      size: 10,
+      minX: -10,
+      maxX: 10,
+      minY: -10,
+      maxY: 10,
+      hasNeighbors: false
+    }
+    model.debug() # Debug: Put Model vars in global name space
+    model.start() # Run model immediately after startup initialization
+
+    </script>
+  </head>
+  <body>
+    <div>
+      <div id="layers"></div>
+    </div>
+    <p>
+      Individual Layers as DataURL Images
+    </p>
+    <div id="exports"></div>
+    <p>
+      Composite of layers as a DataURL Image
+    </p>
+    <div id="composite"></div>
+  </body>
+</html>

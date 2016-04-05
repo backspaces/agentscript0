@@ -34,8 +34,8 @@
             </div>
             
             <div class="content"><div class='highlight'><pre>
-(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
-  ABM.DatGUI = (<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{</pre></div></div>
+(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+  ABM.DatGUI = (<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{</pre></div></div>
             
         </li>
         
@@ -107,7 +107,7 @@ the model interface in all browsers will be in sync.</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>
-    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">DatGUI</span><span class="hljs-params">(fbuiOrModel, uiObject)</span> </span>{
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">DatGUI</span>(<span class="hljs-params">fbuiOrModel, uiObject</span>) </span>{
       ABM.Util.mixin(<span class="hljs-keyword">this</span>, <span class="hljs-keyword">new</span> ABM.Evented())
       <span class="hljs-keyword">this</span>.gui = <span class="hljs-keyword">new</span> dat.GUI();
       <span class="hljs-keyword">this</span>.datGuiModel = {};
@@ -126,7 +126,7 @@ the model interface in all browsers will be in sync.</p>
       <span class="hljs-keyword">this</span>.initUIElements(ui, <span class="hljs-keyword">this</span>.gui);
     }
 
-    DatGUI.prototype.initUIElements = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(ui, folder)</span> </span>{
+    DatGUI.prototype.initUIElements = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">ui, folder</span>) </span>{
       <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;
       <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> name <span class="hljs-keyword">in</span> ui) {
         <span class="hljs-keyword">if</span> (ui.hasOwnProperty(name)) {
@@ -217,7 +217,7 @@ the model interface in all browsers will be in sync.</p>
             <div class="content"><div class='highlight'><pre>            <span class="hljs-keyword">this</span>.datGuiModel[name] = uiEl.val;
 
             <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> fbui != <span class="hljs-string">'undefined'</span>) {
-              fbui.refs[name].child(<span class="hljs-string">'val'</span>).on(<span class="hljs-string">'value'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(valSnap)</span> </span>{
+              fbui.refs[name].child(<span class="hljs-string">'val'</span>).on(<span class="hljs-string">'value'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">valSnap</span>) </span>{
                 self.datGuiModel[<span class="hljs-keyword">this</span>.name] = valSnap.val();
                 self.updateGui();
               }.bind({ name: name }));
@@ -242,10 +242,10 @@ the model interface in all browsers will be in sync.</p>
             <div class="content"><div class='highlight'><pre>          <span class="hljs-keyword">switch</span>(uiEl.type) {
             <span class="hljs-keyword">case</span> <span class="hljs-string">'button'</span>:
               <span class="hljs-keyword">this</span>.datGuiModel[name] = self.fbui ?
-                <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{ 
+                <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{ 
                   self.fbui.setUIValue(<span class="hljs-keyword">this</span>.name, <span class="hljs-literal">true</span>); 
                 }.bind({ name: name }) :
-                <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+                <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
                   self.setModelValue(<span class="hljs-keyword">this</span>.name, <span class="hljs-literal">null</span>, <span class="hljs-keyword">this</span>.setter);
                 }.bind({ name: name, setter: ui[name].setter });
               folder.add(<span class="hljs-keyword">this</span>.datGuiModel, name);
@@ -264,12 +264,12 @@ the model interface in all browsers will be in sync.</p>
           <span class="hljs-keyword">if</span> (ctrl) {
             <span class="hljs-keyword">var</span> callback;
             <span class="hljs-keyword">if</span> (self.fbui) {
-              callback = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(value)</span> </span>{
+              callback = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">value</span>) </span>{
                 self.fbui.setUIValue(<span class="hljs-keyword">this</span>.name, value);
               }.bind({ name: name });
             }
             <span class="hljs-keyword">else</span> {
-              callback = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(value)</span> </span>{
+              callback = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">value</span>) </span>{
                 self.setModelValue(<span class="hljs-keyword">this</span>.name, value, <span class="hljs-keyword">this</span>.setter);
               }.bind({ name: name, setter: ui[name].setter });
             }</pre></div></div>
@@ -315,7 +315,7 @@ of the drag.</p>
       }
     }
 
-    DatGUI.prototype.setModelValue = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(name, value, setter)</span> </span>{
+    DatGUI.prototype.setModelValue = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">name, value, setter</span>) </span>{
       <span class="hljs-keyword">if</span> (setter) {
         <span class="hljs-keyword">this</span>.model[setter](value);
       }</pre></div></div>
@@ -368,7 +368,7 @@ whenever part of its model changes.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    DatGUI.prototype.update = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(uiObject)</span> </span>{</pre></div></div>
+            <div class="content"><div class='highlight'><pre>    DatGUI.prototype.update = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">uiObject</span>) </span>{</pre></div></div>
             
         </li>
         
@@ -396,13 +396,13 @@ whenever part of its model changes.</p>
       }
     }
 
-    DatGUI.prototype.updateGui = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+    DatGUI.prototype.updateGui = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
       <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i <span class="hljs-keyword">in</span> <span class="hljs-keyword">this</span>.gui.__controllers) {
         <span class="hljs-keyword">this</span>.gui.__controllers[i].updateDisplay();
       }
     }
 
-    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">isFolder</span><span class="hljs-params">(obj)</span> </span>{
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">isFolder</span>(<span class="hljs-params">obj</span>) </span>{
       <span class="hljs-keyword">return</span> <span class="hljs-keyword">typeof</span> obj.type == <span class="hljs-string">'undefined'</span>;
     }
         

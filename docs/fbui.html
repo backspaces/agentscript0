@@ -44,15 +44,15 @@ Our UI via Firebase is “alpha” at this point and uses the NetLogo design.</p
                 <a class="pilcrow" href="#section-2">&#182;</a>
               </div>
               <p>Create UI object via Firebase url, the model, and a json UI tree:</p>
-<pre><code><span class="hljs-attribute">uiData</span>:
-  <span class="hljs-attribute">go</span>:          <span class="hljs-attribute">type</span>:<span class="hljs-string">"button"</span>, <span class="hljs-attribute">setter</span>:<span class="hljs-string">"toggle"</span>, <span class="hljs-attribute">val</span>: <span class="hljs-literal">false</span>
-  <span class="hljs-attribute">background</span>:  <span class="hljs-attribute">type</span>:<span class="hljs-string">"choice"</span>, <span class="hljs-attribute">vals</span>: [<span class="hljs-string">"black"</span>,<span class="hljs-string">"red"</span>,<span class="hljs-string">"random"</span>], <span class="hljs-attribute">val</span>: <span class="hljs-string">"red"</span>
-  <span class="hljs-attribute">useConsole</span>:  <span class="hljs-attribute">type</span>:<span class="hljs-string">"switch"</span>, <span class="hljs-attribute">val</span>: <span class="hljs-literal">true</span>
-  <span class="hljs-attribute">population</span>:  <span class="hljs-attribute">type</span>:<span class="hljs-string">"slider"</span>, <span class="hljs-attribute">min</span>:<span class="hljs-number">25</span>,  <span class="hljs-attribute">step</span>:<span class="hljs-number">25</span>,  <span class="hljs-attribute">max</span>:<span class="hljs-number">1000</span>, <span class="hljs-attribute">val</span>:<span class="hljs-number">500</span>
-  <span class="hljs-attribute">filename</span>:    <span class="hljs-attribute">type</span>:<span class="hljs-string">"input"</span>,  <span class="hljs-attribute">val</span>:<span class="hljs-string">"test.png"</span>
-  <span class="hljs-attribute">result</span>:      <span class="hljs-attribute">type</span>:<span class="hljs-string">"output"</span>  <span class="hljs-attribute">val</span>: json
-  <span class="hljs-attribute">vision</span>:
-    <span class="hljs-attribute">type</span>:<span class="hljs-string">"slider"</span>, <span class="hljs-attribute">setter</span>:<span class="hljs-string">"setVision"</span>, <span class="hljs-attribute">min</span>:<span class="hljs-number">.5</span>, <span class="hljs-attribute">step</span>:<span class="hljs-number">.5</span>, <span class="hljs-attribute">max</span>:<span class="hljs-number">10</span>, <span class="hljs-attribute">val</span>:<span class="hljs-number">3</span>
+<pre><code>uiData:
+  go:          type:<span class="hljs-string">"button"</span>, setter:<span class="hljs-string">"toggle"</span>, val: <span class="hljs-literal">false</span>
+  background:  type:<span class="hljs-string">"choice"</span>, vals: [<span class="hljs-string">"black"</span>,<span class="hljs-string">"red"</span>,<span class="hljs-string">"random"</span>], val: <span class="hljs-string">"red"</span>
+  useConsole:  type:<span class="hljs-string">"switch"</span>, val: <span class="hljs-literal">true</span>
+  population:  type:<span class="hljs-string">"slider"</span>, min:<span class="hljs-number">25</span>,  step:<span class="hljs-number">25</span>,  max:<span class="hljs-number">1000</span>, val:<span class="hljs-number">500</span>
+  filename:    type:<span class="hljs-string">"input"</span>,  val:<span class="hljs-string">"test.png"</span>
+  result:      type:<span class="hljs-string">"output"</span>  val: json
+  vision:
+    type:<span class="hljs-string">"slider"</span>, setter:<span class="hljs-string">"setVision"</span>, min:<span class="hljs-number">.5</span>, step:<span class="hljs-number">.5</span>, max:<span class="hljs-number">10</span>, val:<span class="hljs-number">3</span>
 </code></pre><p>Rules:</p>
 <ul>
 <li>Each ui element is a name/object pair</li>
@@ -65,15 +65,15 @@ Our UI via Firebase is “alpha” at this point and uses the NetLogo design.</p
             </div>
             
             <div class="content"><div class='highlight'><pre>  
-  <span class="hljs-attribute">constructor</span>: <span class="hljs-function"><span class="hljs-params">(<span class="hljs-property">@fbname</span>, <span class="hljs-property">@model</span>, <span class="hljs-property">@ui</span>)</span> -&gt;</span>
-    <span class="hljs-property">@fb</span> = <span class="hljs-keyword">new</span> Firebase <span class="hljs-property">@fbname</span>
-    <span class="hljs-property">@refs</span> = {}; <span class="hljs-property">@refs</span>[k] = <span class="hljs-property">@fb</span>.child(k) <span class="hljs-keyword">for</span> k,v <span class="hljs-keyword">of</span> <span class="hljs-property">@ui</span>
-    <span class="hljs-property">@vals</span> = {}; <span class="hljs-property">@vals</span>[k] = v.val <span class="hljs-keyword">for</span> k,v <span class="hljs-keyword">of</span> <span class="hljs-property">@ui</span>
-    <span class="hljs-property">@resetModel</span>()
-    <span class="hljs-property">@fb</span>.set <span class="hljs-property">@ui</span>, <span class="hljs-function"><span class="hljs-params">(val)</span>-&gt;</span><span class="hljs-built_in">console</span>.log <span class="hljs-keyword">if</span> val? <span class="hljs-keyword">then</span> <span class="hljs-string">"FB error: <span class="hljs-subst">#{val}</span>"</span> <span class="hljs-keyword">else</span> <span class="hljs-string">"FB ready"</span>
-    <span class="hljs-property">@fb</span>.<span class="hljs-literal">on</span> <span class="hljs-string">'child_changed'</span>, <span class="hljs-function"><span class="hljs-params">(snapshot)</span> =&gt;</span>
+  constructor: <span class="hljs-function"><span class="hljs-params">(@fbname, @model, @ui)</span> -&gt;</span>
+    @fb = <span class="hljs-keyword">new</span> Firebase @fbname
+    @refs = {}; @refs[k] = @fb.child(k) <span class="hljs-keyword">for</span> k,v <span class="hljs-keyword">of</span> @ui
+    @vals = {}; @vals[k] = v.val <span class="hljs-keyword">for</span> k,v <span class="hljs-keyword">of</span> @ui
+    @resetModel()
+    @fb.set @ui, <span class="hljs-function"><span class="hljs-params">(val)</span>-&gt;</span><span class="hljs-built_in">console</span>.log <span class="hljs-keyword">if</span> val? <span class="hljs-keyword">then</span> <span class="hljs-string">"FB error: <span class="hljs-subst">#{val}</span>"</span> <span class="hljs-keyword">else</span> <span class="hljs-string">"FB ready"</span>
+    @fb.<span class="hljs-literal">on</span> <span class="hljs-string">'child_changed'</span>, <span class="hljs-function"><span class="hljs-params">(snapshot)</span> =&gt;</span>
       <span class="hljs-built_in">console</span>.log <span class="hljs-string">"childChange"</span>, snapshot.name(), snapshot.val().val
-      <span class="hljs-property">@setModelValue</span> snapshot.name(), snapshot.val().val
+      @setModelValue snapshot.name(), snapshot.val().val
     <span class="hljs-built_in">console</span>.log <span class="hljs-string">"--- Firebase setup"</span></pre></div></div>
             
         </li>
@@ -89,12 +89,12 @@ Our UI via Firebase is “alpha” at this point and uses the NetLogo design.</p
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">setModelValue</span>: <span class="hljs-function"><span class="hljs-params">(name, value)</span> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  setModelValue: <span class="hljs-function"><span class="hljs-params">(name, value)</span> -&gt;</span>
     <span class="hljs-built_in">console</span>.log <span class="hljs-string">"setModelValue: <span class="hljs-subst">#{name}</span>, <span class="hljs-subst">#{value}</span>"</span>
-    <span class="hljs-property">@vals</span>[name] = value
-    <span class="hljs-keyword">if</span> <span class="hljs-property">@ui</span>[name].type <span class="hljs-keyword">is</span> <span class="hljs-string">"button"</span>
-      <span class="hljs-keyword">if</span> value <span class="hljs-keyword">then</span> <span class="hljs-property">@setUIValue</span> name, <span class="hljs-literal">false</span> <span class="hljs-keyword">else</span> <span class="hljs-keyword">return</span>
-    <span class="hljs-keyword">if</span> (setter=<span class="hljs-property">@ui</span>[name].setter)? <span class="hljs-keyword">then</span> <span class="hljs-property">@model</span>[setter](value) <span class="hljs-keyword">else</span> <span class="hljs-property">@model</span>[name]=value</pre></div></div>
+    @vals[name] = value
+    <span class="hljs-keyword">if</span> @ui[name].type <span class="hljs-keyword">is</span> <span class="hljs-string">"button"</span>
+      <span class="hljs-keyword">if</span> value <span class="hljs-keyword">then</span> @setUIValue name, <span class="hljs-literal">false</span> <span class="hljs-keyword">else</span> <span class="hljs-keyword">return</span>
+    <span class="hljs-keyword">if</span> (setter=@ui[name].setter)? <span class="hljs-keyword">then</span> @model[setter](value) <span class="hljs-keyword">else</span> @model[name]=value</pre></div></div>
             
         </li>
         
@@ -109,7 +109,7 @@ Our UI via Firebase is “alpha” at this point and uses the NetLogo design.</p
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">setUIValue</span>: <span class="hljs-function"><span class="hljs-params">(name, value, push=<span class="hljs-literal">false</span>)</span> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  setUIValue: <span class="hljs-function"><span class="hljs-params">(name, value, push=<span class="hljs-literal">false</span>)</span> -&gt;</span>
     <span class="hljs-built_in">console</span>.log <span class="hljs-string">"setUIValue: <span class="hljs-subst">#{name}</span>, <span class="hljs-subst">#{value}</span>, <span class="hljs-subst">#{push}</span>"</span></pre></div></div>
             
         </li>
@@ -125,7 +125,7 @@ Our UI via Firebase is “alpha” at this point and uses the NetLogo design.</p
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="hljs-property">@refs</span>[name].child(<span class="hljs-string">'val'</span>)[<span class="hljs-keyword">if</span> push <span class="hljs-keyword">then</span> <span class="hljs-string">"push"</span> <span class="hljs-keyword">else</span> <span class="hljs-string">"set"</span>](value)</pre></div></div>
+            <div class="content"><div class='highlight'><pre>    @refs[name].child(<span class="hljs-string">'val'</span>)[<span class="hljs-keyword">if</span> push <span class="hljs-keyword">then</span> <span class="hljs-string">"push"</span> <span class="hljs-keyword">else</span> <span class="hljs-string">"set"</span>](value)</pre></div></div>
             
         </li>
         
@@ -140,7 +140,7 @@ Our UI via Firebase is “alpha” at this point and uses the NetLogo design.</p
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">getUIValue</span>: <span class="hljs-function"><span class="hljs-params">(name)</span> -&gt;</span> <span class="hljs-property">@vals</span>[name] <span class="hljs-comment"># last value from callback</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  getUIValue: <span class="hljs-function"><span class="hljs-params">(name)</span> -&gt;</span> @vals[name] <span class="hljs-comment"># last value from callback</span></pre></div></div>
             
         </li>
         
@@ -156,8 +156,8 @@ Useful for resetting the model back to its defaults.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">resetModel</span>: <span class="hljs-function">-&gt;</span>
-    <span class="hljs-property">@setModelValue</span> k, v.val <span class="hljs-keyword">for</span> k,v <span class="hljs-keyword">of</span> <span class="hljs-property">@ui</span> <span class="hljs-keyword">when</span> v.type <span class="hljs-keyword">isnt</span> <span class="hljs-string">"button"</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  resetModel: <span class="hljs-function">-&gt;</span>
+    @setModelValue k, v.val <span class="hljs-keyword">for</span> k,v <span class="hljs-keyword">of</span> @ui <span class="hljs-keyword">when</span> v.type <span class="hljs-keyword">isnt</span> <span class="hljs-string">"button"</span></pre></div></div>
             
         </li>
         
@@ -173,8 +173,8 @@ Will cause FB events for those values that differ from initial values.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">resetUI</span>: <span class="hljs-function">-&gt;</span>
-    <span class="hljs-property">@setUIValue</span> k, v.val <span class="hljs-keyword">for</span> k,v <span class="hljs-keyword">of</span> <span class="hljs-property">@ui</span> <span class="hljs-keyword">when</span> v.type <span class="hljs-keyword">isnt</span> <span class="hljs-string">"button"</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  resetUI: <span class="hljs-function">-&gt;</span>
+    @setUIValue k, v.val <span class="hljs-keyword">for</span> k,v <span class="hljs-keyword">of</span> @ui <span class="hljs-keyword">when</span> v.type <span class="hljs-keyword">isnt</span> <span class="hljs-string">"button"</span></pre></div></div>
             
         </li>
         

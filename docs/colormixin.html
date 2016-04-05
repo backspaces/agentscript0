@@ -149,7 +149,7 @@ We don’t add colorType, its in this closure.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> <span class="hljs-property">@hasOwnProperty</span>(colorPropName) <span class="hljs-keyword">and</span>
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> @hasOwnProperty(colorPropName) <span class="hljs-keyword">and</span>
         colorType <span class="hljs-keyword">is</span> <span class="hljs-string">"typed"</span> <span class="hljs-keyword">and</span>
         <span class="hljs-keyword">not</span> (color = @[colorPropName]).map?
           color.setColor r,g,b,a</pre></div></div>
@@ -202,8 +202,8 @@ We don’t add colorType, its in this closure.</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>  Object.defineProperty proto, colorName,
-    <span class="hljs-attribute">get</span>: <span class="hljs-function">-&gt;</span> @[getterName]()
-    <span class="hljs-attribute">set</span>: <span class="hljs-function"><span class="hljs-params">(val)</span> -&gt;</span> @[setterName](val)
+    get: <span class="hljs-function">-&gt;</span> @[getterName]()
+    set: <span class="hljs-function"><span class="hljs-params">(val)</span> -&gt;</span> @[setterName](val)
   proto</pre></div></div>
             
         </li>

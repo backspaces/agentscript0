@@ -90,7 +90,7 @@ Alpha “a” is int in [0-255], not float in 0-1</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">rgbaString</span>: <span class="hljs-function"><span class="hljs-params">(r, g, b, a=<span class="hljs-number">255</span>)</span> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  rgbaString: <span class="hljs-function"><span class="hljs-params">(r, g, b, a=<span class="hljs-number">255</span>)</span> -&gt;</span>
     a = a/<span class="hljs-number">255</span>; a4 = a.toPrecision(<span class="hljs-number">4</span>)
     <span class="hljs-keyword">if</span> a <span class="hljs-keyword">is</span> <span class="hljs-number">1</span> <span class="hljs-keyword">then</span> <span class="hljs-string">"rgb(<span class="hljs-subst">#{r}</span>,<span class="hljs-subst">#{g}</span>,<span class="hljs-subst">#{b}</span>)"</span> <span class="hljs-keyword">else</span> <span class="hljs-string">"rgba(<span class="hljs-subst">#{r}</span>,<span class="hljs-subst">#{g}</span>,<span class="hljs-subst">#{b}</span>,<span class="hljs-subst">#{a4}</span>)"</span></pre></div></div>
             
@@ -109,7 +109,7 @@ Alpha “a” is int in [0-255].</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">hslString</span>: <span class="hljs-function"><span class="hljs-params">(h, s, l, a=<span class="hljs-number">255</span>)</span> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  hslString: <span class="hljs-function"><span class="hljs-params">(h, s, l, a=<span class="hljs-number">255</span>)</span> -&gt;</span>
     a = a/<span class="hljs-number">255</span>; a4 = a.toPrecision(<span class="hljs-number">4</span>)
     <span class="hljs-keyword">if</span> a <span class="hljs-keyword">is</span> <span class="hljs-number">1</span> <span class="hljs-keyword">then</span> <span class="hljs-string">"hsl(<span class="hljs-subst">#{h}</span>,<span class="hljs-subst">#{s}</span>%,<span class="hljs-subst">#{l}</span>%)"</span> <span class="hljs-keyword">else</span> <span class="hljs-string">"hsla(<span class="hljs-subst">#{h}</span>,<span class="hljs-subst">#{s}</span>%,<span class="hljs-subst">#{l}</span>%,<span class="hljs-subst">#{a4}</span>)"</span></pre></div></div>
             
@@ -128,11 +128,11 @@ Default is to check for the short hex form: #nnn.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">hexString</span>: <span class="hljs-function"><span class="hljs-params">(r, g, b, shortOK=<span class="hljs-literal">true</span>)</span> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  hexString: <span class="hljs-function"><span class="hljs-params">(r, g, b, shortOK=<span class="hljs-literal">true</span>)</span> -&gt;</span>
     <span class="hljs-keyword">if</span> shortOK
       <span class="hljs-keyword">if</span> u.isInteger(r0=r/<span class="hljs-number">17</span>) <span class="hljs-keyword">and</span> u.isInteger(g0=g/<span class="hljs-number">17</span>) <span class="hljs-keyword">and</span> u.isInteger(b0=b/<span class="hljs-number">17</span>)
-        <span class="hljs-keyword">return</span> <span class="hljs-property">@hexShortString</span> r0, g0, b0
-    <span class="hljs-string">"#"</span> + (<span class="hljs-number">0x1000000</span> | (b | g &lt;&lt; <span class="hljs-number">8</span> | r &lt;&lt; <span class="hljs-number">16</span>)).toString(<span class="hljs-number">16</span>).slice(-<span class="hljs-number">6</span>)</pre></div></div>
+        <span class="hljs-keyword">return</span> @hexShortString r0, g0, b0
+    <span class="hljs-string">"#"</span> + (<span class="hljs-number">0x1000000</span> | (b | g &lt;&lt; <span class="hljs-number">8</span> | r &lt;&lt; <span class="hljs-number">16</span>)).toString(<span class="hljs-number">16</span>).slice(<span class="hljs-number">-6</span>)</pre></div></div>
             
         </li>
         
@@ -151,7 +151,7 @@ to <code>r*17</code>, <code>g*17</code>, <code>b*17</code>, resulting in the val
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">hexShortString</span>: <span class="hljs-function"><span class="hljs-params">(r, g, b)</span> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  hexShortString: <span class="hljs-function"><span class="hljs-params">(r, g, b)</span> -&gt;</span>
     <span class="hljs-keyword">if</span> (r&gt;<span class="hljs-number">15</span>) <span class="hljs-keyword">or</span> (g&gt;<span class="hljs-number">15</span>) <span class="hljs-keyword">or</span> (b&gt;<span class="hljs-number">15</span>)
       u.error <span class="hljs-string">"hexShortString: one of <span class="hljs-subst">#{[r,g,b]}</span> &gt; 15"</span>
     <span class="hljs-string">"#"</span> + r.toString(<span class="hljs-number">16</span>) + g.toString(<span class="hljs-number">16</span>) + b.toString(<span class="hljs-number">16</span>)</pre></div></div>
@@ -174,8 +174,8 @@ to <code>r*17</code>, <code>g*17</code>, <code>b*17</code>, resulting in the val
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">triString</span>: <span class="hljs-function"><span class="hljs-params">(r, g, b, a=<span class="hljs-number">255</span>)</span> -&gt;</span>
-    <span class="hljs-keyword">if</span> a <span class="hljs-keyword">is</span> <span class="hljs-number">255</span> <span class="hljs-keyword">then</span> <span class="hljs-property">@hexString</span>(r, g, b, <span class="hljs-literal">true</span>) <span class="hljs-keyword">else</span> <span class="hljs-property">@rgbaString</span>(r, g, b, a)</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  triString: <span class="hljs-function"><span class="hljs-params">(r, g, b, a=<span class="hljs-number">255</span>)</span> -&gt;</span>
+    <span class="hljs-keyword">if</span> a <span class="hljs-keyword">is</span> <span class="hljs-number">255</span> <span class="hljs-keyword">then</span> @hexString(r, g, b, <span class="hljs-literal">true</span>) <span class="hljs-keyword">else</span> @rgbaString(r, g, b, a)</pre></div></div>
             
         </li>
         
@@ -219,7 +219,7 @@ to the string and create a pixel, returning the r,g,b,a TypedArray.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">sharedCtx1x1</span>: u.createCtx <span class="hljs-number">1</span>, <span class="hljs-number">1</span> <span class="hljs-comment"># share across calls.</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  sharedCtx1x1: u.createCtx <span class="hljs-number">1</span>, <span class="hljs-number">1</span> <span class="hljs-comment"># share across calls.</span></pre></div></div>
             
         </li>
         
@@ -235,7 +235,7 @@ If you need a JavaScript Array, use uint8sToRgba below</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">stringToUint8s</span>: <span class="hljs-function"><span class="hljs-params">(string)</span> -&gt;</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  stringToUint8s: <span class="hljs-function"><span class="hljs-params">(string)</span> -&gt;</span></pre></div></div>
             
         </li>
         
@@ -250,9 +250,9 @@ If you need a JavaScript Array, use uint8sToRgba below</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="hljs-property">@sharedCtx1x1</span>.fillStyle = string
-    <span class="hljs-property">@sharedCtx1x1</span>.fillRect <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>
-    <span class="hljs-property">@sharedCtx1x1</span>.getImageData(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>).data</pre></div></div>
+            <div class="content"><div class='highlight'><pre>    @sharedCtx1x1.fillStyle = string
+    @sharedCtx1x1.fillRect <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>
+    @sharedCtx1x1.getImageData(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>).data</pre></div></div>
             
         </li>
         
@@ -283,11 +283,11 @@ see why at <a href="http://goo.gl/qrHXwB">Stack Overflow</a></p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">sharedPixel</span>: <span class="hljs-literal">null</span>
-  <span class="hljs-attribute">sharedUint8s</span>: <span class="hljs-literal">null</span>
-  <span class="hljs-attribute">initSharedPixel</span>: <span class="hljs-function">-&gt;</span>
-    <span class="hljs-property">@sharedPixel</span> = <span class="hljs-keyword">new</span> Uint32Array(<span class="hljs-number">1</span>)
-    <span class="hljs-property">@sharedUint8s</span> = <span class="hljs-keyword">new</span> Uint8ClampedArray(<span class="hljs-property">@sharedPixel</span>.buffer)</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  sharedPixel: <span class="hljs-literal">null</span>
+  sharedUint8s: <span class="hljs-literal">null</span>
+  initSharedPixel: <span class="hljs-function">-&gt;</span>
+    @sharedPixel = <span class="hljs-keyword">new</span> Uint32Array(<span class="hljs-number">1</span>)
+    @sharedUint8s = <span class="hljs-keyword">new</span> Uint8ClampedArray(@sharedPixel.buffer)</pre></div></div>
             
         </li>
         
@@ -302,9 +302,9 @@ see why at <a href="http://goo.gl/qrHXwB">Stack Overflow</a></p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">rgbaToPixel</span>: <span class="hljs-function"><span class="hljs-params">(r, g, b, a=<span class="hljs-number">255</span>)</span> -&gt;</span>
-    <span class="hljs-property">@sharedUint8s</span>.set [r, g, b, a]
-    <span class="hljs-property">@sharedPixel</span>[<span class="hljs-number">0</span>]</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  rgbaToPixel: <span class="hljs-function"><span class="hljs-params">(r, g, b, a=<span class="hljs-number">255</span>)</span> -&gt;</span>
+    @sharedUint8s.set [r, g, b, a]
+    @sharedPixel[<span class="hljs-number">0</span>]</pre></div></div>
             
         </li>
         
@@ -322,9 +322,9 @@ Default is to clone the sharedUint8s.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">pixelToUint8s</span>: <span class="hljs-function"><span class="hljs-params">(pixel, sharedOK = <span class="hljs-literal">false</span>)</span> -&gt;</span>
-    <span class="hljs-property">@sharedPixel</span>[<span class="hljs-number">0</span>] = pixel
-    <span class="hljs-keyword">if</span> sharedOK <span class="hljs-keyword">then</span> <span class="hljs-property">@sharedUint8s</span> <span class="hljs-keyword">else</span> <span class="hljs-keyword">new</span> Uint8ClampedArray <span class="hljs-property">@sharedUint8s</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  pixelToUint8s: <span class="hljs-function"><span class="hljs-params">(pixel, sharedOK = <span class="hljs-literal">false</span>)</span> -&gt;</span>
+    @sharedPixel[<span class="hljs-number">0</span>] = pixel
+    <span class="hljs-keyword">if</span> sharedOK <span class="hljs-keyword">then</span> @sharedUint8s <span class="hljs-keyword">else</span> <span class="hljs-keyword">new</span> Uint8ClampedArray @sharedUint8s</pre></div></div>
             
         </li>
         
@@ -354,7 +354,7 @@ or arrayToColor below</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">randomRgb</span>: <span class="hljs-function">-&gt;</span> (u.randomInt(<span class="hljs-number">256</span>) <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> [<span class="hljs-number">0.</span><span class="hljs-number">.2</span>])</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  randomRgb: <span class="hljs-function">-&gt;</span> (u.randomInt(<span class="hljs-number">256</span>) <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> [<span class="hljs-number">0.</span><span class="hljs-number">.2</span>])</pre></div></div>
             
         </li>
         
@@ -369,7 +369,7 @@ or arrayToColor below</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">randomGrayRgb</span>: <span class="hljs-function"><span class="hljs-params">(min = <span class="hljs-number">0</span>, max = <span class="hljs-number">256</span>)</span> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  randomGrayRgb: <span class="hljs-function"><span class="hljs-params">(min = <span class="hljs-number">0</span>, max = <span class="hljs-number">256</span>)</span> -&gt;</span>
     i = u.randomInt2 min, max
     [i, i, i]</pre></div></div>
             
@@ -388,7 +388,7 @@ Useful after pixelToUint8s, stringToUint8s, hslToRgb.
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">uint8sToRgba</span>: <span class="hljs-function"><span class="hljs-params">(uint8s)</span> -&gt;</span> Array uint8s...</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  uint8sToRgba: <span class="hljs-function"><span class="hljs-params">(uint8s)</span> -&gt;</span> Array uint8s...</pre></div></div>
             
         </li>
         
@@ -404,7 +404,7 @@ Round to 0-255 int for gray values.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">rgbIntensity</span>: <span class="hljs-function"><span class="hljs-params">(r, g, b)</span> -&gt;</span> <span class="hljs-number">0.2126</span>*r + <span class="hljs-number">0.7152</span>*g + <span class="hljs-number">0.0722</span>*b</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  rgbIntensity: <span class="hljs-function"><span class="hljs-params">(r, g, b)</span> -&gt;</span> <span class="hljs-number">0.2126</span>*r + <span class="hljs-number">0.7152</span>*g + <span class="hljs-number">0.0722</span>*b</pre></div></div>
             
         </li>
         
@@ -419,9 +419,9 @@ Round to 0-255 int for gray values.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">hslToRgb</span>: <span class="hljs-function"><span class="hljs-params">(h, s, l)</span> -&gt;</span>
-    str = <span class="hljs-property">@hslString</span>(h, s, l)
-    <span class="hljs-property">@stringToUint8s</span>(str).subarray(<span class="hljs-number">0</span>,<span class="hljs-number">3</span>) <span class="hljs-comment"># a 3 byte view onto the 4 byte buffer.</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  hslToRgb: <span class="hljs-function"><span class="hljs-params">(h, s, l)</span> -&gt;</span>
+    str = @hslString(h, s, l)
+    @stringToUint8s(str).subarray(<span class="hljs-number">0</span>,<span class="hljs-number">3</span>) <span class="hljs-comment"># a 3 byte view onto the 4 byte buffer.</span></pre></div></div>
             
         </li>
         
@@ -437,7 +437,7 @@ Max distance is roughly 765 (3*255), for black &amp; white.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">rgbDistance</span>: <span class="hljs-function"><span class="hljs-params">(r1, g1, b1, r2, g2, b2)</span> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  rgbDistance: <span class="hljs-function"><span class="hljs-params">(r1, g1, b1, r2, g2, b2)</span> -&gt;</span>
     rMean = Math.round( (r1 + r2) / <span class="hljs-number">2</span> )
     [dr, dg, db] = [r1 - r2, g1 - g2, b1 - b2]
     Math.sqrt (((<span class="hljs-number">512</span>+rMean)*dr*dr)&gt;&gt;<span class="hljs-number">8</span>) + (<span class="hljs-number">4</span>*dg*dg) + (((<span class="hljs-number">767</span>-rMean)*db*db)&gt;&gt;<span class="hljs-number">8</span>)</pre></div></div>
@@ -458,7 +458,7 @@ gradientColorMap for complex, MatLab-like, gradients.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">rgbLerp</span>: <span class="hljs-function"><span class="hljs-params">(rgb1, value, min = <span class="hljs-number">0</span>, max = <span class="hljs-number">1</span>, rgb0 = [<span class="hljs-number">0</span>,<span class="hljs-number">0</span>,<span class="hljs-number">0</span>])</span> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  rgbLerp: <span class="hljs-function"><span class="hljs-params">(rgb1, value, min = <span class="hljs-number">0</span>, max = <span class="hljs-number">1</span>, rgb0 = [<span class="hljs-number">0</span>,<span class="hljs-number">0</span>,<span class="hljs-number">0</span>])</span> -&gt;</span>
     scale = u.lerpScale value, min, max <span class="hljs-comment">#(value - min)/(max - min)</span>
     (Math.round(u.lerp(rgb0[i], rgb1[i], scale)) <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> [<span class="hljs-number">0.</span><span class="hljs-number">.2</span>])</pre></div></div>
             
@@ -483,7 +483,7 @@ WebGL colors (4 rgba floats in 0-1), and in images.</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>
-  <span class="hljs-attribute">typedColor</span>: <span class="hljs-keyword">do</span> () -&gt; <span class="hljs-comment"># IIFE returns typedColor function.</span></pre></div></div>
+  typedColor: <span class="hljs-keyword">do</span> () -&gt; <span class="hljs-comment"># IIFE returns typedColor function.</span></pre></div></div>
             
         </li>
         
@@ -553,7 +553,7 @@ including Object.defineProperties without enlarging the typedColor.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>      <span class="hljs-attribute">__proto__</span>: Uint8ClampedArray.prototype</pre></div></div>
+            <div class="content"><div class='highlight'><pre>      __proto__: Uint8ClampedArray.prototype</pre></div></div>
             
         </li>
         
@@ -568,7 +568,7 @@ including Object.defineProperties without enlarging the typedColor.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>      <span class="hljs-attribute">setColor</span>: <span class="hljs-function"><span class="hljs-params">(r,g,b,a=<span class="hljs-number">255</span>)</span> -&gt;</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>      setColor: <span class="hljs-function"><span class="hljs-params">(r,g,b,a=<span class="hljs-number">255</span>)</span> -&gt;</span></pre></div></div>
             
         </li>
         
@@ -583,7 +583,7 @@ including Object.defineProperties without enlarging the typedColor.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>        <span class="hljs-property">@checkColorChange</span>()
+            <div class="content"><div class='highlight'><pre>        @checkColorChange()
         @[<span class="hljs-number">0</span>]=r; @[<span class="hljs-number">1</span>]=g; @[<span class="hljs-number">2</span>]=b; @[<span class="hljs-number">3</span>]=a
         @</pre></div></div>
             
@@ -600,7 +600,7 @@ including Object.defineProperties without enlarging the typedColor.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>      <span class="hljs-attribute">setPixel</span>: <span class="hljs-function"><span class="hljs-params">(pixel)</span>-&gt;</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>      setPixel: <span class="hljs-function"><span class="hljs-params">(pixel)</span>-&gt;</span></pre></div></div>
             
         </li>
         
@@ -615,8 +615,8 @@ including Object.defineProperties without enlarging the typedColor.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>        <span class="hljs-property">@checkColorChange</span>()
-        <span class="hljs-property">@pixelArray</span>[<span class="hljs-number">0</span>]=pixel</pre></div></div>
+            <div class="content"><div class='highlight'><pre>        @checkColorChange()
+        @pixelArray[<span class="hljs-number">0</span>]=pixel</pre></div></div>
             
         </li>
         
@@ -631,7 +631,7 @@ including Object.defineProperties without enlarging the typedColor.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>      <span class="hljs-attribute">getPixel</span>: <span class="hljs-function">-&gt;</span> <span class="hljs-property">@pixelArray</span>[<span class="hljs-number">0</span>]</pre></div></div>
+            <div class="content"><div class='highlight'><pre>      getPixel: <span class="hljs-function">-&gt;</span> @pixelArray[<span class="hljs-number">0</span>]</pre></div></div>
             
         </li>
         
@@ -651,8 +651,8 @@ css string will return the triString #f00 value.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>      <span class="hljs-attribute">setString</span>: <span class="hljs-function"><span class="hljs-params">(string)</span> -&gt;</span>
-        <span class="hljs-property">@setColor</span>(Color.stringToUint8s(string)...)</pre></div></div>
+            <div class="content"><div class='highlight'><pre>      setString: <span class="hljs-function"><span class="hljs-params">(string)</span> -&gt;</span>
+        @setColor(Color.stringToUint8s(string)...)</pre></div></div>
             
         </li>
         
@@ -667,9 +667,9 @@ css string will return the triString #f00 value.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>      <span class="hljs-attribute">getString</span>: <span class="hljs-function">-&gt;</span>
-        <span class="hljs-property">@string</span> = Color.triString(@...) <span class="hljs-keyword">unless</span> <span class="hljs-property">@string</span>?
-        <span class="hljs-property">@string</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>      getString: <span class="hljs-function">-&gt;</span>
+        @string = Color.triString(@...) <span class="hljs-keyword">unless</span> @string?
+        @string</pre></div></div>
             
         </li>
         
@@ -684,7 +684,7 @@ css string will return the triString #f00 value.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>      <span class="hljs-attribute">checkColorChange</span>: <span class="hljs-function">-&gt;</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>      checkColorChange: <span class="hljs-function">-&gt;</span></pre></div></div>
             
         </li>
         
@@ -699,7 +699,7 @@ css string will return the triString #f00 value.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>        u.error <span class="hljs-string">"ColorMap.typedColor: cannot modify ColorMap color."</span> <span class="hljs-keyword">if</span> <span class="hljs-property">@map</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>        u.error <span class="hljs-string">"ColorMap.typedColor: cannot modify ColorMap color."</span> <span class="hljs-keyword">if</span> @map</pre></div></div>
             
         </li>
         
@@ -714,7 +714,7 @@ css string will return the triString #f00 value.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>        <span class="hljs-property">@string</span> = <span class="hljs-literal">null</span> <span class="hljs-keyword">if</span> <span class="hljs-property">@string</span> <span class="hljs-comment"># will be lazy evaluated via getString.</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>        @string = <span class="hljs-literal">null</span> <span class="hljs-keyword">if</span> @string <span class="hljs-comment"># will be lazy evaluated via getString.</span></pre></div></div>
             
         </li>
         
@@ -729,7 +729,7 @@ css string will return the triString #f00 value.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>      <span class="hljs-attribute">clone</span>: <span class="hljs-function">-&gt;</span> typeColor @...
+            <div class="content"><div class='highlight'><pre>      clone: <span class="hljs-function">-&gt;</span> typeColor @...
     }</pre></div></div>
             
         </li>
@@ -763,10 +763,10 @@ thus shared and take no space in the color itself.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>      <span class="hljs-attribute">pixel</span>:
-        <span class="hljs-attribute">get</span>: <span class="hljs-function">-&gt;</span> <span class="hljs-property">@pixelArray</span>[<span class="hljs-number">0</span>]
-        <span class="hljs-attribute">set</span>: <span class="hljs-function"><span class="hljs-params">(val)</span> -&gt;</span> <span class="hljs-property">@setPixel</span>(val)
-        <span class="hljs-attribute">enumerable</span>: <span class="hljs-literal">true</span> <span class="hljs-comment"># make visible in stack trace, remove after debugging</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>      pixel:
+        get: <span class="hljs-function">-&gt;</span> @pixelArray[<span class="hljs-number">0</span>]
+        set: <span class="hljs-function"><span class="hljs-params">(val)</span> -&gt;</span> @setPixel(val)
+        enumerable: <span class="hljs-literal">true</span> <span class="hljs-comment"># make visible in stack trace, remove after debugging</span></pre></div></div>
             
         </li>
         
@@ -781,10 +781,10 @@ thus shared and take no space in the color itself.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>      <span class="hljs-attribute">rgba</span>:
-        <span class="hljs-attribute">get</span>: <span class="hljs-function">-&gt;</span> @ <span class="hljs-comment">#.. not needed, already array</span>
-        <span class="hljs-attribute">set</span>: <span class="hljs-function"><span class="hljs-params">(val)</span> -&gt;</span> <span class="hljs-property">@setColor</span>(val...) <span class="hljs-comment"># beware! array GC slows this down.</span>
-        <span class="hljs-attribute">enumerable</span>: <span class="hljs-literal">true</span> <span class="hljs-comment"># make visible in stack trace, remove after debugging</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>      rgba:
+        get: <span class="hljs-function">-&gt;</span> @ <span class="hljs-comment">#.. not needed, already array</span>
+        set: <span class="hljs-function"><span class="hljs-params">(val)</span> -&gt;</span> @setColor(val...) <span class="hljs-comment"># beware! array GC slows this down.</span>
+        enumerable: <span class="hljs-literal">true</span> <span class="hljs-comment"># make visible in stack trace, remove after debugging</span></pre></div></div>
             
         </li>
         
@@ -799,10 +799,10 @@ thus shared and take no space in the color itself.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>      <span class="hljs-attribute">css</span>:
-        <span class="hljs-attribute">get</span>: <span class="hljs-function">-&gt;</span> <span class="hljs-property">@getString</span>()
-        <span class="hljs-attribute">set</span>: <span class="hljs-function"><span class="hljs-params">(val)</span> -&gt;</span> <span class="hljs-property">@setString</span>(val)
-        <span class="hljs-attribute">enumerable</span>: <span class="hljs-literal">true</span> <span class="hljs-comment"># make visible in stack trace, remove after debugging</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>      css:
+        get: <span class="hljs-function">-&gt;</span> @getString()
+        set: <span class="hljs-function"><span class="hljs-params">(val)</span> -&gt;</span> @setString(val)
+        enumerable: <span class="hljs-literal">true</span> <span class="hljs-comment"># make visible in stack trace, remove after debugging</span></pre></div></div>
             
         </li>
         
@@ -817,9 +817,9 @@ thus shared and take no space in the color itself.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>      <span class="hljs-attribute">str</span>:
-        <span class="hljs-attribute">get</span>: <span class="hljs-function">-&gt;</span> <span class="hljs-property">@getString</span>()
-        <span class="hljs-attribute">enumerable</span>: <span class="hljs-literal">true</span> <span class="hljs-comment"># make visible in stack trace, remove after debugging</span>
+            <div class="content"><div class='highlight'><pre>      str:
+        get: <span class="hljs-function">-&gt;</span> @getString()
+        enumerable: <span class="hljs-literal">true</span> <span class="hljs-comment"># make visible in stack trace, remove after debugging</span>
     typedColor</pre></div></div>
             
         </li>
@@ -850,7 +850,7 @@ null useful for testing if color <em>is</em> a color.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">colorType</span>: <span class="hljs-function"><span class="hljs-params">(color)</span> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  colorType: <span class="hljs-function"><span class="hljs-params">(color)</span> -&gt;</span>
     <span class="hljs-keyword">if</span> color.pixelArray  <span class="hljs-keyword">then</span> <span class="hljs-keyword">return</span> <span class="hljs-string">"typed"</span>
     <span class="hljs-keyword">if</span> u.isString color  <span class="hljs-keyword">then</span> <span class="hljs-keyword">return</span> <span class="hljs-string">"css"</span>
     <span class="hljs-keyword">if</span> u.isInteger color <span class="hljs-keyword">then</span> <span class="hljs-keyword">return</span> <span class="hljs-string">"pixel"</span>
@@ -872,12 +872,12 @@ Use randomRgb &amp; randomGrayRgb arrays to create random valid colors.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">arrayToColor</span>: <span class="hljs-function"><span class="hljs-params">(array, type = <span class="hljs-string">"typed"</span>)</span> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  arrayToColor: <span class="hljs-function"><span class="hljs-params">(array, type = <span class="hljs-string">"typed"</span>)</span> -&gt;</span>
     <span class="hljs-keyword">switch</span> type
-      <span class="hljs-keyword">when</span> <span class="hljs-string">"css"</span>   <span class="hljs-keyword">then</span> <span class="hljs-keyword">return</span> <span class="hljs-property">@triString</span> array...
-      <span class="hljs-keyword">when</span> <span class="hljs-string">"pixel"</span> <span class="hljs-keyword">then</span> <span class="hljs-keyword">return</span> <span class="hljs-property">@rgbaToPixel</span> array...
+      <span class="hljs-keyword">when</span> <span class="hljs-string">"css"</span>   <span class="hljs-keyword">then</span> <span class="hljs-keyword">return</span> @triString array...
+      <span class="hljs-keyword">when</span> <span class="hljs-string">"pixel"</span> <span class="hljs-keyword">then</span> <span class="hljs-keyword">return</span> @rgbaToPixel array...
       <span class="hljs-keyword">when</span> <span class="hljs-string">"typed"</span>
-        <span class="hljs-keyword">return</span> <span class="hljs-keyword">if</span> array.buffer <span class="hljs-keyword">then</span> <span class="hljs-property">@typedColor</span> array <span class="hljs-keyword">else</span> <span class="hljs-property">@typedColor</span> array...
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">if</span> array.buffer <span class="hljs-keyword">then</span> @typedColor array <span class="hljs-keyword">else</span> @typedColor array...
     u.error <span class="hljs-string">"arrayToColor: incorrect type: <span class="hljs-subst">#{type}</span>"</span></pre></div></div>
             
         </li>
@@ -893,10 +893,10 @@ Use randomRgb &amp; randomGrayRgb arrays to create random valid colors.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">colorToArray</span>: <span class="hljs-function"><span class="hljs-params">(color)</span> -&gt;</span>
-    <span class="hljs-keyword">switch</span> <span class="hljs-property">@colorType</span>(color)
-      <span class="hljs-keyword">when</span> <span class="hljs-string">"css"</span>   <span class="hljs-keyword">then</span> <span class="hljs-keyword">return</span> <span class="hljs-property">@stringToUint8s</span> color
-      <span class="hljs-keyword">when</span> <span class="hljs-string">"pixel"</span> <span class="hljs-keyword">then</span> <span class="hljs-keyword">return</span> <span class="hljs-property">@pixelToUint8s</span> color
+            <div class="content"><div class='highlight'><pre>  colorToArray: <span class="hljs-function"><span class="hljs-params">(color)</span> -&gt;</span>
+    <span class="hljs-keyword">switch</span> @colorType(color)
+      <span class="hljs-keyword">when</span> <span class="hljs-string">"css"</span>   <span class="hljs-keyword">then</span> <span class="hljs-keyword">return</span> @stringToUint8s color
+      <span class="hljs-keyword">when</span> <span class="hljs-string">"pixel"</span> <span class="hljs-keyword">then</span> <span class="hljs-keyword">return</span> @pixelToUint8s color
       <span class="hljs-keyword">when</span> <span class="hljs-string">"typed"</span> <span class="hljs-keyword">then</span> <span class="hljs-keyword">return</span> color <span class="hljs-comment"># already a (typed) array</span>
     <span class="hljs-keyword">return</span> color <span class="hljs-keyword">if</span> u.isArray(color) <span class="hljs-keyword">or</span> color.buffer
     u.error <span class="hljs-string">"colorToArray: bad color: <span class="hljs-subst">#{color}</span>"</span></pre></div></div>
@@ -915,16 +915,16 @@ Return color if color is already of type.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">convertColor</span>: <span class="hljs-function"><span class="hljs-params">(color, type)</span> -&gt;</span>
-    type0 = <span class="hljs-property">@colorType</span>(color)
+            <div class="content"><div class='highlight'><pre>  convertColor: <span class="hljs-function"><span class="hljs-params">(color, type)</span> -&gt;</span>
+    type0 = @colorType(color)
     <span class="hljs-keyword">return</span> color <span class="hljs-keyword">if</span> type0 <span class="hljs-keyword">is</span> type <span class="hljs-keyword">and</span> type <span class="hljs-keyword">isnt</span> <span class="hljs-string">"css"</span> <span class="hljs-comment"># convert to triColor</span>
     <span class="hljs-keyword">return</span> color[type] <span class="hljs-keyword">if</span> type0 <span class="hljs-keyword">is</span> <span class="hljs-string">"typed"</span>
-    <span class="hljs-property">@arrayToColor</span>(<span class="hljs-property">@colorToArray</span>(color), type)
-  <span class="hljs-attribute">rgbaToColor</span>: <span class="hljs-function"><span class="hljs-params">(r, g, b, a=<span class="hljs-number">255</span>, type=<span class="hljs-string">"typed"</span>)</span> -&gt;</span>
+    @arrayToColor(@colorToArray(color), type)
+  rgbaToColor: <span class="hljs-function"><span class="hljs-params">(r, g, b, a=<span class="hljs-number">255</span>, type=<span class="hljs-string">"typed"</span>)</span> -&gt;</span>
     <span class="hljs-keyword">switch</span> type
-      <span class="hljs-keyword">when</span> <span class="hljs-string">"css"</span>   <span class="hljs-keyword">then</span> <span class="hljs-keyword">return</span> <span class="hljs-property">@triString</span> r,g,b,a
-      <span class="hljs-keyword">when</span> <span class="hljs-string">"pixel"</span> <span class="hljs-keyword">then</span> <span class="hljs-keyword">return</span> <span class="hljs-property">@rgbaToPixel</span> r,g,b,a
-      <span class="hljs-keyword">when</span> <span class="hljs-string">"typed"</span> <span class="hljs-keyword">then</span> <span class="hljs-keyword">return</span> <span class="hljs-property">@typedColor</span> r,g,b,a
+      <span class="hljs-keyword">when</span> <span class="hljs-string">"css"</span>   <span class="hljs-keyword">then</span> <span class="hljs-keyword">return</span> @triString r,g,b,a
+      <span class="hljs-keyword">when</span> <span class="hljs-string">"pixel"</span> <span class="hljs-keyword">then</span> <span class="hljs-keyword">return</span> @rgbaToPixel r,g,b,a
+      <span class="hljs-keyword">when</span> <span class="hljs-string">"typed"</span> <span class="hljs-keyword">then</span> <span class="hljs-keyword">return</span> @typedColor r,g,b,a
     u.error <span class="hljs-string">"rgbaToColor: incorrect type: <span class="hljs-subst">#{type}</span>"</span></pre></div></div>
             
         </li>
@@ -942,8 +942,8 @@ Colors can be of different type:</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">colorsEqual</span>: <span class="hljs-function"><span class="hljs-params">(color1, color2)</span> -&gt;</span>
-    <span class="hljs-property">@convertColor</span>(color1, <span class="hljs-string">"pixel"</span>) <span class="hljs-keyword">is</span> <span class="hljs-property">@convertColor</span>(color2, <span class="hljs-string">"pixel"</span>)
+            <div class="content"><div class='highlight'><pre>  colorsEqual: <span class="hljs-function"><span class="hljs-params">(color1, color2)</span> -&gt;</span>
+    @convertColor(color1, <span class="hljs-string">"pixel"</span>) <span class="hljs-keyword">is</span> @convertColor(color2, <span class="hljs-string">"pixel"</span>)
 };
 Color.initSharedPixel() <span class="hljs-comment"># Initialize the shared buffer pixel/rgb view</span></pre></div></div>
             
@@ -962,7 +962,7 @@ To include them in your model, use:</p>
 </code></pre><p>NetLogo’s 14 base colors names are:</p>
 <pre><code>gray red orange brown yellow green lime turquoise cyan sky blue violet magenta pink
 </code></pre><p>but do not match exactly the css named colors:</p>
-<pre><code>netLogoColors={<span class="hljs-attribute">gray</span>:[<span class="hljs-number">141</span>,<span class="hljs-number">141</span>,<span class="hljs-number">141</span>], <span class="hljs-attribute">red</span>:[<span class="hljs-number">215</span>,<span class="hljs-number">50</span>,<span class="hljs-number">41</span>], <span class="hljs-attribute">orange</span>:[<span class="hljs-number">241</span>,<span class="hljs-number">106</span>,<span class="hljs-number">21</span>], <span class="hljs-attribute">brown</span>:[<span class="hljs-number">157</span>,<span class="hljs-number">110</span>,<span class="hljs-number">72</span>], <span class="hljs-attribute">yellow</span>:[<span class="hljs-number">237</span>,<span class="hljs-number">237</span>,<span class="hljs-number">49</span>], <span class="hljs-attribute">green</span>:[<span class="hljs-number">89</span>,<span class="hljs-number">176</span>,<span class="hljs-number">60</span>], <span class="hljs-attribute">lime</span>:[<span class="hljs-number">44</span>,<span class="hljs-number">209</span>,<span class="hljs-number">59</span>], <span class="hljs-attribute">turquoise</span>:[<span class="hljs-number">29</span>,<span class="hljs-number">159</span>,<span class="hljs-number">120</span>], <span class="hljs-attribute">cyan</span>:[<span class="hljs-number">84</span>,<span class="hljs-number">196</span>,<span class="hljs-number">196</span>], <span class="hljs-attribute">sky</span>:[<span class="hljs-number">45</span>,<span class="hljs-number">141</span>,<span class="hljs-number">190</span>], <span class="hljs-attribute">blue</span>:[<span class="hljs-number">52</span>,<span class="hljs-number">93</span>,<span class="hljs-number">169</span>], <span class="hljs-attribute">violet</span>:[<span class="hljs-number">124</span>,<span class="hljs-number">80</span>,<span class="hljs-number">164</span>], <span class="hljs-attribute">magenta</span>:[<span class="hljs-number">167</span>,<span class="hljs-number">27</span>,<span class="hljs-number">106</span>], <span class="hljs-attribute">pink</span>:[<span class="hljs-number">224</span>,<span class="hljs-number">127</span>,<span class="hljs-number">150</span>]}
+<pre><code>netLogoColors={gray:[<span class="hljs-number">141</span>,<span class="hljs-number">141</span>,<span class="hljs-number">141</span>], red:[<span class="hljs-number">215</span>,<span class="hljs-number">50</span>,<span class="hljs-number">41</span>], orange:[<span class="hljs-number">241</span>,<span class="hljs-number">106</span>,<span class="hljs-number">21</span>], brown:[<span class="hljs-number">157</span>,<span class="hljs-number">110</span>,<span class="hljs-number">72</span>], yellow:[<span class="hljs-number">237</span>,<span class="hljs-number">237</span>,<span class="hljs-number">49</span>], green:[<span class="hljs-number">89</span>,<span class="hljs-number">176</span>,<span class="hljs-number">60</span>], lime:[<span class="hljs-number">44</span>,<span class="hljs-number">209</span>,<span class="hljs-number">59</span>], turquoise:[<span class="hljs-number">29</span>,<span class="hljs-number">159</span>,<span class="hljs-number">120</span>], cyan:[<span class="hljs-number">84</span>,<span class="hljs-number">196</span>,<span class="hljs-number">196</span>], sky:[<span class="hljs-number">45</span>,<span class="hljs-number">141</span>,<span class="hljs-number">190</span>], blue:[<span class="hljs-number">52</span>,<span class="hljs-number">93</span>,<span class="hljs-number">169</span>], violet:[<span class="hljs-number">124</span>,<span class="hljs-number">80</span>,<span class="hljs-number">164</span>], magenta:[<span class="hljs-number">167</span>,<span class="hljs-number">27</span>,<span class="hljs-number">106</span>], pink:[<span class="hljs-number">224</span>,<span class="hljs-number">127</span>,<span class="hljs-number">150</span>]}
 </code></pre>
             </div>
             

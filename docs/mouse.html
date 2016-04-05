@@ -49,13 +49,13 @@ See: <a href="http://goo.gl/dq0nN">addEventListener</a></p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">constructor</span>: <span class="hljs-function"><span class="hljs-params">(<span class="hljs-property">@model</span>, <span class="hljs-property">@callback</span>)</span> -&gt;</span>
-    <span class="hljs-property">@lastX</span> = Infinity; <span class="hljs-property">@lastY</span> = Infinity
-    <span class="hljs-property">@div</span> = <span class="hljs-property">@model</span>.div
-    <span class="hljs-property">@lastAgentsHovered</span> = []
-    <span class="hljs-property">@draggingAgents</span> = []
-    <span class="hljs-property">@divOffset</span> = <span class="hljs-property">@model</span>.div.getBoundingClientRect()
-    <span class="hljs-property">@start</span>()</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  constructor: <span class="hljs-function"><span class="hljs-params">(@model, @callback)</span> -&gt;</span>
+    @lastX = Infinity; @lastY = Infinity
+    @div = @model.div
+    @lastAgentsHovered = []
+    @draggingAgents = []
+    @divOffset = @model.div.getBoundingClientRect()
+    @start()</pre></div></div>
             
         </li>
         
@@ -73,18 +73,18 @@ more standard down/up enabling move events.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">start</span>: <span class="hljs-function">-&gt;</span> <span class="hljs-comment"># Note: multiple calls safe</span>
-    <span class="hljs-property">@div</span>.addEventListener(<span class="hljs-string">"mousedown"</span>, <span class="hljs-property">@handleMouseDown</span>, <span class="hljs-literal">false</span>)
-    <span class="hljs-built_in">document</span>.body.addEventListener(<span class="hljs-string">"mouseup"</span>, <span class="hljs-property">@handleMouseUp</span>, <span class="hljs-literal">false</span>)
-    <span class="hljs-property">@div</span>.addEventListener(<span class="hljs-string">"mousemove"</span>, <span class="hljs-property">@handleMouseMove</span>, <span class="hljs-literal">false</span>)
-    <span class="hljs-property">@model</span>.<span class="hljs-literal">on</span>(<span class="hljs-string">'step'</span>, <span class="hljs-property">@handleStep</span>)
-    <span class="hljs-property">@lastX</span>=<span class="hljs-property">@lastY</span>=<span class="hljs-property">@x</span>=<span class="hljs-property">@y</span>=<span class="hljs-property">@pixX</span>=<span class="hljs-property">@pixY</span>=NaN; <span class="hljs-property">@moved</span>=<span class="hljs-property">@down</span>=<span class="hljs-literal">false</span>
-  <span class="hljs-attribute">stop</span>: <span class="hljs-function">-&gt;</span> <span class="hljs-comment"># Note: multiple calls safe</span>
-    <span class="hljs-property">@div</span>.removeEventListener(<span class="hljs-string">"mousedown"</span>, <span class="hljs-property">@handleMouseDown</span>, <span class="hljs-literal">false</span>)
-    <span class="hljs-built_in">document</span>.body.removeEventListener(<span class="hljs-string">"mouseup"</span>, <span class="hljs-property">@handleMouseUp</span>, <span class="hljs-literal">false</span>)
-    <span class="hljs-property">@div</span>.removeEventListener(<span class="hljs-string">"mousemove"</span>, <span class="hljs-property">@handleMouseMove</span>, <span class="hljs-literal">false</span>)
-    <span class="hljs-property">@model</span>.<span class="hljs-literal">off</span>(<span class="hljs-string">'step'</span>, <span class="hljs-property">@handleStep</span>)
-    <span class="hljs-property">@lastX</span>=<span class="hljs-property">@lastY</span>=<span class="hljs-property">@x</span>=<span class="hljs-property">@y</span>=<span class="hljs-property">@pixX</span>=<span class="hljs-property">@pixY</span>=NaN; <span class="hljs-property">@moved</span>=<span class="hljs-property">@down</span>=<span class="hljs-literal">false</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  start: <span class="hljs-function">-&gt;</span> <span class="hljs-comment"># Note: multiple calls safe</span>
+    @div.addEventListener(<span class="hljs-string">"mousedown"</span>, @handleMouseDown, <span class="hljs-literal">false</span>)
+    <span class="hljs-built_in">document</span>.body.addEventListener(<span class="hljs-string">"mouseup"</span>, @handleMouseUp, <span class="hljs-literal">false</span>)
+    @div.addEventListener(<span class="hljs-string">"mousemove"</span>, @handleMouseMove, <span class="hljs-literal">false</span>)
+    @model.<span class="hljs-literal">on</span>(<span class="hljs-string">'step'</span>, @handleStep)
+    @lastX=@lastY=@x=@y=@pixX=@pixY=NaN; @moved=@down=<span class="hljs-literal">false</span>
+  stop: <span class="hljs-function">-&gt;</span> <span class="hljs-comment"># Note: multiple calls safe</span>
+    @div.removeEventListener(<span class="hljs-string">"mousedown"</span>, @handleMouseDown, <span class="hljs-literal">false</span>)
+    <span class="hljs-built_in">document</span>.body.removeEventListener(<span class="hljs-string">"mouseup"</span>, @handleMouseUp, <span class="hljs-literal">false</span>)
+    @div.removeEventListener(<span class="hljs-string">"mousemove"</span>, @handleMouseMove, <span class="hljs-literal">false</span>)
+    @model.<span class="hljs-literal">off</span>(<span class="hljs-string">'step'</span>, @handleStep)
+    @lastX=@lastY=@x=@y=@pixX=@pixY=NaN; @moved=@down=<span class="hljs-literal">false</span></pre></div></div>
             
         </li>
         
@@ -99,26 +99,26 @@ more standard down/up enabling move events.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">handleMouseDown</span>: <span class="hljs-function"><span class="hljs-params">(e)</span> =&gt;</span>
-    <span class="hljs-property">@down</span> = <span class="hljs-literal">true</span>
-    <span class="hljs-property">@moved</span> = <span class="hljs-literal">false</span>
-    <span class="hljs-property">@handleMouseEvent</span>(e)
-  <span class="hljs-attribute">handleMouseUp</span>: <span class="hljs-function"><span class="hljs-params">(e)</span> =&gt;</span>
-    <span class="hljs-property">@down</span> = <span class="hljs-literal">false</span>
-    <span class="hljs-property">@moved</span> = <span class="hljs-literal">false</span>
-    <span class="hljs-property">@handleMouseEvent</span>(e)
-  <span class="hljs-attribute">handleMouseMove</span>: <span class="hljs-function"><span class="hljs-params">(e)</span> =&gt;</span>
-    <span class="hljs-property">@setXY</span>(e)
-    <span class="hljs-property">@moved</span> = <span class="hljs-literal">true</span>
-    <span class="hljs-property">@handleMouseEvent</span>(e)
-  <span class="hljs-attribute">handleStep</span>: <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span>
-    <span class="hljs-property">@delegateMouseOverAndOutEvents</span>(<span class="hljs-property">@x</span>, <span class="hljs-property">@y</span>) <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> isNaN(<span class="hljs-property">@x</span>)
-  <span class="hljs-attribute">handleMouseEvent</span>: <span class="hljs-function"><span class="hljs-params">(e)</span> =&gt;</span>
-    eventTypes = <span class="hljs-property">@computeEventTypes</span>()
-    <span class="hljs-property">@delegateEventsToAllAgents</span>(eventTypes, e)
-    <span class="hljs-property">@callback</span>(e) <span class="hljs-keyword">if</span> <span class="hljs-property">@callback</span>?
+            <div class="content"><div class='highlight'><pre>  handleMouseDown: <span class="hljs-function"><span class="hljs-params">(e)</span> =&gt;</span>
+    @down = <span class="hljs-literal">true</span>
+    @moved = <span class="hljs-literal">false</span>
+    @handleMouseEvent(e)
+  handleMouseUp: <span class="hljs-function"><span class="hljs-params">(e)</span> =&gt;</span>
+    @down = <span class="hljs-literal">false</span>
+    @moved = <span class="hljs-literal">false</span>
+    @handleMouseEvent(e)
+  handleMouseMove: <span class="hljs-function"><span class="hljs-params">(e)</span> =&gt;</span>
+    @setXY(e)
+    @moved = <span class="hljs-literal">true</span>
+    @handleMouseEvent(e)
+  handleStep: <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span>
+    @delegateMouseOverAndOutEvents(@x, @y) <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> isNaN(@x)
+  handleMouseEvent: <span class="hljs-function"><span class="hljs-params">(e)</span> =&gt;</span>
+    eventTypes = @computeEventTypes()
+    @delegateEventsToAllAgents(eventTypes, e)
+    @callback(e) <span class="hljs-keyword">if</span> @callback?
 
-  <span class="hljs-attribute">getEventPos</span>: <span class="hljs-function"><span class="hljs-params">(e)</span> -&gt;</span></pre></div></div>
+  getEventPos: <span class="hljs-function"><span class="hljs-params">(e)</span> -&gt;</span></pre></div></div>
             
         </li>
         
@@ -143,53 +143,53 @@ previously used e.offsetX, e.offsetY, which was less robust
     <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (e.clientX <span class="hljs-keyword">or</span> e.clientY)
       xPos = e.clientX + <span class="hljs-built_in">document</span>.body.scrollLeft + <span class="hljs-built_in">document</span>.documentElement.scrollLeft
       yPos = e.clientY + <span class="hljs-built_in">document</span>.body.scrollTop + <span class="hljs-built_in">document</span>.documentElement.scrollTop
-    <span class="hljs-keyword">return</span> { <span class="hljs-attribute">x</span>: xPos - <span class="hljs-property">@divOffset</span>.left, <span class="hljs-attribute">y</span>: yPos - <span class="hljs-property">@divOffset</span>.top }
+    <span class="hljs-keyword">return</span> { x: xPos - @divOffset.left, y: yPos - @divOffset.top }
 
-  <span class="hljs-attribute">setXY</span>: <span class="hljs-function"><span class="hljs-params">(e)</span> -&gt;</span>
-    eventPos = <span class="hljs-property">@getEventPos</span>(e)
-    <span class="hljs-property">@lastX</span> = <span class="hljs-property">@x</span>; <span class="hljs-property">@lastY</span> = <span class="hljs-property">@y</span>
-    <span class="hljs-property">@pixX</span> = eventPos.x; <span class="hljs-property">@pixY</span> = eventPos.y
-    [<span class="hljs-property">@x</span>, <span class="hljs-property">@y</span>] = <span class="hljs-property">@model</span>.patches.pixelXYtoPatchXY(<span class="hljs-property">@pixX</span>,<span class="hljs-property">@pixY</span>)
-    <span class="hljs-property">@dx</span> = <span class="hljs-property">@lastX</span> - <span class="hljs-property">@x</span>; <span class="hljs-property">@dy</span> = <span class="hljs-property">@lastY</span> - <span class="hljs-property">@y</span>
+  setXY: <span class="hljs-function"><span class="hljs-params">(e)</span> -&gt;</span>
+    eventPos = @getEventPos(e)
+    @lastX = @x; @lastY = @y
+    @pixX = eventPos.x; @pixY = eventPos.y
+    [@x, @y] = @model.patches.pixelXYtoPatchXY(@pixX,@pixY)
+    @dx = @lastX - @x; @dy = @lastY - @y
 
-  <span class="hljs-attribute">computeEventTypes</span>: <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span>
+  computeEventTypes: <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span>
     eventTypes = []
 
-    <span class="hljs-keyword">if</span> <span class="hljs-property">@down</span> <span class="hljs-keyword">and</span> <span class="hljs-keyword">not</span> <span class="hljs-property">@moved</span>
+    <span class="hljs-keyword">if</span> @down <span class="hljs-keyword">and</span> <span class="hljs-keyword">not</span> @moved
       eventTypes.push <span class="hljs-string">'mousedown'</span>
 
-    <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> <span class="hljs-property">@down</span> <span class="hljs-keyword">and</span> <span class="hljs-keyword">not</span> <span class="hljs-property">@moved</span>
+    <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> @down <span class="hljs-keyword">and</span> <span class="hljs-keyword">not</span> @moved
       eventTypes.push <span class="hljs-string">'mouseup'</span>
 
-    <span class="hljs-keyword">if</span> <span class="hljs-property">@down</span> <span class="hljs-keyword">and</span> <span class="hljs-property">@moved</span>
-      <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> <span class="hljs-property">@dragging</span>
+    <span class="hljs-keyword">if</span> @down <span class="hljs-keyword">and</span> @moved
+      <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> @dragging
         eventTypes.push <span class="hljs-string">'dragstart'</span>
-      <span class="hljs-property">@dragging</span> = <span class="hljs-literal">true</span>
+      @dragging = <span class="hljs-literal">true</span>
 
-    <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> <span class="hljs-property">@down</span> <span class="hljs-keyword">and</span> <span class="hljs-property">@dragging</span>
-      <span class="hljs-property">@dragging</span> = <span class="hljs-literal">false</span>
-      <span class="hljs-property">@dragEnd</span> = <span class="hljs-literal">true</span>
+    <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> @down <span class="hljs-keyword">and</span> @dragging
+      @dragging = <span class="hljs-literal">false</span>
+      @dragEnd = <span class="hljs-literal">true</span>
 
-    <span class="hljs-keyword">if</span> <span class="hljs-property">@moved</span>
+    <span class="hljs-keyword">if</span> @moved
       eventTypes.push <span class="hljs-string">'mousemove'</span>
 
     <span class="hljs-keyword">return</span> eventTypes
 
-  <span class="hljs-attribute">delegateEventsToAllAgents</span>: <span class="hljs-function"><span class="hljs-params">(types, e)</span> -&gt;</span>
-    delegatedAgent = <span class="hljs-property">@delegateEventsToTurtlesAtPoint</span>(types, <span class="hljs-property">@x</span>, <span class="hljs-property">@y</span>, e)
+  delegateEventsToAllAgents: <span class="hljs-function"><span class="hljs-params">(types, e)</span> -&gt;</span>
+    delegatedAgent = @delegateEventsToTurtlesAtPoint(types, @x, @y, e)
     <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> delegatedAgent
-      delegatedAgent = <span class="hljs-property">@delegateEventsToLinksAtPoint</span>(types, <span class="hljs-property">@x</span>, <span class="hljs-property">@y</span>, e)
+      delegatedAgent = @delegateEventsToLinksAtPoint(types, @x, @y, e)
     <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> delegatedAgent
-      <span class="hljs-property">@delegateEventsToPatchAtPoint</span>(types, <span class="hljs-property">@x</span>, <span class="hljs-property">@y</span>, e)
-    <span class="hljs-property">@delegateDragEvents</span>(<span class="hljs-property">@x</span>, <span class="hljs-property">@y</span>, e)
-    <span class="hljs-property">@delegateMouseOverAndOutEvents</span>(<span class="hljs-property">@x</span>, <span class="hljs-property">@y</span>, e)
+      @delegateEventsToPatchAtPoint(types, @x, @y, e)
+    @delegateDragEvents(@x, @y, e)
+    @delegateMouseOverAndOutEvents(@x, @y, e)
 
-  <span class="hljs-attribute">delegateEventsToPatchAtPoint</span>: <span class="hljs-function"><span class="hljs-params">(eventTypes, x, y, e)</span> -&gt;</span>
-    curPatch = <span class="hljs-property">@model</span>.patches.patch(x, y)
-    <span class="hljs-property">@emitAgentEvent</span>(type, curPatch, <span class="hljs-property">@mouseEvent</span>(curPatch, e)) <span class="hljs-keyword">for</span> type <span class="hljs-keyword">in</span> eventTypes
+  delegateEventsToPatchAtPoint: <span class="hljs-function"><span class="hljs-params">(eventTypes, x, y, e)</span> -&gt;</span>
+    curPatch = @model.patches.patch(x, y)
+    @emitAgentEvent(type, curPatch, @mouseEvent(curPatch, e)) <span class="hljs-keyword">for</span> type <span class="hljs-keyword">in</span> eventTypes
 
-  <span class="hljs-attribute">delegateEventsToTurtlesAtPoint</span>: <span class="hljs-function"><span class="hljs-params">(eventTypes, x, y, e)</span> -&gt;</span>
-    curPatch = <span class="hljs-property">@model</span>.patches.patch(x, y)</pre></div></div>
+  delegateEventsToTurtlesAtPoint: <span class="hljs-function"><span class="hljs-params">(eventTypes, x, y, e)</span> -&gt;</span>
+    curPatch = @model.patches.patch(x, y)</pre></div></div>
             
         </li>
         
@@ -207,38 +207,38 @@ previously used e.offsetX, e.offsetY, which was less robust
             <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">for</span> patch <span class="hljs-keyword">in</span> curPatch.n.concat(curPatch)
       <span class="hljs-keyword">for</span> turtle <span class="hljs-keyword">in</span> patch.turtlesHere()
         <span class="hljs-keyword">if</span> turtle.hitTest(x, y)
-          <span class="hljs-property">@emitAgentEvent</span>(type, turtle, <span class="hljs-property">@mouseEvent</span>(turtle, e)) <span class="hljs-keyword">for</span> type <span class="hljs-keyword">in</span> eventTypes
+          @emitAgentEvent(type, turtle, @mouseEvent(turtle, e)) <span class="hljs-keyword">for</span> type <span class="hljs-keyword">in</span> eventTypes
           <span class="hljs-keyword">return</span> turtle
 
-  <span class="hljs-attribute">delegateEventsToLinksAtPoint</span>: <span class="hljs-function"><span class="hljs-params">(eventTypes, x, y, e)</span> -&gt;</span>
-    <span class="hljs-keyword">for</span> link <span class="hljs-keyword">in</span> <span class="hljs-property">@model</span>.links
+  delegateEventsToLinksAtPoint: <span class="hljs-function"><span class="hljs-params">(eventTypes, x, y, e)</span> -&gt;</span>
+    <span class="hljs-keyword">for</span> link <span class="hljs-keyword">in</span> @model.links
       <span class="hljs-keyword">if</span> link.hitTest(x, y)
-        mouseEvent = <span class="hljs-property">@mouseEvent</span>(link, e)
-        <span class="hljs-property">@emitAgentEvent</span>(type, link, mouseEvent) <span class="hljs-keyword">for</span> type <span class="hljs-keyword">in</span> eventTypes
+        mouseEvent = @mouseEvent(link, e)
+        @emitAgentEvent(type, link, mouseEvent) <span class="hljs-keyword">for</span> type <span class="hljs-keyword">in</span> eventTypes
         <span class="hljs-keyword">return</span> link
 
-  <span class="hljs-attribute">emitAgentEvent</span>: <span class="hljs-function"><span class="hljs-params">(eventType, agent, mouseEvent)</span> -&gt;</span>
+  emitAgentEvent: <span class="hljs-function"><span class="hljs-params">(eventType, agent, mouseEvent)</span> -&gt;</span>
     <span class="hljs-keyword">if</span> eventType == <span class="hljs-string">'dragstart'</span>
-      <span class="hljs-property">@draggingAgents</span>.push(agent)
+      @draggingAgents.push(agent)
     agent.breed.emit(eventType, mouseEvent)
     <span class="hljs-keyword">if</span> agent.breed.mainSet?
       agent.breed.mainSet.emit(eventType, mouseEvent)
 
-  <span class="hljs-attribute">delegateDragEvents</span>: <span class="hljs-function"><span class="hljs-params">(x, y, e)</span> =&gt;</span>
-    <span class="hljs-keyword">for</span> agent <span class="hljs-keyword">in</span> <span class="hljs-property">@draggingAgents</span>
-      mouseEvent = <span class="hljs-property">@mouseEvent</span>(agent, e)
-      <span class="hljs-keyword">if</span> <span class="hljs-property">@moved</span> <span class="hljs-keyword">then</span> <span class="hljs-property">@emitAgentEvent</span>(<span class="hljs-string">'drag'</span>, agent, mouseEvent)
-      <span class="hljs-keyword">if</span> <span class="hljs-property">@dragEnd</span> <span class="hljs-keyword">then</span> <span class="hljs-property">@emitAgentEvent</span>(<span class="hljs-string">'dragend'</span>, agent, mouseEvent)
-    <span class="hljs-keyword">if</span> <span class="hljs-property">@dragEnd</span>
-      <span class="hljs-property">@draggingAgents</span> = []
-      <span class="hljs-property">@dragEnd</span> = <span class="hljs-literal">false</span>
+  delegateDragEvents: <span class="hljs-function"><span class="hljs-params">(x, y, e)</span> =&gt;</span>
+    <span class="hljs-keyword">for</span> agent <span class="hljs-keyword">in</span> @draggingAgents
+      mouseEvent = @mouseEvent(agent, e)
+      <span class="hljs-keyword">if</span> @moved <span class="hljs-keyword">then</span> @emitAgentEvent(<span class="hljs-string">'drag'</span>, agent, mouseEvent)
+      <span class="hljs-keyword">if</span> @dragEnd <span class="hljs-keyword">then</span> @emitAgentEvent(<span class="hljs-string">'dragend'</span>, agent, mouseEvent)
+    <span class="hljs-keyword">if</span> @dragEnd
+      @draggingAgents = []
+      @dragEnd = <span class="hljs-literal">false</span>
 
-  <span class="hljs-attribute">delegateMouseOverAndOutEvents</span>: <span class="hljs-function"><span class="hljs-params">(x, y, e)</span> =&gt;</span>
+  delegateMouseOverAndOutEvents: <span class="hljs-function"><span class="hljs-params">(x, y, e)</span> =&gt;</span>
     agentsHere = {}
     agents = []
-    curPatch = <span class="hljs-property">@model</span>.patches.patch(x, y)
+    curPatch = @model.patches.patch(x, y)
 
-    agents = u.clone(<span class="hljs-property">@model</span>.links)
+    agents = u.clone(@model.links)
     <span class="hljs-keyword">for</span> patch <span class="hljs-keyword">in</span> curPatch.n.concat(curPatch)
       agents = agents.concat(patch.turtlesHere())</pre></div></div>
             
@@ -259,8 +259,8 @@ previously used e.offsetX, e.offsetY, which was less robust
       <span class="hljs-keyword">if</span> agent.hitTest(x, y)
         agentsHere[agent.breed.name] ?= {}
         agentsHere[agent.breed.name][agent.id] = agent
-        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">not</span> <span class="hljs-property">@lastAgentsHovered</span>[agent.breed.name] <span class="hljs-keyword">or</span> agent.id <span class="hljs-keyword">not</span> <span class="hljs-keyword">of</span> <span class="hljs-property">@lastAgentsHovered</span>[agent.breed.name])
-          <span class="hljs-property">@emitAgentEvent</span>(<span class="hljs-string">'mouseover'</span>, agent, <span class="hljs-property">@mouseEvent</span>(agent, e))</pre></div></div>
+        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">not</span> @lastAgentsHovered[agent.breed.name] <span class="hljs-keyword">or</span> agent.id <span class="hljs-keyword">not</span> <span class="hljs-keyword">of</span> @lastAgentsHovered[agent.breed.name])
+          @emitAgentEvent(<span class="hljs-string">'mouseover'</span>, agent, @mouseEvent(agent, e))</pre></div></div>
             
         </li>
         
@@ -275,16 +275,16 @@ previously used e.offsetX, e.offsetY, which was less robust
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">for</span> breedname <span class="hljs-keyword">of</span> <span class="hljs-property">@lastAgentsHovered</span>
-      <span class="hljs-keyword">for</span> agentId <span class="hljs-keyword">of</span> <span class="hljs-property">@lastAgentsHovered</span>[breedname]
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">for</span> breedname <span class="hljs-keyword">of</span> @lastAgentsHovered
+      <span class="hljs-keyword">for</span> agentId <span class="hljs-keyword">of</span> @lastAgentsHovered[breedname]
         <span class="hljs-keyword">if</span> (<span class="hljs-keyword">not</span> agentsHere[breedname] <span class="hljs-keyword">or</span> agentId <span class="hljs-keyword">not</span> <span class="hljs-keyword">of</span> agentsHere[breedname])
-          agent = <span class="hljs-property">@lastAgentsHovered</span>[breedname][agentId]
-          <span class="hljs-property">@emitAgentEvent</span>(<span class="hljs-string">'mouseout'</span>, agent, <span class="hljs-property">@mouseEvent</span>(agent, e))
+          agent = @lastAgentsHovered[breedname][agentId]
+          @emitAgentEvent(<span class="hljs-string">'mouseout'</span>, agent, @mouseEvent(agent, e))
 
-    <span class="hljs-property">@lastAgentsHovered</span> = agentsHere
+    @lastAgentsHovered = agentsHere
 
-  <span class="hljs-attribute">mouseEvent</span>: <span class="hljs-function"><span class="hljs-params">(agent, e)</span> -&gt;</span>
-    <span class="hljs-keyword">return</span> {<span class="hljs-attribute">target</span>: agent, <span class="hljs-attribute">patchX</span>: <span class="hljs-property">@x</span>, <span class="hljs-attribute">patchY</span>: <span class="hljs-property">@y</span>, <span class="hljs-attribute">dx</span>: <span class="hljs-property">@dx</span>, <span class="hljs-attribute">dy</span>: <span class="hljs-property">@dy</span>, <span class="hljs-attribute">originalEvent</span>: e}</pre></div></div>
+  mouseEvent: <span class="hljs-function"><span class="hljs-params">(agent, e)</span> -&gt;</span>
+    <span class="hljs-keyword">return</span> {target: agent, patchX: @x, patchY: @y, dx: @dx, dy: @dy, originalEvent: e}</pre></div></div>
             
         </li>
         

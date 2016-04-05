@@ -77,10 +77,10 @@ if world.neighbors is true, the default.</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>
-  <span class="hljs-attribute">id</span>: <span class="hljs-literal">null</span>            <span class="hljs-comment"># unique id, promoted by agentset create factory method</span>
-  <span class="hljs-attribute">breed</span>: <span class="hljs-literal">null</span>         <span class="hljs-comment"># set by the agentSet owning this patch</span>
-  <span class="hljs-attribute">x</span>:<span class="hljs-literal">null</span>; <span class="hljs-attribute">y</span>:<span class="hljs-literal">null</span>      <span class="hljs-comment"># The patch position in the patch grid</span>
-  <span class="hljs-attribute">n</span>:<span class="hljs-literal">null</span>; <span class="hljs-attribute">n4</span>:<span class="hljs-literal">null</span>     <span class="hljs-comment"># The neighbors, n: 8, n4: 4. null OK if model doesn't need them.</span></pre></div></div>
+  id: <span class="hljs-literal">null</span>            <span class="hljs-comment"># unique id, promoted by agentset create factory method</span>
+  breed: <span class="hljs-literal">null</span>         <span class="hljs-comment"># set by the agentSet owning this patch</span>
+  x:<span class="hljs-literal">null</span>; y:<span class="hljs-literal">null</span>      <span class="hljs-comment"># The patch position in the patch grid</span>
+  n:<span class="hljs-literal">null</span>; n4:<span class="hljs-literal">null</span>     <span class="hljs-comment"># The neighbors, n: 8, n4: 4. null OK if model doesn't need them.</span></pre></div></div>
             
         </li>
         
@@ -95,8 +95,8 @@ if world.neighbors is true, the default.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">hidden</span>: <span class="hljs-literal">false</span>       <span class="hljs-comment"># draw me?</span>
-  <span class="hljs-attribute">label</span>: <span class="hljs-literal">null</span>         <span class="hljs-comment"># text for the patch</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  hidden: <span class="hljs-literal">false</span>       <span class="hljs-comment"># draw me?</span>
+  label: <span class="hljs-literal">null</span>         <span class="hljs-comment"># text for the patch</span></pre></div></div>
             
         </li>
         
@@ -111,8 +111,8 @@ if world.neighbors is true, the default.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">labelOffset</span>: [<span class="hljs-number">0</span>,<span class="hljs-number">0</span>]  <span class="hljs-comment"># text offset from the patch center</span>
-  <span class="hljs-attribute">pRect</span>: <span class="hljs-literal">null</span>         <span class="hljs-comment"># Performance: cached rect of neighborhood larger than n.</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  labelOffset: [<span class="hljs-number">0</span>,<span class="hljs-number">0</span>]  <span class="hljs-comment"># text offset from the patch center</span>
+  pRect: <span class="hljs-literal">null</span>         <span class="hljs-comment"># Performance: cached rect of neighborhood larger than n.</span></pre></div></div>
             
         </li>
         
@@ -127,7 +127,7 @@ if world.neighbors is true, the default.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">constructor</span>: <span class="hljs-function"><span class="hljs-params">(<span class="hljs-property">@x</span>, <span class="hljs-property">@y</span>)</span> -&gt;</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  constructor: <span class="hljs-function"><span class="hljs-params">(@x, @y)</span> -&gt;</span></pre></div></div>
             
         </li>
         
@@ -142,7 +142,7 @@ if world.neighbors is true, the default.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">toString</span>: <span class="hljs-function">-&gt;</span> <span class="hljs-string">"{id:<span class="hljs-subst">#{<span class="hljs-property">@id</span>}</span> xy:<span class="hljs-subst">#{[<span class="hljs-property">@x</span>,<span class="hljs-property">@y</span>]}</span> c:<span class="hljs-subst">#{<span class="hljs-property">@color</span>}</span>}"</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  toString: <span class="hljs-function">-&gt;</span> <span class="hljs-string">"{id:<span class="hljs-subst">#{@id}</span> xy:<span class="hljs-subst">#{[@x,@y]}</span> c:<span class="hljs-subst">#{@color}</span>}"</span></pre></div></div>
             
         </li>
         
@@ -155,12 +155,12 @@ if world.neighbors is true, the default.</p>
               </div>
               <p>Set patch color to <code>c</code> scaled by <code>s</code>. Usage:</p>
 <pre><code>p.scaleColor p.color, <span class="hljs-number">.8</span> <span class="hljs-comment"># reduce patch color by .8</span>
-p.scaleColor <span class="hljs-property">@foodColor</span>, p.foodPheromone <span class="hljs-comment"># ants model</span>
+p.scaleColor @foodColor, p.foodPheromone <span class="hljs-comment"># ants model</span>
 </code></pre><p>Promotes color if currently using the default.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">scaleColor</span>: <span class="hljs-function"><span class="hljs-params">(c, s)</span> -&gt;</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  scaleColor: <span class="hljs-function"><span class="hljs-params">(c, s)</span> -&gt;</span></pre></div></div>
             
         </li>
         
@@ -177,11 +177,11 @@ u.scaleColor c, s, @color</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>    u.deprecated <span class="hljs-string">"Patch.scaleColor: use ColorMaps ramps or closestColor"</span>
-    <span class="hljs-property">@color</span> = ColorMaps.scaleColor(c, s)
+    @color = ColorMaps.scaleColor(c, s)
 
-  <span class="hljs-attribute">scaleOpacity</span>: <span class="hljs-function"><span class="hljs-params">(c, s)</span> -&gt;</span>
+  scaleOpacity: <span class="hljs-function"><span class="hljs-params">(c, s)</span> -&gt;</span>
     u.deprecated <span class="hljs-string">"Patch.scaleOpacity: use ColorMaps ramps"</span>
-    <span class="hljs-property">@color</span> = u.scaleOpacity c, s, <span class="hljs-property">@color</span></pre></div></div>
+    @color = u.scaleOpacity c, s, @color</pre></div></div>
             
         </li>
         
@@ -210,14 +210,14 @@ u.scaleOpacity c, s, @color</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">draw</span>: <span class="hljs-function"><span class="hljs-params">(ctx)</span> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  draw: <span class="hljs-function"><span class="hljs-params">(ctx)</span> -&gt;</span>
     u.deprecated <span class="hljs-string">"Patch.draw not used, Patches.draw uses pixels"</span>
-    ctx.fillStyle = <span class="hljs-property">@color</span>.css <span class="hljs-comment"># u.colorStr @color</span>
-    ctx.fillRect <span class="hljs-property">@x</span>-<span class="hljs-number">.5</span>, <span class="hljs-property">@y</span>-<span class="hljs-number">.5</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>
-    <span class="hljs-keyword">if</span> <span class="hljs-property">@label</span>? <span class="hljs-comment"># REMIND: should be 2nd pass.</span>
-      [x,y] = <span class="hljs-property">@breed</span>.patchXYtoPixelXY <span class="hljs-property">@x</span>, <span class="hljs-property">@y</span>
-      u.ctxDrawText ctx, <span class="hljs-property">@label</span>,
-        x+<span class="hljs-property">@labelOffset</span>[<span class="hljs-number">0</span>], y+<span class="hljs-property">@labelOffset</span>[<span class="hljs-number">1</span>], <span class="hljs-property">@labelColor</span>.css</pre></div></div>
+    ctx.fillStyle = @color.css <span class="hljs-comment"># u.colorStr @color</span>
+    ctx.fillRect @x<span class="hljs-number">-.5</span>, @y<span class="hljs-number">-.5</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>
+    <span class="hljs-keyword">if</span> @label? <span class="hljs-comment"># REMIND: should be 2nd pass.</span>
+      [x,y] = @breed.patchXYtoPixelXY @x, @y
+      u.ctxDrawText ctx, @label,
+        x+@labelOffset[<span class="hljs-number">0</span>], y+@labelOffset[<span class="hljs-number">1</span>], @labelColor.css</pre></div></div>
             
         </li>
         
@@ -232,7 +232,7 @@ u.scaleOpacity c, s, @color</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">inRadius</span>: <span class="hljs-function"><span class="hljs-params">(agentSet, radius)</span> -&gt;</span> agentSet.inRadius @, radius</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  inRadius: <span class="hljs-function"><span class="hljs-params">(agentSet, radius)</span> -&gt;</span> agentSet.inRadius @, radius</pre></div></div>
             
         </li>
         
@@ -250,11 +250,11 @@ as they move from patch to patch.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">turtlesHere</span>: <span class="hljs-function">-&gt;</span>
-    u.deprecated <span class="hljs-string">"Patch.turtlesHere: make caching default"</span> <span class="hljs-keyword">unless</span> <span class="hljs-property">@turtles</span>
-    <span class="hljs-property">@turtles</span> ? (a <span class="hljs-keyword">for</span> a <span class="hljs-keyword">in</span> <span class="hljs-property">@model</span>.turtles <span class="hljs-keyword">when</span> a.p <span class="hljs-keyword">is</span> @)
-  <span class="hljs-attribute">breedsHere</span>: <span class="hljs-function"><span class="hljs-params">(breed)</span> -&gt;</span>
-    (a <span class="hljs-keyword">for</span> a <span class="hljs-keyword">in</span> <span class="hljs-property">@turtlesHere</span>() <span class="hljs-keyword">when</span> a.breed <span class="hljs-keyword">is</span> breed)</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  turtlesHere: <span class="hljs-function">-&gt;</span>
+    u.deprecated <span class="hljs-string">"Patch.turtlesHere: make caching default"</span> <span class="hljs-keyword">unless</span> @turtles
+    @turtles ? (a <span class="hljs-keyword">for</span> a <span class="hljs-keyword">in</span> @model.turtles <span class="hljs-keyword">when</span> a.p <span class="hljs-keyword">is</span> @)
+  breedsHere: <span class="hljs-function"><span class="hljs-params">(breed)</span> -&gt;</span>
+    (a <span class="hljs-keyword">for</span> a <span class="hljs-keyword">in</span> @turtlesHere() <span class="hljs-keyword">when</span> a.breed <span class="hljs-keyword">is</span> breed)</pre></div></div>
             
         </li>
         
@@ -269,9 +269,9 @@ as they move from patch to patch.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">isOnEdge</span>: <span class="hljs-function">-&gt;</span>
-    <span class="hljs-property">@x</span> <span class="hljs-keyword">is</span> <span class="hljs-property">@breed</span>.minX <span class="hljs-keyword">or</span> <span class="hljs-property">@x</span> <span class="hljs-keyword">is</span> <span class="hljs-property">@breed</span>.maxX <span class="hljs-keyword">or</span> \
-    <span class="hljs-property">@y</span> <span class="hljs-keyword">is</span> <span class="hljs-property">@breed</span>.minY <span class="hljs-keyword">or</span> <span class="hljs-property">@y</span> <span class="hljs-keyword">is</span> <span class="hljs-property">@breed</span>.maxY</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  isOnEdge: <span class="hljs-function">-&gt;</span>
+    @x <span class="hljs-keyword">is</span> @breed.minX <span class="hljs-keyword">or</span> @x <span class="hljs-keyword">is</span> @breed.maxX <span class="hljs-keyword">or</span> \
+    @y <span class="hljs-keyword">is</span> @breed.minY <span class="hljs-keyword">or</span> @y <span class="hljs-keyword">is</span> @breed.maxY</pre></div></div>
             
         </li>
         
@@ -287,9 +287,9 @@ function is called on the new turtle after inserting in its agentset.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">sprout</span>: <span class="hljs-function"><span class="hljs-params">(num = <span class="hljs-number">1</span>, breed = <span class="hljs-property">@model</span>.turtles, init = -&gt;)</span> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  sprout: <span class="hljs-function"><span class="hljs-params">(num = <span class="hljs-number">1</span>, breed = @model.turtles, init = -&gt;)</span> -&gt;</span>
     breed.create num, <span class="hljs-function"><span class="hljs-params">(a)</span> =&gt;</span> <span class="hljs-comment"># fat arrow so that @ = this patch</span>
-      a.setXY <span class="hljs-property">@x</span>, <span class="hljs-property">@y</span>; init(a); a</pre></div></div>
+      a.setXY @x, @y; init(a); a</pre></div></div>
             
         </li>
         

@@ -61,7 +61,7 @@ the agentClass (breed) variable shared by all the turtles in this set.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">constructor</span>: <span class="hljs-function">-&gt;</span> <span class="hljs-comment"># model, agentClass, name, mainSet</span>
+            <div class="content"><div class='highlight'><pre>  constructor: <span class="hljs-function">-&gt;</span> <span class="hljs-comment"># model, agentClass, name, mainSet</span>
     <span class="hljs-keyword">super</span> <span class="hljs-comment"># call super with all the args I was called with</span></pre></div></div>
             
         </li>
@@ -91,7 +91,7 @@ Optimizes Turtle a.myLinks method. Call before any turtles created.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">cacheLinks</span>: <span class="hljs-function">-&gt;</span> <span class="hljs-property">@agentClass</span>::cacheLinks = <span class="hljs-literal">true</span> <span class="hljs-comment"># all turtles, not individual breeds</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  cacheLinks: <span class="hljs-function">-&gt;</span> @agentClass::cacheLinks = <span class="hljs-literal">true</span> <span class="hljs-comment"># all turtles, not individual breeds</span></pre></div></div>
             
         </li>
         
@@ -106,9 +106,9 @@ Optimizes Turtle a.myLinks method. Call before any turtles created.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">setUseSprites</span>: <span class="hljs-function"><span class="hljs-params">(useSprites=<span class="hljs-literal">true</span>)</span> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  setUseSprites: <span class="hljs-function"><span class="hljs-params">(useSprites=<span class="hljs-literal">true</span>)</span> -&gt;</span>
     u.deprecated <span class="hljs-string">'Turtles.setUseSprites: use turtles.setDefault("useSprites",bool)'</span>
-    <span class="hljs-property">@setDefault</span>(<span class="hljs-string">"useSprites"</span>, useSprites)</pre></div></div>
+    @setDefault(<span class="hljs-string">"useSprites"</span>, useSprites)</pre></div></div>
             
         </li>
         
@@ -124,8 +124,8 @@ function is called on the new turtle after inserting in its agentset.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">create</span>: <span class="hljs-function"><span class="hljs-params">(num, init = -&gt;)</span> -&gt;</span> <span class="hljs-comment"># returns array of new turtles too</span>
-    (<span class="hljs-function"><span class="hljs-params">(o)</span> -&gt;</span> init(o); o) <span class="hljs-property">@add</span> <span class="hljs-keyword">new</span> <span class="hljs-property">@agentClass</span> <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> [<span class="hljs-number">1.</span>.num] <span class="hljs-keyword">by</span> <span class="hljs-number">1</span> <span class="hljs-comment"># too tricky?</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  create: <span class="hljs-function"><span class="hljs-params">(num, init = -&gt;)</span> -&gt;</span> <span class="hljs-comment"># returns array of new turtles too</span>
+    (<span class="hljs-function"><span class="hljs-params">(o)</span> -&gt;</span> init(o); o) @add <span class="hljs-keyword">new</span> @agentClass <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> [<span class="hljs-number">1.</span>.num] <span class="hljs-keyword">by</span> <span class="hljs-number">1</span> <span class="hljs-comment"># too tricky?</span></pre></div></div>
             
         </li>
         
@@ -141,7 +141,7 @@ Note call in reverse order to optimize list restructuring.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">clear</span>: <span class="hljs-function">-&gt;</span> <span class="hljs-property">@last</span>().die() <span class="hljs-keyword">while</span> <span class="hljs-property">@any</span>(); <span class="hljs-literal">null</span> <span class="hljs-comment"># tricky, each die modifies list</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  clear: <span class="hljs-function">-&gt;</span> @last().die() <span class="hljs-keyword">while</span> @any(); <span class="hljs-literal">null</span> <span class="hljs-comment"># tricky, each die modifies list</span></pre></div></div>
             
         </li>
         
@@ -157,7 +157,7 @@ the mainSet, returns just the turtles that are not subclassed breeds.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">breedsIn</span>: <span class="hljs-function"><span class="hljs-params">(array)</span> -&gt;</span> <span class="hljs-property">@asSet</span> (o <span class="hljs-keyword">for</span> o <span class="hljs-keyword">in</span> array <span class="hljs-keyword">when</span> o.breed <span class="hljs-keyword">is</span> @)</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  breedsIn: <span class="hljs-function"><span class="hljs-params">(array)</span> -&gt;</span> @asSet (o <span class="hljs-keyword">for</span> o <span class="hljs-keyword">in</span> array <span class="hljs-keyword">when</span> o.breed <span class="hljs-keyword">is</span> @)</pre></div></div>
             
         </li>
         
@@ -172,7 +172,7 @@ the mainSet, returns just the turtles that are not subclassed breeds.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">inPatches</span>: <span class="hljs-function"><span class="hljs-params">(patches)</span> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  inPatches: <span class="hljs-function"><span class="hljs-params">(patches)</span> -&gt;</span>
     array = []
     array.push p.turtlesHere()... <span class="hljs-keyword">for</span> p <span class="hljs-keyword">in</span> patches <span class="hljs-comment"># concat measured slower</span></pre></div></div>
             
@@ -189,7 +189,7 @@ the mainSet, returns just the turtles that are not subclassed breeds.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">if</span> <span class="hljs-property">@mainSet</span>? <span class="hljs-keyword">then</span> <span class="hljs-property">@breedsIn</span> array <span class="hljs-keyword">else</span> <span class="hljs-property">@asSet</span> array</pre></div></div>
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">if</span> @mainSet? <span class="hljs-keyword">then</span> @breedsIn array <span class="hljs-keyword">else</span> @asSet array</pre></div></div>
             
         </li>
         
@@ -204,9 +204,9 @@ the mainSet, returns just the turtles that are not subclassed breeds.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">inRect</span>: <span class="hljs-function"><span class="hljs-params">(p, dx, dy=dx)</span> -&gt;</span>
-    rect = <span class="hljs-property">@model</span>.patches.patchRect p, dx, dy <span class="hljs-comment">#, true</span>
-    <span class="hljs-property">@inPatches</span> rect</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  inRect: <span class="hljs-function"><span class="hljs-params">(p, dx, dy=dx)</span> -&gt;</span>
+    rect = @model.patches.patchRect p, dx, dy <span class="hljs-comment">#, true</span>
+    @inPatches rect</pre></div></div>
             
         </li>
         
@@ -222,8 +222,8 @@ from me, using patch topology</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">inRadius</span>: <span class="hljs-function"><span class="hljs-params">(agent, radius)</span> -&gt;</span>
-    as = <span class="hljs-property">@inRect</span>( (agent.p ? agent), Math.ceil(radius) )
+            <div class="content"><div class='highlight'><pre>  inRadius: <span class="hljs-function"><span class="hljs-params">(agent, radius)</span> -&gt;</span>
+    as = @inRect( (agent.p ? agent), Math.ceil(radius) )
     as.inRadius agent, radius</pre></div></div>
             
         </li>
@@ -241,18 +241,18 @@ using patch topology</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">inCone</span>: <span class="hljs-function"><span class="hljs-params">(agent, radius, angle, heading)</span> -&gt;</span>
-    as = <span class="hljs-property">@inRect</span>( (agent.p ? agent), Math.ceil(radius) )
+            <div class="content"><div class='highlight'><pre>  inCone: <span class="hljs-function"><span class="hljs-params">(agent, radius, angle, heading)</span> -&gt;</span>
+    as = @inRect( (agent.p ? agent), Math.ceil(radius) )
     as.inCone agent, radius, angle, heading
 
-  <span class="hljs-attribute">setDraggable</span>: <span class="hljs-function">-&gt;</span>
-    <span class="hljs-property">@on</span> <span class="hljs-string">'dragstart'</span>, <span class="hljs-function"><span class="hljs-params">(mouseEvent)</span> =&gt;</span>
+  setDraggable: <span class="hljs-function">-&gt;</span>
+    @on <span class="hljs-string">'dragstart'</span>, <span class="hljs-function"><span class="hljs-params">(mouseEvent)</span> =&gt;</span>
       mouseEvent.target.dragging = <span class="hljs-literal">true</span>
 
-    <span class="hljs-property">@on</span> <span class="hljs-string">'dragend'</span>, <span class="hljs-function"><span class="hljs-params">(mouseEvent)</span> =&gt;</span>
+    @on <span class="hljs-string">'dragend'</span>, <span class="hljs-function"><span class="hljs-params">(mouseEvent)</span> =&gt;</span>
       mouseEvent.target.dragging = <span class="hljs-literal">false</span>
 
-    <span class="hljs-property">@on</span> <span class="hljs-string">'drag'</span>, <span class="hljs-function"><span class="hljs-params">(mouseEvent)</span> =&gt;</span>
+    @on <span class="hljs-string">'drag'</span>, <span class="hljs-function"><span class="hljs-params">(mouseEvent)</span> =&gt;</span>
       mouseEvent.target.setXY(mouseEvent.patchX, mouseEvent.patchY)</pre></div></div>
             
         </li>

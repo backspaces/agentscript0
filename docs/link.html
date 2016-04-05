@@ -71,19 +71,19 @@
             </div>
             
             <div class="content"><div class='highlight'><pre>
-  <span class="hljs-attribute">id</span>: <span class="hljs-literal">null</span>            <span class="hljs-comment"># unique id, promoted by agentset create factory method</span>
-  <span class="hljs-attribute">breed</span>: <span class="hljs-literal">null</span>         <span class="hljs-comment"># my agentSet, set by the agentSet owning me</span>
-  <span class="hljs-attribute">end1</span>:<span class="hljs-literal">null</span>; <span class="hljs-attribute">end2</span>:<span class="hljs-literal">null</span><span class="hljs-comment"># My two endpoints, using agents. Promoted by ctor</span>
-  <span class="hljs-attribute">color</span>: [<span class="hljs-number">130</span>,<span class="hljs-number">130</span>,<span class="hljs-number">130</span>]<span class="hljs-comment"># my color</span>
-  <span class="hljs-attribute">thickness</span>: <span class="hljs-number">2</span>        <span class="hljs-comment"># my thickness in pixels, default to 2</span>
-  <span class="hljs-attribute">hidden</span>: <span class="hljs-literal">false</span>       <span class="hljs-comment"># draw me?</span>
-  <span class="hljs-attribute">label</span>: <span class="hljs-literal">null</span>         <span class="hljs-comment"># my text</span>
-  <span class="hljs-attribute">labelColor</span>: [<span class="hljs-number">0</span>,<span class="hljs-number">0</span>,<span class="hljs-number">0</span>] <span class="hljs-comment"># its color</span>
-  <span class="hljs-attribute">labelOffset</span>: [<span class="hljs-number">0</span>,<span class="hljs-number">0</span>]  <span class="hljs-comment"># its offset from my midpoint</span>
-  <span class="hljs-attribute">constructor</span>: <span class="hljs-function"><span class="hljs-params">(<span class="hljs-property">@end1</span>, <span class="hljs-property">@end2</span>)</span> -&gt;</span>
-    <span class="hljs-keyword">if</span> <span class="hljs-property">@end1</span>.links?
-      <span class="hljs-property">@end1</span>.links.push @
-      <span class="hljs-property">@end2</span>.links.push @</pre></div></div>
+  id: <span class="hljs-literal">null</span>            <span class="hljs-comment"># unique id, promoted by agentset create factory method</span>
+  breed: <span class="hljs-literal">null</span>         <span class="hljs-comment"># my agentSet, set by the agentSet owning me</span>
+  end1:<span class="hljs-literal">null</span>; end2:<span class="hljs-literal">null</span><span class="hljs-comment"># My two endpoints, using agents. Promoted by ctor</span>
+  color: [<span class="hljs-number">130</span>,<span class="hljs-number">130</span>,<span class="hljs-number">130</span>]<span class="hljs-comment"># my color</span>
+  thickness: <span class="hljs-number">2</span>        <span class="hljs-comment"># my thickness in pixels, default to 2</span>
+  hidden: <span class="hljs-literal">false</span>       <span class="hljs-comment"># draw me?</span>
+  label: <span class="hljs-literal">null</span>         <span class="hljs-comment"># my text</span>
+  labelColor: [<span class="hljs-number">0</span>,<span class="hljs-number">0</span>,<span class="hljs-number">0</span>] <span class="hljs-comment"># its color</span>
+  labelOffset: [<span class="hljs-number">0</span>,<span class="hljs-number">0</span>]  <span class="hljs-comment"># its offset from my midpoint</span>
+  constructor: <span class="hljs-function"><span class="hljs-params">(@end1, @end2)</span> -&gt;</span>
+    <span class="hljs-keyword">if</span> @end1.links?
+      @end1.links.push @
+      @end2.links.push @</pre></div></div>
             
         </li>
         
@@ -100,29 +100,29 @@ is called with patch coordinate transform installed.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">draw</span>: <span class="hljs-function"><span class="hljs-params">(ctx)</span> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  draw: <span class="hljs-function"><span class="hljs-params">(ctx)</span> -&gt;</span>
     ctx.save()
-    ctx.strokeStyle = <span class="hljs-property">@color</span>.css <span class="hljs-comment"># u.colorStr @color</span>
-    ctx.lineWidth = <span class="hljs-property">@model</span>.patches.fromBits <span class="hljs-property">@thickness</span>
+    ctx.strokeStyle = @color.css <span class="hljs-comment"># u.colorStr @color</span>
+    ctx.lineWidth = @model.patches.fromBits @thickness
     ctx.beginPath()
-    <span class="hljs-keyword">if</span> !<span class="hljs-property">@model</span>.patches.isTorus
-      ctx.moveTo <span class="hljs-property">@end1</span>.x, <span class="hljs-property">@end1</span>.y
-      ctx.lineTo <span class="hljs-property">@end2</span>.x, <span class="hljs-property">@end2</span>.y
+    <span class="hljs-keyword">if</span> !@model.patches.isTorus
+      ctx.moveTo @end1.x, @end1.y
+      ctx.lineTo @end2.x, @end2.y
     <span class="hljs-keyword">else</span>
-      pt = <span class="hljs-property">@end1</span>.torusPt <span class="hljs-property">@end2</span>
-      ctx.moveTo <span class="hljs-property">@end1</span>.x, <span class="hljs-property">@end1</span>.y
+      pt = @end1.torusPt @end2
+      ctx.moveTo @end1.x, @end1.y
       ctx.lineTo pt...
-      <span class="hljs-keyword">if</span> pt[<span class="hljs-number">0</span>] <span class="hljs-keyword">isnt</span> <span class="hljs-property">@end2</span>.x <span class="hljs-keyword">or</span> pt[<span class="hljs-number">1</span>] <span class="hljs-keyword">isnt</span> <span class="hljs-property">@end2</span>.y
-        pt = <span class="hljs-property">@end2</span>.torusPt <span class="hljs-property">@end1</span>
-        ctx.moveTo <span class="hljs-property">@end2</span>.x, <span class="hljs-property">@end2</span>.y
+      <span class="hljs-keyword">if</span> pt[<span class="hljs-number">0</span>] <span class="hljs-keyword">isnt</span> @end2.x <span class="hljs-keyword">or</span> pt[<span class="hljs-number">1</span>] <span class="hljs-keyword">isnt</span> @end2.y
+        pt = @end2.torusPt @end1
+        ctx.moveTo @end2.x, @end2.y
         ctx.lineTo pt...
     ctx.closePath()
     ctx.stroke()
     ctx.restore()
-    <span class="hljs-keyword">if</span> <span class="hljs-property">@label</span>?
-      [x0, y0]  = u.lerp2 <span class="hljs-property">@end1</span>.x, <span class="hljs-property">@end1</span>.y, <span class="hljs-property">@end2</span>.x, <span class="hljs-property">@end2</span>.y, <span class="hljs-number">.5</span>
-      [x,y] = <span class="hljs-property">@model</span>.patches.patchXYtoPixelXY x0, y0
-      u.ctxDrawText ctx, <span class="hljs-property">@label</span>, x+<span class="hljs-property">@labelOffset</span>[<span class="hljs-number">0</span>], y+<span class="hljs-property">@labelOffset</span>[<span class="hljs-number">1</span>], <span class="hljs-property">@labelColor</span></pre></div></div>
+    <span class="hljs-keyword">if</span> @label?
+      [x0, y0]  = u.lerp2 @end1.x, @end1.y, @end2.x, @end2.y, <span class="hljs-number">.5</span>
+      [x,y] = @model.patches.patchXYtoPixelXY x0, y0
+      u.ctxDrawText ctx, @label, x+@labelOffset[<span class="hljs-number">0</span>], y+@labelOffset[<span class="hljs-number">1</span>], @labelColor</pre></div></div>
             
         </li>
         
@@ -137,15 +137,15 @@ is called with patch coordinate transform installed.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">die</span>: <span class="hljs-function">-&gt;</span>
-    <span class="hljs-property">@breed</span>.remove @
-    u.removeItem <span class="hljs-property">@end1</span>.links, @ <span class="hljs-keyword">if</span> <span class="hljs-property">@end1</span>.links?
-    u.removeItem <span class="hljs-property">@end2</span>.links, @ <span class="hljs-keyword">if</span> <span class="hljs-property">@end2</span>.links?
+            <div class="content"><div class='highlight'><pre>  die: <span class="hljs-function">-&gt;</span>
+    @breed.remove @
+    u.removeItem @end1.links, @ <span class="hljs-keyword">if</span> @end1.links?
+    u.removeItem @end2.links, @ <span class="hljs-keyword">if</span> @end2.links?
     <span class="hljs-literal">null</span>
 
-  <span class="hljs-attribute">hitTest</span>: <span class="hljs-function"><span class="hljs-params">(x, y)</span> -&gt;</span>
-    distance = u.aSum (a.distanceXY x, y <span class="hljs-keyword">for</span> a <span class="hljs-keyword">in</span> <span class="hljs-property">@bothEnds</span>())
-    distance - <span class="hljs-property">@length</span>() &lt; <span class="hljs-number">0.05</span> / <span class="hljs-property">@model</span>.patches.size</pre></div></div>
+  hitTest: <span class="hljs-function"><span class="hljs-params">(x, y)</span> -&gt;</span>
+    distance = u.aSum (a.distanceXY x, y <span class="hljs-keyword">for</span> a <span class="hljs-keyword">in</span> @bothEnds())
+    distance - @length() &lt; <span class="hljs-number">0.05</span> / @model.patches.size</pre></div></div>
             
         </li>
         
@@ -160,7 +160,7 @@ is called with patch coordinate transform installed.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">bothEnds</span>: <span class="hljs-function">-&gt;</span> [<span class="hljs-property">@end1</span>, <span class="hljs-property">@end2</span>]</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  bothEnds: <span class="hljs-function">-&gt;</span> [@end1, @end2]</pre></div></div>
             
         </li>
         
@@ -175,7 +175,7 @@ is called with patch coordinate transform installed.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">length</span>: <span class="hljs-function">-&gt;</span> <span class="hljs-property">@end1</span>.distance <span class="hljs-property">@end2</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  length: <span class="hljs-function">-&gt;</span> @end1.distance @end2</pre></div></div>
             
         </li>
         
@@ -191,7 +191,7 @@ Assumes the given input <em>is</em> one of the link endpoint pairs!</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">otherEnd</span>: <span class="hljs-function"><span class="hljs-params">(a)</span> -&gt;</span> <span class="hljs-keyword">if</span> <span class="hljs-property">@end1</span> <span class="hljs-keyword">is</span> a <span class="hljs-keyword">then</span> <span class="hljs-property">@end2</span> <span class="hljs-keyword">else</span> <span class="hljs-property">@end1</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  otherEnd: <span class="hljs-function"><span class="hljs-params">(a)</span> -&gt;</span> <span class="hljs-keyword">if</span> @end1 <span class="hljs-keyword">is</span> a <span class="hljs-keyword">then</span> @end2 <span class="hljs-keyword">else</span> @end1</pre></div></div>
             
         </li>
         

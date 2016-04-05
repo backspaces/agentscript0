@@ -61,7 +61,7 @@ the agentClass (breed) variable shared by all the Links in this set.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">constructor</span>: <span class="hljs-function">-&gt;</span> <span class="hljs-comment"># model, agentClass, name, mainSet</span>
+            <div class="content"><div class='highlight'><pre>  constructor: <span class="hljs-function">-&gt;</span> <span class="hljs-comment"># model, agentClass, name, mainSet</span>
     <span class="hljs-keyword">super</span> <span class="hljs-comment"># call super with all the args I was called with</span></pre></div></div>
             
         </li>
@@ -79,9 +79,9 @@ proc is called on the new link after inserting in the agentSet.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">create</span>: <span class="hljs-function"><span class="hljs-params">(from, to, init = -&gt;)</span> -&gt;</span> <span class="hljs-comment"># returns array of new links too</span>
+            <div class="content"><div class='highlight'><pre>  create: <span class="hljs-function"><span class="hljs-params">(from, to, init = -&gt;)</span> -&gt;</span> <span class="hljs-comment"># returns array of new links too</span>
     to = [to] <span class="hljs-keyword">unless</span> to.length?
-    (<span class="hljs-function"><span class="hljs-params">(o)</span> -&gt;</span> init(o); o) <span class="hljs-property">@add</span> <span class="hljs-keyword">new</span> <span class="hljs-property">@agentClass</span> from, a <span class="hljs-keyword">for</span> a <span class="hljs-keyword">in</span> to <span class="hljs-comment"># too tricky?</span></pre></div></div>
+    (<span class="hljs-function"><span class="hljs-params">(o)</span> -&gt;</span> init(o); o) @add <span class="hljs-keyword">new</span> @agentClass from, a <span class="hljs-keyword">for</span> a <span class="hljs-keyword">in</span> to <span class="hljs-comment"># too tricky?</span></pre></div></div>
             
         </li>
         
@@ -97,7 +97,7 @@ Note call in reverse order to optimize list restructuring.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">clear</span>: <span class="hljs-function">-&gt;</span> <span class="hljs-property">@last</span>().die() <span class="hljs-keyword">while</span> <span class="hljs-property">@any</span>(); <span class="hljs-literal">null</span> <span class="hljs-comment"># tricky, each die modifies list</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  clear: <span class="hljs-function">-&gt;</span> @last().die() <span class="hljs-keyword">while</span> @any(); <span class="hljs-literal">null</span> <span class="hljs-comment"># tricky, each die modifies list</span></pre></div></div>
             
         </li>
         
@@ -114,8 +114,8 @@ appear 4 times.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">allEnds</span>: <span class="hljs-function">-&gt;</span> <span class="hljs-comment"># all link ends, w/ dups</span>
-    n = <span class="hljs-property">@asSet</span> []
+            <div class="content"><div class='highlight'><pre>  allEnds: <span class="hljs-function">-&gt;</span> <span class="hljs-comment"># all link ends, w/ dups</span>
+    n = @asSet []
     n.push l.end1, l.end2 <span class="hljs-keyword">for</span> l <span class="hljs-keyword">in</span> @
     n</pre></div></div>
             
@@ -133,8 +133,8 @@ duplicates removed.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">nodes</span>: <span class="hljs-function">-&gt;</span> <span class="hljs-comment"># allEnds without dups</span>
-    <span class="hljs-property">@allEnds</span>().sortById().uniq()</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  nodes: <span class="hljs-function">-&gt;</span> <span class="hljs-comment"># allEnds without dups</span>
+    @allEnds().sortById().uniq()</pre></div></div>
             
         </li>
         
@@ -153,7 +153,7 @@ defaulting to -1 (clockwise).</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">layoutCircle</span>: <span class="hljs-function"><span class="hljs-params">(list, radius, startAngle = Math.PI/<span class="hljs-number">2</span>, direction = -<span class="hljs-number">1</span>)</span> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  layoutCircle: <span class="hljs-function"><span class="hljs-params">(list, radius, startAngle = Math.PI/<span class="hljs-number">2</span>, direction = <span class="hljs-number">-1</span>)</span> -&gt;</span>
     dTheta = <span class="hljs-number">2</span>*Math.PI/list.length
     <span class="hljs-keyword">for</span> a, i <span class="hljs-keyword">in</span> list
       a.setXY <span class="hljs-number">0</span>, <span class="hljs-number">0</span>
@@ -161,14 +161,14 @@ defaulting to -1 (clockwise).</p>
       a.forward radius
     <span class="hljs-literal">null</span>
 
-  <span class="hljs-attribute">setDraggable</span>: <span class="hljs-function"><span class="hljs-params">()</span> -&gt;</span>
-    <span class="hljs-property">@on</span> <span class="hljs-string">'dragstart'</span>, <span class="hljs-function"><span class="hljs-params">(mouseEvent)</span> =&gt;</span>
+  setDraggable: <span class="hljs-function"><span class="hljs-params">()</span> -&gt;</span>
+    @on <span class="hljs-string">'dragstart'</span>, <span class="hljs-function"><span class="hljs-params">(mouseEvent)</span> =&gt;</span>
       mouseEvent.target.dragging = <span class="hljs-literal">true</span>
 
-    <span class="hljs-property">@on</span> <span class="hljs-string">'dragend'</span>, <span class="hljs-function"><span class="hljs-params">(mouseEvent)</span> =&gt;</span>
+    @on <span class="hljs-string">'dragend'</span>, <span class="hljs-function"><span class="hljs-params">(mouseEvent)</span> =&gt;</span>
       mouseEvent.target.dragging = <span class="hljs-literal">false</span>
 
-    <span class="hljs-property">@on</span> <span class="hljs-string">'drag'</span>, <span class="hljs-function"><span class="hljs-params">(mouseEvent)</span> =&gt;</span>
+    @on <span class="hljs-string">'drag'</span>, <span class="hljs-function"><span class="hljs-params">(mouseEvent)</span> =&gt;</span>
       end1 = mouseEvent.target.end1
       end2 = mouseEvent.target.end2
       end1.setXY(end1.x - mouseEvent.dx, end1.y - mouseEvent.dy)

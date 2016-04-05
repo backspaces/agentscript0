@@ -82,31 +82,31 @@ This can be a huge savings in memory.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">id</span>: <span class="hljs-literal">null</span>            <span class="hljs-comment"># unique id, promoted by agentset create factory method</span>
-  <span class="hljs-attribute">breed</span>: <span class="hljs-literal">null</span>         <span class="hljs-comment"># my agentSet, set by the agentSet owning me</span>
-  <span class="hljs-attribute">x</span>: <span class="hljs-number">0</span>; <span class="hljs-attribute">y</span>:<span class="hljs-number">0</span>; <span class="hljs-attribute">p</span>: <span class="hljs-literal">null</span>  <span class="hljs-comment"># my location and the patch I'm on</span>
-  <span class="hljs-attribute">size</span>: <span class="hljs-number">1</span>             <span class="hljs-comment"># my size in patch coords</span>
-  <span class="hljs-attribute">color</span>: <span class="hljs-literal">null</span>         <span class="hljs-comment"># default color, overrides random color if set</span>
-  <span class="hljs-attribute">strokeColor</span>: <span class="hljs-literal">null</span>   <span class="hljs-comment"># color of the border of an turtle</span>
-  <span class="hljs-attribute">shape</span>: <span class="hljs-string">"default"</span>    <span class="hljs-comment"># my shape</span>
-  <span class="hljs-attribute">hidden</span>: <span class="hljs-literal">false</span>       <span class="hljs-comment"># draw me?</span>
-  <span class="hljs-attribute">label</span>: <span class="hljs-literal">null</span>         <span class="hljs-comment"># my text</span>
-  <span class="hljs-attribute">labelColor</span>: [<span class="hljs-number">0</span>,<span class="hljs-number">0</span>,<span class="hljs-number">0</span>] <span class="hljs-comment"># its color</span>
-  <span class="hljs-attribute">labelOffset</span>: [<span class="hljs-number">0</span>,<span class="hljs-number">0</span>]  <span class="hljs-comment"># its offset from my x,y</span>
-  <span class="hljs-attribute">penDown</span>: <span class="hljs-literal">false</span>      <span class="hljs-comment"># if my pen is down, I draw my path between changes in x,y</span>
-  <span class="hljs-attribute">penSize</span>: <span class="hljs-number">1</span>          <span class="hljs-comment"># the pen thickness in pixels</span>
-  <span class="hljs-attribute">heading</span>: <span class="hljs-literal">null</span>       <span class="hljs-comment"># the direction I'm pointed in, in radians</span>
-  <span class="hljs-attribute">sprite</span>: <span class="hljs-literal">null</span>        <span class="hljs-comment"># an image of me for optimized drawing</span>
-  <span class="hljs-attribute">useSprites</span>: <span class="hljs-literal">false</span>   <span class="hljs-comment"># should I use sprites?</span>
-  <span class="hljs-attribute">cacheLinks</span>: <span class="hljs-literal">false</span>   <span class="hljs-comment"># should I keep links to/from me in links array?.</span>
-  <span class="hljs-attribute">links</span>: <span class="hljs-literal">null</span>         <span class="hljs-comment"># array of links to/from me as an endpoint; init by ctor</span>
-  <span class="hljs-attribute">constructor</span>: <span class="hljs-function">-&gt;</span> <span class="hljs-comment"># called by agentSets create factory, not user</span>
-    <span class="hljs-property">@x</span> = <span class="hljs-property">@y</span> = <span class="hljs-number">0</span>
-    <span class="hljs-property">@p</span> = <span class="hljs-property">@model</span>.patches.patch <span class="hljs-property">@x</span>, <span class="hljs-property">@y</span>
-    <span class="hljs-property">@color</span> = u.randomColor() <span class="hljs-keyword">unless</span> <span class="hljs-property">@color</span>? <span class="hljs-comment"># or @useSprites or @hidden</span>
-    <span class="hljs-property">@heading</span> = u.randomFloat(Math.PI*<span class="hljs-number">2</span>) <span class="hljs-keyword">unless</span> <span class="hljs-property">@heading</span>?
-    <span class="hljs-property">@p</span>.turtles.push @ <span class="hljs-keyword">if</span> <span class="hljs-property">@p</span>.turtles? <span class="hljs-comment"># @model.patches.cacheTurtlesHere</span>
-    <span class="hljs-property">@links</span> = [] <span class="hljs-keyword">if</span> <span class="hljs-property">@cacheLinks</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  id: <span class="hljs-literal">null</span>            <span class="hljs-comment"># unique id, promoted by agentset create factory method</span>
+  breed: <span class="hljs-literal">null</span>         <span class="hljs-comment"># my agentSet, set by the agentSet owning me</span>
+  x: <span class="hljs-number">0</span>; y:<span class="hljs-number">0</span>; p: <span class="hljs-literal">null</span>  <span class="hljs-comment"># my location and the patch I'm on</span>
+  size: <span class="hljs-number">1</span>             <span class="hljs-comment"># my size in patch coords</span>
+  color: <span class="hljs-literal">null</span>         <span class="hljs-comment"># default color, overrides random color if set</span>
+  strokeColor: <span class="hljs-literal">null</span>   <span class="hljs-comment"># color of the border of an turtle</span>
+  shape: <span class="hljs-string">"default"</span>    <span class="hljs-comment"># my shape</span>
+  hidden: <span class="hljs-literal">false</span>       <span class="hljs-comment"># draw me?</span>
+  label: <span class="hljs-literal">null</span>         <span class="hljs-comment"># my text</span>
+  labelColor: [<span class="hljs-number">0</span>,<span class="hljs-number">0</span>,<span class="hljs-number">0</span>] <span class="hljs-comment"># its color</span>
+  labelOffset: [<span class="hljs-number">0</span>,<span class="hljs-number">0</span>]  <span class="hljs-comment"># its offset from my x,y</span>
+  penDown: <span class="hljs-literal">false</span>      <span class="hljs-comment"># if my pen is down, I draw my path between changes in x,y</span>
+  penSize: <span class="hljs-number">1</span>          <span class="hljs-comment"># the pen thickness in pixels</span>
+  heading: <span class="hljs-literal">null</span>       <span class="hljs-comment"># the direction I'm pointed in, in radians</span>
+  sprite: <span class="hljs-literal">null</span>        <span class="hljs-comment"># an image of me for optimized drawing</span>
+  useSprites: <span class="hljs-literal">false</span>   <span class="hljs-comment"># should I use sprites?</span>
+  cacheLinks: <span class="hljs-literal">false</span>   <span class="hljs-comment"># should I keep links to/from me in links array?.</span>
+  links: <span class="hljs-literal">null</span>         <span class="hljs-comment"># array of links to/from me as an endpoint; init by ctor</span>
+  constructor: <span class="hljs-function">-&gt;</span> <span class="hljs-comment"># called by agentSets create factory, not user</span>
+    @x = @y = <span class="hljs-number">0</span>
+    @p = @model.patches.patch @x, @y
+    @color = u.randomColor() <span class="hljs-keyword">unless</span> @color? <span class="hljs-comment"># or @useSprites or @hidden</span>
+    @heading = u.randomFloat(Math.PI*<span class="hljs-number">2</span>) <span class="hljs-keyword">unless</span> @heading?
+    @p.turtles.push @ <span class="hljs-keyword">if</span> @p.turtles? <span class="hljs-comment"># @model.patches.cacheTurtlesHere</span>
+    @links = [] <span class="hljs-keyword">if</span> @cacheLinks</pre></div></div>
             
         </li>
         
@@ -121,9 +121,9 @@ This can be a huge savings in memory.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">scaleColor</span>: <span class="hljs-function"><span class="hljs-params">(c, s)</span> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  scaleColor: <span class="hljs-function"><span class="hljs-params">(c, s)</span> -&gt;</span>
     u.deprecated <span class="hljs-string">"Turtle.scaleColor: use ColorMaps ramps or closestColor"</span>
-    <span class="hljs-property">@color</span> = ColorMaps.scaleColor(c, s)</pre></div></div>
+    @color = ColorMaps.scaleColor(c, s)</pre></div></div>
             
         </li>
         
@@ -140,9 +140,9 @@ u.scaleColor c, s, @color</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>
-  <span class="hljs-attribute">scaleOpacity</span>: <span class="hljs-function"><span class="hljs-params">(c, s)</span> -&gt;</span>
+  scaleOpacity: <span class="hljs-function"><span class="hljs-params">(c, s)</span> -&gt;</span>
     u.deprecated <span class="hljs-string">"Turtle.scaleOpacity: use ColorMaps ramps"</span>
-    <span class="hljs-property">@color</span> = u.scaleOpacity c, s, <span class="hljs-property">@color</span></pre></div></div>
+    @color = u.scaleOpacity c, s, @color</pre></div></div>
             
         </li>
         
@@ -171,7 +171,7 @@ u.scaleOpacity c, s, @color</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">toString</span>: <span class="hljs-function">-&gt;</span> <span class="hljs-string">"{id:<span class="hljs-subst">#{<span class="hljs-property">@id</span>}</span> xy:<span class="hljs-subst">#{u.aToFixed [<span class="hljs-property">@x</span>,<span class="hljs-property">@y</span>]}</span> c:<span class="hljs-subst">#{<span class="hljs-property">@color</span>.css}</span> h: <span class="hljs-subst">#{h=<span class="hljs-property">@heading</span>.toFixed <span class="hljs-number">2</span>}</span>/<span class="hljs-subst">#{Math.round(u.radToDeg(h))}</span>}"</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  toString: <span class="hljs-function">-&gt;</span> <span class="hljs-string">"{id:<span class="hljs-subst">#{@id}</span> xy:<span class="hljs-subst">#{u.aToFixed [@x,@y]}</span> c:<span class="hljs-subst">#{@color.css}</span> h: <span class="hljs-subst">#{h=@heading.toFixed <span class="hljs-number">2</span>}</span>/<span class="hljs-subst">#{Math.round(u.radToDeg(h))}</span>}"</span></pre></div></div>
             
         </li>
         
@@ -187,18 +187,18 @@ using patch topology (isTorus)</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">setXY</span>: <span class="hljs-function"><span class="hljs-params">(x, y)</span> -&gt;</span> <span class="hljs-comment"># REMIND GC problem, 2 arrays</span>
-    [x0, y0] = [<span class="hljs-property">@x</span>, <span class="hljs-property">@y</span>] <span class="hljs-keyword">if</span> <span class="hljs-property">@penDown</span>
-    [<span class="hljs-property">@x</span>, <span class="hljs-property">@y</span>] = <span class="hljs-property">@model</span>.patches.coord x, y
-    p = <span class="hljs-property">@p</span>
-    <span class="hljs-property">@p</span> = <span class="hljs-property">@model</span>.patches.patch <span class="hljs-property">@x</span>, <span class="hljs-property">@y</span>
-    <span class="hljs-keyword">if</span> p.turtles? <span class="hljs-keyword">and</span> p <span class="hljs-keyword">isnt</span> <span class="hljs-property">@p</span> <span class="hljs-comment"># @model.patches.cacheTurtlesHere</span>
+            <div class="content"><div class='highlight'><pre>  setXY: <span class="hljs-function"><span class="hljs-params">(x, y)</span> -&gt;</span> <span class="hljs-comment"># REMIND GC problem, 2 arrays</span>
+    [x0, y0] = [@x, @y] <span class="hljs-keyword">if</span> @penDown
+    [@x, @y] = @model.patches.coord x, y
+    p = @p
+    @p = @model.patches.patch @x, @y
+    <span class="hljs-keyword">if</span> p.turtles? <span class="hljs-keyword">and</span> p <span class="hljs-keyword">isnt</span> @p <span class="hljs-comment"># @model.patches.cacheTurtlesHere</span>
       u.removeItem p.turtles, @
-      <span class="hljs-property">@p</span>.turtles.push @
-    <span class="hljs-keyword">if</span> <span class="hljs-property">@penDown</span>
-      drawing = <span class="hljs-property">@model</span>.drawing
-      drawing.strokeStyle = <span class="hljs-property">@color</span>.css <span class="hljs-comment"># u.colorStr @color</span>
-      drawing.lineWidth = <span class="hljs-property">@model</span>.patches.fromBits <span class="hljs-property">@penSize</span>
+      @p.turtles.push @
+    <span class="hljs-keyword">if</span> @penDown
+      drawing = @model.drawing
+      drawing.strokeStyle = @color.css <span class="hljs-comment"># u.colorStr @color</span>
+      drawing.lineWidth = @model.patches.fromBits @penSize
       drawing.beginPath()
       drawing.moveTo x0, y0; drawing.lineTo x, y <span class="hljs-comment"># REMIND: euclidean</span>
       drawing.stroke()</pre></div></div>
@@ -216,7 +216,7 @@ using patch topology (isTorus)</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">moveTo</span>: <span class="hljs-function"><span class="hljs-params">(a)</span> -&gt;</span> <span class="hljs-property">@setXY</span> a.x, a.y</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  moveTo: <span class="hljs-function"><span class="hljs-params">(a)</span> -&gt;</span> @setXY a.x, a.y</pre></div></div>
             
         </li>
         
@@ -232,8 +232,8 @@ using patch topology (isTorus)</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">forward</span>: <span class="hljs-function"><span class="hljs-params">(d)</span> -&gt;</span>
-    <span class="hljs-property">@setXY</span> <span class="hljs-property">@x</span> + d*Math.cos(<span class="hljs-property">@heading</span>), <span class="hljs-property">@y</span> + d*Math.sin(<span class="hljs-property">@heading</span>)</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  forward: <span class="hljs-function"><span class="hljs-params">(d)</span> -&gt;</span>
+    @setXY @x + d*Math.cos(@heading), @y + d*Math.sin(@heading)</pre></div></div>
             
         </li>
         
@@ -249,9 +249,9 @@ Returns new heading.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">rotate</span>: <span class="hljs-function"><span class="hljs-params">(rad)</span> -&gt;</span> <span class="hljs-property">@heading</span> = u.wrap <span class="hljs-property">@heading</span> + rad, <span class="hljs-number">0</span>, Math.PI*<span class="hljs-number">2</span>
-  <span class="hljs-attribute">right</span>: <span class="hljs-function"><span class="hljs-params">(rad)</span> -&gt;</span> <span class="hljs-property">@rotate</span> -rad
-  <span class="hljs-attribute">left</span>: <span class="hljs-function"><span class="hljs-params">(rad)</span> -&gt;</span> <span class="hljs-property">@rotate</span> rad</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  rotate: <span class="hljs-function"><span class="hljs-params">(rad)</span> -&gt;</span> @heading = u.wrap @heading + rad, <span class="hljs-number">0</span>, Math.PI*<span class="hljs-number">2</span>
+  right: <span class="hljs-function"><span class="hljs-params">(rad)</span> -&gt;</span> @rotate -rad
+  left: <span class="hljs-function"><span class="hljs-params">(rad)</span> -&gt;</span> @rotate rad</pre></div></div>
             
         </li>
         
@@ -266,18 +266,18 @@ Returns new heading.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">draw</span>: <span class="hljs-function"><span class="hljs-params">(ctx)</span> -&gt;</span>
-    shape = Shapes[<span class="hljs-property">@shape</span>]
-    rad = <span class="hljs-keyword">if</span> shape.rotate <span class="hljs-keyword">then</span> <span class="hljs-property">@heading</span> <span class="hljs-keyword">else</span> <span class="hljs-number">0</span> <span class="hljs-comment"># radians</span>
-    <span class="hljs-keyword">if</span> <span class="hljs-property">@sprite</span>? <span class="hljs-keyword">or</span> <span class="hljs-property">@useSprites</span> <span class="hljs-comment"># @breed.useSprites</span>
-      <span class="hljs-property">@setSprite</span>() <span class="hljs-keyword">unless</span> <span class="hljs-property">@sprite</span>? <span class="hljs-comment"># lazy evaluation of useSprites</span>
-      Shapes.drawSprite ctx, <span class="hljs-property">@sprite</span>, <span class="hljs-property">@x</span>, <span class="hljs-property">@y</span>, <span class="hljs-property">@size</span>, rad
+            <div class="content"><div class='highlight'><pre>  draw: <span class="hljs-function"><span class="hljs-params">(ctx)</span> -&gt;</span>
+    shape = Shapes[@shape]
+    rad = <span class="hljs-keyword">if</span> shape.rotate <span class="hljs-keyword">then</span> @heading <span class="hljs-keyword">else</span> <span class="hljs-number">0</span> <span class="hljs-comment"># radians</span>
+    <span class="hljs-keyword">if</span> @sprite? <span class="hljs-keyword">or</span> @useSprites <span class="hljs-comment"># @breed.useSprites</span>
+      @setSprite() <span class="hljs-keyword">unless</span> @sprite? <span class="hljs-comment"># lazy evaluation of useSprites</span>
+      Shapes.drawSprite ctx, @sprite, @x, @y, @size, rad
     <span class="hljs-keyword">else</span>
-      Shapes.draw ctx, shape, <span class="hljs-property">@x</span>, <span class="hljs-property">@y</span>, <span class="hljs-property">@size</span>, rad, <span class="hljs-property">@color</span>, <span class="hljs-property">@strokeColor</span>
-    <span class="hljs-keyword">if</span> <span class="hljs-property">@label</span>?
-      [x,y] = <span class="hljs-property">@model</span>.patches.patchXYtoPixelXY <span class="hljs-property">@x</span>, <span class="hljs-property">@y</span>
-      u.ctxDrawText ctx, <span class="hljs-property">@label</span>,
-        x+<span class="hljs-property">@labelOffset</span>[<span class="hljs-number">0</span>], y+<span class="hljs-property">@labelOffset</span>[<span class="hljs-number">1</span>], <span class="hljs-property">@labelColor</span></pre></div></div>
+      Shapes.draw ctx, shape, @x, @y, @size, rad, @color, @strokeColor
+    <span class="hljs-keyword">if</span> @label?
+      [x,y] = @model.patches.patchXYtoPixelXY @x, @y
+      u.ctxDrawText ctx, @label,
+        x+@labelOffset[<span class="hljs-number">0</span>], y+@labelOffset[<span class="hljs-number">1</span>], @labelColor</pre></div></div>
             
         </li>
         
@@ -292,10 +292,10 @@ Returns new heading.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">setSprite</span>: <span class="hljs-function"><span class="hljs-params">(sprite)</span>-&gt;</span>
+            <div class="content"><div class='highlight'><pre>  setSprite: <span class="hljs-function"><span class="hljs-params">(sprite)</span>-&gt;</span>
     <span class="hljs-keyword">if</span> (s=sprite)?
-      <span class="hljs-property">@sprite</span> = s; <span class="hljs-property">@color</span> = s.color; <span class="hljs-property">@strokeColor</span> = s.strokeColor
-      <span class="hljs-property">@shape</span> = s.shape; <span class="hljs-property">@size</span> = <span class="hljs-property">@model</span>.patches.fromBits(s.size)
+      @sprite = s; @color = s.color; @strokeColor = s.strokeColor
+      @shape = s.shape; @size = @model.patches.fromBits(s.size)
     <span class="hljs-keyword">else</span></pre></div></div>
             
         </li>
@@ -311,8 +311,8 @@ Returns new heading.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>      <span class="hljs-property">@sprite</span> = Shapes.shapeToSprite <span class="hljs-property">@shape</span>, <span class="hljs-property">@color</span>,
-        <span class="hljs-property">@model</span>.patches.toBits(<span class="hljs-property">@size</span>), <span class="hljs-property">@strokeColor</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>      @sprite = Shapes.shapeToSprite @shape, @color,
+        @model.patches.toBits(@size), @strokeColor</pre></div></div>
             
         </li>
         
@@ -327,7 +327,7 @@ Returns new heading.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">stamp</span>: <span class="hljs-function">-&gt;</span> <span class="hljs-property">@draw</span> <span class="hljs-property">@model</span>.drawing</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  stamp: <span class="hljs-function">-&gt;</span> @draw @model.drawing</pre></div></div>
             
         </li>
         
@@ -343,10 +343,10 @@ using patch topology (isTorus)</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">distanceXY</span>: <span class="hljs-function"><span class="hljs-params">(x,y)</span> -&gt;</span>
-    <span class="hljs-keyword">if</span> <span class="hljs-property">@model</span>.patches.isTorus
-    <span class="hljs-keyword">then</span> u.torusDistance <span class="hljs-property">@x</span>, <span class="hljs-property">@y</span>, x, y, <span class="hljs-property">@model</span>.patches.numX, <span class="hljs-property">@model</span>.patches.numY
-    <span class="hljs-keyword">else</span> u.distance <span class="hljs-property">@x</span>, <span class="hljs-property">@y</span>, x, y</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  distanceXY: <span class="hljs-function"><span class="hljs-params">(x,y)</span> -&gt;</span>
+    <span class="hljs-keyword">if</span> @model.patches.isTorus
+    <span class="hljs-keyword">then</span> u.torusDistance @x, @y, x, y, @model.patches.numX, @model.patches.numY
+    <span class="hljs-keyword">else</span> u.distance @x, @y, x, y</pre></div></div>
             
         </li>
         
@@ -361,8 +361,8 @@ using patch topology (isTorus)</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">distance</span>: <span class="hljs-function"><span class="hljs-params">(o)</span> -&gt;</span> <span class="hljs-comment"># o any object w/ x,y, patch or turtle</span>
-    <span class="hljs-property">@distanceXY</span> o.x, o.y</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  distance: <span class="hljs-function"><span class="hljs-params">(o)</span> -&gt;</span> <span class="hljs-comment"># o any object w/ x,y, patch or turtle</span>
+    @distanceXY o.x, o.y</pre></div></div>
             
         </li>
         
@@ -379,8 +379,8 @@ See Util.torusPt.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">torusPtXY</span>: <span class="hljs-function"><span class="hljs-params">(x, y)</span> -&gt;</span>
-    u.torusPt <span class="hljs-property">@x</span>, <span class="hljs-property">@y</span>, x, y, <span class="hljs-property">@model</span>.patches.numX, <span class="hljs-property">@model</span>.patches.numY</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  torusPtXY: <span class="hljs-function"><span class="hljs-params">(x, y)</span> -&gt;</span>
+    u.torusPt @x, @y, x, y, @model.patches.numX, @model.patches.numY</pre></div></div>
             
         </li>
         
@@ -396,8 +396,8 @@ relative to myself. See Util.torusPt.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">torusPt</span>: <span class="hljs-function"><span class="hljs-params">(o)</span> -&gt;</span>
-    <span class="hljs-property">@torusPtXY</span> o.x, o.y</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  torusPt: <span class="hljs-function"><span class="hljs-params">(o)</span> -&gt;</span>
+    @torusPtXY o.x, o.y</pre></div></div>
             
         </li>
         
@@ -412,7 +412,7 @@ relative to myself. See Util.torusPt.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">face</span>: <span class="hljs-function"><span class="hljs-params">(o)</span> -&gt;</span> <span class="hljs-property">@heading</span> = <span class="hljs-property">@towards</span> o</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  face: <span class="hljs-function"><span class="hljs-params">(o)</span> -&gt;</span> @heading = @towards o</pre></div></div>
             
         </li>
         
@@ -427,10 +427,10 @@ relative to myself. See Util.torusPt.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">towardsXY</span>: <span class="hljs-function"><span class="hljs-params">(x, y)</span> -&gt;</span>
-    <span class="hljs-keyword">if</span> (ps=<span class="hljs-property">@model</span>.patches).isTorus
-    <span class="hljs-keyword">then</span> u.torusRadsToward <span class="hljs-property">@x</span>, <span class="hljs-property">@y</span>, x, y, ps.numX, ps.numY
-    <span class="hljs-keyword">else</span> u.radsToward <span class="hljs-property">@x</span>, <span class="hljs-property">@y</span>, x, y</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  towardsXY: <span class="hljs-function"><span class="hljs-params">(x, y)</span> -&gt;</span>
+    <span class="hljs-keyword">if</span> (ps=@model.patches).isTorus
+    <span class="hljs-keyword">then</span> u.torusRadsToward @x, @y, x, y, ps.numX, ps.numY
+    <span class="hljs-keyword">else</span> u.radsToward @x, @y, x, y</pre></div></div>
             
         </li>
         
@@ -445,7 +445,7 @@ relative to myself. See Util.torusPt.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">towards</span>: <span class="hljs-function"><span class="hljs-params">(o)</span> -&gt;</span> <span class="hljs-property">@towardsXY</span> o.x, o.y</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  towards: <span class="hljs-function"><span class="hljs-params">(o)</span> -&gt;</span> @towardsXY o.x, o.y</pre></div></div>
             
         </li>
         
@@ -462,16 +462,16 @@ Heading is + for left, - for right.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">patchAtHeadingAndDistance</span>: <span class="hljs-function"><span class="hljs-params">(h,d)</span> -&gt;</span>
-    [dx,dy] = u.polarToXY d, h + <span class="hljs-property">@heading</span>
-    <span class="hljs-property">@patchAt</span> dx,dy
-  <span class="hljs-attribute">patchLeftAndAhead</span>: <span class="hljs-function"><span class="hljs-params">(dh, d)</span> -&gt;</span> <span class="hljs-property">@patchAtHeadingAndDistance</span> dh, d
-  <span class="hljs-attribute">patchRightAndAhead</span>: <span class="hljs-function"><span class="hljs-params">(dh, d)</span> -&gt;</span> <span class="hljs-property">@patchAtHeadingAndDistance</span> -dh, d
-  <span class="hljs-attribute">patchAhead</span>: <span class="hljs-function"><span class="hljs-params">(d)</span> -&gt;</span> <span class="hljs-property">@patchAtHeadingAndDistance</span> <span class="hljs-number">0</span>, d
-  <span class="hljs-attribute">canMove</span>: <span class="hljs-function"><span class="hljs-params">(d)</span> -&gt;</span> <span class="hljs-property">@patchAhead</span>(d)?
-  <span class="hljs-attribute">patchAt</span>: <span class="hljs-function"><span class="hljs-params">(dx,dy)</span> -&gt;</span>
-    x=<span class="hljs-property">@x</span>+dx; y=<span class="hljs-property">@y</span>+dy
-    <span class="hljs-keyword">if</span> (ps=<span class="hljs-property">@model</span>.patches).isOnWorld x,y <span class="hljs-keyword">then</span> ps.patch x,y <span class="hljs-keyword">else</span> <span class="hljs-literal">null</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  patchAtHeadingAndDistance: <span class="hljs-function"><span class="hljs-params">(h,d)</span> -&gt;</span>
+    [dx,dy] = u.polarToXY d, h + @heading
+    @patchAt dx,dy
+  patchLeftAndAhead: <span class="hljs-function"><span class="hljs-params">(dh, d)</span> -&gt;</span> @patchAtHeadingAndDistance dh, d
+  patchRightAndAhead: <span class="hljs-function"><span class="hljs-params">(dh, d)</span> -&gt;</span> @patchAtHeadingAndDistance -dh, d
+  patchAhead: <span class="hljs-function"><span class="hljs-params">(d)</span> -&gt;</span> @patchAtHeadingAndDistance <span class="hljs-number">0</span>, d
+  canMove: <span class="hljs-function"><span class="hljs-params">(d)</span> -&gt;</span> @patchAhead(d)?
+  patchAt: <span class="hljs-function"><span class="hljs-params">(dx,dy)</span> -&gt;</span>
+    x=@x+dx; y=@y+dy
+    <span class="hljs-keyword">if</span> (ps=@model.patches).isOnWorld x,y <span class="hljs-keyword">then</span> ps.patch x,y <span class="hljs-keyword">else</span> <span class="hljs-literal">null</span></pre></div></div>
             
         </li>
         
@@ -487,10 +487,10 @@ agentset(s) and removing any links I may have.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">die</span>: <span class="hljs-function">-&gt;</span>
-    <span class="hljs-property">@breed</span>.remove @
-    l.die() <span class="hljs-keyword">for</span> l <span class="hljs-keyword">in</span> <span class="hljs-property">@myLinks</span>() <span class="hljs-keyword">by</span> -<span class="hljs-number">1</span>
-    u.removeItem <span class="hljs-property">@p</span>.turtles, @ <span class="hljs-keyword">if</span> <span class="hljs-property">@p</span>.turtles?
+            <div class="content"><div class='highlight'><pre>  die: <span class="hljs-function">-&gt;</span>
+    @breed.remove @
+    l.die() <span class="hljs-keyword">for</span> l <span class="hljs-keyword">in</span> @myLinks() <span class="hljs-keyword">by</span> <span class="hljs-number">-1</span>
+    u.removeItem @p.turtles, @ <span class="hljs-keyword">if</span> @p.turtles?
     <span class="hljs-literal">null</span></pre></div></div>
             
         </li>
@@ -507,10 +507,10 @@ proc is called on the new turtle after inserting in its agentSet.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">hatch</span>: <span class="hljs-function"><span class="hljs-params">(num = <span class="hljs-number">1</span>, breed = <span class="hljs-property">@breed</span>, init = -&gt;)</span> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  hatch: <span class="hljs-function"><span class="hljs-params">(num = <span class="hljs-number">1</span>, breed = @breed, init = -&gt;)</span> -&gt;</span>
     breed.create num, <span class="hljs-function"><span class="hljs-params">(a)</span> =&gt;</span> <span class="hljs-comment"># fat arrow so that @ = this turtle</span>
-      a.setXY <span class="hljs-property">@x</span>, <span class="hljs-property">@y</span> <span class="hljs-comment"># for side effects like patches.turtlesHere</span>
-      a.color = <span class="hljs-property">@color</span>
+      a.setXY @x, @y <span class="hljs-comment"># for side effects like patches.turtlesHere</span>
+      a.color = @color
       a[k] = @[k] <span class="hljs-keyword">for</span> k <span class="hljs-keyword">in</span> breed.ownVariables <span class="hljs-keyword">when</span> a[k] <span class="hljs-keyword">is</span> <span class="hljs-literal">null</span> <span class="hljs-comment"># hatched turtle inherits parents' breed properties</span></pre></div></div>
             
         </li>
@@ -542,7 +542,7 @@ from me, using patch topology</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">inRadius</span>: <span class="hljs-function"><span class="hljs-params">(aset, radius)</span> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  inRadius: <span class="hljs-function"><span class="hljs-params">(aset, radius)</span> -&gt;</span>
     aset.inRadius(@, radius)</pre></div></div>
             
         </li>
@@ -559,8 +559,8 @@ from me, and within angle radians of my heading using patch topology</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">inCone</span>: <span class="hljs-function"><span class="hljs-params">(aset, distance, angle)</span> -&gt;</span>
-    aset.inCone @, distance, angle, <span class="hljs-property">@heading</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  inCone: <span class="hljs-function"><span class="hljs-params">(aset, distance, angle)</span> -&gt;</span>
+    aset.inCone @, distance, angle, @heading</pre></div></div>
             
         </li>
         
@@ -575,8 +575,8 @@ from me, and within angle radians of my heading using patch topology</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">hitTest</span>: <span class="hljs-function"><span class="hljs-params">(x, y)</span> -&gt;</span>
-    <span class="hljs-property">@distanceXY</span>(x, y) &lt; <span class="hljs-property">@size</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  hitTest: <span class="hljs-function"><span class="hljs-params">(x, y)</span> -&gt;</span>
+    @distanceXY(x, y) &lt; @size</pre></div></div>
             
         </li>
         
@@ -591,7 +591,7 @@ from me, and within angle radians of my heading using patch topology</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">otherEnd</span>: <span class="hljs-function"><span class="hljs-params">(l)</span> -&gt;</span> <span class="hljs-keyword">if</span> l.end1 <span class="hljs-keyword">is</span> @ <span class="hljs-keyword">then</span> l.end2 <span class="hljs-keyword">else</span> l.end1</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  otherEnd: <span class="hljs-function"><span class="hljs-params">(l)</span> -&gt;</span> <span class="hljs-keyword">if</span> l.end1 <span class="hljs-keyword">is</span> @ <span class="hljs-keyword">then</span> l.end2 <span class="hljs-keyword">else</span> l.end1</pre></div></div>
             
         </li>
         
@@ -606,8 +606,8 @@ from me, and within angle radians of my heading using patch topology</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">myLinks</span>: <span class="hljs-function">-&gt;</span>
-    <span class="hljs-property">@links</span> ? (l <span class="hljs-keyword">for</span> l <span class="hljs-keyword">in</span> <span class="hljs-property">@model</span>.links <span class="hljs-keyword">when</span> (l.end1 <span class="hljs-keyword">is</span> @) <span class="hljs-keyword">or</span> (l.end2 <span class="hljs-keyword">is</span> @))</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  myLinks: <span class="hljs-function">-&gt;</span>
+    @links ? (l <span class="hljs-keyword">for</span> l <span class="hljs-keyword">in</span> @model.links <span class="hljs-keyword">when</span> (l.end1 <span class="hljs-keyword">is</span> @) <span class="hljs-keyword">or</span> (l.end2 <span class="hljs-keyword">is</span> @))</pre></div></div>
             
         </li>
         
@@ -622,8 +622,8 @@ from me, and within angle radians of my heading using patch topology</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">linkNeighbors</span>: <span class="hljs-function">-&gt;</span>
-    <span class="hljs-property">@otherEnd</span> l <span class="hljs-keyword">for</span> l <span class="hljs-keyword">in</span> <span class="hljs-property">@myLinks</span>()</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  linkNeighbors: <span class="hljs-function">-&gt;</span>
+    @otherEnd l <span class="hljs-keyword">for</span> l <span class="hljs-keyword">in</span> @myLinks()</pre></div></div>
             
         </li>
         
@@ -638,8 +638,8 @@ from me, and within angle radians of my heading using patch topology</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">myInLinks</span>: <span class="hljs-function">-&gt;</span>
-    l <span class="hljs-keyword">for</span> l <span class="hljs-keyword">in</span> <span class="hljs-property">@myLinks</span>() <span class="hljs-keyword">when</span> l.end2 <span class="hljs-keyword">is</span> @</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  myInLinks: <span class="hljs-function">-&gt;</span>
+    l <span class="hljs-keyword">for</span> l <span class="hljs-keyword">in</span> @myLinks() <span class="hljs-keyword">when</span> l.end2 <span class="hljs-keyword">is</span> @</pre></div></div>
             
         </li>
         
@@ -654,8 +654,8 @@ from me, and within angle radians of my heading using patch topology</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">inLinkNeighbors</span>: <span class="hljs-function">-&gt;</span>
-    l.end1 <span class="hljs-keyword">for</span> l <span class="hljs-keyword">in</span> <span class="hljs-property">@myLinks</span>() <span class="hljs-keyword">when</span> l.end2 <span class="hljs-keyword">is</span> @</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  inLinkNeighbors: <span class="hljs-function">-&gt;</span>
+    l.end1 <span class="hljs-keyword">for</span> l <span class="hljs-keyword">in</span> @myLinks() <span class="hljs-keyword">when</span> l.end2 <span class="hljs-keyword">is</span> @</pre></div></div>
             
         </li>
         
@@ -670,8 +670,8 @@ from me, and within angle radians of my heading using patch topology</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">myOutLinks</span>: <span class="hljs-function">-&gt;</span>
-    l <span class="hljs-keyword">for</span> l <span class="hljs-keyword">in</span> <span class="hljs-property">@myLinks</span>() <span class="hljs-keyword">when</span> l.end1 <span class="hljs-keyword">is</span> @</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  myOutLinks: <span class="hljs-function">-&gt;</span>
+    l <span class="hljs-keyword">for</span> l <span class="hljs-keyword">in</span> @myLinks() <span class="hljs-keyword">when</span> l.end1 <span class="hljs-keyword">is</span> @</pre></div></div>
             
         </li>
         
@@ -686,8 +686,8 @@ from me, and within angle radians of my heading using patch topology</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">outLinkNeighbors</span>: <span class="hljs-function">-&gt;</span>
-    l.end2 <span class="hljs-keyword">for</span> l <span class="hljs-keyword">in</span> <span class="hljs-property">@myLinks</span>() <span class="hljs-keyword">when</span> l.end1 <span class="hljs-keyword">is</span> @</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  outLinkNeighbors: <span class="hljs-function">-&gt;</span>
+    l.end2 <span class="hljs-keyword">for</span> l <span class="hljs-keyword">in</span> @myLinks() <span class="hljs-keyword">when</span> l.end1 <span class="hljs-keyword">is</span> @</pre></div></div>
             
         </li>
         

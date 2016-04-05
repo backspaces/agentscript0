@@ -58,28 +58,28 @@ agentset type. For a simpler version, take a look at <a href="../models/gridpath
             
             <div class="content"><div class='highlight'><pre>
 <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ABM</span>.<span class="hljs-title">FloodFill</span></span>
-  <span class="hljs-attribute">constructor</span>: <span class="hljs-function"><span class="hljs-params">(startingSet, <span class="hljs-property">@fCandidate</span>, <span class="hljs-property">@fJoin</span>, <span class="hljs-property">@fNeighbors</span>)</span> -&gt;</span>
-    <span class="hljs-property">@nextFront</span> = startingSet
-    <span class="hljs-property">@prevFront</span> = []
-    <span class="hljs-property">@done</span> = <span class="hljs-literal">false</span>
+  constructor: <span class="hljs-function"><span class="hljs-params">(startingSet, @fCandidate, @fJoin, @fNeighbors)</span> -&gt;</span>
+    @nextFront = startingSet
+    @prevFront = []
+    @done = <span class="hljs-literal">false</span>
 
-  <span class="hljs-attribute">nextStep</span>: <span class="hljs-function"><span class="hljs-params">()</span> -&gt;</span>
-    <span class="hljs-keyword">if</span> <span class="hljs-property">@done</span> <span class="hljs-keyword">then</span> <span class="hljs-keyword">return</span>
+  nextStep: <span class="hljs-function"><span class="hljs-params">()</span> -&gt;</span>
+    <span class="hljs-keyword">if</span> @done <span class="hljs-keyword">then</span> <span class="hljs-keyword">return</span>
 
-    <span class="hljs-property">@fJoin</span> p, <span class="hljs-property">@prevFront</span> <span class="hljs-keyword">for</span> p <span class="hljs-keyword">in</span> <span class="hljs-property">@nextFront</span>
+    @fJoin p, @prevFront <span class="hljs-keyword">for</span> p <span class="hljs-keyword">in</span> @nextFront
     asetNext = []
-    <span class="hljs-keyword">for</span> p <span class="hljs-keyword">in</span> <span class="hljs-property">@nextFront</span>
-      <span class="hljs-keyword">for</span> n <span class="hljs-keyword">in</span> <span class="hljs-property">@fNeighbors</span>(p) <span class="hljs-keyword">when</span> <span class="hljs-property">@fCandidate</span> n, <span class="hljs-property">@nextFront</span>
+    <span class="hljs-keyword">for</span> p <span class="hljs-keyword">in</span> @nextFront
+      <span class="hljs-keyword">for</span> n <span class="hljs-keyword">in</span> @fNeighbors(p) <span class="hljs-keyword">when</span> @fCandidate n, @nextFront
         asetNext.push n <span class="hljs-keyword">if</span> asetNext.indexOf(n) &lt; <span class="hljs-number">0</span>
     
-    <span class="hljs-property">@prevFront</span> = <span class="hljs-property">@nextFront</span>
-    <span class="hljs-property">@nextFront</span> = asetNext
+    @prevFront = @nextFront
+    @nextFront = asetNext
 
-    <span class="hljs-keyword">if</span> <span class="hljs-property">@nextFront</span>.length <span class="hljs-keyword">is</span> <span class="hljs-number">0</span>
-      <span class="hljs-property">@done</span> = <span class="hljs-literal">true</span>
+    <span class="hljs-keyword">if</span> @nextFront.length <span class="hljs-keyword">is</span> <span class="hljs-number">0</span>
+      @done = <span class="hljs-literal">true</span>
   
-  <span class="hljs-attribute">go</span>: <span class="hljs-function"><span class="hljs-params">()</span> -&gt;</span>
-    <span class="hljs-property">@nextStep</span>() <span class="hljs-keyword">while</span> <span class="hljs-keyword">not</span> <span class="hljs-property">@done</span></pre></div></div>
+  go: <span class="hljs-function"><span class="hljs-params">()</span> -&gt;</span>
+    @nextStep() <span class="hljs-keyword">while</span> <span class="hljs-keyword">not</span> @done</pre></div></div>
             
         </li>
         

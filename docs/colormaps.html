@@ -104,7 +104,7 @@ GitHub <a href="https://github.com/bpostlethwaite/colormap">ColorMap Project</a>
             </div>
             
             <div class="content"><div class='highlight'><pre>
-  <span class="hljs-attribute">gradientImageData</span>: <span class="hljs-function"><span class="hljs-params">(nColors, stops, locs)</span> -&gt;</span></pre></div></div>
+  gradientImageData: <span class="hljs-function"><span class="hljs-params">(nColors, stops, locs)</span> -&gt;</span></pre></div></div>
             
         </li>
         
@@ -214,13 +214,13 @@ Useful for converting ImageData objects like gradients to color arrays.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">uint8ArrayToUint8s</span>: <span class="hljs-function"><span class="hljs-params">(a)</span> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  uint8ArrayToUint8s: <span class="hljs-function"><span class="hljs-params">(a)</span> -&gt;</span>
     ( a.subarray(i,i+<span class="hljs-number">4</span>) <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> [<span class="hljs-number">0.</span>..a.length] <span class="hljs-keyword">by</span> <span class="hljs-number">4</span> )
-  <span class="hljs-attribute">uint8ArrayToRgbas</span>: <span class="hljs-function"><span class="hljs-params">(a)</span> -&gt;</span>
+  uint8ArrayToRgbas: <span class="hljs-function"><span class="hljs-params">(a)</span> -&gt;</span>
     ( [ a[i], a[i+<span class="hljs-number">1</span>], a[i+<span class="hljs-number">2</span>], a[i+<span class="hljs-number">3</span>] ] <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> [<span class="hljs-number">0.</span>..a.length] <span class="hljs-keyword">by</span> <span class="hljs-number">4</span> )
-  <span class="hljs-attribute">uint8ArrayToColors</span>: <span class="hljs-function"><span class="hljs-params">(array, type)</span> -&gt;</span>
+  uint8ArrayToColors: <span class="hljs-function"><span class="hljs-params">(array, type)</span> -&gt;</span>
     <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Uint32Array( array.buffer ) <span class="hljs-keyword">if</span> type <span class="hljs-keyword">is</span> <span class="hljs-string">"pixel"</span>
-    <span class="hljs-property">@arrayToColors</span>(<span class="hljs-property">@uint8ArrayToUint8s</span>(array), type)</pre></div></div>
+    @arrayToColors(@uint8ArrayToUint8s(array), type)</pre></div></div>
             
         </li>
         
@@ -235,7 +235,7 @@ Useful for converting ImageData objects like gradients to color arrays.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">arrayToColors</span>: <span class="hljs-function"><span class="hljs-params">(array, type)</span> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  arrayToColors: <span class="hljs-function"><span class="hljs-params">(array, type)</span> -&gt;</span>
     <span class="hljs-keyword">return</span> array <span class="hljs-keyword">if</span> Color.colorType(array[<span class="hljs-number">0</span>]) <span class="hljs-keyword">is</span> type
     array[i] = Color.convertColor(a, type) <span class="hljs-keyword">for</span> a,i <span class="hljs-keyword">in</span> array
     array</pre></div></div>
@@ -260,12 +260,12 @@ Used by rgbColorMap and hslColorMap</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">permuteColors</span>: <span class="hljs-function"><span class="hljs-params">(A1, A2=A1, A3=A2, max=[<span class="hljs-number">255</span>,<span class="hljs-number">255</span>,<span class="hljs-number">255</span>])</span> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  permuteColors: <span class="hljs-function"><span class="hljs-params">(A1, A2=A1, A3=A2, max=[<span class="hljs-number">255</span>,<span class="hljs-number">255</span>,<span class="hljs-number">255</span>])</span> -&gt;</span>
     [A1, A2, A3] = <span class="hljs-keyword">for</span> A, i <span class="hljs-keyword">in</span> [A1, A2, A3] <span class="hljs-comment"># multi-line comprehension</span>
       <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span> A <span class="hljs-keyword">is</span> <span class="hljs-string">"number"</span>
         <span class="hljs-keyword">if</span> A <span class="hljs-keyword">is</span> <span class="hljs-number">1</span> <span class="hljs-keyword">then</span> [max[i]] <span class="hljs-keyword">else</span> u.aIntRamp(<span class="hljs-number">0</span>, max[i], A)
       <span class="hljs-keyword">else</span> A
-    <span class="hljs-property">@permuteArrays</span> A1, A2, A3</pre></div></div>
+    @permuteArrays A1, A2, A3</pre></div></div>
             
         </li>
         
@@ -280,7 +280,7 @@ Used by rgbColorMap and hslColorMap</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">permuteArrays</span>: <span class="hljs-function"><span class="hljs-params">(A1, A2=A1, A3=A2)</span> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  permuteArrays: <span class="hljs-function"><span class="hljs-params">(A1, A2=A1, A3=A2)</span> -&gt;</span>
     array = []
     ((array.push [a1,a2,a3] <span class="hljs-keyword">for</span> a1 <span class="hljs-keyword">in</span> A1) <span class="hljs-keyword">for</span> a2 <span class="hljs-keyword">in</span> A2) <span class="hljs-keyword">for</span> a3 <span class="hljs-keyword">in</span> A3
     array</pre></div></div>
@@ -312,8 +312,8 @@ Returns the original array, just for convenience.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">colorMap</span>: <span class="hljs-function"><span class="hljs-params">(array, indexToo = <span class="hljs-literal">false</span>)</span> -&gt;</span>
-    array.__proto__ = <span class="hljs-property">@ColorMapProto</span>
+            <div class="content"><div class='highlight'><pre>  colorMap: <span class="hljs-function"><span class="hljs-params">(array, indexToo = <span class="hljs-literal">false</span>)</span> -&gt;</span>
+    array.__proto__ = @ColorMapProto
     array.init indexToo</pre></div></div>
             
         </li>
@@ -329,8 +329,8 @@ Returns the original array, just for convenience.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">ColorMapProto</span>: {
-    <span class="hljs-attribute">__proto__</span>: Array.prototype</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  ColorMapProto: {
+    __proto__: Array.prototype</pre></div></div>
             
         </li>
         
@@ -347,13 +347,13 @@ add properties for map and index in map.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="hljs-attribute">init</span>: <span class="hljs-function"><span class="hljs-params">(indexToo = <span class="hljs-literal">false</span>)</span> -&gt;</span>
-      <span class="hljs-property">@type</span> = Color.colorType @[<span class="hljs-number">0</span>]
-      <span class="hljs-property">@index</span> = {} <span class="hljs-keyword">if</span> indexToo
-      u.error <span class="hljs-string">"ColorMap type error"</span> <span class="hljs-keyword">unless</span> <span class="hljs-property">@type</span>?
-      <span class="hljs-keyword">if</span> <span class="hljs-property">@type</span> <span class="hljs-keyword">is</span> <span class="hljs-string">"typed"</span>
+            <div class="content"><div class='highlight'><pre>    init: <span class="hljs-function"><span class="hljs-params">(indexToo = <span class="hljs-literal">false</span>)</span> -&gt;</span>
+      @type = Color.colorType @[<span class="hljs-number">0</span>]
+      @index = {} <span class="hljs-keyword">if</span> indexToo
+      u.error <span class="hljs-string">"ColorMap type error"</span> <span class="hljs-keyword">unless</span> @type?
+      <span class="hljs-keyword">if</span> @type <span class="hljs-keyword">is</span> <span class="hljs-string">"typed"</span>
         <span class="hljs-keyword">for</span> color,i <span class="hljs-keyword">in</span> @ <span class="hljs-keyword">then</span> color.ix = i; color.map = @
-      <span class="hljs-property">@index</span>[ <span class="hljs-property">@indexKey</span>(color) ] = i <span class="hljs-keyword">for</span> color,i <span class="hljs-keyword">in</span> @ <span class="hljs-keyword">if</span> <span class="hljs-property">@index</span>
+      @index[ @indexKey(color) ] = i <span class="hljs-keyword">for</span> color,i <span class="hljs-keyword">in</span> @ <span class="hljs-keyword">if</span> @index
       @ <span class="hljs-comment"># this is just the original array, returned for convenience.</span></pre></div></div>
             
         </li>
@@ -370,8 +370,8 @@ The value will be the array index of the color.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="hljs-attribute">indexKey</span>: <span class="hljs-function"><span class="hljs-params">(color)</span> -&gt;</span> <span class="hljs-comment"># make css strings lower case?</span>
-      <span class="hljs-keyword">if</span> <span class="hljs-property">@type</span> <span class="hljs-keyword">is</span> <span class="hljs-string">"typed"</span> <span class="hljs-keyword">then</span> color.pixel <span class="hljs-keyword">else</span> color</pre></div></div>
+            <div class="content"><div class='highlight'><pre>    indexKey: <span class="hljs-function"><span class="hljs-params">(color)</span> -&gt;</span> <span class="hljs-comment"># make css strings lower case?</span>
+      <span class="hljs-keyword">if</span> @type <span class="hljs-keyword">is</span> <span class="hljs-string">"typed"</span> <span class="hljs-keyword">then</span> color.pixel <span class="hljs-keyword">else</span> color</pre></div></div>
             
         </li>
         
@@ -386,8 +386,8 @@ The value will be the array index of the color.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="hljs-attribute">colorsEqual</span>: <span class="hljs-function"><span class="hljs-params">(color1, color2)</span> -&gt;</span>
-      <span class="hljs-property">@indexKey</span>(color1) <span class="hljs-keyword">is</span> <span class="hljs-property">@indexKey</span>(color2)</pre></div></div>
+            <div class="content"><div class='highlight'><pre>    colorsEqual: <span class="hljs-function"><span class="hljs-params">(color1, color2)</span> -&gt;</span>
+      @indexKey(color1) <span class="hljs-keyword">is</span> @indexKey(color2)</pre></div></div>
             
         </li>
         
@@ -403,8 +403,8 @@ input range, defaults to entire map.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="hljs-attribute">randomIndex</span>: <span class="hljs-function"><span class="hljs-params">(start=<span class="hljs-number">0</span>, stop=<span class="hljs-property">@length</span>)</span> -&gt;</span> u.randomInt2 start, stop
-    <span class="hljs-attribute">randomColor</span>: <span class="hljs-function"><span class="hljs-params">(start=<span class="hljs-number">0</span>, stop=<span class="hljs-property">@length</span>)</span> -&gt;</span> @[ <span class="hljs-property">@randomIndex</span> start, stop ]</pre></div></div>
+            <div class="content"><div class='highlight'><pre>    randomIndex: <span class="hljs-function"><span class="hljs-params">(start=<span class="hljs-number">0</span>, stop=@length)</span> -&gt;</span> u.randomInt2 start, stop
+    randomColor: <span class="hljs-function"><span class="hljs-params">(start=<span class="hljs-number">0</span>, stop=@length)</span> -&gt;</span> @[ @randomIndex start, stop ]</pre></div></div>
             
         </li>
         
@@ -420,10 +420,10 @@ and color.ix for typedColors</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="hljs-attribute">sort</span>: <span class="hljs-function"><span class="hljs-params">(compareFcn)</span> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>    sort: <span class="hljs-function"><span class="hljs-params">(compareFcn)</span> -&gt;</span>
       Array.prototype.sort.call @, compareFcn
-      <span class="hljs-property">@index</span>[ <span class="hljs-property">@indexKey</span>(color) ] = i <span class="hljs-keyword">for</span> color,i <span class="hljs-keyword">in</span> @ <span class="hljs-keyword">if</span> <span class="hljs-property">@index</span>
-      color.ix = i <span class="hljs-keyword">for</span> color,i <span class="hljs-keyword">in</span> @ <span class="hljs-keyword">if</span> <span class="hljs-property">@type</span> <span class="hljs-keyword">is</span> <span class="hljs-string">"typed"</span>
+      @index[ @indexKey(color) ] = i <span class="hljs-keyword">for</span> color,i <span class="hljs-keyword">in</span> @ <span class="hljs-keyword">if</span> @index
+      color.ix = i <span class="hljs-keyword">for</span> color,i <span class="hljs-keyword">in</span> @ <span class="hljs-keyword">if</span> @type <span class="hljs-keyword">is</span> <span class="hljs-string">"typed"</span>
       @</pre></div></div>
             
         </li>
@@ -439,10 +439,10 @@ and color.ix for typedColors</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="hljs-attribute">lookup</span>: <span class="hljs-function"><span class="hljs-params">(color)</span> -&gt;</span>
-      color = Color.convertColor color, <span class="hljs-property">@type</span> <span class="hljs-comment"># make sure color is our type</span>
-      <span class="hljs-keyword">return</span> <span class="hljs-property">@index</span>[ <span class="hljs-property">@indexKey</span>(color) ] <span class="hljs-keyword">if</span> <span class="hljs-property">@index</span>
-      <span class="hljs-keyword">for</span> c,i <span class="hljs-keyword">in</span> @ <span class="hljs-keyword">then</span> <span class="hljs-keyword">return</span> i <span class="hljs-keyword">if</span> <span class="hljs-property">@colorsEqual</span>(color, c)
+            <div class="content"><div class='highlight'><pre>    lookup: <span class="hljs-function"><span class="hljs-params">(color)</span> -&gt;</span>
+      color = Color.convertColor color, @type <span class="hljs-comment"># make sure color is our type</span>
+      <span class="hljs-keyword">return</span> @index[ @indexKey(color) ] <span class="hljs-keyword">if</span> @index
+      <span class="hljs-keyword">for</span> c,i <span class="hljs-keyword">in</span> @ <span class="hljs-keyword">then</span> <span class="hljs-keyword">return</span> i <span class="hljs-keyword">if</span> @colorsEqual(color, c)
       <span class="hljs-literal">undefined</span></pre></div></div>
             
         </li>
@@ -459,10 +459,10 @@ This is a linear interpolation based on the map indices.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="hljs-attribute">scaleColor</span>: <span class="hljs-function"><span class="hljs-params">(number, min, max)</span> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>    scaleColor: <span class="hljs-function"><span class="hljs-params">(number, min, max)</span> -&gt;</span>
       <span class="hljs-keyword">if</span> number &lt; min <span class="hljs-keyword">then</span> number = min
       <span class="hljs-keyword">if</span> number &gt; max <span class="hljs-keyword">then</span> number = max
-      scale = (<span class="hljs-property">@length</span>-<span class="hljs-number">1</span>)*((number-min)/(max-min))
+      scale = (@length<span class="hljs-number">-1</span>)*((number-min)/(max-min))
       @[ Math.round scale ]</pre></div></div>
             
         </li>
@@ -480,7 +480,7 @@ Note: slow for large maps unless color cube or exact match.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="hljs-attribute">findClosestIndex</span>: <span class="hljs-function"><span class="hljs-params">(r, g, b, a=<span class="hljs-number">255</span>)</span> -&gt;</span> <span class="hljs-comment"># alpha not in rgbDistance function</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>    findClosestIndex: <span class="hljs-function"><span class="hljs-params">(r, g, b, a=<span class="hljs-number">255</span>)</span> -&gt;</span> <span class="hljs-comment"># alpha not in rgbDistance function</span></pre></div></div>
             
         </li>
         
@@ -510,10 +510,10 @@ Note: slow for large maps unless color cube or exact match.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">if</span> <span class="hljs-property">@cube</span>
-        step = <span class="hljs-number">255</span>/(<span class="hljs-property">@cube</span>-<span class="hljs-number">1</span>)
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">if</span> @cube
+        step = <span class="hljs-number">255</span>/(@cube<span class="hljs-number">-1</span>)
         [rLoc, gLoc, bLoc] = (Math.round(c/step) <span class="hljs-keyword">for</span> c <span class="hljs-keyword">in</span> [r, g, b])
-        <span class="hljs-keyword">return</span> rLoc + gLoc*<span class="hljs-property">@cube</span> + bLoc*<span class="hljs-property">@cube</span>*<span class="hljs-property">@cube</span></pre></div></div>
+        <span class="hljs-keyword">return</span> rLoc + gLoc*@cube + bLoc*@cube*@cube</pre></div></div>
             
         </li>
         
@@ -528,7 +528,7 @@ Note: slow for large maps unless color cube or exact match.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">return</span> ix <span class="hljs-keyword">if</span> ix = <span class="hljs-property">@lookup</span> [r,g,b,a]</pre></div></div>
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">return</span> ix <span class="hljs-keyword">if</span> ix = @lookup [r,g,b,a]</pre></div></div>
             
         </li>
         
@@ -549,7 +549,7 @@ Note: slow for large maps unless color cube or exact match.</p>
         d = Color.rgbDistance r0, g0, b0, r, g, b
         <span class="hljs-keyword">if</span> d &lt; minDist <span class="hljs-keyword">then</span> minDist = d; ixMin = i
       ixMin
-    <span class="hljs-attribute">findClosestColor</span>: <span class="hljs-function"><span class="hljs-params">(r, g, b, a=<span class="hljs-number">255</span>)</span> -&gt;</span>  @[ <span class="hljs-property">@findClosestIndex</span> r, g, b, a ]
+    findClosestColor: <span class="hljs-function"><span class="hljs-params">(r, g, b, a=<span class="hljs-number">255</span>)</span> -&gt;</span>  @[ @findClosestIndex r, g, b, a ]
   }</pre></div></div>
             
         </li>
@@ -581,9 +581,9 @@ Good for converting css names, pixels/image data</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">basicColorMap</span>: <span class="hljs-function"><span class="hljs-params">(array, type=<span class="hljs-string">"typed"</span>, indexToo=<span class="hljs-literal">false</span>)</span> -&gt;</span>
-    array = <span class="hljs-property">@arrayToColors</span> array, type
-    <span class="hljs-property">@colorMap</span> array, indexToo</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  basicColorMap: <span class="hljs-function"><span class="hljs-params">(array, type=<span class="hljs-string">"typed"</span>, indexToo=<span class="hljs-literal">false</span>)</span> -&gt;</span>
+    array = @arrayToColors array, type
+    @colorMap array, indexToo</pre></div></div>
             
         </li>
         
@@ -600,9 +600,9 @@ by passing a size parameter.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">grayColorMap</span>: <span class="hljs-function"><span class="hljs-params">(size=<span class="hljs-number">256</span>, type=<span class="hljs-string">"typed"</span>, indexToo=<span class="hljs-literal">false</span>)</span> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  grayColorMap: <span class="hljs-function"><span class="hljs-params">(size=<span class="hljs-number">256</span>, type=<span class="hljs-string">"typed"</span>, indexToo=<span class="hljs-literal">false</span>)</span> -&gt;</span>
     array = ( [i,i,i] <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> u.aIntRamp <span class="hljs-number">0</span>, <span class="hljs-number">255</span>, size )
-    <span class="hljs-property">@basicColorMap</span> array, type, indexToo</pre></div></div>
+    @basicColorMap array, type, indexToo</pre></div></div>
             
         </li>
         
@@ -638,12 +638,12 @@ R=G=B=4, the resulting map has <code>4*4*4=64</code> colors.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">rgbColorMap</span>: <span class="hljs-function"><span class="hljs-params">(R, G=R, B=R, type=<span class="hljs-string">"typed"</span>, indexToo=<span class="hljs-literal">true</span>)</span> -&gt;</span>
-    array = <span class="hljs-property">@permuteColors</span>(R, G, B)
+            <div class="content"><div class='highlight'><pre>  rgbColorMap: <span class="hljs-function"><span class="hljs-params">(R, G=R, B=R, type=<span class="hljs-string">"typed"</span>, indexToo=<span class="hljs-literal">true</span>)</span> -&gt;</span>
+    array = @permuteColors(R, G, B)
     array.cube = R <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> R <span class="hljs-keyword">is</span> <span class="hljs-string">"number"</span>) <span class="hljs-keyword">and</span> (R <span class="hljs-keyword">is</span> G <span class="hljs-keyword">is</span> B)
-    <span class="hljs-property">@colorMap</span> <span class="hljs-property">@arrayToColors</span>(array, type), indexToo
-  <span class="hljs-attribute">rgbColorCube</span>: <span class="hljs-function"><span class="hljs-params">(cubeSide, type=<span class="hljs-string">"typed"</span>, indexToo=<span class="hljs-literal">false</span>)</span> -&gt;</span>
-    <span class="hljs-property">@rgbColorMap</span> cubeSide, cubeSide, cubeSide, type, indexToo</pre></div></div>
+    @colorMap @arrayToColors(array, type), indexToo
+  rgbColorCube: <span class="hljs-function"><span class="hljs-params">(cubeSide, type=<span class="hljs-string">"typed"</span>, indexToo=<span class="hljs-literal">false</span>)</span> -&gt;</span>
+    @rgbColorMap cubeSide, cubeSide, cubeSide, type, indexToo</pre></div></div>
             
         </li>
         
@@ -659,10 +659,10 @@ HSL values to typedColors, default to bright hue ramp (L=50).</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">hslColorMap</span>: <span class="hljs-function"><span class="hljs-params">(H, S=<span class="hljs-number">1</span>, L=<span class="hljs-number">1</span>, type=<span class="hljs-string">"typed"</span>, indexToo=<span class="hljs-literal">false</span>)</span> -&gt;</span>
-    hslArray = <span class="hljs-property">@permuteColors</span>(H, S, L, [<span class="hljs-number">359</span>,<span class="hljs-number">100</span>,<span class="hljs-number">50</span>])
+            <div class="content"><div class='highlight'><pre>  hslColorMap: <span class="hljs-function"><span class="hljs-params">(H, S=<span class="hljs-number">1</span>, L=<span class="hljs-number">1</span>, type=<span class="hljs-string">"typed"</span>, indexToo=<span class="hljs-literal">false</span>)</span> -&gt;</span>
+    hslArray = @permuteColors(H, S, L, [<span class="hljs-number">359</span>,<span class="hljs-number">100</span>,<span class="hljs-number">50</span>])
     array = (Color.hslString a... <span class="hljs-keyword">for</span> a <span class="hljs-keyword">in</span> hslArray)
-    <span class="hljs-property">@colorMap</span> <span class="hljs-property">@arrayToColors</span>(array, type), indexToo</pre></div></div>
+    @colorMap @arrayToColors(array, type), indexToo</pre></div></div>
             
         </li>
         
@@ -678,9 +678,9 @@ This easily creates all the MatLab colormaps.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">gradientColorMap</span>: <span class="hljs-function"><span class="hljs-params">(nColors, stops, locs, type=<span class="hljs-string">"typed"</span>, indexToo=<span class="hljs-literal">false</span>)</span> -&gt;</span>
-    id = <span class="hljs-property">@gradientImageData</span>(nColors, stops, locs)
-    <span class="hljs-property">@colorMap</span> <span class="hljs-property">@uint8ArrayToColors</span>(id, type), indexToo</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  gradientColorMap: <span class="hljs-function"><span class="hljs-params">(nColors, stops, locs, type=<span class="hljs-string">"typed"</span>, indexToo=<span class="hljs-literal">false</span>)</span> -&gt;</span>
+    id = @gradientImageData(nColors, stops, locs)
+    @colorMap @uint8ArrayToColors(id, type), indexToo</pre></div></div>
             
         </li>
         
@@ -695,7 +695,7 @@ This easily creates all the MatLab colormaps.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">jetColors</span>: [ [<span class="hljs-number">0</span>,<span class="hljs-number">0</span>,<span class="hljs-number">127</span>], [<span class="hljs-number">0</span>,<span class="hljs-number">0</span>,<span class="hljs-number">255</span>], [<span class="hljs-number">0</span>,<span class="hljs-number">127</span>,<span class="hljs-number">255</span>], [<span class="hljs-number">0</span>,<span class="hljs-number">255</span>,<span class="hljs-number">255</span>],
+            <div class="content"><div class='highlight'><pre>  jetColors: [ [<span class="hljs-number">0</span>,<span class="hljs-number">0</span>,<span class="hljs-number">127</span>], [<span class="hljs-number">0</span>,<span class="hljs-number">0</span>,<span class="hljs-number">255</span>], [<span class="hljs-number">0</span>,<span class="hljs-number">127</span>,<span class="hljs-number">255</span>], [<span class="hljs-number">0</span>,<span class="hljs-number">255</span>,<span class="hljs-number">255</span>],
     [<span class="hljs-number">127</span>,<span class="hljs-number">255</span>,<span class="hljs-number">127</span>], [<span class="hljs-number">255</span>,<span class="hljs-number">255</span>,<span class="hljs-number">0</span>], [<span class="hljs-number">255</span>,<span class="hljs-number">127</span>,<span class="hljs-number">0</span>], [<span class="hljs-number">255</span>,<span class="hljs-number">0</span>,<span class="hljs-number">0</span>], [<span class="hljs-number">127</span>,<span class="hljs-number">0</span>,<span class="hljs-number">0</span>] ]</pre></div></div>
             
         </li>
@@ -713,9 +713,9 @@ rampStops: (color, whiteToo) -&gt;
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">rampColorMap</span>: <span class="hljs-function"><span class="hljs-params">(color, width, whiteToo = <span class="hljs-literal">false</span>)</span> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  rampColorMap: <span class="hljs-function"><span class="hljs-params">(color, width, whiteToo = <span class="hljs-literal">false</span>)</span> -&gt;</span>
     stops = <span class="hljs-keyword">if</span> whiteToo <span class="hljs-keyword">then</span> [<span class="hljs-string">"black"</span>, color, <span class="hljs-string">"white"</span>] <span class="hljs-keyword">else</span> [<span class="hljs-string">"black"</span>, color]
-    <span class="hljs-property">@gradientColorMap</span> width, stops <span class="hljs-comment"># @rampStops(color, whiteToo)</span></pre></div></div>
+    @gradientColorMap width, stops <span class="hljs-comment"># @rampStops(color, whiteToo)</span></pre></div></div>
             
         </li>
         
@@ -734,19 +734,19 @@ an alternative to ramp from black to full color as well.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">netLogoColorMap</span>: <span class="hljs-function"><span class="hljs-params">(width = <span class="hljs-number">10</span>, whiteToo = <span class="hljs-literal">true</span>)</span> -&gt;</span>
-    <span class="hljs-property">@namedColorMap</span> <span class="hljs-property">@netLogoColors</span>, width, whiteToo
-  <span class="hljs-attribute">cssBasicColorMap</span>: <span class="hljs-function"><span class="hljs-params">(width=<span class="hljs-number">18</span>, whiteToo=<span class="hljs-literal">false</span>)</span> -&gt;</span>
-    <span class="hljs-property">@namedColorMap</span> <span class="hljs-property">@basicCssColors</span>, width, whiteToo
+            <div class="content"><div class='highlight'><pre>  netLogoColorMap: <span class="hljs-function"><span class="hljs-params">(width = <span class="hljs-number">10</span>, whiteToo = <span class="hljs-literal">true</span>)</span> -&gt;</span>
+    @namedColorMap @netLogoColors, width, whiteToo
+  cssBasicColorMap: <span class="hljs-function"><span class="hljs-params">(width=<span class="hljs-number">18</span>, whiteToo=<span class="hljs-literal">false</span>)</span> -&gt;</span>
+    @namedColorMap @basicCssColors, width, whiteToo
 
-  <span class="hljs-attribute">namedColorMap</span>: <span class="hljs-function"><span class="hljs-params">(names, width, whiteToo)</span> -&gt;</span>
+  namedColorMap: <span class="hljs-function"><span class="hljs-params">(names, width, whiteToo)</span> -&gt;</span>
     map = []; ramps = {}
     <span class="hljs-keyword">if</span> u.isArray names <span class="hljs-comment"># convert array of named colors to object of name: name</span>
       o = {}; o[n] = n <span class="hljs-keyword">for</span> n <span class="hljs-keyword">in</span> names; names = o
     <span class="hljs-keyword">for</span> name, color <span class="hljs-keyword">of</span> names
-      ramps[name] = <span class="hljs-property">@rampColorMap</span> color, width, whiteToo
+      ramps[name] = @rampColorMap color, width, whiteToo
       map = map.concat ramps[name]
-    map = <span class="hljs-property">@basicColorMap</span> map
+    map = @basicColorMap map
     map[k] = v <span class="hljs-keyword">for</span> k, v <span class="hljs-keyword">of</span> ramps</pre></div></div>
             
         </li>
@@ -778,7 +778,7 @@ an alternative to ramp from black to full color as well.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">basicCssColors</span>: [<span class="hljs-string">"gray"</span>, <span class="hljs-string">"red"</span>, <span class="hljs-string">"orange"</span>, <span class="hljs-string">"brown"</span>, <span class="hljs-string">"yellow"</span>, <span class="hljs-string">"green"</span>, <span class="hljs-string">"lime"</span>,
+            <div class="content"><div class='highlight'><pre>  basicCssColors: [<span class="hljs-string">"gray"</span>, <span class="hljs-string">"red"</span>, <span class="hljs-string">"orange"</span>, <span class="hljs-string">"brown"</span>, <span class="hljs-string">"yellow"</span>, <span class="hljs-string">"green"</span>, <span class="hljs-string">"lime"</span>,
     <span class="hljs-string">"turquoise"</span>, <span class="hljs-string">"cyan"</span>, <span class="hljs-string">"skyblue"</span>, <span class="hljs-string">"blue"</span>, <span class="hljs-string">"violet"</span>, <span class="hljs-string">"magenta"</span>, <span class="hljs-string">"pink"</span>]</pre></div></div>
             
         </li>
@@ -794,14 +794,14 @@ an alternative to ramp from black to full color as well.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">netLogoColors</span>:
-    <span class="hljs-attribute">gray</span>: [<span class="hljs-number">141</span>, <span class="hljs-number">141</span>, <span class="hljs-number">141</span>],      <span class="hljs-attribute">red</span>: [<span class="hljs-number">215</span>, <span class="hljs-number">50</span>, <span class="hljs-number">41</span>]
-    <span class="hljs-attribute">orange</span>: [<span class="hljs-number">241</span>, <span class="hljs-number">106</span>, <span class="hljs-number">21</span>],     <span class="hljs-attribute">brown</span>: [<span class="hljs-number">157</span>, <span class="hljs-number">110</span>, <span class="hljs-number">72</span>]
-    <span class="hljs-attribute">yellow</span>: [<span class="hljs-number">237</span>, <span class="hljs-number">237</span>, <span class="hljs-number">49</span>],     <span class="hljs-attribute">green</span>: [<span class="hljs-number">89</span>, <span class="hljs-number">176</span>, <span class="hljs-number">60</span>]
-    <span class="hljs-attribute">lime</span>: [<span class="hljs-number">44</span>, <span class="hljs-number">209</span>, <span class="hljs-number">59</span>],        <span class="hljs-attribute">turquoise</span>: [<span class="hljs-number">29</span>, <span class="hljs-number">159</span>, <span class="hljs-number">120</span>]
-    <span class="hljs-attribute">cyan</span>: [<span class="hljs-number">84</span>, <span class="hljs-number">196</span>, <span class="hljs-number">196</span>],       <span class="hljs-attribute">skyblue</span>: [<span class="hljs-number">45</span>, <span class="hljs-number">141</span>, <span class="hljs-number">190</span>]
-    <span class="hljs-attribute">blue</span>: [<span class="hljs-number">52</span>, <span class="hljs-number">93</span>, <span class="hljs-number">169</span>],        <span class="hljs-attribute">violet</span>: [<span class="hljs-number">124</span>, <span class="hljs-number">80</span>, <span class="hljs-number">164</span>]
-    <span class="hljs-attribute">magenta</span>: [<span class="hljs-number">167</span>, <span class="hljs-number">27</span>, <span class="hljs-number">106</span>],    <span class="hljs-attribute">pink</span>: [<span class="hljs-number">224</span>, <span class="hljs-number">127</span>, <span class="hljs-number">150</span>]</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  netLogoColors:
+    gray: [<span class="hljs-number">141</span>, <span class="hljs-number">141</span>, <span class="hljs-number">141</span>],      red: [<span class="hljs-number">215</span>, <span class="hljs-number">50</span>, <span class="hljs-number">41</span>]
+    orange: [<span class="hljs-number">241</span>, <span class="hljs-number">106</span>, <span class="hljs-number">21</span>],     brown: [<span class="hljs-number">157</span>, <span class="hljs-number">110</span>, <span class="hljs-number">72</span>]
+    yellow: [<span class="hljs-number">237</span>, <span class="hljs-number">237</span>, <span class="hljs-number">49</span>],     green: [<span class="hljs-number">89</span>, <span class="hljs-number">176</span>, <span class="hljs-number">60</span>]
+    lime: [<span class="hljs-number">44</span>, <span class="hljs-number">209</span>, <span class="hljs-number">59</span>],        turquoise: [<span class="hljs-number">29</span>, <span class="hljs-number">159</span>, <span class="hljs-number">120</span>]
+    cyan: [<span class="hljs-number">84</span>, <span class="hljs-number">196</span>, <span class="hljs-number">196</span>],       skyblue: [<span class="hljs-number">45</span>, <span class="hljs-number">141</span>, <span class="hljs-number">190</span>]
+    blue: [<span class="hljs-number">52</span>, <span class="hljs-number">93</span>, <span class="hljs-number">169</span>],        violet: [<span class="hljs-number">124</span>, <span class="hljs-number">80</span>, <span class="hljs-number">164</span>]
+    magenta: [<span class="hljs-number">167</span>, <span class="hljs-number">27</span>, <span class="hljs-number">106</span>],    pink: [<span class="hljs-number">224</span>, <span class="hljs-number">127</span>, <span class="hljs-number">150</span>]</pre></div></div>
             
         </li>
         
@@ -817,10 +817,10 @@ with nOpacity opacity values, default to all 256</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">opacityColorMap</span>: <span class="hljs-function"><span class="hljs-params">(rgb, nOpacities = <span class="hljs-number">256</span>, type=<span class="hljs-string">"typed"</span>, indexToo=<span class="hljs-literal">false</span>)</span> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  opacityColorMap: <span class="hljs-function"><span class="hljs-params">(rgb, nOpacities = <span class="hljs-number">256</span>, type=<span class="hljs-string">"typed"</span>, indexToo=<span class="hljs-literal">false</span>)</span> -&gt;</span>
     [r, g, b] = rgb
     array = ( [r, g, b, a] <span class="hljs-keyword">for</span> a <span class="hljs-keyword">in</span> u.aIntRamp <span class="hljs-number">0</span>, <span class="hljs-number">255</span>, nOpacities )
-    <span class="hljs-property">@colorMap</span> <span class="hljs-property">@arrayToColors</span>(array, type), indexToo</pre></div></div>
+    @colorMap @arrayToColors(array, type), indexToo</pre></div></div>
             
         </li>
         
@@ -835,7 +835,7 @@ with nOpacity opacity values, default to all 256</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">createSharedMaps</span>: <span class="hljs-function">-&gt;</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  createSharedMaps: <span class="hljs-function">-&gt;</span></pre></div></div>
             
         </li>
         
@@ -850,7 +850,7 @@ with nOpacity opacity values, default to all 256</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="hljs-property">@Gray</span>    = <span class="hljs-property">@grayColorMap</span>()</pre></div></div>
+            <div class="content"><div class='highlight'><pre>    @Gray    = @grayColorMap()</pre></div></div>
             
         </li>
         
@@ -865,7 +865,7 @@ with nOpacity opacity values, default to all 256</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="hljs-property">@Rgb256</span>  = <span class="hljs-property">@rgbColorMap</span>(<span class="hljs-number">8</span>,<span class="hljs-number">8</span>,<span class="hljs-number">4</span>)</pre></div></div>
+            <div class="content"><div class='highlight'><pre>    @Rgb256  = @rgbColorMap(<span class="hljs-number">8</span>,<span class="hljs-number">8</span>,<span class="hljs-number">4</span>)</pre></div></div>
             
         </li>
         
@@ -880,7 +880,7 @@ with nOpacity opacity values, default to all 256</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="hljs-property">@Rgb</span>     = <span class="hljs-property">@rgbColorCube</span>(<span class="hljs-number">16</span>)</pre></div></div>
+            <div class="content"><div class='highlight'><pre>    @Rgb     = @rgbColorCube(<span class="hljs-number">16</span>)</pre></div></div>
             
         </li>
         
@@ -895,7 +895,7 @@ with nOpacity opacity values, default to all 256</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="hljs-property">@Safe</span>    = <span class="hljs-property">@rgbColorCube</span>(<span class="hljs-number">6</span>)</pre></div></div>
+            <div class="content"><div class='highlight'><pre>    @Safe    = @rgbColorCube(<span class="hljs-number">6</span>)</pre></div></div>
             
         </li>
         
@@ -910,7 +910,7 @@ with nOpacity opacity values, default to all 256</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="hljs-property">@Jet</span>     = <span class="hljs-property">@gradientColorMap</span> <span class="hljs-number">256</span>, <span class="hljs-property">@jetColors</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>    @Jet     = @gradientColorMap <span class="hljs-number">256</span>, @jetColors</pre></div></div>
             
         </li>
         
@@ -925,7 +925,7 @@ with nOpacity opacity values, default to all 256</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="hljs-property">@NetLogo</span> = <span class="hljs-property">@netLogoColorMap</span> <span class="hljs-number">10</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>    @NetLogo = @netLogoColorMap <span class="hljs-number">10</span></pre></div></div>
             
         </li>
         
@@ -942,8 +942,8 @@ yellow hue while CssRamps.yellow is black to Css “yellow”</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="hljs-property">@NetLogoRamps</span> = <span class="hljs-property">@netLogoColorMap</span> <span class="hljs-number">18</span>, <span class="hljs-literal">false</span>
-    <span class="hljs-property">@CssRamps</span>     = <span class="hljs-property">@cssBasicColorMap</span> <span class="hljs-number">18</span>, <span class="hljs-literal">false</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>    @NetLogoRamps = @netLogoColorMap <span class="hljs-number">18</span>, <span class="hljs-literal">false</span>
+    @CssRamps     = @cssBasicColorMap <span class="hljs-number">18</span>, <span class="hljs-literal">false</span></pre></div></div>
             
         </li>
         
@@ -963,8 +963,8 @@ color = ColorMaps.Jet.scaleColor(<span class="hljs-number">.5</span>).clone()
 </code></pre>
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">randomGray</span>: <span class="hljs-function"><span class="hljs-params">(min, max)</span> -&gt;</span> <span class="hljs-property">@Gray</span>.randomColor(min, max)
-  <span class="hljs-attribute">randomColor</span>: <span class="hljs-function"><span class="hljs-params">()</span> -&gt;</span> <span class="hljs-property">@Rgb256</span>.randomColor()</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  randomGray: <span class="hljs-function"><span class="hljs-params">(min, max)</span> -&gt;</span> @Gray.randomColor(min, max)
+  randomColor: <span class="hljs-function"><span class="hljs-params">()</span> -&gt;</span> @Rgb256.randomColor()</pre></div></div>
             
         </li>
         
@@ -979,13 +979,13 @@ color = ColorMaps.Jet.scaleColor(<span class="hljs-number">.5</span>).clone()
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">scaleColor</span>: <span class="hljs-function"><span class="hljs-params">(color, number, min=<span class="hljs-number">0</span>, max=<span class="hljs-number">1</span>)</span> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  scaleColor: <span class="hljs-function"><span class="hljs-params">(color, number, min=<span class="hljs-number">0</span>, max=<span class="hljs-number">1</span>)</span> -&gt;</span>
     <span class="hljs-keyword">if</span> color.scaleColor? <span class="hljs-comment"># colormap ramp</span>
       <span class="hljs-keyword">return</span> color.scaleColor number, min, max
-    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> ramp = <span class="hljs-property">@CssRamps</span>[Color.convertColor color, <span class="hljs-string">"css"</span>]
+    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> ramp = @CssRamps[Color.convertColor color, <span class="hljs-string">"css"</span>]
       <span class="hljs-keyword">return</span> ramp.scaleColor number, min, max
     <span class="hljs-keyword">else</span>
-      <span class="hljs-keyword">return</span> <span class="hljs-property">@Rgb</span>.findClosestColor Color.rgbLerp(color, number, min, max)
+      <span class="hljs-keyword">return</span> @Rgb.findClosestColor Color.rgbLerp(color, number, min, max)
 }
 ColorMaps.createSharedMaps()</pre></div></div>
             
