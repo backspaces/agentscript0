@@ -27,7 +27,7 @@
         @turtles.setDefault "heading", 0 # override promotion to random angle
         @links.setDefault "thickness", 2.5
 
-        @anim.setRate 30 #5
+        @anim.setRate 5
 
         @turtles.create @buttons, (a) => # fat arrow for @patches etc
           a.setXY @patches.randomPt()...
@@ -50,8 +50,7 @@
           console.log "Completed at tick #{@anim.ticks}:  Cluster size #{@cluster} Links: #{@links.length}"
           @stop()
           console.log "restarting in 5 seconds"
-          setTimeout @reset, 5
-
+          setTimeout( ( () => @reset(true) ), 5000 )
 
       graphOf: (node) ->
         a.marked = false for a in @turtles
