@@ -56,7 +56,7 @@ and <code>setup</code> will be called by <code>Model.constructor</code>. See:</p
             
             <div class="content"><div class='highlight'><pre>u = ABM.Util; Shapes = ABM.Shapes; Maps = ABM.ColorMaps
 <span class="hljs-function"><span class="hljs-title">log</span> = <span class="hljs-params">(arg)</span> -&gt;</span> <span class="hljs-built_in">console</span>.log arg
-<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyModel</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">ABM</span>.<span class="hljs-title">Model</span></span></pre></div></div>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">TemplateModel</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">ABM</span>.<span class="hljs-title">Model</span></span></pre></div></div>
             
         </li>
         
@@ -497,7 +497,7 @@ for patchSize, minX, maxX, minY, maxY</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>model = <span class="hljs-keyword">new</span> MyModel({
+            <div class="content"><div class='highlight'><pre>templateModel = <span class="hljs-keyword">new</span> TemplateModel({
   div: <span class="hljs-string">"layers"</span>,
   size: <span class="hljs-number">13</span>,
   minX: <span class="hljs-number">-16</span>,
@@ -506,9 +506,8 @@ for patchSize, minX, maxX, minY, maxY</p>
   maxY: <span class="hljs-number">16</span>,
   isTorus: <span class="hljs-literal">true</span>,
   hasNeighbors: <span class="hljs-literal">false</span>
-})
-.debug() <span class="hljs-comment"># Debug: Put Model vars in global name space</span>
-.start() <span class="hljs-comment"># Run model immediately after startup initialization</span></pre></div></div>
+}).debug() <span class="hljs-comment"># print stats, show sprites, put model name in window</span>
+  .start() <span class="hljs-comment"># Run model immediately after startup initialization</span></pre></div></div>
             
         </li>
         

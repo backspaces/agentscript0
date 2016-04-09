@@ -9,7 +9,7 @@ colorMixin = (obj, colorName, colorDefault, colorType="typed") ->
   # If obj is a class, use its prototype
   proto = obj.prototype ? obj
   # Capitolize 1st char of colorName for creating property names
-  colorTitle = u.upperCamelCase colorName
+  colorTitle = u.titleCase colorName
   # Names we're adding to the prototype.
   # We don't add colorType, its in this closure.
   colorPropName = colorName + "Prop"

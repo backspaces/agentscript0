@@ -78,7 +78,7 @@ The models/ directory contains tiny models used both as unit tests and as exampl
 
 [**prefattach.html**](models/prefattach.html) An example of a dynamic graph where new links preferentially attach to the nodes that have the most links.  This results in a power-law distribution.
 
-[**tspga.html**](models/tspga.html) A Traveling Sales Person solution via a Genetic Algorithm showing the rapid conversion of stochastic methods.
+[**travsalesman.html**](models/travsalesman.html) A Traveling Sales Person solution via a Genetic Algorithm showing the rapid conversion of stochastic methods.
 
 [**droplets.html**](models/droplets.html) A simple GIS model based on an ESRI asc elevation file where droplet turtles seek low-elevation patches. This example uses the data.js extra.
 

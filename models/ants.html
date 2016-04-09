@@ -8,7 +8,7 @@
     u = ABM.Util # aliases
     Shapes = ABM.Shapes
     ColorMaps = ABM.ColorMaps
-    class MyModel extends ABM.Model
+    class AntsModel extends ABM.Model
       setup: ->
 
         # No optimizations: 10fps
@@ -135,16 +135,15 @@
 
     # div, patchSize, minX, maxX, minY, maxY, isTorus, hasNeighbors
     #   Defaults: 13, -16, 16, -16, 16, false, true
-    window.model = new MyModel {
+    antsModel = new AntsModel({
       div: "layers",
       size: 6,
       minX: -40,
       maxX: 40,
       minY: -40,
       maxY: 40
-    }
-    model.debug() # Debug: Put Model vars in global name space
-    model.start() # Run model immediately after startup initialization
+    }).debug() # print stats, show sprites, put model name in window
+      .start() # Run model immediately after startup initialization
     </script>
 
   </head>

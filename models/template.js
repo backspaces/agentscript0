@@ -1,5 +1,5 @@
 (function() {
-  var Maps, MyModel, Shapes, log, model, u,
+  var Maps, Shapes, TemplateModel, log, templateModel, u,
     extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
     hasProp = {}.hasOwnProperty;
 
@@ -13,14 +13,14 @@
     return console.log(arg);
   };
 
-  MyModel = (function(superClass) {
-    extend(MyModel, superClass);
+  TemplateModel = (function(superClass) {
+    extend(TemplateModel, superClass);
 
-    function MyModel() {
-      return MyModel.__super__.constructor.apply(this, arguments);
+    function TemplateModel() {
+      return TemplateModel.__super__.constructor.apply(this, arguments);
     }
 
-    MyModel.prototype.startup = function() {
+    TemplateModel.prototype.startup = function() {
       Shapes.add("bowtie", true, function(c) {
         return Shapes.poly(c, [[-.5, -.5], [.5, .5], [-.5, .5], [.5, -.5]]);
       });
@@ -35,7 +35,7 @@
       }
     };
 
-    MyModel.prototype.setup = function() {
+    TemplateModel.prototype.setup = function() {
       var a, i, j, k, len, len1, len2, num, p, ref, ref1, ref2, s;
       this.population = 100;
       this.size = 2.0;
@@ -73,7 +73,7 @@
       return console.log("Patch(0,0): ", this.patches.patchXY(0, 0));
     };
 
-    MyModel.prototype.step = function() {
+    TemplateModel.prototype.step = function() {
       var a, i, j, len, len1, p, ref, ref1;
       ref = this.turtles;
       for (i = 0, len = ref.length; i < len; i++) {
@@ -103,18 +103,18 @@
       }
     };
 
-    MyModel.prototype.updateTurtles = function(a) {
+    TemplateModel.prototype.updateTurtles = function(a) {
       a.rotate(u.randomCentered(this.wiggle));
       return a.forward(this.speed);
     };
 
-    MyModel.prototype.updatePatches = function(p) {
+    TemplateModel.prototype.updatePatches = function(p) {
       if (p.x !== 0 && p.y !== 0) {
         return p.color = Maps.randomColor();
       }
     };
 
-    MyModel.prototype.reportInfo = function() {
+    TemplateModel.prototype.reportInfo = function() {
       var avgHeading, headings;
       headings = this.turtles.getProp("heading");
       avgHeading = (headings.reduce(function(a, b) {
@@ -123,11 +123,11 @@
       return log("average heading of turtles: " + (avgHeading.toFixed(2)) + " radians, " + (u.radToDeg(avgHeading).toFixed(2)) + " degrees");
     };
 
-    return MyModel;
+    return TemplateModel;
 
   })(ABM.Model);
 
-  model = new MyModel({
+  templateModel = new TemplateModel({
     div: "layers",
     size: 13,
     minX: -16,

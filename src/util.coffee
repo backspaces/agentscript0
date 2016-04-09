@@ -96,7 +96,9 @@ Util = util = u = # TODO: "util" deprecated in favor of Util
 # ### String Operations
 
   # Convert camelCase to CamelCase, capitolizing first character
-  upperCamelCase: (str) -> str.charAt(0).toUpperCase() + str.substr(1)
+  titleCase: (str) -> str.charAt(0).toUpperCase() + str.substr(1)
+  # Convert TitleCase to titleCase, lower caseing first character
+  camelCase: (str) -> str.charAt(0).toLowerCase() + str.substr(1)
 
 # ### Color and Angle Operations
 # Our colors are r,g,b,[a] arrays, with an optional color.str HTML

@@ -17,7 +17,7 @@
 
     u = ABM.Util # ABM.Util alias
     cmaps = ABM.ColorMaps
-    class MyModel extends ABM.Model
+    class WaterModel extends ABM.Model
       # GUI setters:
       setOmega: (@omega) ->
       setRoundWake: (@useRoundWake) ->
@@ -87,7 +87,7 @@
           p.depA = 0.9 for p in ps
         null # return something to avoid CS returning array of results
 
-    model = new MyModel {
+    waterModel = new WaterModel({
       div: "layers",
       size: 5,
       minX: -60,
@@ -95,17 +95,16 @@
       minY: -60,
       maxY: 60,
       isTorus: false
-    }
-    model.debug() # Debug: Put Model vars in global name space
-    model.start() # Run model immediately after startup initialization
+    }).debug() # print stats, show sprites, put model name in window
+      .start() # Run model immediately after startup initialization
 
-    gui = new ABM.DatGUI model,
+    gui = new ABM.DatGUI waterModel,
       "Population":
         type: "slider"
         min: 1
         max: 10
         step: 1
-        val: model.population
+        val: waterModel.population
         smooth: true
         setter: "resetPopulation"
       "Omega":
@@ -113,7 +112,7 @@
         min: 0
         max: 2
         step: 0.1
-        val: model.omega
+        val: waterModel.omega
         smooth: true
         setter: "setOmega"
       "Speed":
@@ -121,7 +120,7 @@
         min: .2
         max: 2
         step: 0.2
-        val: model.speed
+        val: waterModel.speed
         smooth: true
         setter: "setSpeed"
       "Gradient Colors":
@@ -129,7 +128,7 @@
         min: 8
         max: 64
         step: 2
-        val: model.gradientSize
+        val: waterModel.gradientSize
         smooth: true
         setter: "setGradientSize"
       "Wake Radius":
@@ -137,12 +136,12 @@
         min: 1
         max: 10
         step: 1
-        val: model.radius
+        val: waterModel.radius
         smooth: true
         setter: "setRadius"
       "Round Wake":
         type: "switch"
-        val: model.useRoundWake
+        val: waterModel.useRoundWake
         setter: "setRoundWake"
 
     </script>

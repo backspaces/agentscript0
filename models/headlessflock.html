@@ -6,7 +6,7 @@
     <script type="text/coffeescript">
 
     u = ABM.Util # ABM.Util alias
-    class MyModel extends ABM.Model
+    class HeadlessFlockModel extends ABM.Model
 
       setVision: (@vision) -> @patches.cacheRect @vision, true
       setMaxTurn: (@maxTurn) -> @maxTurn = u.degToRad(@maxTurn)
@@ -105,7 +105,7 @@
     # div, patchSize, minX, maxX, minY, maxY, isTorus, hasNeighbors
     #   Defaults: 13, -16, 16, -16, 16, false, true, false
     # No div, therefore no model drawings
-    model = new MyModel({
+    headlessFlockModel = new HeadlessFlockModel({
       size: 15,
       minX: -16,
       maxX: 16,
@@ -113,9 +113,8 @@
       maxY: 16,
       isTorus: true,
       hasNeighbors: false
-    })
-    .debug() # Debug: Put Model vars in global name space
-    .start() # Run model immediately after startup initialization
+    }).debug() # print stats, show sprites, put model name in window
+      .start() # Run model immediately after startup initialization
 
     </script>
   </head>

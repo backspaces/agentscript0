@@ -7,7 +7,7 @@
 
     u = ABM.Util # Aliases
     Shapes = ABM.Shapes
-    class MyModel extends ABM.Model
+    class FlockModel extends ABM.Model
 
       setVision: (@vision) ->  @patches.cacheRect @vision, true
       setMaxTurn: (maxTurn) -> @maxTurn = u.degToRad(maxTurn)
@@ -26,10 +26,10 @@
         # @turtles.setUseSprites() # 24 -> 36
 
         @turtles.setDefault "useSprites", true
-        @anim.setRate 60# , false, false # multistep, noRAF
+        @anim.setRate 30
 
         @useConsole = true
-        @population = 150     # turtles (was more, Chrome regression problem)
+        @population = 300     # turtles
         @setVision 3          # patches & set patch rect
         @minSeparation = 0.75 # patches
         @setMaxTurn(3.0)      # degrees -> radians
@@ -88,7 +88,7 @@
 
     # div, patchSize, minX, maxX, minY, maxY, isTorus, hasNeighbors
     #   Defaults: 13, -16, 16, -16, 16, false, true
-    model = new MyModel({
+    flockModel = new FlockModel({
       div: "layers",
       size: 15,
       minX: -16,
@@ -97,9 +97,9 @@
       maxY: 16,
       isTorus: true,
       hasNeighbors: false
-    })
-    .debug() # Debug: Put Model vars in global name space
-    .start() # Run model immediately after startup initialization
+    }).debug() # print stats, show sprites, put model name in window
+      .start() # Run model immediately after startup initialization
+
 
     </script>
   </head>

@@ -21,7 +21,7 @@
 u = ABM.Util # static variables
 Color = ABM.Color
 ColorMaps = ABM.ColorMaps
-class MyModel extends ABM.Model
+class WallFollowerModel extends ABM.Model
   startup: ->
   setup: ->
     @refreshPatches = false
@@ -93,7 +93,7 @@ class MyModel extends ABM.Model
 
 # div, patchSize, minX, maxX, minY, maxY, isTorus, hasNeighbors
 #   Defaults: 13, -16, 16, -16, 16, false, true
-model = new MyModel({
+wallFollowerModel = new WallFollowerModel({
   div: "layers"
   size: 7
   minX: -35
@@ -101,8 +101,8 @@ model = new MyModel({
   minY: -35
   maxY: 35
   isTorus: true
-}).debug() # Debug: Put Model vars in global name space
-  .start() # Run model immediately after startup initialization
+  }).debug() # print stats, show sprites, put model name in window
+    .start() # Run model immediately after startup initialization
 
     </script>
   </head>

@@ -6,7 +6,7 @@
     <script type="text/coffeescript">
 
     u = ABM.Util # ABM.Util alias
-    class MyModel extends ABM.Model
+    class GridPathModel extends ABM.Model
       setup: ->
         # This model is unusual in that all its drawing is done
         # by the single turtle stamping its image and label
@@ -90,19 +90,15 @@
 
     # div, patchSize, minX, maxX, minY, maxY, isTorus, hasNeighbors
     #   Defaults: 13, -16, 16, -16, 16, false, true
-    # model = new MyModel "layers", 30, 0,10, 0,10
-    # model.setRootVars() # Debug: Put Model vars in global name space
-    # model.start() # Run model immediately after startup initialization
-    new MyModel({
+    gridPathModel = new GridPathModel({
       div: "layers",
       size: 50,
       minX: 0,
       maxX: 9,
       minY: 0,
       maxY: 9
-    })
-    .start()
-    .debug()
+    }).debug() # print stats, show sprites, put model name in window
+      .start() # Run model immediately after startup initialization
 
     </script>
   </head>

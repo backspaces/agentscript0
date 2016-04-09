@@ -6,7 +6,7 @@
     <script type="text/coffeescript">
 
     u = ABM.Util # ABM.Util alias
-    class MyModel extends ABM.Model
+    class TravSalesmanModel extends ABM.Model
       setup: ->
         @agentBreeds "nodes travelers"
 
@@ -114,7 +114,7 @@
 
     # div, patchSize, minX, maxX, minY, maxY, isTorus, hasNeighbors
     #   Defaults: 13, -16, 16, -16, 16, false, true
-    model = new MyModel {
+    travSalesmanModel = new TravSalesmanModel({
       div: "layers",
       size: 16,
       minX: -14,
@@ -122,9 +122,8 @@
       minY: -14,
       maxY: 14,
       hasNeighbors: false
-    }
-    model.debug() # Debug: Put Model vars in global name space
-    model.start() # Run model immediately after startup initialization
+    }).debug() # print stats, show sprites, put model name in window
+      .start() # Run model immediately after startup initialization
 
     </script>
   </head>

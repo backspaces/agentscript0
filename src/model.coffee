@@ -104,10 +104,11 @@ class Model
     # Initialize model global resources
     @debugging = false
     @modelReady = false
-    @globalNames = null; @globalNames = u.ownKeys @
-    @globalNames.set = false
+    # @globalNames = null; @globalNames = u.ownKeys @
+    # @globalNames.set = false
     @startup()
-    u.waitOnFiles => @modelReady=true; @setupAndEmit(); @globals() unless @globalNames.set
+    u.waitOnFiles => @modelReady=true; @setupAndEmit() # unless @globalNames.set
+    # u.waitOnFiles => @modelReady=true; @setupAndEmit(); @globals() unless @globalNames.set
 
   # Initialize/reset world parameters by expanding options.
   setWorld: (opts) ->
@@ -123,10 +124,10 @@ class Model
     ctx.save()
     ctx.scale @world.size, -@world.size
     ctx.translate -(@world.minXcor), -(@world.maxYcor)
-  globals: (globalNames) ->
-    if globalNames?
-    then @globalNames = globalNames; @globalNames.set = true
-    else @globalNames = u.removeItems u.ownKeys(@), @globalNames
+  # globals: (globalNames) ->
+  #   if globalNames?
+  #   then @globalNames = globalNames; @globalNames.set = true
+  #   else @globalNames = u.removeItems u.ownKeys(@), @globalNames
 
 #### Optimizations:
 
@@ -189,7 +190,7 @@ class Model
     Shapes.spriteSheets.length = 0 # possibly null out entries?
     console.log "reset: setup"
     @setupAndEmit()
-    @setRootVars() if @debugging
+    # @setRootVars() if @debugging
     @start() if restart
 
 #### Animation.
@@ -265,7 +266,7 @@ class Model
   createBreeds: (breedNames, baseClass, baseSet) ->
     breeds = []; breeds.classes = {}; breeds.sets = {}
     for breedName in breedNames.split(" ")
-      className = u.upperCamelCase breedName
+      className = u.titleCase breedName
       breedClass = u.cloneClass baseClass, className
       breed = @[breedName] =
         new baseSet @, breedClass, breedName, baseClass::breed
@@ -286,31 +287,35 @@ class Model
   #     even.shuffle().getProp("id") # [6, 0, 4, 2, 8]
   asSet: (a, setType = AgentSet) -> AgentSet.asSet a, setType
 
+  # set debugging variable, place model in window global space
+  debug: (@debugging=true) ->
+    window[u.camelCase this.constructor.name] = @; @ #
+  # debug: (@debugging=true)->u.waitOn (=>@modelReady),(=>@setRootVars()); @
+
   # A simple debug aid which places short names in the global name space.
   # Note we avoid using the actual name, such as "patches" because this
   # can cause our modules to mistakenly depend on a global name.
   # See [CoffeeConsole](http://goo.gl/1i7bd) Chrome extension too.
-  debug: (@debugging=true)->u.waitOn (=>@modelReady),(=>@setRootVars()); @
   setRootVars: ->
-    window.psc = Patches
-    window.tsc = Turtles
-    window.lsc = Links
-    window.pc  = @Patch
-    window.tc  = @Turtle
-    window.lc  = @Link
-    window.ps  = @patches
-    window.ts  = @turtles
-    window.ls  = @links
-    window.p0  = @patches[0]
-    window.t0  = @turtles[0]
-    window.l0  = @links[0]
-    window.dr  = @drawing
-    window.u   = Util
-    window.cx  = @contexts
-    window.an  = @anim
-    window.gl  = @globals()
-    window.dv  = @div
-    window.app = @
+  #   window.psc = Patches
+  #   window.tsc = Turtles
+  #   window.lsc = Links
+  #   window.pc  = @Patch
+  #   window.tc  = @Turtle
+  #   window.lc  = @Link
+  #   window.ps  = @patches
+  #   window.ts  = @turtles
+  #   window.ls  = @links
+  #   window.p0  = @patches[0]
+  #   window.t0  = @turtles[0]
+  #   window.l0  = @links[0]
+  #   window.dr  = @drawing
+  #   window.u   = Util
+  #   window.cx  = @contexts
+  #   window.an  = @anim
+  #   # window.gl  = @globals()
+  #   window.dv  = @div
+  #   window.app = @
 
   # Debug aid: Fill a named div with the (last) sprite sheet
   # Typically the div should be before the model div, float right:

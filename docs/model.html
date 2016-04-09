@@ -307,11 +307,7 @@ models run on a page.</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>    @debugging = <span class="hljs-literal">false</span>
-    @modelReady = <span class="hljs-literal">false</span>
-    @globalNames = <span class="hljs-literal">null</span>; @globalNames = u.ownKeys @
-    @globalNames.set = <span class="hljs-literal">false</span>
-    @startup()
-    u.waitOnFiles =&gt; @modelReady=<span class="hljs-literal">true</span>; @setupAndEmit(); @globals() <span class="hljs-keyword">unless</span> @globalNames.set</pre></div></div>
+    @modelReady = <span class="hljs-literal">false</span></pre></div></div>
             
         </li>
         
@@ -321,6 +317,36 @@ models run on a page.</p>
               
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-16">&#182;</a>
+              </div>
+              <p>@globalNames = null; @globalNames = u.ownKeys @
+@globalNames.set = false</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    @startup()
+    u.waitOnFiles =&gt; @modelReady=<span class="hljs-literal">true</span>; @setupAndEmit() <span class="hljs-comment"># unless @globalNames.set</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-17">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-17">&#182;</a>
+              </div>
+              <p>u.waitOnFiles =&gt; @modelReady=true; @setupAndEmit(); @globals() unless @globalNames.set</p>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-18">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-18">&#182;</a>
               </div>
               <p>Initialize/reset world parameters by expanding options.</p>
 
@@ -338,20 +364,32 @@ models run on a page.</p>
     ctx.canvas.width = @world.pxWidth; ctx.canvas.height = @world.pxHeight
     ctx.save()
     ctx.scale @world.size, -@world.size
-    ctx.translate -(@world.minXcor), -(@world.maxYcor)
-  globals: <span class="hljs-function"><span class="hljs-params">(globalNames)</span> -&gt;</span>
-    <span class="hljs-keyword">if</span> globalNames?
-    <span class="hljs-keyword">then</span> @globalNames = globalNames; @globalNames.set = <span class="hljs-literal">true</span>
-    <span class="hljs-keyword">else</span> @globalNames = u.removeItems u.ownKeys(@), @globalNames</pre></div></div>
+    ctx.translate -(@world.minXcor), -(@world.maxYcor)</pre></div></div>
             
         </li>
         
         
-        <li id="section-17">
+        <li id="section-19">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-17">&#182;</a>
+                <a class="pilcrow" href="#section-19">&#182;</a>
+              </div>
+              <p>globals: (globalNames) -&gt;
+  if globalNames?
+  then @globalNames = globalNames; @globalNames.set = true
+  else @globalNames = u.removeItems u.ownKeys(@), @globalNames</p>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-20">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-20">&#182;</a>
               </div>
               <h3 id="optimizations-">Optimizations:</h3>
 
@@ -360,11 +398,11 @@ models run on a page.</p>
         </li>
         
         
-        <li id="section-18">
+        <li id="section-21">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-18">&#182;</a>
+                <a class="pilcrow" href="#section-21">&#182;</a>
               </div>
               <p>Modelers “tune” their model by adjusting flags:<br>
 <code>@refreshLinks, @refreshTurtles, @refreshPatches</code><br>
@@ -375,11 +413,11 @@ and by the following helper methods:</p>
         </li>
         
         
-        <li id="section-19">
+        <li id="section-22">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-19">&#182;</a>
+                <a class="pilcrow" href="#section-22">&#182;</a>
               </div>
               <p>Draw patches using scaled image of colors. Note anti-aliasing may occur
 if browser does not support imageSmoothingEnabled or equivalent.</p>
@@ -391,11 +429,11 @@ if browser does not support imageSmoothingEnabled or equivalent.</p>
         </li>
         
         
-        <li id="section-20">
+        <li id="section-23">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-20">&#182;</a>
+                <a class="pilcrow" href="#section-23">&#182;</a>
               </div>
               <p>Patches are all the same static default color, just “clear” entire canvas.
 Don’t use if patch breeds have different colors.</p>
@@ -407,11 +445,11 @@ Don’t use if patch breeds have different colors.</p>
         </li>
         
         
-        <li id="section-21">
+        <li id="section-24">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-21">&#182;</a>
+                <a class="pilcrow" href="#section-24">&#182;</a>
               </div>
               <p>Have patches cache the turtles currently on them.
 Optimizes Patch p.turtlesHere method</p>
@@ -423,11 +461,11 @@ Optimizes Patch p.turtlesHere method</p>
         </li>
         
         
-        <li id="section-22">
+        <li id="section-25">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-22">&#182;</a>
+                <a class="pilcrow" href="#section-25">&#182;</a>
               </div>
               <p>Have turtles cache the links with them as a node.
 Optimizes Turtle a.myLinks method</p>
@@ -439,11 +477,11 @@ Optimizes Turtle a.myLinks method</p>
         </li>
         
         
-        <li id="section-23">
+        <li id="section-26">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-23">&#182;</a>
+                <a class="pilcrow" href="#section-26">&#182;</a>
               </div>
               <h3 id="user-model-creation">User Model Creation</h3>
 <p>A user’s model is made by subclassing Model and over-riding these
@@ -454,11 +492,11 @@ two abstract methods. <code>super</code> need not be called.</p>
         </li>
         
         
-        <li id="section-24">
+        <li id="section-27">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-24">&#182;</a>
+                <a class="pilcrow" href="#section-27">&#182;</a>
               </div>
               <p>Initialize model resources (images, files) here.
 Uses Util.waitOn so can be be async.</p>
@@ -470,11 +508,11 @@ Uses Util.waitOn so can be be async.</p>
         </li>
         
         
-        <li id="section-25">
+        <li id="section-28">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-25">&#182;</a>
+                <a class="pilcrow" href="#section-28">&#182;</a>
               </div>
               <p>Initialize your model variables and defaults here.
 If async used, make sure step/draw are aware of possible missing data.</p>
@@ -486,11 +524,11 @@ If async used, make sure step/draw are aware of possible missing data.</p>
         </li>
         
         
-        <li id="section-26">
+        <li id="section-29">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-26">&#182;</a>
+                <a class="pilcrow" href="#section-29">&#182;</a>
               </div>
               <p>Update/step your model here</p>
 
@@ -501,11 +539,11 @@ If async used, make sure step/draw are aware of possible missing data.</p>
         </li>
         
         
-        <li id="section-27">
+        <li id="section-30">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-27">&#182;</a>
+                <a class="pilcrow" href="#section-30">&#182;</a>
               </div>
               <h3 id="animation-and-reset-methods">Animation and Reset methods</h3>
 
@@ -514,11 +552,11 @@ If async used, make sure step/draw are aware of possible missing data.</p>
         </li>
         
         
-        <li id="section-28">
+        <li id="section-31">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-28">&#182;</a>
+                <a class="pilcrow" href="#section-31">&#182;</a>
               </div>
               <p>Convenience access to animator:</p>
 
@@ -527,11 +565,11 @@ If async used, make sure step/draw are aware of possible missing data.</p>
         </li>
         
         
-        <li id="section-29">
+        <li id="section-32">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-29">&#182;</a>
+                <a class="pilcrow" href="#section-32">&#182;</a>
               </div>
               <p>Start/stop the animation</p>
 
@@ -543,11 +581,11 @@ If async used, make sure step/draw are aware of possible missing data.</p>
         </li>
         
         
-        <li id="section-30">
+        <li id="section-33">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-30">&#182;</a>
+                <a class="pilcrow" href="#section-33">&#182;</a>
               </div>
               <p>Animate once by <code>step(); draw()</code>. For UI and debugging from console.
 Will advance the ticks/draws counters.</p>
@@ -559,11 +597,11 @@ Will advance the ticks/draws counters.</p>
         </li>
         
         
-        <li id="section-31">
+        <li id="section-34">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-31">&#182;</a>
+                <a class="pilcrow" href="#section-34">&#182;</a>
               </div>
               <p>Stop and reset the model, restarting if restart is true</p>
 
@@ -582,18 +620,31 @@ Will advance the ticks/draws counters.</p>
     @links = <span class="hljs-keyword">new</span> Links @, @Link, <span class="hljs-string">"links"</span>
     Shapes.spriteSheets.length = <span class="hljs-number">0</span> <span class="hljs-comment"># possibly null out entries?</span>
     <span class="hljs-built_in">console</span>.log <span class="hljs-string">"reset: setup"</span>
-    @setupAndEmit()
-    @setRootVars() <span class="hljs-keyword">if</span> @debugging
-    @start() <span class="hljs-keyword">if</span> restart</pre></div></div>
+    @setupAndEmit()</pre></div></div>
             
         </li>
         
         
-        <li id="section-32">
+        <li id="section-35">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-32">&#182;</a>
+                <a class="pilcrow" href="#section-35">&#182;</a>
+              </div>
+              <p>@setRootVars() if @debugging</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    @start() <span class="hljs-keyword">if</span> restart</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-36">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-36">&#182;</a>
               </div>
               <h3 id="animation-">Animation.</h3>
 
@@ -602,11 +653,11 @@ Will advance the ticks/draws counters.</p>
         </li>
         
         
-        <li id="section-33">
+        <li id="section-37">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-33">&#182;</a>
+                <a class="pilcrow" href="#section-37">&#182;</a>
               </div>
               <p>Call the agentset draw methods if either the first draw call or
 their “refresh” flags are set.  The latter are simple optimizations
@@ -633,11 +684,11 @@ to avoid redrawing the same static scene. Called by animator.</p>
         </li>
         
         
-        <li id="section-34">
+        <li id="section-38">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-34">&#182;</a>
+                <a class="pilcrow" href="#section-38">&#182;</a>
               </div>
               <h3 id="wrappers-around-user-implemented-methods">Wrappers around user-implemented methods</h3>
 
@@ -654,11 +705,11 @@ to avoid redrawing the same static scene. Called by animator.</p>
         </li>
         
         
-        <li id="section-35">
+        <li id="section-39">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-35">&#182;</a>
+                <a class="pilcrow" href="#section-39">&#182;</a>
               </div>
               <p>Creates a spotlight effect on a turtle, so we can follow it throughout the model.
 Use:</p>
@@ -680,11 +731,11 @@ Use:</p>
         </li>
         
         
-        <li id="section-36">
+        <li id="section-40">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-36">&#182;</a>
+                <a class="pilcrow" href="#section-40">&#182;</a>
               </div>
               <h3 id="breeds">Breeds</h3>
 
@@ -693,11 +744,11 @@ Use:</p>
         </li>
         
         
-        <li id="section-37">
+        <li id="section-41">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-37">&#182;</a>
+                <a class="pilcrow" href="#section-41">&#182;</a>
               </div>
               <p>Three versions of NL’s <code>breed</code> commands.</p>
 <pre><code>@patchBreeds <span class="hljs-string">"streets buildings"</span>
@@ -720,7 +771,7 @@ experimental, using setBreed, due to the patches being prebuilt.</p>
   createBreeds: <span class="hljs-function"><span class="hljs-params">(breedNames, baseClass, baseSet)</span> -&gt;</span>
     breeds = []; breeds.classes = {}; breeds.sets = {}
     <span class="hljs-keyword">for</span> breedName <span class="hljs-keyword">in</span> breedNames.split(<span class="hljs-string">" "</span>)
-      className = u.upperCamelCase breedName
+      className = u.titleCase breedName
       breedClass = u.cloneClass baseClass, className
       breed = @[breedName] =
         <span class="hljs-keyword">new</span> baseSet @, breedClass, breedName, baseClass::breed
@@ -738,11 +789,11 @@ experimental, using setBreed, due to the patches being prebuilt.</p>
         </li>
         
         
-        <li id="section-38">
+        <li id="section-42">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-38">&#182;</a>
+                <a class="pilcrow" href="#section-42">&#182;</a>
               </div>
               <p>Utility for models to create agentsets from arrays.  Ex:</p>
 <pre><code>even = @asSet (a <span class="hljs-keyword">for</span> a <span class="hljs-keyword">in</span> @turtles <span class="hljs-keyword">when</span> a.id % <span class="hljs-number">2</span> <span class="hljs-keyword">is</span> <span class="hljs-number">0</span>)
@@ -755,11 +806,40 @@ even.shuffle().getProp(<span class="hljs-string">"id"</span>) <span class="hljs-
         </li>
         
         
-        <li id="section-39">
+        <li id="section-43">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-39">&#182;</a>
+                <a class="pilcrow" href="#section-43">&#182;</a>
+              </div>
+              <p>set debugging variable, place model in window global space</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  debug: <span class="hljs-function"><span class="hljs-params">(@debugging=<span class="hljs-literal">true</span>)</span> -&gt;</span>
+    <span class="hljs-built_in">window</span>[u.camelCase <span class="hljs-keyword">this</span>.constructor.name] = @; @ <span class="hljs-comment">#</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-44">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-44">&#182;</a>
+              </div>
+              <p>debug: (@debugging=true)-&gt;u.waitOn (=&gt;@modelReady),(=&gt;@setRootVars()); @</p>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-45">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-45">&#182;</a>
               </div>
               <p>A simple debug aid which places short names in the global name space.
 Note we avoid using the actual name, such as “patches” because this
@@ -768,36 +848,47 @@ See <a href="http://goo.gl/1i7bd">CoffeeConsole</a> Chrome extension too.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  debug: <span class="hljs-function"><span class="hljs-params">(@debugging=<span class="hljs-literal">true</span>)</span>-&gt;</span>u.waitOn (<span class="hljs-function">=&gt;</span>@modelReady),(<span class="hljs-function">=&gt;</span>@setRootVars()); @
-  setRootVars: <span class="hljs-function">-&gt;</span>
-    <span class="hljs-built_in">window</span>.psc = Patches
-    <span class="hljs-built_in">window</span>.tsc = Turtles
-    <span class="hljs-built_in">window</span>.lsc = Links
-    <span class="hljs-built_in">window</span>.pc  = @Patch
-    <span class="hljs-built_in">window</span>.tc  = @Turtle
-    <span class="hljs-built_in">window</span>.lc  = @Link
-    <span class="hljs-built_in">window</span>.ps  = @patches
-    <span class="hljs-built_in">window</span>.ts  = @turtles
-    <span class="hljs-built_in">window</span>.ls  = @links
-    <span class="hljs-built_in">window</span>.p0  = @patches[<span class="hljs-number">0</span>]
-    <span class="hljs-built_in">window</span>.t0  = @turtles[<span class="hljs-number">0</span>]
-    <span class="hljs-built_in">window</span>.l0  = @links[<span class="hljs-number">0</span>]
-    <span class="hljs-built_in">window</span>.dr  = @drawing
-    <span class="hljs-built_in">window</span>.u   = Util
-    <span class="hljs-built_in">window</span>.cx  = @contexts
-    <span class="hljs-built_in">window</span>.an  = @anim
-    <span class="hljs-built_in">window</span>.gl  = @globals()
-    <span class="hljs-built_in">window</span>.dv  = @div
-    <span class="hljs-built_in">window</span>.app = @</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  setRootVars: <span class="hljs-function">-&gt;</span></pre></div></div>
             
         </li>
         
         
-        <li id="section-40">
+        <li id="section-46">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-40">&#182;</a>
+                <a class="pilcrow" href="#section-46">&#182;</a>
+              </div>
+              <p>  window.psc = Patches
+  window.tsc = Turtles
+  window.lsc = Links
+  window.pc  = @Patch
+  window.tc  = @Turtle
+  window.lc  = @Link
+  window.ps  = @patches
+  window.ts  = @turtles
+  window.ls  = @links
+  window.p0  = @patches[0]
+  window.t0  = @turtles[0]
+  window.l0  = @links[0]
+  window.dr  = @drawing
+  window.u   = Util
+  window.cx  = @contexts
+  window.an  = @anim</p>
+<h1 id="window-gl-globals-">window.gl  = @globals()</h1>
+<p>  window.dv  = @div
+  window.app = @</p>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-47">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-47">&#182;</a>
               </div>
               <p>Debug aid: Fill a named div with the (last) sprite sheet
 Typically the div should be before the model div, float right:</p>
@@ -821,11 +912,11 @@ Typically the div should be before the model div, float right:</p>
         </li>
         
         
-        <li id="section-41">
+        <li id="section-48">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-41">&#182;</a>
+                <a class="pilcrow" href="#section-48">&#182;</a>
               </div>
               <p>Create the namespace <strong>ABM</strong> for our project.
 Note here <code>this</code> or <code>@</code> == window due to coffeescript wrapper call.

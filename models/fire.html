@@ -6,7 +6,7 @@
     <script type="text/coffeescript">
 
     u = ABM.Util # ABM.Util alias
-    class MyModel extends ABM.Model
+    class FireModel extends ABM.Model
       setup: ->
         @agentBreeds "embers fires"
         @turtles.setDefault "shape", "square"
@@ -65,16 +65,15 @@
 
     # div, patchSize, minX, maxX, minY, maxY, isTorus, hasNeighbors
     #   Defaults: 13, -16, 16, -16, 16, false, true
-    model = new MyModel {
+    fireModel = new FireModel({
       div: "layers",
       size: 2,
       minX: -125,
       maxX: 125,
       minY: -125,
       maxY: 125
-    }
-    model.debug() # Debug: Put Model vars in global name space
-    model.start() # Run model immediately after startup initialization
+    }).debug() # print stats, show sprites, put model name in window
+      .start() # Run model immediately after startup initialization
 
     </script>
   </head>

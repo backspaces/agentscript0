@@ -17,7 +17,7 @@
 # ABM.Util, ABM.Shapes, ABM.ColorMaps aliases
 u = ABM.Util; Shapes = ABM.Shapes; Maps = ABM.ColorMaps
 log = (arg) -> console.log arg
-class MyModel extends ABM.Model
+class TemplateModel extends ABM.Model
   # `startup` initializes resources used by `setup` and `step`.
   # This is called by the constructor which waits for all files
   # processed by `starup`.  Useful for large files, but here just
@@ -143,7 +143,7 @@ average heading of turtles:
 #
 # Note: Netlogo defaults 13, -16, 16, -16, 16 <br>
 # for patchSize, minX, maxX, minY, maxY
-model = new MyModel({
+templateModel = new TemplateModel({
   div: "layers",
   size: 13,
   minX: -16,
@@ -152,6 +152,5 @@ model = new MyModel({
   maxY: 16,
   isTorus: true,
   hasNeighbors: false
-})
-.debug() # Debug: Put Model vars in global name space
-.start() # Run model immediately after startup initialization
+}).debug() # print stats, show sprites, put model name in window
+  .start() # Run model immediately after startup initialization

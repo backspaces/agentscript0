@@ -1,0 +1,132 @@
+<html>
+  <head>
+    <title>Buttons Model</title>
+    <script src="../lib/agentscript.js"></script>
+    <script src="../tools/coffee-script.js"></script>
+    <style>
+      .model {
+        display: inline-block;
+        padding: 5;
+      }
+    </style>
+
+    <script type="text/coffeescript">
+    u = ABM.Util # ABM.Util alias
+    class ButtonsModel extends ABM.Model
+      setup: ->
+        @refreshPatches = false # for static patches
+        @refreshLinks = false # for static links .. drown as created
+
+        # globals
+        @buttons = 200
+        @cluster = 0
+
+        # defaults
+        @turtles.setDefault "shape", "circle"
+        @turtles.setDefault "size", 1.5
+        @turtles.setDefault "heading", 0 # override promotion to random angle
+        @links.setDefault "thickness", 2.5
+
+        @anim.setRate 30 #5
+
+        @turtles.create @buttons, (a) => # fat arrow for @patches etc
+          a.setXY @patches.randomPt()...
+
+      step: ->
+        b1 = @turtles.oneOf()
+        b2 = @turtles.other(b1).oneOf()
+
+        @links.create b1, b2, (l) =>
+          l.draw @contexts.links
+
+        g = @graphOf b1
+        c = u.minOneOf(g, "id").color
+        node.color = c for node in g
+        if g.length > @cluster
+          console.log "New largest cluster: size: #{g.length} tick: #{@anim.ticks}"
+        @cluster = Math.max @cluster, g.length
+
+        if @cluster is @buttons
+          console.log "Completed at tick #{@anim.ticks}:  Cluster size #{@cluster} Links: #{@links.length}"
+          @stop()
+          console.log "restarting in 5 seconds"
+          setTimeout @reset, 5
+
+
+      graphOf: (node) ->
+        a.marked = false for a in @turtles
+        @markNeighbors node
+        a for a in @turtles when a.marked
+      markNeighbors: (node) ->
+        node.marked = true
+        unMarked = (n for n in node.linkNeighbors() when not n.marked)
+        @markNeighbors n for n in unMarked
+
+    class LinkTravelModel extends ABM.Model
+      setup: ->
+        @agentBreeds "nodes drivers"
+        @nodes.setDefault "shape", "circle"
+        @nodes.setDefault "size", .3
+        @drivers.setDefault "size", 1.5
+
+        @linkBreeds "roads"
+        @roads.setDefault "labelColor", [255,0,0]
+
+        @refreshPatches = false
+        @refreshLinks = false
+        @drivers.setDefault "useSprites", true
+
+        # @anim.setRate 30, true # almost 3:1 steps/draws!
+        @anim.setRate 30, false # for optimization studies & profiling
+
+        # globals
+        @numNodes = 30
+        @numDrivers = 100
+        @layoutCircle = true
+        @baseVelocity = 0.1 # patchs
+        @velocityDelta = 0.1 # patches
+
+        p.color = u.randomGray 10, 50 for p in @patches
+        for p in @patches.nOf @numNodes
+          p.sprout 1, @nodes, (a) =>
+            if @nodes.length > 1 # if @nodes().length > 1
+              @roads.create a, @nodes.other(a).oneOf() # @roads.create a, @nodes().other(a).oneOf()
+
+        if @layoutCircle then @roads.layoutCircle @nodes, @patches.maxX - 1
+
+        for i in [1..@numDrivers]
+          n = @nodes.oneOf() # n = @nodes().oneOf()
+          n.hatch 1, @drivers, (a) =>
+            a.fromNode = a.toNode = u.oneOf n.linkNeighbors() #.oneOf()
+            a.face a.toNode
+            a.v = @baseVelocity + u.randomFloat @velocityDelta
+        null # avoid returning "for" results above
+
+      step: ->
+        for d in @drivers #for d in @drivers()
+          d.face d.toNode
+          d.forward Math.min d.v, d.distance d.toNode
+          if .01 > d.distance d.toNode # or (d.distance d.toNode) < .01
+            d.fromNode = d.toNode
+            d.toNode = u.oneOf d.toNode.linkNeighbors() #.oneOf()
+        null # avoid returning "for" results above
+
+    # div, patchSize, minX, maxX, minY, maxY, isTorus, hasNeighbors
+    #   Defaults: 13, -16, 16, -16, 16, false, true
+    window.linkTravelModel = new LinkTravelModel({
+      div: "linktravel",
+      hasNeighbors: false
+    }).start() # Run model immediately after startup initialization
+
+    window.buttonsModel = new ButtonsModel({
+      div: "buttons",
+      hasNeighbors: false
+    }).start() # Run model immediately after startup initialization
+
+    </script>
+  </head>
+  <body>
+    <div class="model" id="buttons"></div>
+    <div class="model" id="linktravel"></div>
+  </body>
+</html>

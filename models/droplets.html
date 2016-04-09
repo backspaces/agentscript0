@@ -8,7 +8,7 @@
 
     u = ABM.Util; DataSet = ABM.DataSet # aliases
 
-    class MyModel extends ABM.Model
+    class DropletsModel extends ABM.Model
       startup: ->
         console.log "startup: elevation"
         @elevation = DataSet.importAscDataSet "data/nldroplets.asc", (ds)=>
@@ -76,16 +76,15 @@
 
     # div, patchSize, minX, maxX, minY, maxY, isTorus, hasNeighbors
     #   Defaults: 13, -16, 16, -16, 16, false, true
-    model = new MyModel({
+    dropletsModel = new DropletsModel({
       div: "layers",
       size: 6,
       minX: 0,
       maxX: 80,
       minY: 0,
       maxY: 80
-    })
-    .debug() # Debug: Put Model vars in global name space
-    .start() # Run model immediately after startup initialization
+    }).debug() # print stats, show sprites, put model name in window
+      .start() # Run model immediately after startup initialization
 
     </script>
   </head>

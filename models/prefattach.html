@@ -4,21 +4,21 @@
     <script src="../lib/agentscript.js"></script>
     <script src="../tools/coffee-script.js"></script>
     <script type="text/coffeescript">
-    
+
     u = ABM.Util # ABM.Util alias
-    class MyModel extends ABM.Model
+    class PrefAttachModel extends ABM.Model
       setup: ->
         @refreshPatches = false # for static patches
-        
+
         # globals
         @circleLayout = true
         @hist = []
         @stopTick = 400
-        
+
         # defaults
         @turtles.setDefault "shape", "circle"
         @links.setDefault "thickness", .75 # Easier to see thiner link
-        
+
         @turtles.create 1; @makeNode @turtles[0]
       step: ->
         @makeNode @findPartner()
@@ -37,7 +37,7 @@
 
     # div, patchSize, minX, maxX, minY, maxY, isTorus, hasNeighbors
     #   Defaults: 13, -16, 16, -16, 16, false, true
-    model = new MyModel {
+    prefAttachModel = new PrefAttachModel({
       div: "layers",
       size: 5,
       minX: -45,
@@ -45,9 +45,8 @@
       minY: -45,
       maxY: 45,
       hasNeighbors: false
-    }
-    model.debug() # Debug: Put Model vars in global name space
-    model.start() # Run model immediately after startup initialization
+    }).debug() # print stats, show sprites, put model name in window
+      .start() # Run model immediately after startup initialization
 
     </script>
   </head>
