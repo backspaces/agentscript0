@@ -1,43 +1,12 @@
 <html>
   <head>
     <title>Export Sketch</title>
-    <script src="http://agentscript.org/lib/agentscript.js"></script>
-    <script src="http://agentscript.org/tools/coffee-script.js"></script>
+    <script src="../lib/agentscript.js"></script>
+    <script src="../tools/coffee-script.js"></script>
     <script type="text/coffeescript">
 
     u = ABM.Util # ABM.Util alias
     class MyModel extends ABM.Model
-      # Return base64 "image", 96dpi resolution, format = "png" or "jpeg",
-      # using canvas.toDataURL https://goo.gl/kvWXCw
-      # If jpeg, the quality is used w/ default 0.92 (toDataUrl's default).
-      # Png does not use quality being lossless.
-      exportLayerDataUrl: (name, format = "png", quality = 0.92) ->
-        ctx = @contexts[name]
-        ctx.canvas.toDataURL "image/#{format}", quality
-      exportWorldDataUrl: (format = "png", quality = 0.92) ->
-        worldCtx = u.createCtx @world.pxWidth, @world.pxHeight
-        for name, ctx of @contexts
-          worldCtx.drawImage ctx.canvas, 0, 0
-        worldCtx.canvas.toDataURL "image/#{format}", quality
-      dataUrlToImage: (dataURL) ->
-        img = new Image()
-        img.src = dataURL
-        img
-      showLayers: (div) ->
-        console.log 'stopping'
-        div = document.querySelector('#exports')
-        for layer in ['patches', 'turtles', 'links']
-          dataUrl = @exportLayerDataUrl layer
-          console.log layer, dataUrl.length
-          img = @dataUrlToImage dataUrl
-          div.appendChild(img)
-        div = document.querySelector('#composite')
-        dataUrl = @exportWorldDataUrl()
-        console.log 'world', dataUrl.length
-        img = @dataUrlToImage dataUrl
-        div.appendChild(img)
-
-
       setup: ->
         @agentBreeds "nodes drivers"
         @nodes.setDefault "shape", "circle"
@@ -83,9 +52,23 @@
             d.fromNode = d.toNode
             d.toNode = u.oneOf d.toNode.linkNeighbors() #.oneOf()
         if @anim.ticks is 200
+          console.log 'stopping'
           @stop()
           @showLayers()
         null # avoid returning "for" results above
+
+      showLayers: () ->
+        div = document.querySelector('#exports')
+        for layer in ['patches', 'turtles', 'links']
+          dataUrl = @exportLayerDataUrl layer
+          console.log layer, dataUrl.length
+          img = @dataUrlToImage dataUrl
+          div.appendChild(img)
+        div = document.querySelector('#composite')
+        dataUrl = @exportWorldDataUrl()
+        console.log 'world', dataUrl.length
+        img = @dataUrlToImage dataUrl
+        div.appendChild(img)
 
     # div, patchSize, minX, maxX, minY, maxY, isTorus, hasNeighbors
     #   Defaults: 13, -16, 16, -16, 16, false, true

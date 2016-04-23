@@ -223,6 +223,24 @@ class Model
     @step()
     @emit('step')
 
+# Return base64 "image", 96dpi resolution, format = "png" or "jpeg",
+# using canvas.toDataURL https://goo.gl/kvWXCw
+# If jpeg, the quality is used w/ default 0.92 (toDataUrl's default).
+# Png does not use quality, being lossless.
+  exportLayerDataUrl: (name, format = "png", quality = 0.92) ->
+    ctx = @contexts[name]
+    ctx.canvas.toDataURL "image/#{format}", quality
+  exportWorldDataUrl: (format = "png", quality = 0.92) ->
+    worldCtx = u.createCtx @world.pxWidth, @world.pxHeight
+    for name, ctx of @contexts
+      worldCtx.drawImage ctx.canvas, 0, 0
+    worldCtx.canvas.toDataURL "image/#{format}", quality
+  dataUrlToImage: (dataURL) ->
+    img = new Image()
+    img.src = dataURL
+    img
+  foo: () ->
+    console.log('foo')
 # Creates a spotlight effect on a turtle, so we can follow it throughout the model.
 # Use:
 #
