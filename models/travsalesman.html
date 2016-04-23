@@ -2,132 +2,159 @@
   <head>
     <title>TSP-GA Model</title>
     <script src="../lib/agentscript.js"></script>
+    <script src="../lib/nlmouse.js"></script>
     <script src="../tools/coffee-script.js"></script>
     <script type="text/coffeescript">
 
-    u = ABM.Util # ABM.Util alias
-    class TravSalesmanModel extends ABM.Model
-      setup: ->
-        @agentBreeds "nodes travelers"
+u = ABM.Util # ABM.Util alias
+class TravSalesmanModel extends ABM.Model
+  setup: ->
+    @agentBreeds "nodes travelers"
 
-        # no optimizations: 44fps
-        @refreshPatches = false # for static patches
-        @refreshTurtles = false # for static turtles
-        # @patches.usePixels(), setCacheTurtlesHere would not apply
-        # @patches.cacheTurtlesHere() # not needed, inRadius used only once
+    # no optimizations: 44fps
+    @refreshPatches = false # for static patches
+    # @refreshTurtles = false # for static turtles
+    # @patches.usePixels(), setCacheTurtlesHere would not apply
+    # @patches.cacheTurtlesHere() # not needed, inRadius used only once
 
-        # both: 57+fps (max)
+    # both: 57+fps (max)
 
-        # globals
-        @nodeCount = 50
-        @travelersCount = 100
-        @growPopulation = true
-        @useInversion = true
-        @bestTourNodes = []
-        @bestTourLength = 0
-        @bestTourTick = 0
-        @stopTickDifference = 500
+    # globals
+    @nodeCount = 50
+    @travelersCount = 100
+    @growPopulation = true
+    @useInversion = true
+    @bestTourNodes = []
+    @bestTourLength = 0
+    @bestTourTick = 0
+    @stopTickDifference = 500
+    @dragNode = null
 
-        @anim.setRate 10, true
-        # @anim.setRate 60, false
+    @anim.setRate 10, true
+    # @anim.setRate 60, false
 
-        # defaults
-        @patches.setDefault "color", [250, 250, 0]
-        # @turtles.setDefault "shape", "circle"
-        # @turtles.setDefault "color", [255,0,0]
-        # @turtles.setDefault "heading", 0 # override promotion to random angle
-        @nodes.setDefault "shape", "circle"
-        @nodes.setDefault "color", [255,0,0]
-        @nodes.setDefault "heading", 0 # override promotion to random angle
-        @travelers.setDefault "hidden", true
-        @links.setDefault "color", [255,0,0]
+    # Use simple NLMouse; add delegated mouse to show difference.
+    # See both in tile droplets.
+    @mouse = new ABM.NLMouse @, (e) =>
+      if @mouse.down
+        if @dragNode == null # first down, starts drag
+          @dragNode = @nodes.minOneOf (n) => n.distanceXY @mouse.x, @mouse.y
+        else # subsequent to first down, dragging
+          @dragNode.setXY @mouse.x, @mouse.y
+          @bestTourLength = @links.reduce ((sum,l)->sum+l.length()), 0
+          a.tourLength = @lengthFromNodes a.tourNodes for a in @travelers
+      else # Done dragging, set dragNode to null
+        @dragNode = null
 
-        # p.color = [250, 250, 0] for p in @patches
+    # defaults
+    @patches.setDefault "color", [250, 250, 0]
+    # @turtles.setDefault "shape", "circle"
+    # @turtles.setDefault "color", [255,0,0]
+    # @turtles.setDefault "heading", 0 # override promotion to random angle
+    @nodes.setDefault "shape", "circle"
+    @nodes.setDefault "color", [255,0,0]
+    @nodes.setDefault "heading", 0 # override promotion to random angle
+    @travelers.setDefault "hidden", true
+    @links.setDefault "color", [255,0,0]
 
-        # @setupNode a for a in @turtles.create @nodeCount
-        @setupNode n for n in @nodes.create @nodeCount
+    # p.color = [250, 250, 0] for p in @patches
 
-        @createTourLinks @nodes #()
-        @bestTourLength = @links.reduce ((sum,l)->sum+l.length()), 0
+    # @setupNode a for a in @turtles.create @nodeCount
+    @setupNode n for n in @nodes.create @nodeCount
 
-        # @turtles.create @travelersCount, (a) => @setupTraveler(a)
-        @travelers.create @travelersCount, (a) => @setupTraveler(a)
+    @createTourLinks @nodes #()
+    @bestTourLength = @links.reduce ((sum,l)->sum+l.length()), 0
 
-      setupNode: (a) =>
-        a.setXY @patches.randomPt()...
-        a.setXY @patches.randomPt()... while @nodes.inRadius(a,2).other(a).any()
-      setupTraveler: (a) =>
-        # a.hidden = true
-        # a.breed = "travelers"
-        a.tourNodes = @nodes.clone().shuffle() # ()
-        a.tourLength = @lengthFromNodes a.tourNodes
+    # @turtles.create @travelersCount, (a) => @setupTraveler(a)
+    @travelers.create @travelersCount, (a) => @setupTraveler(a)
 
-      step: ->
-        # console.log @anim.toString() if @anim.ticks % 100 is 0
-        @makeTour a for a in @travelers #()
-        @installBestTour()
-        if (@anim.ticks - @bestTourTick) is @stopTickDifference
-          console.log "Stopping at tick #{@anim.ticks} after no change in #{@stopTickDifference} ticks"
-          console.log "Best tour: #{@bestTourLength} at tick #{@bestTourTick}"
-          @stop()
+  setupNode: (a) =>
+    a.setXY @patches.randomPt()...
+    a.setXY @patches.randomPt()... while @nodes.inRadius(a,2).other(a).any()
+  setupTraveler: (a) =>
+    a.tourNodes = @nodes.clone().shuffle() # ()
+    a.tourLength = @lengthFromNodes a.tourNodes
 
-      createTourLinks: (nodeList) ->
-        @links.clear()
-        @links.create nodeList[0], nodeList.last()
-        @links.create nodeList[i], nodeList[i-1] for i in [1...nodeList.length]
-        # @links.setProp "color", [255,0,0]
-      lengthFromNodes: (nodeList) ->
-        len = nodeList[0].distance(nodeList.last())
-        len += nodeList[i].distance(nodeList[i-1]) for i in [1...nodeList.length]
-        len
-      installBestTour: ->
-        # @travelers().maxOneOf("tourLength").die() while @travelers().length>@travelersCount
-        # a = @travelers().minOneOf("tourLength")
-        @travelers.maxOneOf("tourLength").die() while @travelers.length>@travelersCount
-        a = @travelers.minOneOf("tourLength")
-        if a.tourLength < @bestTourLength
-          @reportNewTour a
-          @bestTourLength = a.tourLength
-          @bestTourNodes = a.tourNodes
-          @bestTourTick = @anim.ticks
-          @createTourLinks @bestTourNodes
+  # checkDragging: () ->
+  #   if @mouse.down
+  #     if @dragNode? # first down, starts drag
+  #       @dragNode = @nodes.minOneOf (n) => n.distanceXY @mouse.x, @mouse.y
+  #     else # subsequent to first down, dragging
+  #       @dragNode.setXY @mouse.x, @mouse.y
+  #       @bestTourLength = @links.reduce ((sum,l)->sum+l.length()), 0
+  #       a.tourLength = @lengthFromNodes a.tourNodes for a in @travelers
+  #   else # Done dragging, set dragNode to null
+  #     @dragNode = null
 
-      makeTour: (a) ->
-        nlist = if @useInversion then @inversionStrategy a else @randomStrategy a
-        len = @lengthFromNodes nlist
-        if @growPopulation
-        then a.hatch 1, @travelers, (a) => a.tourNodes=nlist; a.tourLength=len
-        else (a.tourNodes=nlist; a.tourLength=len) if len < a.tourLength
-      randomStrategy: (a) -> a.tourNodes.clone().shuffle()
-      inversionStrategy: (a) -> @asSet @newInversion a.tourNodes
+  step: ->
+    # @checkDragging()
+    @makeTour a for a in @travelers #()
+    @installBestTour()
+    if (@anim.ticks - @bestTourTick) is @stopTickDifference
+      console.log "Stop: #{@anim.ticks}, no change #{@stopTickDifference} ticks"
+      console.log "Best tour: #{@bestTourLength} at tick #{@bestTourTick}"
+      @stop()
+      @mouse.stop()
 
-      newInversion: (nlist) ->
-        len = nlist.length
-        i = u.randomInt len-1
-        len = 2 + u.randomInt len-i-2
-        [].concat (nlist.slice 0, i),
-                  (nlist.slice i, i+len).reverse(),
-                  (nlist.slice i+len)
+  createTourLinks: (nodeList) ->
+    @links.clear()
+    @links.create nodeList[0], nodeList.last()
+    @links.create nodeList[i], nodeList[i-1] for i in [1...nodeList.length]
+    # @links.setProp "color", [255,0,0]
+  lengthFromNodes: (nodeList) ->
+    len = nodeList[0].distance(nodeList.last())
+    len += nodeList[i].distance(nodeList[i-1]) for i in [1...nodeList.length]
+    len
+  installBestTour: ->
+    while @travelers.length > @travelersCount
+      @travelers.maxOneOf("tourLength").die()
+    a = @travelers.minOneOf("tourLength")
+    if a.tourLength < @bestTourLength
+      @reportNewTour a
+      @bestTourLength = a.tourLength
+      @bestTourNodes = a.tourNodes
+      @bestTourTick = @anim.ticks
+      @createTourLinks @bestTourNodes
 
-      reportNewTour: (a) ->
-        console.log "new best tour at tick #{@anim.ticks}: #{a.tourLength} by traveler #{a.id}"
+  makeTour: (a) ->
+    nlist = if @useInversion then @inversionStrategy a else @randomStrategy a
+    len = @lengthFromNodes nlist
+    if @growPopulation
+    then a.hatch 1, @travelers, (a) => a.tourNodes=nlist; a.tourLength=len
+    else (a.tourNodes=nlist; a.tourLength=len) if len < a.tourLength
+  randomStrategy: (a) -> a.tourNodes.clone().shuffle()
+  inversionStrategy: (a) -> @asSet @newInversion a.tourNodes
 
-    # div, patchSize, minX, maxX, minY, maxY, isTorus, hasNeighbors
-    #   Defaults: 13, -16, 16, -16, 16, false, true
-    travSalesmanModel = new TravSalesmanModel({
-      div: "layers",
-      size: 16,
-      minX: -14,
-      maxX: 14,
-      minY: -14,
-      maxY: 14,
-      hasNeighbors: false
-    }).debug() # print stats, show sprites, put model name in window
-      .start() # Run model immediately after startup initialization
+  newInversion: (nlist) ->
+    len = nlist.length
+    i = u.randomInt len-1
+    len = 2 + u.randomInt len-i-2
+    [].concat (nlist.slice 0, i),
+              (nlist.slice i, i+len).reverse(),
+              (nlist.slice i+len)
+
+  reportNewTour: (a) ->
+    console.log "new best tour at tick #{@anim.ticks}: #{a.tourLength}"
+
+# div, patchSize, minX, maxX, minY, maxY, isTorus, hasNeighbors
+#   Defaults: 13, -16, 16, -16, 16, false, true
+travSalesmanModel = new TravSalesmanModel({
+  div: "layers",
+  size: 16,
+  minX: -14,
+  maxX: 14,
+  minY: -14,
+  maxY: 14,
+  hasNeighbors: false
+}).debug() # print stats, show sprites, put model name in window
+  .start() # Run model immediately after startup initialization
 
     </script>
   </head>
   <body>
-    <div id="layers"></div>
+    <p>
+      While model is running, drag the nodes to change their positions.
+    </p>
+    <div class="inline" id="layers"></div>
   </body>
 </html>

@@ -32,9 +32,7 @@ See: <a href="http://goo.gl/dq0nN">addEventListener</a></p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>u = ABM.Util
-
-<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ABM</span>.<span class="hljs-title">Mouse</span></span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>u = ABM.Util</pre></div></div>
             
         </li>
         
@@ -44,6 +42,32 @@ See: <a href="http://goo.gl/dq0nN">addEventListener</a></p>
               
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>Event delegation in a nutshell:</p>
+<p> 1) DOM event handlers set the current state
+    of the mouse object (e.g. @down and @moved)
+ 2) @computeEventTypes calculates event names
+    based on the current mouse state (e.g. ‘mousemove’
+    and ‘dragstart’), and sets additional state (e.g. @dragging)
+ 3) @delegateEventsToAllAgents finds agents beneath the
+    the mouse and fires the calculated events on their
+    agentsets
+ 4) the triggered agentsets call the appropriate registered
+    callbacks (if any), with a mouseEvent as an argument</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ABM</span>.<span class="hljs-title">Mouse</span></span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
               </div>
               <p>Create and start mouse obj, args: a model, and a callback method.</p>
 
@@ -60,11 +84,11 @@ See: <a href="http://goo.gl/dq0nN">addEventListener</a></p>
         </li>
         
         
-        <li id="section-3">
+        <li id="section-4">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-3">&#182;</a>
+                <a class="pilcrow" href="#section-4">&#182;</a>
               </div>
               <p>Start/stop the mouseListeners.  Note that NetLogo’s model is to have
 mouse move events always on, rather than starting/stopping them
@@ -89,13 +113,15 @@ more standard down/up enabling move events.</p>
         </li>
         
         
-        <li id="section-4">
+        <li id="section-5">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-4">&#182;</a>
+                <a class="pilcrow" href="#section-5">&#182;</a>
               </div>
-              <p>Handlers for eventListeners</p>
+              <p>Handlers for eventListeners. Each handler modifies state
+properties on the mouse object, like @down and @moved, then
+calls the generic @handleMouseEvent.</p>
 
             </div>
             
@@ -110,24 +136,99 @@ more standard down/up enabling move events.</p>
   handleMouseMove: <span class="hljs-function"><span class="hljs-params">(e)</span> =&gt;</span>
     @setXY(e)
     @moved = <span class="hljs-literal">true</span>
-    @handleMouseEvent(e)
-  handleStep: <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span>
-    @delegateMouseOverAndOutEvents(@x, @y) <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> isNaN(@x)
-  handleMouseEvent: <span class="hljs-function"><span class="hljs-params">(e)</span> =&gt;</span>
-    eventTypes = @computeEventTypes()
-    @delegateEventsToAllAgents(eventTypes, e)
-    @callback(e) <span class="hljs-keyword">if</span> @callback?
+    @handleMouseEvent(e)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p>Check for mouseover and mouseout events whenever
+the model steps, e.g. in case agents move beneath
+a stationary mouse</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  handleStep: <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span>
+    @delegateMouseOverAndOutEvents(@x, @y) <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> isNaN(@x)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <p>This is the entry point for most of the event work.
+All event handlers above lead here.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  handleMouseEvent: <span class="hljs-function"><span class="hljs-params">(e)</span> =&gt;</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              <p>First we calculate what events we need to fire off.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    eventTypes = @computeEventTypes()</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-9">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-9">&#182;</a>
+              </div>
+              <p>Then we fire them off to agents underneath the mouse.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    @delegateEventsToAllAgents(eventTypes, e)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-10">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-10">&#182;</a>
+              </div>
+              <p>And lastly we run any generic callbacks that the user has
+registered. This should probably be removed–it’s
+leftover from the old mouse module.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    @callback(e) <span class="hljs-keyword">if</span> @callback?
 
   getEventPos: <span class="hljs-function"><span class="hljs-params">(e)</span> -&gt;</span></pre></div></div>
             
         </li>
         
         
-        <li id="section-5">
+        <li id="section-11">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-5">&#182;</a>
+                <a class="pilcrow" href="#section-11">&#182;</a>
               </div>
               <p>modified from <a href="http://www.quirksmode.org/js/events_properties.html">http://www.quirksmode.org/js/events_properties.html</a>
 previously used e.offsetX, e.offsetY, which was less robust
@@ -150,9 +251,54 @@ previously used e.offsetX, e.offsetY, which was less robust
     @lastX = @x; @lastY = @y
     @pixX = eventPos.x; @pixY = eventPos.y
     [@x, @y] = @model.patches.pixelXYtoPatchXY(@pixX,@pixY)
-    @dx = @lastX - @x; @dy = @lastY - @y
+    @dx = @lastX - @x; @dy = @lastY - @y</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-12">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-12">&#182;</a>
+              </div>
+              <p>This is where we determine which mouse events to
+fire given the current mouse state. We also edit
+mouse state to remember if the mouse is dragging.</p>
 
-  computeEventTypes: <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span>
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-13">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-13">&#182;</a>
+              </div>
+              <p>The current supported events are: ‘mousedown’, ‘mouseup’,
+‘dragstart’, ‘drag’, ‘dragend’, ‘mousemove’, ‘mouseover’,
+and ‘mouseout’ These events seem to cover most use cases.</p>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-14">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-14">&#182;</a>
+              </div>
+              <p>Note that ‘drag’, ‘dragend’, ‘mouseover’, and ‘mouseout’
+are computed separately in delegateDragEvents and
+delegateMouseOverAndOutEvents.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  computeEventTypes: <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span>
     eventTypes = []
 
     <span class="hljs-keyword">if</span> @down <span class="hljs-keyword">and</span> <span class="hljs-keyword">not</span> @moved
@@ -173,32 +319,150 @@ previously used e.offsetX, e.offsetY, which was less robust
     <span class="hljs-keyword">if</span> @moved
       eventTypes.push <span class="hljs-string">'mousemove'</span>
 
-    <span class="hljs-keyword">return</span> eventTypes
+    <span class="hljs-keyword">return</span> eventTypes</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-15">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-15">&#182;</a>
+              </div>
+              <p>This is the entry point for event delegation.
+Delegation just means letting an agentset know that
+a certain kind of mouse event happened.</p>
 
-  delegateEventsToAllAgents: <span class="hljs-function"><span class="hljs-params">(types, e)</span> -&gt;</span>
-    delegatedAgent = @delegateEventsToTurtlesAtPoint(types, @x, @y, e)
-    <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> delegatedAgent
-      delegatedAgent = @delegateEventsToLinksAtPoint(types, @x, @y, e)
-    <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> delegatedAgent
-      @delegateEventsToPatchAtPoint(types, @x, @y, e)
-    @delegateDragEvents(@x, @y, e)
-    @delegateMouseOverAndOutEvents(@x, @y, e)
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-16">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-16">&#182;</a>
+              </div>
+              <p>Importantly, we allow ‘mouseover’ and’ ‘mouseout’
+to trigger on several agentsets at once. All other mouse
+events can only happen to one agentset at a time. This means
+that a single ‘mousedown’ event will only ever trigger
+a single callback.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  delegateEventsToAllAgents: <span class="hljs-function"><span class="hljs-params">(types, e)</span> -&gt;</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-17">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-17">&#182;</a>
+              </div>
+              <p>First we try to delegate the mouse events to turtles</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    delegatedAgent = @delegateEventsToTurtlesAtPoint(types, @x, @y, e)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-18">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-18">&#182;</a>
+              </div>
+              <p>If there aren’t any turtles to alert, we move on to links</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> delegatedAgent
+      delegatedAgent = @delegateEventsToLinksAtPoint(types, @x, @y, e)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-19">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-19">&#182;</a>
+              </div>
+              <p>If there aren’t any links to alert, we move on to patches</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> delegatedAgent
+      @delegateEventsToPatchAtPoint(types, @x, @y, e)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-20">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-20">&#182;</a>
+              </div>
+              <p>Drag events only get delegated to turtles</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    @delegateDragEvents(@x, @y, e)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-21">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-21">&#182;</a>
+              </div>
+              <p>Mouseover and mouseout events get delegated to all patches, links
+and turtles beneath the mouse</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    @delegateMouseOverAndOutEvents(@x, @y, e)
 
   delegateEventsToPatchAtPoint: <span class="hljs-function"><span class="hljs-params">(eventTypes, x, y, e)</span> -&gt;</span>
     curPatch = @model.patches.patch(x, y)
     @emitAgentEvent(type, curPatch, @mouseEvent(curPatch, e)) <span class="hljs-keyword">for</span> type <span class="hljs-keyword">in</span> eventTypes
 
-  delegateEventsToTurtlesAtPoint: <span class="hljs-function"><span class="hljs-params">(eventTypes, x, y, e)</span> -&gt;</span>
-    curPatch = @model.patches.patch(x, y)</pre></div></div>
+  delegateEventsToTurtlesAtPoint: <span class="hljs-function"><span class="hljs-params">(eventTypes, x, y, e)</span> -&gt;</span></pre></div></div>
             
         </li>
         
         
-        <li id="section-6">
+        <li id="section-22">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-6">&#182;</a>
+                <a class="pilcrow" href="#section-22">&#182;</a>
+              </div>
+              <p>We use patches for a convenient performance boost,
+like a poor-man’s quadtree</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    curPatch = @model.patches.patch(x, y)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-23">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-23">&#182;</a>
               </div>
               <p>iterate through all turtles in this patch and its neighbors</p>
 
@@ -217,8 +481,23 @@ previously used e.offsetX, e.offsetY, which was less robust
         @emitAgentEvent(type, link, mouseEvent) <span class="hljs-keyword">for</span> type <span class="hljs-keyword">in</span> eventTypes
         <span class="hljs-keyword">return</span> link
 
-  emitAgentEvent: <span class="hljs-function"><span class="hljs-params">(eventType, agent, mouseEvent)</span> -&gt;</span>
-    <span class="hljs-keyword">if</span> eventType == <span class="hljs-string">'dragstart'</span>
+  emitAgentEvent: <span class="hljs-function"><span class="hljs-params">(eventType, agent, mouseEvent)</span> -&gt;</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-24">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-24">&#182;</a>
+              </div>
+              <p>We keep track of agents that start getting dragged so that
+we can later easily emit ‘drag’ events</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">if</span> eventType == <span class="hljs-string">'dragstart'</span>
       @draggingAgents.push(agent)
     agent.breed.emit(eventType, mouseEvent)
     <span class="hljs-keyword">if</span> agent.breed.mainSet?
@@ -245,11 +524,11 @@ previously used e.offsetX, e.offsetY, which was less robust
         </li>
         
         
-        <li id="section-7">
+        <li id="section-25">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-7">&#182;</a>
+                <a class="pilcrow" href="#section-25">&#182;</a>
               </div>
               <p>mouseover</p>
 
@@ -265,11 +544,11 @@ previously used e.offsetX, e.offsetY, which was less robust
         </li>
         
         
-        <li id="section-8">
+        <li id="section-26">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-8">&#182;</a>
+                <a class="pilcrow" href="#section-26">&#182;</a>
               </div>
               <p>mouseout</p>
 
@@ -281,9 +560,25 @@ previously used e.offsetX, e.offsetY, which was less robust
           agent = @lastAgentsHovered[breedname][agentId]
           @emitAgentEvent(<span class="hljs-string">'mouseout'</span>, agent, @mouseEvent(agent, e))
 
-    @lastAgentsHovered = agentsHere
+    @lastAgentsHovered = agentsHere</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-27">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-27">&#182;</a>
+              </div>
+              <p>The mouseEvent is what is passed to the callback registered
+with agentset.on(). It contains a reference to the affected agent,
+the patch coord where the event occured, the change in mouse position,
+and the original DOM event.</p>
 
-  mouseEvent: <span class="hljs-function"><span class="hljs-params">(agent, e)</span> -&gt;</span>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  mouseEvent: <span class="hljs-function"><span class="hljs-params">(agent, e)</span> -&gt;</span>
     <span class="hljs-keyword">return</span> {target: agent, patchX: @x, patchY: @y, dx: @dx, dy: @dy, originalEvent: e}</pre></div></div>
             
         </li>

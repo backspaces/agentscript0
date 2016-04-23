@@ -12,6 +12,7 @@
 
     <script src="../lib/agentscript.js"></script>
     <script src="../lib/mouse.js"></script>
+    <script src="../lib/nlmouse.js"></script>
     <script src="../lib/data.js"></script>
     <script src="../lib/data.tile.js"></script>
     <script src="../lib/as.dat.gui.js"></script>
@@ -61,6 +62,8 @@
             // model
             ABM.Model.prototype.setup = function() {
                 this.refreshPatches = this.refreshLinks = false;
+                // which mouse code to use: simple NetLogo, or Delegated
+                this.useNLMouse = false
 
                 this.patches.own("elevation slope aspect");
 
@@ -72,15 +75,26 @@
                 this.turtles.setDefault("color", [60, 157, 255]);
                 this.patches.cacheRect(this.vision, false);
 
-                new ABM.Mouse(this);
+                // How to use either mouse type for this model.
+                if (this.useNLMouse) {
+                  this.mouse = new ABM.NLMouse(this, function(event) {
+                      var patch = this.patches.patch(this.mouse.x, this.mouse.y)
+                      var pats = this.patches.patchRect(patch, 7, 7);
+                      pats.forEach(function(patch) {
+                          patch.sprout(1);
+                      });
+                  }.bind(this))
+                } else {
+                  new ABM.Mouse(this);
+                  this.patches.on ('mousemove', function(mouseEvent) {
+                      var turtle = mouseEvent.target;
+                      var pats = this.patches.patchRect(turtle, 7, 7);
+                      pats.forEach(function(patch) {
+                          patch.sprout(1);
+                      });
+                  }.bind(this))
+                }
 
-                this.patches.on ('mousemove', function(mouseEvent) {
-                    turtle = mouseEvent.target;
-                    var pats = this.patches.patchRect(turtle, 7, 7);
-                    pats.forEach(function(patch) {
-                        patch.sprout(1);
-                    });
-                }.bind(this))
             }
 
             ABM.Model.prototype.rain = function() {
@@ -109,6 +123,7 @@
                 if (moved == 0) {
                     console.log("done, ticks:", this.anim.ticks);
                     this.stop()
+                    if (this.useNLMouse) this.mouse.stop()
                 }
 
                 if (this.anim.ticks % 100 == 0) {
@@ -160,6 +175,7 @@
             // and restart the model
             tileSet.on('tilesready', function() {
                 model.stop();
+                if (this.useNLMouse) model.mouse.stop();
 
                 console.log('importing elevation data');
                 tileSet.importTileData();
@@ -173,6 +189,7 @@
 
                 model.rain();
                 model.start();
+                if (this.useNLMouse) model.mouse.start();
             });
 
             new ABM.DatGUI(model, ui);

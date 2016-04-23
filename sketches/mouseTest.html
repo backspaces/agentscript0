@@ -11,7 +11,7 @@
       setup: ->
         @agentBreeds "nodes drivers"
         @nodes.setDefault "shape", "circle"
-        @nodes.setDefault "size", .3
+        @nodes.setDefault "size", .8
         @drivers.setDefault "size", 1.5
 
         # 40-44fps->58+fps
@@ -19,12 +19,13 @@
         @refreshLinks = true # 40-49fps
         # @patches.usePixels() # 58+fps same as refresh off
         # @patches.cacheTurtlesHere() # 40fps; not needed, slight overhead
-        @turtles.setUseSprites() # 24 -> 36
+        # @turtles.setUseSprites() # 24 -> 36
         # w/ refreshs off and 1 optimization 59/max-fps
         # @turtles.cacheLinks() # no improvement, but tests a.links
 
-        @anim.setRate 30, true # almost 3:1 steps/draws!
+        # @anim.setRate 30, true # almost 3:1 steps/draws!
         # @anim.setRate 60, false # for optimization studies & profiling
+        @anim.setRate 15
 
         # globals
         @numNodes = 30
