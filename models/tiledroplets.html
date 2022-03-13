@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Raindrops on a tile dataset</title>
     <meta charset="utf-8" />
@@ -34,14 +35,16 @@
             map = L.map('map', {
                 maxZoom: 14,
                 minZoom: 10
-            }).setView([31.5,-110], 13);
+            }).setView([31.5, -110], 13);
 
-            var mapUrl = 'http://{s}.tiles.mapbox.com/v3/bennlich.hmi0c6k3/{z}/{x}/{y}.png';
+            // var mapUrl = 'http://{s}.tiles.mapbox.com/v3/bennlich.hmi0c6k3/{z}/{x}/{y}.png';
+            var mapUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
             terrainLayer = L.tileLayer(mapUrl, {
                 attribution: '<a href="http://www.mapbox.com/about/maps/" target="_blank">Terms &amp; Feedback</a>'
             }).addTo(map);
 
-            var elevUrl = 'http://node.redfish.com/Documents/elevationServer/tiles/{z}/{x}/{y}.png';
+            // var elevUrl = 'http://node.redfish.com/Documents/elevationServer/tiles/{z}/{x}/{y}.png';
+            var elevUrl = 'https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png';
             elevationLayer = L.crossOriginTileLayer(elevUrl, {
                 opacity: 0.0,
                 attribution: 'Elevation Tiles'
@@ -49,18 +52,18 @@
 
 
             // tile dataset
-            ABM.TileDataSet.prototype.parseTileData = function(data) {
+            ABM.TileDataSet.prototype.parseTileData = function (data) {
                 var r = data[0],
-                g = data[1],
-                b = data[2],
-                elevation = (r * 255 * 255 + g * 255 + b) / 10;
+                    g = data[1],
+                    b = data[2],
+                    elevation = (r * 255 * 255 + g * 255 + b) / 10;
                 return elevation;
             }
 
             tileSet = new ABM.TileDataSet();
 
             // model
-            ABM.Model.prototype.setup = function() {
+            ABM.Model.prototype.setup = function () {
                 this.refreshPatches = this.refreshLinks = false;
                 // which mouse code to use: simple NetLogo, or Delegated
                 this.useNLMouse = false
@@ -77,40 +80,40 @@
 
                 // How to use either mouse type for this model.
                 if (this.useNLMouse) {
-                  this.mouse = new ABM.NLMouse(this, function(event) {
-                      var patch = this.patches.patch(this.mouse.x, this.mouse.y)
-                      var pats = this.patches.patchRect(patch, 7, 7);
-                      pats.forEach(function(patch) {
-                          patch.sprout(1);
-                      });
-                  }.bind(this))
+                    this.mouse = new ABM.NLMouse(this, function (event) {
+                        var patch = this.patches.patch(this.mouse.x, this.mouse.y)
+                        var pats = this.patches.patchRect(patch, 7, 7);
+                        pats.forEach(function (patch) {
+                            patch.sprout(1);
+                        });
+                    }.bind(this))
                 } else {
-                  new ABM.Mouse(this);
-                  this.patches.on ('mousemove', function(mouseEvent) {
-                      var turtle = mouseEvent.target;
-                      var pats = this.patches.patchRect(turtle, 7, 7);
-                      pats.forEach(function(patch) {
-                          patch.sprout(1);
-                      });
-                  }.bind(this))
+                    new ABM.Mouse(this);
+                    this.patches.on('mousemove', function (mouseEvent) {
+                        var turtle = mouseEvent.target;
+                        var pats = this.patches.patchRect(turtle, 7, 7);
+                        pats.forEach(function (patch) {
+                            patch.sprout(1);
+                        });
+                    }.bind(this))
                 }
 
             }
 
-            ABM.Model.prototype.rain = function() {
+            ABM.Model.prototype.rain = function () {
                 var density = 0.3;
                 this.turtles.clear();
-                this.patches.forEach(function(p) {
+                this.patches.forEach(function (p) {
                     if (Math.random() < density) {
                         p.sprout(1);
                     }
                 });
             }
 
-            ABM.Model.prototype.step = function() {
+            ABM.Model.prototype.step = function () {
                 var moved = 0;
 
-                this.turtles.forEach(function(a) {
+                this.turtles.forEach(function (a) {
                     var n = a.p.pRect;
                     n = n.minOneOf("elevation");
                     if (a.p.elevation > n.elevation) {
@@ -131,25 +134,25 @@
                 }
             }
 
-            ABM.Model.prototype.setLayer = function(name) {
+            ABM.Model.prototype.setLayer = function (name) {
                 var name = name || this.layerName;
                 this.layerName = name;
-                switch(name) {
+                switch (name) {
                     case "terrain":
                         map.getContainer().style['z-index'] = 15;
-                    break;
+                        break;
                     case "altitude":
                         map.getContainer().style['z-index'] = 0;
                         tileSet.toPatchColors();
-                    break;
+                        break;
                     case "slope":
                         map.getContainer().style['z-index'] = 0;
                         slopeAndAspect.slope.toPatchColors();
-                    break;
+                        break;
                     case "aspect":
                         map.getContainer().style['z-index'] = 0;
                         slopeAndAspect.aspect.toPatchColors();
-                    break;
+                        break;
                 }
                 model.refreshPatches = true;
                 model.draw();
@@ -173,7 +176,7 @@
 
             // when new tiles load, import data to patches,
             // and restart the model
-            tileSet.on('tilesready', function() {
+            tileSet.on('tilesready', function () {
                 model.stop();
                 if (this.useNLMouse) model.mouse.stop();
 
@@ -203,8 +206,10 @@
         }
     </style>
 </head>
+
 <body onload="init();" style="margin: 0px;">
     <div id="model"></div>
     <div id="map"></div>
 </body>
+
 </html>
